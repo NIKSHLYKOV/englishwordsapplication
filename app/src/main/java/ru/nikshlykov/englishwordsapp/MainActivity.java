@@ -7,13 +7,21 @@ import androidx.annotation.NonNull;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.LinearLayoutCompat;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.view.MenuItem;
-import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
-    private TextView mTextMessage;
+    // View элементы.
+    BottomNavigationView navigation; // Нижнее меню.
+    private LinearLayoutCompat content_layout; // Layout для программного размещения в нём фрагментов.
+
+    // Объекты для работы с фрагментами.
+    FragmentManager fragmentManager;
+    FragmentTransaction fragTrans;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -22,13 +30,13 @@ public class MainActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.activity_main_menu___study:
-                    mTextMessage.setText(R.string.title_study);
+
                     return true;
                 case R.id.activity_main_menu___groups:
-                    mTextMessage.setText(R.string.title_groups);
+
                     return true;
                 case R.id.activity_main_menu___profile:
-                    mTextMessage.setText(R.string.title_profile);
+
                     return true;
             }
             return false;
@@ -40,8 +48,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mTextMessage = (TextView) findViewById(R.id.message);
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+
+        navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     }
 
