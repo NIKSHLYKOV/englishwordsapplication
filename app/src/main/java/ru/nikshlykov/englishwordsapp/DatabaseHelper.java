@@ -6,6 +6,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -17,9 +18,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // путь к базе данных вашего приложения
     private static String DB_PATH = "/data/data/ru.nikshlykov.englishwordsapp/databases/";
-    private static String DB_NAME = "myDBName";
+    private static String DB_NAME = "words.db";
     private SQLiteDatabase myDataBase;
     private final Context mContext;
+    private final static String LOG_TAG = "DatabaseHelper";
 
     public static class WordsTable {
         // Названия таблицы слов и её колонок
@@ -138,12 +140,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             String myPath = DB_PATH + DB_NAME;
             myDataBase = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READONLY);
         }
+        Log.d(LOG_TAG, "Open to read");
     }
     public void openDataBaseToReadAndWrite() throws SQLException {
         if (myDataBase == null) {
             String myPath = DB_PATH + DB_NAME;
             myDataBase = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READWRITE);
         }
+        Log.d(LOG_TAG, "Open to read and write");
     }
     // Метод закрытия БД.
     @Override
@@ -151,6 +155,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (myDataBase != null)
             myDataBase.close();
         super.close();
+        Log.d(LOG_TAG, "Close");
     }
 
     @Override

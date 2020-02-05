@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        viewElementsFinding();
         // Присвоение обработчика нажатия на нижнее меню.
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         // Инициализация менеджера работы с фрагментами.
