@@ -14,20 +14,27 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.view.MenuItem;
 
+import java.io.IOException;
+
 public class MainActivity extends AppCompatActivity {
 
     // View элементы.
-    BottomNavigationView navigation; // Нижнее меню.
-    private LinearLayoutCompat content_layout; // Layout для программного размещения в нём фрагментов.
+    private BottomNavigationView navigation; // Нижнее меню.
+    private LinearLayoutCompat contentLayout; // Layout для программного размещения в нём фрагментов.
 
     // Объекты для работы с фрагментами.
-    FragmentManager fragmentManager;
-    FragmentTransaction fragTrans;
+    private FragmentManager fragmentManager;
+    private FragmentTransaction fragTrans;
 
     // Теги для идентификации фрагментов.
-    final static String TAG_GROUPS_FRAGMENT = "GroupsFragment";
-        final static String TAG_STUDY_FRAGMENT = "StudyFragment";
-    final static String TAG_PROFILE_FRAGMENT = "ProfileFragment";
+    private final static String TAG_GROUPS_FRAGMENT = "GroupsFragment";
+    private final static String TAG_STUDY_FRAGMENT = "StudyFragment";
+    private final static String TAG_PROFILE_FRAGMENT = "ProfileFragment";
+
+    // объекты для работы с базой данных.
+    private DatabaseHelper databaseHelper;
+    /*Cursor userCursor;
+    SimpleCursorAdapter userAdapter;*/
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -36,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             fragTrans = fragmentManager.beginTransaction();
             Fragment fragment;
-            int contentLayoutID = content_layout.getId();
+            int contentLayoutID = contentLayout.getId();
 
             switch (item.getItemId()) {
                 case R.id.activity_main_menu___study:
@@ -79,12 +86,22 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        content_layout =  findViewById(R.id.activity_main___LinearLayout___content_layout);
-
-        navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        // Присвоение обработчика нажатия на нижнее меню.
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-
+        // Инициализация менеджера работы с фрагментами.
         fragmentManager = getSupportFragmentManager();
+        // Инициализация dbHelper для работы с БД.
+        databaseHelper = new DatabaseHelper(MainActivity.this);
+        // Создание базы данных (при первом открытии).
+        try {
+            databaseHelper.createDataBase();
+        } catch (IOException ioe) {
+            throw new Error("Unable to create database");
+        }
     }
 
+    private void viewElementsFinding(){
+        contentLayout =  findViewById(R.id.activity_main___LinearLayout___content_layout);
+        navigation = (BottomNavigationView) findViewById(R.id.navigation);
+    }
 }
