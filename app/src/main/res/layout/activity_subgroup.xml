@@ -7,7 +7,7 @@
     android:layout_height="match_parent">
 
     <CheckBox
-        android:id="@+id/checkBox"
+        android:id="@+id/activity_subgroup___CheckBox___study_subgroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="CheckBox"
@@ -15,7 +15,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/activity_subgroup___Button___new_word"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Button"
@@ -23,10 +23,11 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ListView
+        android:id="@+id/activity_subgroup___ListView___words"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button" />
+        app:layout_constraintTop_toBottomOf="@+id/activity_subgroup___Button___new_word" />
 </androidx.constraintlayout.widget.ConstraintLayout>
