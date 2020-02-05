@@ -19,12 +19,8 @@ import androidx.fragment.app.Fragment;
 
 public class GroupsFragment extends Fragment {
 
-    // Переменные для работы с базой данных.
+    // Helper для работы с базой данных.
     private DatabaseHelper databaseHelper;
-    private Cursor groupsCursor;
-    private Cursor subgroupCursor;
-    // Adapter для расположения данных из БД в ExpandableList.
-    private SimpleCursorTreeAdapter simpleCursorTreeAdapter;
 
     // View компоненты фрагмента.
     private ExpandableListView expandableListView;
@@ -33,6 +29,8 @@ public class GroupsFragment extends Fragment {
     private Context context;
 
     private String LOG_TAG = "GroupsFragment";
+
+    private String EXTRA_SUBGROUP_ID = "SubgroupId";
 
     @Override
     public void onAttach(Context context) {
@@ -48,6 +46,16 @@ public class GroupsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_groups, null);
         // Находим ListView.
         expandableListView = view.findViewById(R.id.ExpandableListView_groups);
+        // Присваиваем ему обработчик.
+        expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+                Intent intent = new Intent(context, SubgroupActivity.class);
+                intent.putExtra(EXTRA_SUBGROUP_ID, id);
+                startActivity(intent);
+                return false;
+            }
+        });
         return view;
     }
 
@@ -65,19 +73,20 @@ public class GroupsFragment extends Fragment {
             throw sqle;
         }
 
+        //
+        // Подготавливаем данные для адаптера.
+        //
         // Получаем данные из бд (группы) в виде курсора.
-        groupsCursor = databaseHelper.rawQuery("select * from " + DatabaseHelper.GroupsTable.TABLE_GROUPS);
-
+        Cursor groupsCursor = databaseHelper.rawQuery("select * from " + DatabaseHelper.GroupsTable.TABLE_GROUPS);
         // Сопоставление данных и View для групп.
         String[] groupFrom = {DatabaseHelper.GroupsTable.TABLE_GROUPS_COLUMN_GROUPNAME};
         int[] groupTo = {android.R.id.text1};
-
         // Сопоставление данных и View для подгрупп.
         String[] subgroupFrom = {DatabaseHelper.SubgroupsTable.TABLE_SUBGROUPS_COLUMN_SUBGROUPNAME};
         int[] subgroupTo = {android.R.id.text1};
 
-        // Создаём адаптер.
-        simpleCursorTreeAdapter = new MySimpleCursorTreeAdapter(context, groupsCursor,
+        // Создаём адаптер для расположения данных из БД в ExpandableList.
+        SimpleCursorTreeAdapter simpleCursorTreeAdapter = new MySimpleCursorTreeAdapter(context, groupsCursor,
                 android.R.layout.simple_expandable_list_item_1, groupFrom, groupTo,
                 android.R.layout.simple_list_item_1, subgroupFrom, subgroupTo);
 
@@ -94,7 +103,7 @@ public class GroupsFragment extends Fragment {
     // Адаптер для сопоставления элементов-родителей и элементов-детей (подгрупп и групп).
     class MySimpleCursorTreeAdapter extends SimpleCursorTreeAdapter {
 
-        public MySimpleCursorTreeAdapter(Context context, Cursor cursor, int groupLayout,
+        private MySimpleCursorTreeAdapter(Context context, Cursor cursor, int groupLayout,
                                          String[] groupFrom, int[] groupTo, int childLayout,
                                          String[] childFrom, int[] childTo) {
             super(context, cursor, groupLayout, groupFrom, groupTo,
