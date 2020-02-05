@@ -1,6 +1,7 @@
 package ru.nikshlykov.englishwordsapp;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -20,6 +21,40 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private SQLiteDatabase myDataBase;
     private final Context mContext;
 
+    public static class WordsTable {
+        // Названия таблицы слов и её колонок
+        static String TABLE_WORDS = "Words";
+        static String TABLE_WORDS_COLUMN_ID = "_id";
+        static String TABLE_WORDS_COLUMN_WORD = "Word";
+        static String TABLE_WORDS_COLUMN_VALUE = "Value";
+        static String TABLE_WORDS_COLUMN_TRANSCRIPTION = "Transcription";
+        static String TABLE_WORDS_COLUMN_LEARNPROGRESS = "LearnProgress";
+        static String TABLE_WORDS_COLUMN_ISLEARNED = "IsLearned";
+        static String TABLE_WORDS_COLUMN_PARTOFSPEECH = "PartOfSpeech";
+        static String TABLE_WORDS_COLUMN_LASTREPETITIONDATE = "LastRepetitionDate";
+        static String TABLE_WORDS_COLUMN_EXAMPLES = "Examples";
+    }
+
+    public static class LinksTable {
+        // Названия таблицы связей и её колонок
+        static String TABLE_LINKS = "Links";
+        static String TABLE_LINKS_COLUMN_WORDID = "WordID";
+        static String TABLE_LINKS_COLUMN_SUBGROUPID = "SubgroupID";
+        static String TABLE_LINKS_COLUMN_LEVELINPARENTGROUP = "LevelInParentGroup";
+    }
+    public static class SubgroupsTable {
+        // Названия таблицы подгрупп и её колонок
+        static String TABLE_SUBGROUPS = "Subgroups";
+        static String TABLE_SUBGROUPS_COLUMN_ID = "_id";
+        static String TABLE_SUBGROUPS_COLUMN_SUBGROUPNAME = "SubgroupName";
+        static String TABLE_SUBGROUPS_COLUMN_PARENTGROUPID = "ParentGroupID";
+    }
+    public static class GroupsTable {
+        // Названия таблицы групп и её колонок
+        static String TABLE_GROUPS = "Groups";
+        static String TABLE_GROUPS_COLUMN_ID = "_id";
+        static String TABLE_GROUPS_COLUMN_GROUPNAME = "GroupName";
+    }
     /**
      * Конструктор
      * Принимает и сохраняет ссылку на переданный контекст для доступа к ресурсам приложения
@@ -129,4 +164,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // Здесь можно добавить вспомогательные методы для доступа и получения данных из БД
     // вы можете возвращать курсоры через "return myDataBase.query(....)", это облегчит их использование
     // в создании адаптеров для ваших view
+
+    public Cursor rawQuery(String query){
+        return myDataBase.rawQuery(query, null);
+    }
+    /**
+     * Возращает Cursor со всеми группами из БД.
+     * */
+    public Cursor getGroups(){
+        return rawQuery("select * from " + GroupsTable.TABLE_GROUPS);
+    }
+    /**
+     * Возращает Cursor со всеми подгруппами, включёнными в группу,
+     * ID которой равен groupID.
+     * */
+    public Cursor getSubgroupsFromGroup(int groupID){
+        return rawQuery("select * from " + SubgroupsTable.TABLE_SUBGROUPS
+                + " where " + SubgroupsTable.TABLE_SUBGROUPS_COLUMN_PARENTGROUPID + "=" + String.valueOf(groupID));
+    }
 }
