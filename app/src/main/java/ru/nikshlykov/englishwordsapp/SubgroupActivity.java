@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
@@ -25,8 +26,9 @@ public class SubgroupActivity extends AppCompatActivity {
     private DatabaseHelper databaseHelper;
     Cursor wordsCursor;
 
-    // ListView для вывода списка слов в подгруппе.
+    // View элементы.
     private ListView wordsList;
+    private Button buttonForNewWordCreating;
 
     // Полученные данные из Intent'а.
     private Bundle arguments;
@@ -45,6 +47,9 @@ public class SubgroupActivity extends AppCompatActivity {
         // Находим View элементы из разметки.
         viewElementsFinding();
 
+        // Создаём Helper для работы с БД.
+        databaseHelper = new DatabaseHelper(SubgroupActivity.this);
+
         // Присваеваем обработчик нажатия на элемент списка (слово), где открываем
         // WordActivity, передавая в него id данного слова.
         wordsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -56,6 +61,19 @@ public class SubgroupActivity extends AppCompatActivity {
             }
         });
 
+        // Присваиваем обработчик кнопке для создания нового слова.
+        buttonForNewWordCreating.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), WordActivity.class);
+                intent.putExtra(EXTRA_SUBGROUP_ID, subgroupID);
+                startActivity(intent);
+                //
+                // СДЕЛАТЬ ЕЩЁ REQUEST И RESPONSE КОДЫ.
+                //
+            }
+        });
+
         Log.d(LOG_TAG, "OnCreate");
     }
 
@@ -63,8 +81,6 @@ public class SubgroupActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        // Создаём Helper для работы с БД.
-        databaseHelper = new DatabaseHelper(SubgroupActivity.this);
         // Открываем подключение.
         try {
             databaseHelper.openDataBaseToRead();
@@ -110,6 +126,7 @@ public class SubgroupActivity extends AppCompatActivity {
 
     private void viewElementsFinding(){
         wordsList = findViewById(R.id.activity_subgroup___ListView___words);
+        buttonForNewWordCreating = findViewById(R.id.activity_subgroup___Button___new_word);
     }
 
 }

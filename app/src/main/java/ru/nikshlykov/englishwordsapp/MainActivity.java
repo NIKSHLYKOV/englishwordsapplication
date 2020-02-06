@@ -98,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException ioe) {
             throw new Error("Unable to create database");
         }
+        databaseHelper.close();
     }
 
     private void viewElementsFinding(){

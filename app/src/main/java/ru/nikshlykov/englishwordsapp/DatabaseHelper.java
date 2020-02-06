@@ -19,7 +19,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // путь к базе данных вашего приложения
     private static String DB_PATH = "/data/data/ru.nikshlykov.englishwordsapp/databases/";
     private static String DB_NAME = "words.db";
-    private SQLiteDatabase myDataBase;
+    public static SQLiteDatabase myDataBase;
     private final Context mContext;
     private final static String LOG_TAG = "DatabaseHelper";
 
@@ -44,6 +44,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         static String TABLE_LINKS_COLUMN_SUBGROUPID = "SubgroupID";
         static String TABLE_LINKS_COLUMN_LEVELINPARENTGROUP = "LevelInParentGroup";
     }
+
     public static class SubgroupsTable {
         // Названия таблицы подгрупп и её колонок
         static String TABLE_SUBGROUPS = "Subgroups";
@@ -51,15 +52,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         static String TABLE_SUBGROUPS_COLUMN_SUBGROUPNAME = "SubgroupName";
         static String TABLE_SUBGROUPS_COLUMN_PARENTGROUPID = "ParentGroupID";
     }
+
     public static class GroupsTable {
         // Названия таблицы групп и её колонок
         static String TABLE_GROUPS = "Groups";
         static String TABLE_GROUPS_COLUMN_ID = "_id";
         static String TABLE_GROUPS_COLUMN_GROUPNAME = "GroupName";
     }
+
     /**
      * Конструктор
      * Принимает и сохраняет ссылку на переданный контекст для доступа к ресурсам приложения
+     *
      * @param context
      */
     public DatabaseHelper(Context context) {
@@ -69,13 +73,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     /**
      * Создает пустую базу данных и перезаписывает ее нашей собственной базой
-     * */
+     */
     public void createDataBase() throws IOException {
         boolean dbExist = checkDataBase();
 
-        if(dbExist){
+        if (dbExist) {
             //ничего не делать - база уже есть
-        }else{
+        } else {
             //вызывая этот метод создаем пустую базу, позже она будет перезаписана
             this.getReadableDatabase();
 
@@ -89,18 +93,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     /**
      * Проверяет, существует ли уже эта база, чтобы не копировать каждый раз при запуске приложения
+     *
      * @return true если существует, false если не существует
      */
-    private boolean checkDataBase(){
+    private boolean checkDataBase() {
         SQLiteDatabase checkDB = null;
 
-        try{
+        try {
             String myPath = DB_PATH + DB_NAME;
             checkDB = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READONLY);
-        }catch(SQLiteException e){
+        } catch (SQLiteException e) {
             //база еще не существует
         }
-        if(checkDB != null){
+        if (checkDB != null) {
             checkDB.close();
         }
         return checkDB != null; // Упростил от return checkDB != null ? true : false;
@@ -109,8 +114,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     /**
      * Копирует базу из папки assets заместо созданной локальной БД
      * Выполняется путем копирования потока байтов.
-     * */
-    private void copyDataBase() throws IOException{
+     */
+    private void copyDataBase() throws IOException {
         //Открываем локальную БД как входящий поток
         InputStream myInput = mContext.getAssets().open(DB_NAME);
 
@@ -123,7 +128,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         //перемещаем байты из входящего файла в исходящий
         byte[] buffer = new byte[1024];
         int length;
-        while ((length = myInput.read(buffer))>0){
+        while ((length = myInput.read(buffer)) > 0) {
             myOutput.write(buffer, 0, length);
         }
 
@@ -138,10 +143,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void openDataBaseToRead() throws SQLException {
         if (myDataBase == null) {
             String myPath = DB_PATH + DB_NAME;
-            myDataBase = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READONLY);
+            myDataBase = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READWRITE);
         }
         Log.d(LOG_TAG, "Open to read");
     }
+
     public void openDataBaseToReadAndWrite() throws SQLException {
         if (myDataBase == null) {
             String myPath = DB_PATH + DB_NAME;
@@ -149,12 +155,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         Log.d(LOG_TAG, "Open to read and write");
     }
+
     // Метод закрытия БД.
     @Override
     public synchronized void close() {
         if (myDataBase != null)
-            myDataBase.close();
-        super.close();
+            super.close();
         Log.d(LOG_TAG, "Close");
     }
 
@@ -170,20 +176,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // вы можете возвращать курсоры через "return myDataBase.query(....)", это облегчит их использование
     // в создании адаптеров для ваших view
 
-    public Cursor rawQuery(String query){
+    public Cursor rawQuery(String query) {
         return myDataBase.rawQuery(query, null);
     }
+
     /**
      * Возращает Cursor со всеми группами из БД.
-     * */
-    public Cursor getGroups(){
+     */
+    public Cursor getGroups() {
         return rawQuery("select * from " + GroupsTable.TABLE_GROUPS);
     }
+
     /**
      * Возращает Cursor со всеми подгруппами, включёнными в группу,
      * ID которой равен groupID.
-     * */
-    public Cursor getSubgroupsFromGroup(int groupID){
+     */
+    public Cursor getSubgroupsFromGroup(int groupID) {
         return rawQuery("select * from " + SubgroupsTable.TABLE_SUBGROUPS
                 + " where " + SubgroupsTable.TABLE_SUBGROUPS_COLUMN_PARENTGROUPID + "=" + String.valueOf(groupID));
     }

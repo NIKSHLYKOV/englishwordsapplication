@@ -35,14 +35,13 @@ public class GroupsFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        Log.d(LOG_TAG, "onAttach");
         this.context = context;
+        Log.d(LOG_TAG, "onAttach");
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.d(LOG_TAG, "onCreateView");
         View view = inflater.inflate(R.layout.fragment_groups, null);
         // Находим ListView.
         expandableListView = view.findViewById(R.id.ExpandableListView_groups);
@@ -56,16 +55,18 @@ public class GroupsFragment extends Fragment {
                 return false;
             }
         });
+
+        // Создаём Helper для работы с БД.
+        databaseHelper = new DatabaseHelper(context);
+
+        Log.d(LOG_TAG, "onCreateView");
         return view;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        Log.d(LOG_TAG, "onResume");
 
-        // Создаём Helper для работы с БД.
-        databaseHelper = new DatabaseHelper(context);
         // Открываем подключение.
         try {
             databaseHelper.openDataBaseToRead();
@@ -91,13 +92,20 @@ public class GroupsFragment extends Fragment {
                 android.R.layout.simple_list_item_1, subgroupFrom, subgroupTo);
 
         expandableListView.setAdapter(simpleCursorTreeAdapter);
+        Log.d(LOG_TAG, "onResume");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        databaseHelper.close();
+        Log.d(LOG_TAG, "onStop");
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         Log.d(LOG_TAG, "onDestroy");
-        databaseHelper.close();
     }
 
     // Адаптер для сопоставления элементов-родителей и элементов-детей (подгрупп и групп).
@@ -112,9 +120,9 @@ public class GroupsFragment extends Fragment {
 
         protected Cursor getChildrenCursor(Cursor groupCursor) {
             // Получаем id родителя (группы).
-            int groupID = groupCursor.getInt(groupCursor.getColumnIndex(DatabaseHelper.GroupsTable.TABLE_GROUPS_COLUMN_ID));
+            int groupId = groupCursor.getInt(groupCursor.getColumnIndex(DatabaseHelper.GroupsTable.TABLE_GROUPS_COLUMN_ID));
             // получаем курсор по элементам-детям (подгруппам) для конкретного родителя (группы).
-            return databaseHelper.getSubgroupsFromGroup(groupID);
+            return databaseHelper.getSubgroupsFromGroup(groupId);
         }
     }
 }
