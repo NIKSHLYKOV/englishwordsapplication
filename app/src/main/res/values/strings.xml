@@ -3,5 +3,10 @@
     <string name="title_study">Изучение</string>
     <string name="title_groups">Группы</string>
     <string name="title_profile">Профиль</string>
+    <string name="progress">Прогресс</string>
+    <string name="part_of_speach">Часть речи</string>
+    <string name="word">Слово</string>
+    <string name="transcription">Транскрипция</string>
+    <string name="value">Значение</string>
 
 </resources>

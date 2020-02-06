@@ -12,6 +12,9 @@
         <activity android:name=".SubgroupActivity"
             android:screenOrientation="portrait">
         </activity>
+        <activity android:name=".WordActivity"
+            android:screenOrientation="portrait">
+        </activity>
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"

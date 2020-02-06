@@ -1,9 +1,12 @@
 package ru.nikshlykov.englishwordsapp;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
@@ -14,6 +17,8 @@ import androidx.appcompat.app.AppCompatActivity;
 public class SubgroupActivity extends AppCompatActivity {
 
     private String EXTRA_SUBGROUP_ID = "SubgroupId";
+    private String EXTRA_WORD_ID = "WordId";
+
     private final static String LOG_TAG = "SubgroupActivity";
 
     // Helper для работы с БД.
@@ -37,11 +42,19 @@ public class SubgroupActivity extends AppCompatActivity {
         if (arguments != null)
             subgroupID = arguments.getLong(EXTRA_SUBGROUP_ID);
 
-        // Создаём Helper для работы с БД.
-        databaseHelper = new DatabaseHelper(SubgroupActivity.this);
+        // Находим View элементы из разметки.
+        viewElementsFinding();
 
-        // Находим ListView для вывода списка слов подгруппы.
-        wordsList = findViewById(R.id.activity_subgroup___ListView___words);
+        // Присваеваем обработчик нажатия на элемент списка (слово), где открываем
+        // WordActivity, передавая в него id данного слова.
+        wordsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getApplicationContext(), WordActivity.class);
+                intent.putExtra(EXTRA_WORD_ID, id);
+                startActivity(intent);
+            }
+        });
 
         Log.d(LOG_TAG, "OnCreate");
     }
@@ -49,6 +62,9 @@ public class SubgroupActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        // Создаём Helper для работы с БД.
+        databaseHelper = new DatabaseHelper(SubgroupActivity.this);
         // Открываем подключение.
         try {
             databaseHelper.openDataBaseToRead();
@@ -75,13 +91,25 @@ public class SubgroupActivity extends AppCompatActivity {
             Toast toast = Toast.makeText(SubgroupActivity.this, "Произошла ошибка", Toast.LENGTH_LONG);
             toast.show();
         }
+        Log.d(LOG_TAG, "OnResume");
+    }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        databaseHelper.close();
+        wordsCursor.close();
+        Log.d(LOG_TAG, "OnStop");
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        databaseHelper.close();
-        wordsCursor.close();
+        Log.d(LOG_TAG, "OnDestroy");
     }
+
+    private void viewElementsFinding(){
+        wordsList = findViewById(R.id.activity_subgroup___ListView___words);
+    }
+
 }
