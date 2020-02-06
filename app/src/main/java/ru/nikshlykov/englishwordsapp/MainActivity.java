@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
                     // ПОКА ИСПОЛЬЗУЕТСЯ ДЕМОНСТРАЦИОННЫЙ ФРАГМЕНТ.
                     //
                     if (fragment == null) {
-                        fragTrans.replace(contentLayoutID, new Fragment()).commit();
+                        fragTrans.replace(contentLayoutID, new ProfileFragment()).commit();
                     }
                     return true;
             }

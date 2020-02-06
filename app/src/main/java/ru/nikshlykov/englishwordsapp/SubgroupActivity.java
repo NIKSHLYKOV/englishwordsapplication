@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
@@ -29,6 +30,7 @@ public class SubgroupActivity extends AppCompatActivity {
     // View элементы.
     private ListView wordsList;
     private Button buttonForNewWordCreating;
+    private CheckBox studySubgroupCheckBox;
 
     // Полученные данные из Intent'а.
     private Bundle arguments;
@@ -127,6 +129,7 @@ public class SubgroupActivity extends AppCompatActivity {
     private void viewElementsFinding(){
         wordsList = findViewById(R.id.activity_subgroup___ListView___words);
         buttonForNewWordCreating = findViewById(R.id.activity_subgroup___Button___new_word);
+        studySubgroupCheckBox = findViewById(R.id.activity_subgroup___CheckBox___study_subgroup);
     }
 
 }
