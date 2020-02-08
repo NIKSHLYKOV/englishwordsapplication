@@ -67,12 +67,12 @@ public class GroupsFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        // Открываем подключение.
+        /*// Открываем подключение.
         try {
             databaseHelper.openDataBaseToRead();
         } catch (SQLException sqle) {
             throw sqle;
-        }
+        }*/
 
         //
         // Подготавливаем данные для адаптера.
@@ -98,7 +98,7 @@ public class GroupsFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        databaseHelper.close();
+        //databaseHelper.close();
         Log.d(LOG_TAG, "onStop");
     }
 

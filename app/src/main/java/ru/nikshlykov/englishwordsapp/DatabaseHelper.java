@@ -1,5 +1,6 @@
 package ru.nikshlykov.englishwordsapp;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -19,7 +20,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // путь к базе данных вашего приложения
     private static String DB_PATH = "/data/data/ru.nikshlykov.englishwordsapp/databases/";
     private static String DB_NAME = "words.db";
-    public static SQLiteDatabase myDataBase;
+    private static SQLiteDatabase myDataBase;
     private final Context mContext;
     private final static String LOG_TAG = "DatabaseHelper";
 
@@ -140,7 +141,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
     // Методы открытия БД.
-    public void openDataBaseToRead() throws SQLException {
+    private static void openDataBaseToRead() throws SQLException {
         if (myDataBase == null) {
             String myPath = DB_PATH + DB_NAME;
             myDataBase = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READWRITE);
@@ -148,7 +149,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Log.d(LOG_TAG, "Open to read");
     }
 
-    public void openDataBaseToReadAndWrite() throws SQLException {
+    private static void openDataBaseToReadAndWrite() throws SQLException {
         if (myDataBase == null) {
             String myPath = DB_PATH + DB_NAME;
             myDataBase = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READWRITE);
@@ -172,12 +173,40 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
     }
 
+
+    public static int update(String table, ContentValues values, String whereClause, String[] whereArgs){
+        Log.d(LOG_TAG, "update");
+        openDataBaseToReadAndWrite();
+        int updatedLinesCount = myDataBase.update(table, values, whereClause, whereArgs);
+        myDataBase.close();
+        myDataBase = null;
+        return updatedLinesCount;
+    }
+
+    public static long insert(String table, String nullColumnHack,ContentValues values){
+        Log.d(LOG_TAG, "insert");
+        openDataBaseToReadAndWrite();
+        long newWordId = myDataBase.insert(table, nullColumnHack, values);
+        myDataBase.close();
+        myDataBase = null;
+        return newWordId;
+    }
+
+    public static long delete(String table, String whereClause, String[] whereArgs){
+        return myDataBase.delete(table, whereClause, whereArgs);
+    }
+
+
     // Здесь можно добавить вспомогательные методы для доступа и получения данных из БД
     // вы можете возвращать курсоры через "return myDataBase.query(....)", это облегчит их использование
     // в создании адаптеров для ваших view
 
     public Cursor rawQuery(String query) {
-        return myDataBase.rawQuery(query, null);
+        Log.d(LOG_TAG, "rawQuery");
+        openDataBaseToRead();
+        Cursor cursor = myDataBase.rawQuery(query, null);
+        close();
+        return cursor;
     }
 
     /**

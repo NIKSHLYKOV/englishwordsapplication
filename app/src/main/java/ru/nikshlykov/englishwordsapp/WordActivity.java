@@ -18,7 +18,7 @@ public class WordActivity extends AppCompatActivity {
 
     private String EXTRA_SUBGROUP_ID = "SubgroupId";
     private String EXTRA_WORD_ID = "WordId";
-    private final static String LOG_TAG = "WordActivity";
+    private final static String LOG_TAG = "DatabaseHelper";
 
     // View элементы.
     private EditText editText_word;
@@ -51,7 +51,7 @@ public class WordActivity extends AppCompatActivity {
 
         // Создаём объект DatabaseHelper и открываем подключение с базой.
         databaseHelper = new DatabaseHelper(WordActivity.this);
-        databaseHelper.openDataBaseToReadAndWrite();
+        //databaseHelper.openDataBaseToReadAndWrite();
 
         // Получаем Exstras из Intent, проверяем их наличие и присваиваем переменным значения при наличии значений.
         arguments = getIntent().getExtras();
@@ -83,6 +83,7 @@ public class WordActivity extends AppCompatActivity {
             Toast.makeText(this, "Произошла ошибка", Toast.LENGTH_LONG).show();
             Log.d(LOG_TAG, "arguments have not been transferred");
         }
+        Log.d(LOG_TAG, "wordId = " + wordId);
         Log.d(LOG_TAG, "OnCreate");
     }
 
@@ -109,8 +110,9 @@ public class WordActivity extends AppCompatActivity {
                     // Создание нового слова.
                     if (wordId == 0L) {
                         // Добавляем слово в таблицу слов.
-                        DatabaseHelper.myDataBase.insert(DatabaseHelper.WordsTable.TABLE_WORDS, null, contentValues);
-                        // Выполняем запрос на получение из таблицы слов строк, где слово и значение будут такими, как в новом слове.
+                        wordId = DatabaseHelper.insert(DatabaseHelper.WordsTable.TABLE_WORDS, null, contentValues);
+                        Log.d("DatabaseHelper", "wordId = " + wordId);
+                        /*// Выполняем запрос на получение из таблицы слов строк, где слово и значение будут такими, как в новом слове.
                         // При этом делаем сортировку по ID, и получаем строку с максимальным ID.
                         userCursor = databaseHelper.rawQuery("select * from " + DatabaseHelper.WordsTable.TABLE_WORDS +
                                 " where " + DatabaseHelper.WordsTable.TABLE_WORDS_COLUMN_WORD + "=\"" + word + "\" and " +
@@ -118,17 +120,17 @@ public class WordActivity extends AppCompatActivity {
                                 "\" order by " + DatabaseHelper.WordsTable.TABLE_WORDS_COLUMN_ID + " desc ");
                         userCursor.moveToFirst();
                         // Получаем id этого слова
-                        wordId = Long.parseLong(userCursor.getString(0));
+                        wordId = Long.parseLong(userCursor.getString(0));*/
                         // Добавляем слову связь с группой через таблицу связей.
                         ContentValues contentValuesForLinksTable = new ContentValues();
                         contentValuesForLinksTable.put(DatabaseHelper.LinksTable.TABLE_LINKS_COLUMN_SUBGROUPID, subgroupId);
                         contentValuesForLinksTable.put(DatabaseHelper.LinksTable.TABLE_LINKS_COLUMN_WORDID, wordId);
-                        DatabaseHelper.myDataBase.insert(DatabaseHelper.LinksTable.TABLE_LINKS, null, contentValuesForLinksTable);
+                        DatabaseHelper.insert(DatabaseHelper.LinksTable.TABLE_LINKS, null, contentValuesForLinksTable);
                     }
 
                     // Обновление существующего слова.
                     else {
-                        DatabaseHelper.myDataBase.update(DatabaseHelper.WordsTable.TABLE_WORDS, contentValues,
+                        DatabaseHelper.update(DatabaseHelper.WordsTable.TABLE_WORDS, contentValues,
                                 DatabaseHelper.WordsTable.TABLE_WORDS_COLUMN_ID + "=" + String.valueOf(wordId), null);
                     }
                     finish();
@@ -147,7 +149,7 @@ public class WordActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        databaseHelper.close();
+        //databaseHelper.close();
         Log.d(LOG_TAG, "OnStop");
     }
 

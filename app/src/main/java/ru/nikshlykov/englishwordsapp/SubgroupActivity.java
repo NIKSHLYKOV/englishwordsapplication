@@ -83,12 +83,12 @@ public class SubgroupActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        // Открываем подключение.
+        /*// Открываем подключение.
         try {
             databaseHelper.openDataBaseToRead();
         } catch (SQLException sqle) {
             throw sqle;
-        }
+        }*/
         if (subgroupID > 0) {
             // Выполняем запрос на получение слов из данной подгруппы.
             wordsCursor = databaseHelper.rawQuery("Select " + DatabaseHelper.WordsTable.TABLE_WORDS + ".*" +
@@ -115,14 +115,15 @@ public class SubgroupActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        databaseHelper.close();
-        wordsCursor.close();
+        //databaseHelper.close();
+
         Log.d(LOG_TAG, "OnStop");
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        wordsCursor.close();
         Log.d(LOG_TAG, "OnDestroy");
     }
 
