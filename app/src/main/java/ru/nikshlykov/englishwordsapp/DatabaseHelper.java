@@ -52,6 +52,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         static String TABLE_SUBGROUPS_COLUMN_ID = "_id";
         static String TABLE_SUBGROUPS_COLUMN_SUBGROUPNAME = "SubgroupName";
         static String TABLE_SUBGROUPS_COLUMN_PARENTGROUPID = "ParentGroupID";
+        static String TABLE_SUBGROUPS_COLUMN_ISSTUDIED = "IsStudied";
     }
 
     public static class GroupsTable {
@@ -223,5 +224,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public Cursor getSubgroupsFromGroup(int groupID) {
         return rawQuery("select * from " + SubgroupsTable.TABLE_SUBGROUPS
                 + " where " + SubgroupsTable.TABLE_SUBGROUPS_COLUMN_PARENTGROUPID + "=" + String.valueOf(groupID));
+    }
+
+    public Cursor getSubroupByID(long subgroupID){
+        return rawQuery("Select * from " + DatabaseHelper.SubgroupsTable.TABLE_SUBGROUPS +
+                " where " + DatabaseHelper.SubgroupsTable.TABLE_SUBGROUPS_COLUMN_ID + "=" + String.valueOf(subgroupID));
     }
 }

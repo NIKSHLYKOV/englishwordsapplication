@@ -1,14 +1,15 @@
 package ru.nikshlykov.englishwordsapp;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
@@ -30,7 +31,7 @@ public class SubgroupActivity extends AppCompatActivity {
     // View элементы.
     private ListView wordsList;
     private Button buttonForNewWordCreating;
-    private CheckBox studySubgroupCheckBox;
+    private CheckBox learnSubgroupCheckBox;
 
     // Полученные данные из Intent'а.
     private Bundle arguments;
@@ -76,6 +77,37 @@ public class SubgroupActivity extends AppCompatActivity {
             }
         });
 
+        // Присваиваем чекбоксу изучения значение, находящееся в БД.
+        // Делаем это до обработчика нажатся, чтобы данные не перезаписывались лишний раз.
+        learnSubgroupCheckBox.setChecked(isSugroupStudied());
+
+        // Присваиваем обработчик нажатия на чекбокс изучения подгруппы.
+        learnSubgroupCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // Меняем данные по id подгруппы в БД.
+                // Если флажок выставлен, то isStudied должен стать 1.
+                // Если же флажок не выставлени, то isStudied должен стать 0.
+
+                // Подготавливаем данные для обновления.
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(DatabaseHelper.SubgroupsTable.TABLE_SUBGROUPS_COLUMN_ISSTUDIED, isChecked);
+                // Обновляем запись данной подгруппы по id.
+                int updCount = databaseHelper.update(DatabaseHelper.SubgroupsTable.TABLE_SUBGROUPS, contentValues, "_id = ?",
+                        new String[] { String.valueOf(subgroupID) });
+
+                // Проверяем обновление данных в БД и выводим сообщение об его успешности или неуспешности.
+                String result;
+                if (updCount == 1){
+                    result = "Обновление БД прошло успешно";
+                }
+                else {
+                    result = "Обновление БД прошло неуспешно";
+                }
+                Toast.makeText(SubgroupActivity.this, result, Toast.LENGTH_SHORT).show();
+            }
+        });
+
         Log.d(LOG_TAG, "OnCreate");
     }
 
@@ -89,6 +121,8 @@ public class SubgroupActivity extends AppCompatActivity {
         } catch (SQLException sqle) {
             throw sqle;
         }*/
+
+
         if (subgroupID > 0) {
             // Выполняем запрос на получение слов из данной подгруппы.
             wordsCursor = databaseHelper.rawQuery("Select " + DatabaseHelper.WordsTable.TABLE_WORDS + ".*" +
@@ -130,7 +164,23 @@ public class SubgroupActivity extends AppCompatActivity {
     private void viewElementsFinding(){
         wordsList = findViewById(R.id.activity_subgroup___ListView___words);
         buttonForNewWordCreating = findViewById(R.id.activity_subgroup___Button___new_word);
-        studySubgroupCheckBox = findViewById(R.id.activity_subgroup___CheckBox___study_subgroup);
+        learnSubgroupCheckBox = findViewById(R.id.activity_subgroup___CheckBox___study_subgroup);
+    }
+
+    boolean isSugroupStudied (){
+        // Находим запись данной подгруппы в таблице подгрупп.
+        Cursor subgroupCursor = databaseHelper.getSubroupByID(subgroupID);
+        subgroupCursor.moveToFirst();
+        // Получаем значение IsStudied.
+        int isStudied = 0;
+        try {
+            isStudied = Integer.parseInt(subgroupCursor.getString(subgroupCursor.getColumnIndex(DatabaseHelper.SubgroupsTable.TABLE_SUBGROUPS_COLUMN_ISSTUDIED)));
+        }
+        catch (NumberFormatException e) {
+            Toast.makeText(SubgroupActivity.this, "Извините, произошла ошибка с базой данных", Toast.LENGTH_SHORT).show();
+        }
+        // Возвращаем значение типа boolean.
+        return isStudied == 1;
     }
 
 }
