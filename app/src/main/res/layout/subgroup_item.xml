@@ -5,7 +5,9 @@
     android:id="@+id/constraintLayout_word_in_subgroup"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:paddingStart="8dp"
+    android:paddingEnd="8dp">
 
 
     <TextView

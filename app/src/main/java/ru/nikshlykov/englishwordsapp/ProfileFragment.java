@@ -34,6 +34,13 @@ public class ProfileFragment extends Fragment {
         Log.d(LOG_TAG, "onCreateView");
         View view = inflater.inflate(R.layout.fragment_profile, null);
         viewElementsFinding(view);
+        modes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, ModesActivity.class);
+                startActivity(intent);
+            }
+        });
         return view;
     }
 
