@@ -194,7 +194,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return updatedLinesCount;
     }
 
-    
+
     public static long insert(String table, String nullColumnHack,ContentValues values){
         Log.d(LOG_TAG, "insert");
         openDataBaseToReadAndWrite();
