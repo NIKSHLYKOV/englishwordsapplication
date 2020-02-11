@@ -26,41 +26,51 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static class WordsTable {
         // Названия таблицы слов и её колонок
-        static String TABLE_WORDS = "Words";
-        static String TABLE_WORDS_COLUMN_ID = "_id";
-        static String TABLE_WORDS_COLUMN_WORD = "Word";
-        static String TABLE_WORDS_COLUMN_VALUE = "Value";
-        static String TABLE_WORDS_COLUMN_TRANSCRIPTION = "Transcription";
-        static String TABLE_WORDS_COLUMN_LEARNPROGRESS = "LearnProgress";
-        static String TABLE_WORDS_COLUMN_ISLEARNED = "IsLearned";
-        static String TABLE_WORDS_COLUMN_PARTOFSPEECH = "PartOfSpeech";
-        static String TABLE_WORDS_COLUMN_LASTREPETITIONDATE = "LastRepetitionDate";
-        static String TABLE_WORDS_COLUMN_EXAMPLES = "Examples";
+        static final String TABLE_WORDS = "Words";
+        static final String TABLE_WORDS_COLUMN_ID = "_id";
+        static final String TABLE_WORDS_COLUMN_WORD = "Word";
+        static final String TABLE_WORDS_COLUMN_VALUE = "Value";
+        static final String TABLE_WORDS_COLUMN_TRANSCRIPTION = "Transcription";
+        static final String TABLE_WORDS_COLUMN_LEARNPROGRESS = "LearnProgress";
+        static final String TABLE_WORDS_COLUMN_ISLEARNED = "IsLearned";
+        static final String TABLE_WORDS_COLUMN_PARTOFSPEECH = "PartOfSpeech";
+        static final String TABLE_WORDS_COLUMN_LASTREPETITIONDATE = "LastRepetitionDate";
+        static final String TABLE_WORDS_COLUMN_EXAMPLES = "Examples";
     }
 
     public static class LinksTable {
         // Названия таблицы связей и её колонок
-        static String TABLE_LINKS = "Links";
-        static String TABLE_LINKS_COLUMN_WORDID = "WordID";
-        static String TABLE_LINKS_COLUMN_SUBGROUPID = "SubgroupID";
-        static String TABLE_LINKS_COLUMN_LEVELINPARENTGROUP = "LevelInParentGroup";
+        static final String TABLE_LINKS = "Links";
+        static final String TABLE_LINKS_COLUMN_WORDID = "WordID";
+        static final String TABLE_LINKS_COLUMN_SUBGROUPID = "SubgroupID";
+        static final String TABLE_LINKS_COLUMN_LEVELINPARENTGROUP = "LevelInParentGroup";
     }
 
     public static class SubgroupsTable {
         // Названия таблицы подгрупп и её колонок
-        static String TABLE_SUBGROUPS = "Subgroups";
-        static String TABLE_SUBGROUPS_COLUMN_ID = "_id";
-        static String TABLE_SUBGROUPS_COLUMN_SUBGROUPNAME = "SubgroupName";
-        static String TABLE_SUBGROUPS_COLUMN_PARENTGROUPID = "ParentGroupID";
-        static String TABLE_SUBGROUPS_COLUMN_ISSTUDIED = "IsStudied";
+        static final String TABLE_SUBGROUPS = "Subgroups";
+        static final String TABLE_SUBGROUPS_COLUMN_ID = "_id";
+        static final String TABLE_SUBGROUPS_COLUMN_SUBGROUPNAME = "SubgroupName";
+        static final String TABLE_SUBGROUPS_COLUMN_PARENTGROUPID = "ParentGroupID";
+        static final String TABLE_SUBGROUPS_COLUMN_ISSTUDIED = "IsStudied";
     }
 
     public static class GroupsTable {
         // Названия таблицы групп и её колонок
-        static String TABLE_GROUPS = "Groups";
-        static String TABLE_GROUPS_COLUMN_ID = "_id";
-        static String TABLE_GROUPS_COLUMN_GROUPNAME = "GroupName";
+        static final String TABLE_GROUPS = "Groups";
+        static final String TABLE_GROUPS_COLUMN_ID = "_id";
+        static final String TABLE_GROUPS_COLUMN_GROUPNAME = "GroupName";
     }
+
+    public static final class ModesTable {
+        // Названия таблицы режимов и её колонок.
+        static final String TABLE_NAME = "Modes";
+        static final String COLUMN_ID = "_id";
+        static final String COLUMN_MODENAME = "ModeName";
+        static final String COLUMN_ISSELECTED = "IsSelected";
+        static final String COLUMN_IMAGEID = "ImageId";
+    }
+
 
     /**
      * Конструктор
@@ -229,5 +239,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public Cursor getSubroupByID(long subgroupID){
         return rawQuery("Select * from " + DatabaseHelper.SubgroupsTable.TABLE_SUBGROUPS +
                 " where " + DatabaseHelper.SubgroupsTable.TABLE_SUBGROUPS_COLUMN_ID + "=" + String.valueOf(subgroupID));
+    }
+
+    public Cursor getModes(){
+        return rawQuery("SELECT * FROM " + DatabaseHelper.ModesTable.TABLE_NAME);
     }
 }

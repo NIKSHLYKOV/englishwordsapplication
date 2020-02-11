@@ -42,6 +42,7 @@ public class SubgroupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_subgroup);
 
+
         // Получаем Exstras из Intent'а.
         arguments = getIntent().getExtras();
         if (arguments != null)
@@ -177,10 +178,9 @@ public class SubgroupActivity extends AppCompatActivity {
             isStudied = Integer.parseInt(subgroupCursor.getString(subgroupCursor.getColumnIndex(DatabaseHelper.SubgroupsTable.TABLE_SUBGROUPS_COLUMN_ISSTUDIED)));
         }
         catch (NumberFormatException e) {
-            Toast.makeText(SubgroupActivity.this, "Извините, произошла ошибка с базой данных", Toast.LENGTH_SHORT).show();
+            Toast.makeText(SubgroupActivity.this, "Нельзя преобразовать ячейку из БД в число", Toast.LENGTH_SHORT).show();
         }
         // Возвращаем значение типа boolean.
         return isStudied == 1;
     }
-
 }
