@@ -4,23 +4,13 @@ public class Mode {
     private long id;
     private String modeName;
     private boolean isSelected;
-    private int imageResourseId;
+    private int imageResourceId;
 
-    public static final Mode[] modes = {
-            new Mode(1, "Словарные карточки (с английского на русский)", false, R.drawable.notes_1),
-            new Mode(2, "Написать слово", false, R.drawable.notes_1),
-            new Mode(3, "Словарные карточки (с русского на английский)", false, R.drawable.notes_1),
-            new Mode(4, "Собрать слово по буквам", false, R.drawable.notes_1),
-            new Mode(5, "Написать слово по звучанию", false, R.drawable.notes_1),
-            new Mode(6, "Выбрать одно из четырёх по звучанию", false, R.drawable.notes_1),
-            new Mode(7, "Какой-то текст", false, R.drawable.notes_1),
-    };
-
-    private Mode(long id, String modeName, boolean isSelected, int imageResourseId) {
+    public Mode(long id, String modeName, boolean isSelected, int imageResourceId) {
         this.id = id;
         this.modeName = modeName;
         this.isSelected = isSelected;
-        this.imageResourseId = imageResourseId;
+        this.imageResourceId = imageResourceId;
     }
 
     public long getId() {
@@ -35,7 +25,11 @@ public class Mode {
         return isSelected;
     }
 
-    public int getImageResourseId(){
-        return imageResourseId;
+    public int getImageResourceId(){
+        return imageResourceId;
+    }
+
+    public void setIsSelected(boolean isSelected){
+        this.isSelected = isSelected;
     }
 }

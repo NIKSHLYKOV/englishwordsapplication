@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -21,6 +23,21 @@ import androidx.recyclerview.widget.RecyclerView;
 public class ModesFragment extends Fragment {
 
     private Context context;
+    private RecyclerView modesRecyclerView;
+    private ModeRecyclerViewAdapter adapter;
+    private RecyclerView.LayoutManager layoutManager;
+
+    DatabaseHelper databaseHelper;
+    public static ArrayList<Mode> modes;
+            /*{
+            new Mode(1, "Словарные карточки (с английского на русский)", false, R.drawable.notes_1),
+            new Mode(2, "Написать слово", false, R.drawable.notes_1),
+            new Mode(3, "Словарные карточки (с русского на английский)", false, R.drawable.notes_1),
+            new Mode(4, "Собрать слово по буквам", false, R.drawable.notes_1),
+            new Mode(5, "Написать слово по звучанию", false, R.drawable.notes_1),
+            new Mode(6, "Выбрать одно из четырёх по звучанию", false, R.drawable.notes_1),
+            new Mode(7, "Какой-то текст", false, R.drawable.notes_1),
+    };*/
 
     @Override
     public void onAttach(Context context) {
@@ -32,38 +49,58 @@ public class ModesFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        DatabaseHelper databaseHelper = new DatabaseHelper(context);
+        databaseHelper = new DatabaseHelper(context);
+        modes = new ArrayList<>();
 
+        setModesFromDb();
 
-        RecyclerView modesRecyclerView = (RecyclerView) inflater.inflate(
+        modesRecyclerView = (RecyclerView) inflater.inflate(
                 R.layout.fragment_modes, container, false);
 
-        String[] modesNames = new String[Mode.modes.length];
-        for (int i = 0; i < modesNames.length; i++) {
-            modesNames[i] = Mode.modes[i].getModeName();
-        }
+        adapter = new ModeRecyclerViewAdapter(context);
+        layoutManager = new LinearLayoutManager(getActivity());
 
-        int[] modesImages = new int[Mode.modes.length];
-        for (int i = 0; i < modesImages.length; i++) {
-            modesImages[i] = Mode.modes[i].getImageResourseId();
-        }
-
-        long[] modesIds = new long[Mode.modes.length];
-        for (int i = 0; i < modesIds.length; i++) {
-            modesIds[i] = Mode.modes[i].getId();
-        }
-
-        boolean[] isSelecteds = new boolean[Mode.modes.length];
-        for (int i = 0; i < isSelecteds.length; i++) {
-            isSelecteds[i] = Mode.modes[i].getIsSelected();
-        }
-
-        ModeRecyclerViewAdapter adapter = new ModeRecyclerViewAdapter(modesIds, modesNames, isSelecteds, modesImages);
         modesRecyclerView.setAdapter(adapter);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-        modesRecyclerView.setLayoutManager(linearLayoutManager);
+        modesRecyclerView.setLayoutManager(layoutManager);
         return modesRecyclerView;
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+    }
+
+    private void setModesFromDb() {
+        Mode mode;
+        Cursor modeCursor = null;
+        modeCursor = databaseHelper.getModes();
+        if (modeCursor.moveToFirst()) {
+            do {
+                long modeId = modeCursor.getLong(modeCursor.getColumnIndex(DatabaseHelper.ModesTable.COLUMN_ID));
+                String modeName = modeCursor.getString(modeCursor.getColumnIndex(DatabaseHelper.ModesTable.COLUMN_MODENAME));
+                boolean modeIsSelected = 1 == modeCursor.getInt(modeCursor.getColumnIndex(DatabaseHelper.ModesTable.COLUMN_ISSELECTED));
+                String modeImageResourceId = modeCursor.getString(modeCursor.getColumnIndex(DatabaseHelper.ModesTable.COLUMN_IMAGEID));
+                int integerModeImageResourceId = getResources().getIdentifier(modeImageResourceId, "drawable", context.getPackageName());
+                mode = new Mode(modeId, modeName, modeIsSelected, integerModeImageResourceId);
+                modes.add(mode);
+            } while (modeCursor.moveToNext());
+        }
+        else
+            Toast.makeText(context, "Курсор пуст, что-то пошло не так!", Toast.LENGTH_LONG).show();
+        modeCursor.close();
+    }
+
+    /*private ArrayList<Mode> getModes() {
+        // Создаём список для заполнения данными режимов.
+        ArrayList<Mode> modesArrayList = new ArrayList<>();
+        // Заполняем список.
+        for (int i = 0; i < Mode.modes.length; i++) {
+            modesArrayList.add(Mode.modes[i]);
+        }
+        // Возращаем список для передачи в адаптер.
+        return modesArrayList;
+    }*/
 
     /*boolean isModesSelected (){
         // Находим запись данной подгруппы в таблице подгрупп.

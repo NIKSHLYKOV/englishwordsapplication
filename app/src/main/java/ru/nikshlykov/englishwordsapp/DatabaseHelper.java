@@ -68,7 +68,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         static final String COLUMN_ID = "_id";
         static final String COLUMN_MODENAME = "ModeName";
         static final String COLUMN_ISSELECTED = "IsSelected";
-        static final String COLUMN_IMAGEID = "ImageId";
+        static final String COLUMN_IMAGEID = "ImageResourceId";
     }
 
 
@@ -194,6 +194,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return updatedLinesCount;
     }
 
+    
     public static long insert(String table, String nullColumnHack,ContentValues values){
         Log.d(LOG_TAG, "insert");
         openDataBaseToReadAndWrite();
