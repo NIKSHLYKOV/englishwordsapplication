@@ -13,6 +13,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+
+import static ru.nikshlykov.englishwordsapp.ModesFragment.modes;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -185,7 +188,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    public static int update(String table, ContentValues values, String whereClause, String[] whereArgs){
+    public static int update(String table, ContentValues values, String whereClause, String[] whereArgs) {
         Log.d(LOG_TAG, "update");
         openDataBaseToReadAndWrite();
         int updatedLinesCount = myDataBase.update(table, values, whereClause, whereArgs);
@@ -194,8 +197,54 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return updatedLinesCount;
     }
 
+    public static int updateModesInDb() {
+        openDataBaseToReadAndWrite();
+        int updatedLinesCount = 0;
+        for (int i = 0; i < modes.size(); i++) {
+            ContentValues contentValues = new ContentValues();
+            Mode mode = modes.get(i);
+            String modeId = String.valueOf(mode.getId());
+            if (mode.getIsSelected())
+                contentValues.put(ModesTable.COLUMN_ISSELECTED, "1");
+            else
+                contentValues.put(ModesTable.COLUMN_ISSELECTED, "0");
 
-    public static long insert(String table, String nullColumnHack,ContentValues values){
+            updatedLinesCount += myDataBase.update(ModesTable.TABLE_NAME, contentValues, "_id = ?", new String[] {modeId});
+        }
+        myDataBase.close();
+        myDataBase = null;
+        return updatedLinesCount;
+
+        /*ArrayList<String> selectedModesIds = new ArrayList<>();
+        ArrayList<String> notSelectedModesIds = new ArrayList<>();
+
+        for (int i = 0; i < modes.size(); i++) {
+            Mode mode = modes.get(i);
+            String modeId = String.valueOf(mode.getId());
+            if (mode.getIsSelected())
+                selectedModesIds.add(modeId);
+            else
+                notSelectedModesIds.add(modeId);
+        }
+
+        String[] arraySelectedModesIds = String[];
+
+        ContentValues selectedModesContentValues = new ContentValues();
+        selectedModesContentValues.put(ModesTable.COLUMN_ISSELECTED, "1");
+
+        ContentValues notSelectedModesContentValues = new ContentValues();
+        notSelectedModesContentValues.put(ModesTable.COLUMN_ISSELECTED, "0");
+
+
+        openDataBaseToReadAndWrite();
+        myDataBase.update(ModesTable.TABLE_NAME, selectedModesContentValues, "_id = ?", selectedModesIds)
+        myDataBase.update()
+        myDataBase.close();
+        myDataBase = null;
+        return updatedLinesCount;*/
+    }
+
+    public static long insert(String table, String nullColumnHack, ContentValues values) {
         Log.d(LOG_TAG, "insert");
         openDataBaseToReadAndWrite();
         long newWordId = myDataBase.insert(table, nullColumnHack, values);
@@ -204,7 +253,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return newWordId;
     }
 
-    public static long delete(String table, String whereClause, String[] whereArgs){
+    public static long delete(String table, String whereClause, String[] whereArgs) {
         return myDataBase.delete(table, whereClause, whereArgs);
     }
 
@@ -215,7 +264,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor rawQuery(String query) {
         Log.d(LOG_TAG, "rawQuery");
-        openDataBaseToRead();
+        openDataBaseToReadAndWrite();
         Cursor cursor = myDataBase.rawQuery(query, null);
         close();
         return cursor;
@@ -237,12 +286,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + " where " + SubgroupsTable.TABLE_SUBGROUPS_COLUMN_PARENTGROUPID + "=" + String.valueOf(groupID));
     }
 
-    public Cursor getSubroupByID(long subgroupID){
+    public Cursor getSubroupByID(long subgroupID) {
         return rawQuery("Select * from " + DatabaseHelper.SubgroupsTable.TABLE_SUBGROUPS +
                 " where " + DatabaseHelper.SubgroupsTable.TABLE_SUBGROUPS_COLUMN_ID + "=" + String.valueOf(subgroupID));
     }
 
-    public Cursor getModes(){
+    public Cursor getModes() {
         return rawQuery("SELECT * FROM " + DatabaseHelper.ModesTable.TABLE_NAME);
     }
 }

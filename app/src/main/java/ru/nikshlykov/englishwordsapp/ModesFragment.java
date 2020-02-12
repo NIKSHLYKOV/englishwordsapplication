@@ -1,5 +1,6 @@
 package ru.nikshlykov.englishwordsapp;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -66,9 +67,14 @@ public class ModesFragment extends Fragment {
     }
 
     @Override
+    public void onStop() {
+        super.onStop();
+        databaseHelper.updateModesInDb();
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
-
     }
 
     private void setModesFromDb() {
@@ -90,6 +96,7 @@ public class ModesFragment extends Fragment {
             Toast.makeText(context, "Курсор пуст, что-то пошло не так!", Toast.LENGTH_LONG).show();
         modeCursor.close();
     }
+
 
     /*private ArrayList<Mode> getModes() {
         // Создаём список для заполнения данными режимов.
