@@ -29,6 +29,9 @@
         <activity android:name=".ModesActivity"
             android:screenOrientation="portrait">
         </activity>
+        <activity android:name=".NewSubgroupActivity"
+            android:screenOrientation="portrait">
+        </activity>
     </application>
 
 </manifest>

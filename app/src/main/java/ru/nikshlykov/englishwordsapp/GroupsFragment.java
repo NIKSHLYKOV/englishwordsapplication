@@ -4,12 +4,12 @@ package ru.nikshlykov.englishwordsapp;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.SimpleCursorTreeAdapter;
 
@@ -24,6 +24,7 @@ public class GroupsFragment extends Fragment {
 
     // View компоненты фрагмента.
     private ExpandableListView expandableListView;
+    Button newSubgroupButton;
 
     // Контекст, передаваемый при прикреплении фрагмента.
     private Context context;
@@ -43,8 +44,9 @@ public class GroupsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_groups, null);
+
         // Находим ListView.
-        expandableListView = view.findViewById(R.id.ExpandableListView_groups);
+        expandableListView = view.findViewById(R.id.fragment_groups___ExpandableListView___groupsAndSubgroups);
         // Присваиваем ему обработчик.
         expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
@@ -53,6 +55,15 @@ public class GroupsFragment extends Fragment {
                 intent.putExtra(EXTRA_SUBGROUP_ID, id);
                 startActivity(intent);
                 return false;
+            }
+        });
+
+        newSubgroupButton = view.findViewById(R.id.fragment_groups___Button___newSubgroup);
+        newSubgroupButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, NewSubgroupActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -106,6 +117,10 @@ public class GroupsFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         Log.d(LOG_TAG, "onDestroy");
+    }
+
+    private void viewElementsFinding(){
+
     }
 
     // Адаптер для сопоставления элементов-родителей и элементов-детей (подгрупп и групп).
