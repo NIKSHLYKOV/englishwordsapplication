@@ -54,7 +54,12 @@ public class MainActivity extends AppCompatActivity {
                     // ПОКА ИСПОЛЬЗУЕТСЯ ДЕМОНСТРАЦИОННЫЙ ФРАГМЕНТ.
                     //
                     if (fragment == null) {
-                        fragTrans.replace(contentLayoutID, new Fragment()).commit();
+                        InfoFragment infoFragment = new InfoFragment();
+                        Bundle arguments = new Bundle();
+                        arguments.putBoolean(InfoFragment.EXTRA_SUBGROUPSARENOTCHOSEN, true);
+                        infoFragment.setArguments(arguments);
+                        fragTrans.replace(contentLayoutID, infoFragment, TAG_STUDY_FRAGMENT).commit();
+                        return true;
                     }
                     return true;
                 case R.id.activity_main_menu___groups:
@@ -73,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
                     // ПОКА ИСПОЛЬЗУЕТСЯ ДЕМОНСТРАЦИОННЫЙ ФРАГМЕНТ.
                     //
                     if (fragment == null) {
-                        fragTrans.replace(contentLayoutID, new ModesFragment()).commit();
+                        fragTrans.replace(contentLayoutID, new ModesFragment(),TAG_PROFILE_FRAGMENT).commit();
                     }
                     return true;
             }
