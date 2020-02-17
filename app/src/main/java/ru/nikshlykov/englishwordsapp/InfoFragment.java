@@ -16,6 +16,7 @@ public class InfoFragment extends Fragment {
     static final String EXTRA_MODESARENOTCHOSEN = "ModesAreNotChosen";
 
     private boolean subgroupsAreNotChosen = false;
+    private boolean modesAreNotChosen = false;
 
     private TextView infoText;
 
@@ -25,7 +26,20 @@ public class InfoFragment extends Fragment {
         super.onCreate(savedInstanceState);
         Log.d("InfoFragment", "onCreate");
         Bundle arguments = getArguments();
-        subgroupsAreNotChosen = arguments.getBoolean(EXTRA_SUBGROUPSARENOTCHOSEN);
+        try {
+            subgroupsAreNotChosen = arguments.getBoolean(EXTRA_SUBGROUPSARENOTCHOSEN);
+        }
+        catch (NullPointerException ex){
+            subgroupsAreNotChosen = false;
+            ex.getMessage();
+        }
+        try {
+            modesAreNotChosen = arguments.getBoolean(EXTRA_MODESARENOTCHOSEN);
+        }
+        catch (NullPointerException ex){
+            modesAreNotChosen = false;
+            ex.getMessage();
+        }
     }
 
     @Nullable
@@ -39,7 +53,10 @@ public class InfoFragment extends Fragment {
 
         if (subgroupsAreNotChosen)
             infoText.setText("Для того, чтобы изучать слова, необходимо выбрать группы слов. Сделать это вы можете перейдя во вкладку \"Группы\"");
-
+        else if (modesAreNotChosen)
+            infoText.setText("Для того, чтобы изучать слова, необходимо выбрать режимы изучения. Сделать это вы можете перейдя во вкладку \"Режимы\"");
+        else
+            infoText.setText("Произошла ошибка! Это фрагмент не должен был открываться.");
         return v;
     }
 }

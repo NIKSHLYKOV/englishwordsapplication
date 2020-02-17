@@ -69,12 +69,16 @@ public class ModesFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        databaseHelper.updateModesInDb();
+        Log.d("ModesFragment", "OnStop");
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        int[]returned = databaseHelper.updateModesInDb();
+        Toast.makeText(context, "Обновлено строк: " + returned[0] +
+                "\n Выбранных режимов: " + returned[1] +
+                "\n Невыбранных режимов: " + returned[2], Toast.LENGTH_LONG).show();
     }
 
     private void setModesFromDb() {

@@ -1,5 +1,6 @@
 package ru.nikshlykov.englishwordsapp;
 
+import android.database.Cursor;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -25,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     // Объекты для работы с фрагментами.
     private FragmentManager fragmentManager;
     private FragmentTransaction fragTrans;
+    int contentLayoutID;
 
     // Теги для идентификации фрагментов.
     private final static String TAG_GROUPS_FRAGMENT = "GroupsFragment";
@@ -43,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             fragTrans = fragmentManager.beginTransaction();
             Fragment fragment;
-            int contentLayoutID = contentLayout.getId();
+
 
             switch (item.getItemId()) {
                 case R.id.activity_main_menu___study:
@@ -51,16 +53,25 @@ public class MainActivity extends AppCompatActivity {
                     fragment = fragmentManager.findFragmentByTag(TAG_STUDY_FRAGMENT);
                     // Если фрагмент не создан, тогда меняем тот фрагмент, который на экране, только что созданным.
                     //
-                    // ПОКА ИСПОЛЬЗУЕТСЯ ДЕМОНСТРАЦИОННЫЙ ФРАГМЕНТ.
+                    // ПОКА ИСПОЛЬЗУЕТСЯ ТОЛЬКО ИНФОРМАЦИОННЫЙ ФРАГМЕНТ.
                     //
                     if (fragment == null) {
-                        InfoFragment infoFragment = new InfoFragment();
-                        Bundle arguments = new Bundle();
-                        arguments.putBoolean(InfoFragment.EXTRA_SUBGROUPSARENOTCHOSEN, true);
-                        infoFragment.setArguments(arguments);
-                        fragTrans.replace(contentLayoutID, infoFragment, TAG_STUDY_FRAGMENT).commit();
-                        return true;
+                        // Находим количество выбранных для изучения подгрупп.
+                        Cursor studiedSubgroups = databaseHelper.getStudiedSubgroups();
+                        if (studiedSubgroups.getCount() == 0) {
+                            displayInfoFragment(InfoFragment.EXTRA_SUBGROUPSARENOTCHOSEN);
+                            return true;
+                        }
+                        // Находим количество выбранных режимов.
+                        Cursor selectedModes = databaseHelper.getSelectedModes();
+                        if (selectedModes.getCount() == 0) {
+                            displayInfoFragment(InfoFragment.EXTRA_MODESARENOTCHOSEN);
+                            return true;
+                        }
+
+                        fragTrans.replace(contentLayoutID, new Mode0Fragment(),TAG_STUDY_FRAGMENT).commit();
                     }
+
                     return true;
                 case R.id.activity_main_menu___groups:
                     // Пытаемся найти фрагмент и проверяем, создан ли он (на экране).
@@ -75,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
                     fragment = fragmentManager.findFragmentByTag(TAG_PROFILE_FRAGMENT);
                     // Если фрагмент не создан, тогда меняем тот фрагмент, который на экране, только что созданным.
                     //
-                    // ПОКА ИСПОЛЬЗУЕТСЯ ДЕМОНСТРАЦИОННЫЙ ФРАГМЕНТ.
+                    // ПОКА ИСПОЛЬЗУЕТСЯ ФРАГМЕНТ РЕЖИМОВ.
                     //
                     if (fragment == null) {
                         fragTrans.replace(contentLayoutID, new ModesFragment(),TAG_PROFILE_FRAGMENT).commit();
@@ -91,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         viewElementsFinding();
+        contentLayoutID = contentLayout.getId();
         // Присвоение обработчика нажатия на нижнее меню.
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         // Инициализация менеджера работы с фрагментами.
@@ -110,4 +122,16 @@ public class MainActivity extends AppCompatActivity {
         contentLayout =  findViewById(R.id.activity_main___LinearLayout___content_layout);
         navigation = (BottomNavigationView) findViewById(R.id.navigation);
     }
+
+    private void displayInfoFragment(String flag) {
+        if (flag.equals(InfoFragment.EXTRA_MODESARENOTCHOSEN) ||
+                flag.equals(InfoFragment.EXTRA_SUBGROUPSARENOTCHOSEN)) {
+            InfoFragment infoFragment = new InfoFragment();
+            Bundle arguments = new Bundle();
+            arguments.putBoolean(flag, true);
+            infoFragment.setArguments(arguments);
+            fragTrans.replace(contentLayout.getId(), infoFragment, TAG_STUDY_FRAGMENT).commit();
+        }
+    }
+
 }

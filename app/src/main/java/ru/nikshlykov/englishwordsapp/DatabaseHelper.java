@@ -1,5 +1,6 @@
 package ru.nikshlykov.englishwordsapp;
 
+import android.app.Application;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -8,6 +9,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -197,23 +199,34 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return updatedLinesCount;
     }
 
-    public static int updateModesInDb() {
+    public static int[] updateModesInDb() {
         openDataBaseToReadAndWrite();
         int updatedLinesCount = 0;
+        int selected = 0;
+        int notSelected = 0;
         for (int i = 0; i < modes.size(); i++) {
             ContentValues contentValues = new ContentValues();
             Mode mode = modes.get(i);
             String modeId = String.valueOf(mode.getId());
-            if (mode.getIsSelected())
+            if (mode.getIsSelected()){
+                selected++;
                 contentValues.put(ModesTable.COLUMN_ISSELECTED, "1");
-            else
+            }
+            else {
+                notSelected++;
                 contentValues.put(ModesTable.COLUMN_ISSELECTED, "0");
-
+            }
             updatedLinesCount += myDataBase.update(ModesTable.TABLE_NAME, contentValues, "_id = ?", new String[] {modeId});
         }
         myDataBase.close();
         myDataBase = null;
-        return updatedLinesCount;
+
+        int[] returned = new int[3];
+        returned[0] = updatedLinesCount;
+        returned[1] = selected;
+        returned[2] = notSelected;
+
+        return returned;
 
         /*ArrayList<String> selectedModesIds = new ArrayList<>();
         ArrayList<String> notSelectedModesIds = new ArrayList<>();
@@ -293,5 +306,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor getModes() {
         return rawQuery("SELECT * FROM " + DatabaseHelper.ModesTable.TABLE_NAME);
+    }
+
+    public Cursor getStudiedSubgroups()
+    {
+        return rawQuery("select * from " + SubgroupsTable.TABLE_SUBGROUPS +
+                " where " + SubgroupsTable.TABLE_SUBGROUPS_COLUMN_ISSTUDIED + "=" + "1");
+    }
+    public Cursor getSelectedModes(){
+        return rawQuery("SELECT * FROM " + ModesTable.TABLE_NAME +
+                " WHERE " + ModesTable.COLUMN_ISSELECTED + "=" + "1");
     }
 }
