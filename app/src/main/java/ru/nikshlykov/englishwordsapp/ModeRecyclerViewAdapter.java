@@ -19,7 +19,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class ModeRecyclerViewAdapter extends RecyclerView.Adapter<ModeRecyclerViewAdapter.MyViewHolder> {
 
-    //public static ArrayList<Mode> modes;
     private LayoutInflater inflater;
     private Context context;
 
@@ -27,17 +26,18 @@ public class ModeRecyclerViewAdapter extends RecyclerView.Adapter<ModeRecyclerVi
     interface Listener {
         void onClick(int position);
     }
+
     public void setOnClickListener(Listener listener){
         this.listener = listener;
     }
 
-    public static class MyViewHolder extends RecyclerView.ViewHolder{
+    static class MyViewHolder extends RecyclerView.ViewHolder{
 
-        protected CheckBox checkBox;
+        private CheckBox checkBox;
         private ImageView imageView;
         private TextView textView;
 
-        public MyViewHolder(View itemView){
+        MyViewHolder(View itemView){
             super(itemView);
 
             checkBox = (CheckBox) itemView.findViewById(R.id.card_mode___CheckBox);
@@ -48,13 +48,11 @@ public class ModeRecyclerViewAdapter extends RecyclerView.Adapter<ModeRecyclerVi
 
     public ModeRecyclerViewAdapter(Context context) {
         this.context = context;
-        //this.modes = modes;
     }
 
     @Override
     public int getItemCount() {
-        return ModesFragment.modes.size();
-        //return modes.size();
+        return ModesActivity.modes.size();
     }
 
     @NonNull
@@ -66,19 +64,19 @@ public class ModeRecyclerViewAdapter extends RecyclerView.Adapter<ModeRecyclerVi
 
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder holder, final int position) {
-        Drawable drawable = ContextCompat.getDrawable(context, ModesFragment.modes.get(position).getImageResourceId() );
+        Drawable drawable = ContextCompat.getDrawable(context, ModesActivity.modes.get(position).getImageResourceId() );
         holder.imageView.setImageDrawable(drawable);
-        holder.textView.setText(ModesFragment.modes.get(position).getModeName());
-        holder.checkBox.setChecked(ModesFragment.modes.get(position).getIsSelected());
+        holder.textView.setText(ModesActivity.modes.get(position).getModeName());
+        holder.checkBox.setChecked(ModesActivity.modes.get(position).getIsSelected());
         holder.checkBox.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 /*if (listener != null)
                     listener.onClick(position);*/
                 boolean isChecked = holder.checkBox.isChecked();
-                ModesFragment.modes.get(position).setIsSelected(isChecked);
+                ModesActivity.modes.get(position).setIsSelected(isChecked);
                 Toast.makeText(context, "Вы нажали чекбокс режима " + position +
-                        ". Теперь его значение - " + ModesFragment.modes.get(position).getIsSelected(), Toast.LENGTH_LONG).show();
+                        ". Теперь его значение - " + ModesActivity.modes.get(position).getIsSelected(), Toast.LENGTH_LONG).show();
             }
         });
 

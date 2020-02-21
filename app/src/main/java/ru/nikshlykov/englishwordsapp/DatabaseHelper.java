@@ -204,9 +204,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         int updatedLinesCount = 0;
         int selected = 0;
         int notSelected = 0;
-        for (int i = 0; i < modes.size(); i++) {
+        for (int i = 0; i < ModesActivity.modes.size(); i++) {
             ContentValues contentValues = new ContentValues();
-            Mode mode = modes.get(i);
+            Mode mode = ModesActivity.modes.get(i);
             String modeId = String.valueOf(mode.getId());
             if (mode.getIsSelected()){
                 selected++;

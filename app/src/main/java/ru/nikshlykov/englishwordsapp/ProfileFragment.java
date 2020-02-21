@@ -44,7 +44,7 @@ public class ProfileFragment extends Fragment {
         return view;
     }
 
-    void viewElementsFinding(View view) {
+    private void viewElementsFinding(View view) {
         settings = view.findViewById(R.id.fragment_profile___Button___settings);
         modes = view.findViewById(R.id.fragment_profile___Button___toModes);
         statistics = view.findViewById(R.id.fragment_profile___Button___toStatistics);

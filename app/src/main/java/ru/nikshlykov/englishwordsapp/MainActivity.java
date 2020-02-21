@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
                     // ПОКА ИСПОЛЬЗУЕТСЯ ФРАГМЕНТ РЕЖИМОВ.
                     //
                     if (fragment == null) {
-                        fragTrans.replace(contentLayoutID, new ModesFragment(),TAG_PROFILE_FRAGMENT).commit();
+                        fragTrans.replace(contentLayoutID, new ProfileFragment(),TAG_PROFILE_FRAGMENT).commit();
                     }
                     return true;
             }
