@@ -85,9 +85,6 @@ public class MainActivity extends AppCompatActivity {
                     // Пытаемся найти фрагмент и проверяем, создан ли он (на экране).
                     fragment = fragmentManager.findFragmentByTag(TAG_PROFILE_FRAGMENT);
                     // Если фрагмент не создан, тогда меняем тот фрагмент, который на экране, только что созданным.
-                    //
-                    // ПОКА ИСПОЛЬЗУЕТСЯ ФРАГМЕНТ РЕЖИМОВ.
-                    //
                     if (fragment == null) {
                         fragTrans.replace(contentLayoutID, new ProfileFragment(),TAG_PROFILE_FRAGMENT).commit();
                     }

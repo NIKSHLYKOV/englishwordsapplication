@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_mode2___Layout___main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:minHeight="700dp">
+
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/frameLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/fragment_mode2___TextView___value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="100dp"
+            android:gravity="center"
+            android:text="Перевод"
+            android:textColor="@color/colorPrimary"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/fragment_mode2___TextView___word"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="100dp"
+            android:gravity="center"
+            android:text="Слово"
+            android:textColor="@color/colorPrimary"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/fragment_mode2___TextView___transcription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="Транскрипция"
+            android:textColor="@color/colorPrimary"
+            android:textSize="18sp" />
+
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/frameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <Button
+            android:id="@+id/fragment_mode2___Button___donotremember"
+            style="@style/Base.Widget.AppCompat.Button.Colored"
+            android:layout_width="150dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="left"
+            android:layout_marginLeft="20dp"
+            android:background="@color/colorPrimary"
+            android:text="Не помню"
+            android:textColor="@android:color/white" />
+
+        <Button
+            android:id="@+id/fragment_mode2___Button___remember"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="150dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="right"
+            android:layout_marginRight="20dp"
+            android:background="@color/colorPrimary"
+            android:text="помню"
+            android:textColor="@android:color/white" />
+
+    </FrameLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
