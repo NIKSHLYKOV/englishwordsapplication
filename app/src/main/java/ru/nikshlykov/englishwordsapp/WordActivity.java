@@ -3,6 +3,7 @@ package ru.nikshlykov.englishwordsapp;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -11,6 +12,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Locale;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -18,7 +21,7 @@ public class WordActivity extends AppCompatActivity {
 
     private String EXTRA_SUBGROUP_ID = "SubgroupId";
     private String EXTRA_WORD_ID = "WordId";
-    private final static String LOG_TAG = "DatabaseHelper";
+    private final static String LOG_TAG = "WordActivity";
 
     // View элементы.
     private EditText editText_word;
@@ -39,6 +42,10 @@ public class WordActivity extends AppCompatActivity {
     private Cursor userCursor = null;
     private ContentValues contentValues;
 
+    // Для синтезатора речи.
+    private TextToSpeech TTS;
+    private final static String TTS_ERROR = "Ошибка воспроизведения!";
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +59,21 @@ public class WordActivity extends AppCompatActivity {
         // Создаём объект DatabaseHelper и открываем подключение с базой.
         databaseHelper = new DatabaseHelper(WordActivity.this);
         //databaseHelper.openDataBaseToReadAndWrite();
+
+        // Создаём TTS
+        TTS = new TextToSpeech(WordActivity.this, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if (status == TextToSpeech.SUCCESS) {
+                    // Установка языка, высоты и скорости речи.
+                    TTS.setLanguage(Locale.US);
+                    TTS.setPitch(1.3f);
+                    TTS.setSpeechRate(0.7f);
+                } else if (status == TextToSpeech.ERROR) {
+                    Toast.makeText(WordActivity.this, TTS_ERROR, Toast.LENGTH_LONG).show();
+                }
+            }
+        });
 
         // Получаем Exstras из Intent, проверяем их наличие и присваиваем переменным значения при наличии значений.
         arguments = getIntent().getExtras();
@@ -84,6 +106,8 @@ public class WordActivity extends AppCompatActivity {
             Log.d(LOG_TAG, "arguments have not been transferred");
         }
         Log.d(LOG_TAG, "wordId = " + wordId);
+
+
         Log.d(LOG_TAG, "OnCreate");
     }
 
@@ -143,6 +167,17 @@ public class WordActivity extends AppCompatActivity {
 
 
         });
+
+        // Присваиваем обработчик нажатия на кнопку воспроизведения слова.
+        ttsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Можно переделать под версии до 21ой.
+                // https://android-tools.ru/coding/kak-dobavit-text-to-speech-v-svoe-prilozhenie/
+                // https://developer.android.com/reference/android/speech/tts/TextToSpeech.html#speak(java.lang.CharSequence,%20int,%20android.os.Bundle,%20java.lang.String)
+                TTS.speak(editText_word.getText().toString(), TextToSpeech.QUEUE_ADD, null, "somethingID");
+            }
+        });
         Log.d(LOG_TAG, "OnResume");
     }
 
@@ -151,6 +186,12 @@ public class WordActivity extends AppCompatActivity {
         super.onStop();
         //databaseHelper.close();
         Log.d(LOG_TAG, "OnStop");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        TTS.shutdown();
     }
 
     private void viewElementsFinding() {
