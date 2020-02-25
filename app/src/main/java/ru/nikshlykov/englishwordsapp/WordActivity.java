@@ -5,6 +5,8 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,12 +18,20 @@ import java.util.Locale;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentManager;
 
 public class WordActivity extends AppCompatActivity {
 
     private String EXTRA_SUBGROUP_ID = "SubgroupId";
     private String EXTRA_WORD_ID = "WordId";
     private final static String LOG_TAG = "WordActivity";
+
+    // Теги для диалоговых фрагментов.
+    private static final String DIALOG_RESETWORDPROGRESS = "ResetWordProgressDialogFragment";
+    private static final String DIALOG_LINKWORD = "LinkWordDialogFragment";
+    private static final String DIALOG_DELETEWORD = "DeleteWordDialogFragment";
+    private static final String DIALOG_COPYWORD = "CopyWordDialogFragment";
 
     // View элементы.
     private EditText editText_word;
@@ -31,6 +41,7 @@ public class WordActivity extends AppCompatActivity {
     private Button saveButton;
     private Button ttsButton;
     private ProgressBar learnProgressBar;
+    private Toolbar toolbar;
 
     // Переменные для получения данных.
     private long wordId = 0L;
@@ -46,6 +57,7 @@ public class WordActivity extends AppCompatActivity {
     private TextToSpeech TTS;
     private final static String TTS_ERROR = "Ошибка воспроизведения!";
 
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +71,10 @@ public class WordActivity extends AppCompatActivity {
         // Создаём объект DatabaseHelper и открываем подключение с базой.
         databaseHelper = new DatabaseHelper(WordActivity.this);
         //databaseHelper.openDataBaseToReadAndWrite();
+
+        // Устанавливаем тулбар.
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("");
 
         // Создаём TTS
         TTS = new TextToSpeech(WordActivity.this, new TextToSpeech.OnInitListener() {
@@ -194,8 +210,8 @@ public class WordActivity extends AppCompatActivity {
         TTS.shutdown();
     }
 
+    // Находит View элементы в разметке.
     private void viewElementsFinding() {
-        // Находим View элементы.
         editText_word = findViewById(R.id.activity_word___EditText___word);
         editText_value = findViewById(R.id.activity_word___EditText___value);
         editText_transcription = findViewById(R.id.activity_word___EditText___transcription);
@@ -203,13 +219,50 @@ public class WordActivity extends AppCompatActivity {
         ttsButton = findViewById(R.id.activity_word___Button___TTS);
         learnProgressBar = findViewById(R.id.activity_word___ProgressBar___learnProgress);
         textView_partOfSpeech = findViewById(R.id.activity_word___TextView_partOfSpeech);
+        toolbar = findViewById(R.id.activity_word___Toolbar___toolbar);
     }
 
+    // Скрывает элементы при создании нового слова.
     private void hidingViewsForNewWordCreating() {
         learnProgressBar.setVisibility(View.GONE);
         TextView progressText = findViewById(R.id.activity_word___TextView___progress);
         progressText.setVisibility(View.GONE);
         ttsButton.setVisibility(View.GONE);
         textView_partOfSpeech.setVisibility(View.GONE);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        //super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.activity_word_toolbar_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        FragmentManager manager = getSupportFragmentManager();
+        switch (item.getItemId()){
+            // Связывание слова с другой подгруппой.
+            case R.id.activity_word___action___linkword:
+                Log.d(LOG_TAG, "Link word");
+                LinkWordDialogFragment linkWordDialogFragment = new LinkWordDialogFragment();
+                linkWordDialogFragment.show(manager, DIALOG_LINKWORD);
+                return true;
+            // Сбрасывание прогресса слова
+            case R.id.activity_word___action___resetwordprogress:
+                Log.d(LOG_TAG, "Reset word progress");
+                ResetWordProgressDialogFragment resetWordProgressDialogFragment = new ResetWordProgressDialogFragment();
+                resetWordProgressDialogFragment.show(manager, DIALOG_RESETWORDPROGRESS);
+                return true;
+            // Удаление слова из подгруппы / из всех подгрупп.
+            case R.id.delete_word:
+                Log.d(LOG_TAG, "Delete word");
+                DeleteWordDialogFragment deleteWordDialogFragment = new DeleteWordDialogFragment();
+                deleteWordDialogFragment.show(manager, DIALOG_DELETEWORD);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
     }
 }

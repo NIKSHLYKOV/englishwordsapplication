@@ -9,4 +9,32 @@
     <string name="transcription">Транскрипция</string>
     <string name="value">Значение</string>
 
+
+    <string name="action___delete_word___title">Удалить</string>
+    <string name="action___reset_word_progress___title">Сбросить прогресс</string>
+    <string name="action___link_word___title">Связать слово</string>
+    <string name="action___sort___title">Отсортировать</string>
+
+    <!-- Переменные диалогов - заголовки, сообщения, кнопки -->
+    <string name="dialog___reset_word_progress___title">Сбросить прогресс</string>
+    <string name="dialog___reset_word_progress___message">Вы действительно хотите сбросить прогресс?</string>
+
+    <string name="dialog___link_word___title">Связать слово</string>
+    <string name="dialog___link_word___message">Выберите группы для связывания слова с ними</string>
+    <string name="dialog___link_word___positive_button">Связать</string>
+
+    <string name="dialog___delete_word___title">Удаление слова</string>
+    <string name="dialog___delete_word___message">Выберите группы для удаления слова из них</string>
+    <string name="dialog___delete_word___positive_button">Удалить</string>
+
+    <string name="dialog___copy_word___title">Копирование слова</string>
+    <string name="dialog___copy_word___message">Выберите группы для копирования слова в них</string>
+    <string name="dialog___copy_word___positive_button">Копировать</string>
+
+    <string name="dialog___sort_words___title">Сортировать слова</string>
+
+
+    <string name="no">Нет</string>
+    <string name="yes">Да</string>
+    <string name="cancel">Отмена</string>
 </resources>
