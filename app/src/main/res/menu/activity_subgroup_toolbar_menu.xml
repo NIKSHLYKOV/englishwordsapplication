@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/activity_subgroup___action___sort"
+        android:icon="@drawable/ic_action_sort"
+        android:title="@string/action___sort___title"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/activity_subgroup___action___reset_words_progress"
+        android:icon="@drawable/ic_action_resetwordprogress"
+        android:title="@string/action___reset_word_progress___title"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/activity_subgroup___action___delete_words"
+        android:icon="@android:drawable/ic_menu_delete"
+        android:title="@string/action___delete_word___title"
+        app:showAsAction="never"/>
+</menu>

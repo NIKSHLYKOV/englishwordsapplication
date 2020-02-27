@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -16,6 +18,8 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentManager;
 
 public class SubgroupActivity extends AppCompatActivity {
 
@@ -23,6 +27,10 @@ public class SubgroupActivity extends AppCompatActivity {
     private String EXTRA_WORD_ID = "WordId";
 
     private final static String LOG_TAG = "SubgroupActivity";
+
+    private final static String DIALOG_SORTWORDS = "SortWordsDialogFragment";
+    private final static String DIALOG_RESETWORDSPROGRESS = "ResetWordsProgressDialogFragment";
+    private final static String DIALOG_DELETEWORDS = "DeleteWordsDialogFragment";
 
     // Helper для работы с БД.
     private DatabaseHelper databaseHelper;
@@ -32,6 +40,7 @@ public class SubgroupActivity extends AppCompatActivity {
     private ListView wordsList;
     private Button buttonForNewWordCreating;
     private CheckBox learnSubgroupCheckBox;
+    private Toolbar toolbar;
 
     // Полученные данные из Intent'а.
     private Bundle arguments;
@@ -42,7 +51,6 @@ public class SubgroupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_subgroup);
 
-
         // Получаем Exstras из Intent'а.
         arguments = getIntent().getExtras();
         if (arguments != null)
@@ -50,6 +58,10 @@ public class SubgroupActivity extends AppCompatActivity {
 
         // Находим View элементы из разметки.
         viewElementsFinding();
+
+        // Установка тулбара.
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("");
 
         // Создаём Helper для работы с БД.
         databaseHelper = new DatabaseHelper(SubgroupActivity.this);
@@ -166,6 +178,7 @@ public class SubgroupActivity extends AppCompatActivity {
         wordsList = findViewById(R.id.activity_subgroup___ListView___words);
         buttonForNewWordCreating = findViewById(R.id.activity_subgroup___Button___new_word);
         learnSubgroupCheckBox = findViewById(R.id.activity_subgroup___CheckBox___study_subgroup);
+        toolbar = findViewById(R.id.activity_subgroup___Toolbar___toolbar);
     }
 
     boolean isSugroupStudied (){
@@ -182,5 +195,43 @@ public class SubgroupActivity extends AppCompatActivity {
         }
         // Возвращаем значение типа boolean.
         return isStudied == 1;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        //super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.activity_subgroup_toolbar_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        FragmentManager manager = getSupportFragmentManager();
+
+        // Адаптировать под группу
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!
+
+        switch (item.getItemId()){
+            // Сортировка слов по алфавиту или сложности.
+            case R.id.activity_subgroup___action___sort:
+                Log.d(LOG_TAG, "sort words");
+                SortWordsDialogFragment sortWordsDialogFragment = new SortWordsDialogFragment();
+                sortWordsDialogFragment.show(manager, DIALOG_SORTWORDS);
+                return true;
+            // Сбрасывание прогресса слов данной подгруппы.
+            case R.id.activity_subgroup___action___reset_words_progress:
+                Log.d(LOG_TAG, "Reset words progress");
+                /*ResetWordProgressDialogFragment resetWordProgressDialogFragment = new ResetWordProgressDialogFragment();
+                resetWordProgressDialogFragment.show(manager, DIALOG_RESETWORDSPROGRESS);*/
+                return true;
+            // Удаление слов из данной подгруппы.
+            case R.id.activity_subgroup___action___delete_words:
+                Log.d(LOG_TAG, "Delete words");
+                /*CopyWordDialogFragment copyWordDialogFragment = new CopyWordDialogFragment();
+                copyWordDialogFragment.show(manager, DIALOG_DELETEWORDS);*/
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }
