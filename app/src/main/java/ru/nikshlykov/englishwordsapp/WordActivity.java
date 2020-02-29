@@ -23,9 +23,11 @@ import androidx.fragment.app.FragmentManager;
 
 public class WordActivity extends AppCompatActivity {
 
-    private String EXTRA_SUBGROUP_ID = "SubgroupId";
-    private String EXTRA_WORD_ID = "WordId";
     private final static String LOG_TAG = "WordActivity";
+
+    // Extras для получения данных из интента.
+    public String EXTRA_SUBGROUP_ID = "SubgroupId";
+    public String EXTRA_WORD_ID = "WordId";
 
     // Теги для диалоговых фрагментов.
     private static final String DIALOG_RESETWORDPROGRESS = "ResetWordProgressDialogFragment";
@@ -48,10 +50,8 @@ public class WordActivity extends AppCompatActivity {
     private long subgroupId = 0L;
     private Bundle arguments;
 
-    // Элементы для работы с БД.
+    // Helper для работы с БД.
     private DatabaseHelper databaseHelper;
-    private Cursor userCursor = null;
-    private ContentValues contentValues;
 
     // Для синтезатора речи.
     private TextToSpeech TTS;
@@ -63,14 +63,9 @@ public class WordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_word);
         viewElementsFinding();
-        /*
-        НЕ ЗАБЫТЬ, ЧТО ЕСЛИ У НАС БУДЕТ ОТКРЫВАТЬСЯ СЛЕДУЮЩАЯ ACTIVITY, ТО БУДЕТ НЕОБХОДИМО ПОТОМ
-        ПЕРЕСОЗДАВАТЬ HELPER В OnResume(). ИНАЧЕ БУДЕТ ОШИБКА (re-open already closed object).
-         */
 
-        // Создаём объект DatabaseHelper и открываем подключение с базой.
+        // Создаём объект DatabaseHelper.
         databaseHelper = new DatabaseHelper(WordActivity.this);
-        //databaseHelper.openDataBaseToReadAndWrite();
 
         // Устанавливаем тулбар.
         setSupportActionBar(toolbar);
@@ -98,21 +93,11 @@ public class WordActivity extends AppCompatActivity {
             wordId = arguments.getLong(EXTRA_WORD_ID);
             // Если слово уже создано.
             if (wordId > 0) {
-                // Выполняем запрос на получение слова по id.
-                userCursor = databaseHelper.rawQuery("select * from " + DatabaseHelper.WordsTable.TABLE_WORDS + " where " +
-                        DatabaseHelper.WordsTable.TABLE_WORDS_COLUMN_ID + "=" + String.valueOf(wordId));
-                // Устанавливаем параметры слова в EditText'ы.
-                userCursor.moveToFirst();
-                editText_word.setText(userCursor.getString(1));
-                editText_value.setText(userCursor.getString(2));
-                editText_transcription.setText(userCursor.getString(3));
-                // Устанавливаем часть речи.
-                textView_partOfSpeech.setText(userCursor.getString(userCursor.getColumnIndex(DatabaseHelper.WordsTable.TABLE_WORDS_COLUMN_PARTOFSPEECH)));
-                userCursor.close();
+                getWordAndSetItsParametersToViews();
             }
             // Если пользователь создаёт новое слово.
             else {
-                // Получаем id группы, из которой было вызвано Activity. Сейчас - только при создании нового слова.
+                // Получаем id группы, из которой было вызвано Activity.
                 subgroupId = arguments.getLong(EXTRA_SUBGROUP_ID);
                 // Скрываем элементы.
                 hidingViewsForNewWordCreating();
@@ -122,15 +107,13 @@ public class WordActivity extends AppCompatActivity {
             Log.d(LOG_TAG, "arguments have not been transferred");
         }
         Log.d(LOG_TAG, "wordId = " + wordId);
-
-
         Log.d(LOG_TAG, "OnCreate");
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        // Сохранение нового или изменённого слова.
+        // Присваиваем обработчик кнопке сохранения слова.
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -142,7 +125,7 @@ public class WordActivity extends AppCompatActivity {
                 // Проверяем, что поля слова и перевода не пустые
                 if (!word.isEmpty() && !value.isEmpty()) {
                     // Создаём объект ContentValues и вводим в него данные через пары ключ-значение.
-                    contentValues = new ContentValues();
+                    ContentValues contentValues = new ContentValues();
                     contentValues.put(DatabaseHelper.WordsTable.TABLE_WORDS_COLUMN_WORD, word);
                     contentValues.put(DatabaseHelper.WordsTable.TABLE_WORDS_COLUMN_VALUE, value);
                     contentValues.put(DatabaseHelper.WordsTable.TABLE_WORDS_COLUMN_TRANSCRIPTION, transcription);
@@ -151,28 +134,19 @@ public class WordActivity extends AppCompatActivity {
                     if (wordId == 0L) {
                         // Добавляем слово в таблицу слов.
                         wordId = DatabaseHelper.insert(DatabaseHelper.WordsTable.TABLE_WORDS, null, contentValues);
-                        Log.d("DatabaseHelper", "wordId = " + wordId);
-                        /*// Выполняем запрос на получение из таблицы слов строк, где слово и значение будут такими, как в новом слове.
-                        // При этом делаем сортировку по ID, и получаем строку с максимальным ID.
-                        userCursor = databaseHelper.rawQuery("select * from " + DatabaseHelper.WordsTable.TABLE_WORDS +
-                                " where " + DatabaseHelper.WordsTable.TABLE_WORDS_COLUMN_WORD + "=\"" + word + "\" and " +
-                                DatabaseHelper.WordsTable.TABLE_WORDS_COLUMN_VALUE + "=\"" + value +
-                                "\" order by " + DatabaseHelper.WordsTable.TABLE_WORDS_COLUMN_ID + " desc ");
-                        userCursor.moveToFirst();
-                        // Получаем id этого слова
-                        wordId = Long.parseLong(userCursor.getString(0));*/
+                        Log.d("DatabaseHelper", "newWordId = " + wordId);
                         // Добавляем слову связь с группой через таблицу связей.
                         ContentValues contentValuesForLinksTable = new ContentValues();
                         contentValuesForLinksTable.put(DatabaseHelper.LinksTable.TABLE_LINKS_COLUMN_SUBGROUPID, subgroupId);
                         contentValuesForLinksTable.put(DatabaseHelper.LinksTable.TABLE_LINKS_COLUMN_WORDID, wordId);
                         DatabaseHelper.insert(DatabaseHelper.LinksTable.TABLE_LINKS, null, contentValuesForLinksTable);
                     }
-
                     // Обновление существующего слова.
                     else {
                         DatabaseHelper.update(DatabaseHelper.WordsTable.TABLE_WORDS, contentValues,
                                 DatabaseHelper.WordsTable.TABLE_WORDS_COLUMN_ID + "=" + String.valueOf(wordId), null);
                     }
+                    // Закрываем Activity.
                     finish();
                 }
                 // Выводим Toast о том, что они должны быть заполнены.
@@ -200,7 +174,6 @@ public class WordActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        //databaseHelper.close();
         Log.d(LOG_TAG, "OnStop");
     }
 
@@ -210,7 +183,9 @@ public class WordActivity extends AppCompatActivity {
         TTS.shutdown();
     }
 
-    // Находит View элементы в разметке.
+    /**
+     * Находит View элементы в разметке.
+     */
     private void viewElementsFinding() {
         editText_word = findViewById(R.id.activity_word___EditText___word);
         editText_value = findViewById(R.id.activity_word___EditText___value);
@@ -222,7 +197,9 @@ public class WordActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.activity_word___Toolbar___toolbar);
     }
 
-    // Скрывает элементы при создании нового слова.
+    /**
+     * Скрывает элементы при создании нового слова.
+     */
     private void hidingViewsForNewWordCreating() {
         learnProgressBar.setVisibility(View.GONE);
         TextView progressText = findViewById(R.id.activity_word___TextView___progress);
@@ -231,6 +208,25 @@ public class WordActivity extends AppCompatActivity {
         textView_partOfSpeech.setVisibility(View.GONE);
     }
 
+    /**
+     * Ищет слово в БД и устанавливает его параметры в разные View.
+     */
+    private void getWordAndSetItsParametersToViews(){
+        // Выполняем запрос на получение слова по id.
+        Cursor userCursor = databaseHelper.getWordById(wordId);
+        userCursor.moveToFirst();
+        // Устанавливаем параметры слова в EditText'ы.
+        editText_word.setText(userCursor.getString(userCursor.getColumnIndex(DatabaseHelper.WordsTable.TABLE_WORDS_COLUMN_WORD)));
+        editText_value.setText(userCursor.getString(userCursor.getColumnIndex(DatabaseHelper.WordsTable.TABLE_WORDS_COLUMN_VALUE)));
+        editText_transcription.setText(userCursor.getString(userCursor.getColumnIndex(DatabaseHelper.WordsTable.TABLE_WORDS_COLUMN_TRANSCRIPTION)));
+        // Устанавливаем часть речи.
+        textView_partOfSpeech.setText(userCursor.getString(userCursor.getColumnIndex(DatabaseHelper.WordsTable.TABLE_WORDS_COLUMN_PARTOFSPEECH)));
+        userCursor.close();
+    }
+
+    /**
+     * Создаёт меню для тулбара.
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         //super.onCreateOptionsMenu(menu);
@@ -238,6 +234,9 @@ public class WordActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * Обрабатывает нажатия на пункты тулбара.
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         FragmentManager manager = getSupportFragmentManager();

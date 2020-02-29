@@ -295,13 +295,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * ID которой равен groupID.
      */
     public Cursor getSubgroupsFromGroup(int groupID) {
-        return rawQuery("select * from " + SubgroupsTable.TABLE_SUBGROUPS
+        return rawQuery("SELECT * FROM " + SubgroupsTable.TABLE_SUBGROUPS
                 + " where " + SubgroupsTable.TABLE_SUBGROUPS_COLUMN_PARENTGROUPID + "=" + String.valueOf(groupID));
     }
 
     public Cursor getSubroupByID(long subgroupID) {
-        return rawQuery("Select * from " + DatabaseHelper.SubgroupsTable.TABLE_SUBGROUPS +
-                " where " + DatabaseHelper.SubgroupsTable.TABLE_SUBGROUPS_COLUMN_ID + "=" + String.valueOf(subgroupID));
+        return rawQuery("SELECT * FROM " + DatabaseHelper.SubgroupsTable.TABLE_SUBGROUPS +
+                " WHERE " + DatabaseHelper.SubgroupsTable.TABLE_SUBGROUPS_COLUMN_ID + "=" + String.valueOf(subgroupID));
     }
 
     public Cursor getModes() {
@@ -310,11 +310,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor getStudiedSubgroups()
     {
-        return rawQuery("select * from " + SubgroupsTable.TABLE_SUBGROUPS +
-                " where " + SubgroupsTable.TABLE_SUBGROUPS_COLUMN_ISSTUDIED + "=" + "1");
+        return rawQuery("SELECT * FROM " + SubgroupsTable.TABLE_SUBGROUPS +
+                " WHERE " + SubgroupsTable.TABLE_SUBGROUPS_COLUMN_ISSTUDIED + "=" + "1");
     }
     public Cursor getSelectedModes(){
         return rawQuery("SELECT * FROM " + ModesTable.TABLE_NAME +
                 " WHERE " + ModesTable.COLUMN_ISSELECTED + "=" + "1");
+    }
+
+    public Cursor getWordById(long id){
+        return rawQuery("SELECT * FROM " + DatabaseHelper.WordsTable.TABLE_WORDS + " WHERE " +
+                DatabaseHelper.WordsTable.TABLE_WORDS_COLUMN_ID + "=" + id);
     }
 }

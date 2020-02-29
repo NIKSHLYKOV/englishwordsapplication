@@ -46,7 +46,6 @@ public class MainActivity extends AppCompatActivity {
             fragTrans = fragmentManager.beginTransaction();
             Fragment fragment;
 
-
             switch (item.getItemId()) {
                 case R.id.activity_main_menu___study:
                     // Пытаемся найти фрагмент и проверяем, создан ли он (на экране).
@@ -69,7 +68,8 @@ public class MainActivity extends AppCompatActivity {
                             return true;
                         }
 
-                        fragTrans.replace(contentLayoutID, new Mode0Fragment(),TAG_STUDY_FRAGMENT).commit();
+                        fragTrans.replace(contentLayoutID, new Mode0Fragment(), TAG_STUDY_FRAGMENT).commit();
+
                     }
 
                     return true;
@@ -115,11 +115,17 @@ public class MainActivity extends AppCompatActivity {
         databaseHelper.close();
     }
 
+    /**
+     * Находит View элементы в разметке.
+     */
     private void viewElementsFinding(){
         contentLayout =  findViewById(R.id.activity_main___LinearLayout___content_layout);
         navigation = (BottomNavigationView) findViewById(R.id.navigation);
     }
 
+    /**
+     * Запускает информационный фрагмент, если не выбраны группы слов или режимы.
+     */
     private void displayInfoFragment(String flag) {
         if (flag.equals(InfoFragment.EXTRA_MODESARENOTCHOSEN) ||
                 flag.equals(InfoFragment.EXTRA_SUBGROUPSARENOTCHOSEN)) {
