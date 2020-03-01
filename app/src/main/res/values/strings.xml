@@ -21,6 +21,7 @@
 
     <string name="dialog___link_word___title">Связать слово</string>
     <string name="dialog___link_word___message">Выберите группы для связывания слова с ними</string>
+    <string name="dialog___link_word___error_message">Отсутствуют группы для связывания! Добавьте их во вкладке группы.</string>
     <string name="dialog___link_word___positive_button">Связать</string>
 
     <string name="dialog___delete_word___title">Удаление слова</string>
@@ -37,4 +38,5 @@
     <string name="no">Нет</string>
     <string name="yes">Да</string>
     <string name="cancel">Отмена</string>
+    <string name="ok">ОК</string>
 </resources>

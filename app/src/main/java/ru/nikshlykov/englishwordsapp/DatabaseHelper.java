@@ -296,12 +296,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      */
     public Cursor getSubgroupsFromGroup(int groupID) {
         return rawQuery("SELECT * FROM " + SubgroupsTable.TABLE_SUBGROUPS
-                + " where " + SubgroupsTable.TABLE_SUBGROUPS_COLUMN_PARENTGROUPID + "=" + String.valueOf(groupID));
+                + " WHERE " + SubgroupsTable.TABLE_SUBGROUPS_COLUMN_PARENTGROUPID + "=" + groupID);
     }
 
     public Cursor getSubroupByID(long subgroupID) {
         return rawQuery("SELECT * FROM " + DatabaseHelper.SubgroupsTable.TABLE_SUBGROUPS +
-                " WHERE " + DatabaseHelper.SubgroupsTable.TABLE_SUBGROUPS_COLUMN_ID + "=" + String.valueOf(subgroupID));
+                " WHERE " + DatabaseHelper.SubgroupsTable.TABLE_SUBGROUPS_COLUMN_ID + "=" + subgroupID);
     }
 
     public Cursor getModes() {

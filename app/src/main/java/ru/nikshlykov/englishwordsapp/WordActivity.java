@@ -240,11 +240,16 @@ public class WordActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         FragmentManager manager = getSupportFragmentManager();
+
+        Bundle arguments = new Bundle();
+
         switch (item.getItemId()){
             // Связывание слова с другой подгруппой.
             case R.id.activity_word___action___linkword:
                 Log.d(LOG_TAG, "Link word");
                 LinkWordDialogFragment linkWordDialogFragment = new LinkWordDialogFragment();
+                arguments.putLong(LinkWordDialogFragment.EXSTRA_WORDID, wordId);
+                linkWordDialogFragment.setArguments(arguments);
                 linkWordDialogFragment.show(manager, DIALOG_LINKWORD);
                 return true;
             // Сбрасывание прогресса слова

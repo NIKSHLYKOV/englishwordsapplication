@@ -30,6 +30,7 @@ public class NewSubgroupActivity extends AppCompatActivity {
 
         // Находим editText, в котором будет прописываться название новой группы.
         editText_groupName = findViewById(R.id.editText_groupName);
+
         // Находим кнопку сохранения и присваиваем ей обработчик.
         creatingButton = findViewById(R.id.button_saveNewGroup);
         creatingButton.setOnClickListener(new View.OnClickListener() {
