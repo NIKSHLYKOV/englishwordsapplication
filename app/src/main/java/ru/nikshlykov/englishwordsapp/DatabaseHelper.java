@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import static ru.nikshlykov.englishwordsapp.ModesFragment.modes;
 
@@ -299,13 +300,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + " WHERE " + SubgroupsTable.TABLE_SUBGROUPS_COLUMN_PARENTGROUPID + "=" + groupID);
     }
 
-    public Cursor getSubroupByID(long subgroupID) {
-        return rawQuery("SELECT * FROM " + DatabaseHelper.SubgroupsTable.TABLE_SUBGROUPS +
-                " WHERE " + DatabaseHelper.SubgroupsTable.TABLE_SUBGROUPS_COLUMN_ID + "=" + subgroupID);
+    public Cursor getSubroupByID(long id) {
+        return rawQuery("SELECT * FROM " + SubgroupsTable.TABLE_SUBGROUPS +
+                " WHERE " + SubgroupsTable.TABLE_SUBGROUPS_COLUMN_ID + "=" + id);
     }
 
     public Cursor getModes() {
-        return rawQuery("SELECT * FROM " + DatabaseHelper.ModesTable.TABLE_NAME);
+        return rawQuery("SELECT * FROM " + ModesTable.TABLE_NAME);
     }
 
     public Cursor getStudiedSubgroups()
@@ -319,7 +320,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public Cursor getWordById(long id){
-        return rawQuery("SELECT * FROM " + DatabaseHelper.WordsTable.TABLE_WORDS + " WHERE " +
-                DatabaseHelper.WordsTable.TABLE_WORDS_COLUMN_ID + "=" + id);
+        return rawQuery("SELECT * FROM " + WordsTable.TABLE_WORDS +
+                " WHERE " + WordsTable.TABLE_WORDS_COLUMN_ID + "=" + id);
+    }
+
+    public HashSet<Integer> getLinkedSubgroupsIds(long wordId){
+        Cursor cursor = rawQuery("SELECT * FROM " + LinksTable.TABLE_LINKS +
+                " WHERE " + LinksTable.TABLE_LINKS_COLUMN_WORDID + "=" + wordId);
+        if (cursor.moveToFirst())
+        {
+            HashSet<Integer> subgroupsIds = new HashSet<Integer>(cursor.getCount());
+            do {
+                subgroupsIds.add(cursor.getInt(cursor.getColumnIndex(LinksTable.TABLE_LINKS_COLUMN_SUBGROUPID)));
+            } while (cursor.moveToNext());
+            return subgroupsIds;
+        }
+        return null;
     }
 }

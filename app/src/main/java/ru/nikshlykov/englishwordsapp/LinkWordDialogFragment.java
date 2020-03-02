@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,12 +26,16 @@ public class LinkWordDialogFragment extends DialogFragment {
 
     private long wordId;
 
-    private String[] availableSubgroups;
+    private String[] availableSubgroupsNames;
     private int[] availableSubgroupsIds;
-    private boolean availableSubgroupsExist = true;
+    private boolean availableSubgroupsExist = false;
+    private int availableSubgroupsCount;
+    boolean[] checkedSubgroups;
 
     // БД для работы с БД.
     private DatabaseHelper databaseHelper;
+    private Cursor createdByUserSubgroups;
+    private boolean createdByUserSubgroupsExist = false;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -47,51 +51,76 @@ public class LinkWordDialogFragment extends DialogFragment {
         Bundle arguments = getArguments();
         try {
             wordId = arguments.getLong(EXSTRA_WORDID);
-        }
-        catch (NullPointerException e){
+        } catch (NullPointerException e) {
             Log.e(LOG_TAG, e.getMessage());
+            // Здесь можно прописать явное закрытие фрагмента, если это возможно.
+            // Здесь можно прописать явное закрытие фрагмента, если это возможно.
+            // Здесь можно прописать явное закрытие фрагмента, если это возможно.
+            // Здесь можно прописать явное закрытие фрагмента, если это возможно.
+            // Здесь можно прописать явное закрытие фрагмента, если это возможно.
+            // Здесь можно прописать явное закрытие фрагмента, если это возможно.
         }
-        // Здесь можно прописать явное закрытие фрагмента, если это возможно.
-        // Здесь можно прописать явное закрытие фрагмента, если это возможно.
-        // Здесь можно прописать явное закрытие фрагмента, если это возможно.
-        // Здесь можно прописать явное закрытие фрагмента, если это возможно.
-        // Здесь можно прописать явное закрытие фрагмента, если это возможно.
-        // Здесь можно прописать явное закрытие фрагмента, если это возможно.
-
         // Инициализируем helper для работы с БД.
         databaseHelper = new DatabaseHelper(getActivity());
 
         // Получаем созданные пользователем подгруппы из базы данных.
-        Cursor usersSubgroups = databaseHelper.getSubgroupsFromGroup(21);
-        // Переносим их названия в массив строк, если они есть.
-        if (usersSubgroups.moveToFirst()){
-            int userSubgroupsCount = usersSubgroups.getCount();
-            availableSubgroups = new String[userSubgroupsCount];
-            availableSubgroupsIds = new int[userSubgroupsCount];
-            int i = 0;
-            do{
-                availableSubgroups[i] = usersSubgroups.getString(usersSubgroups.getColumnIndex(DatabaseHelper.SubgroupsTable.TABLE_SUBGROUPS_COLUMN_SUBGROUPNAME));
-                availableSubgroupsIds[i] = usersSubgroups.getInt(usersSubgroups.getColumnIndex(DatabaseHelper.SubgroupsTable.TABLE_SUBGROUPS_COLUMN_ID));
-                i++;
-            }while (usersSubgroups.moveToNext());
+        createdByUserSubgroups = databaseHelper.getSubgroupsFromGroup(21);
+        if (createdByUserSubgroups.getCount() != 0) {
+            Log.d(LOG_TAG, "Созданные группы есть!");
+            createdByUserSubgroupsExist = true;
+            // Получаем подгруппы, созданные пользователем и незалинкованные с нашим словом.
+            HashSet<Integer> availableSubgroupsIdsSet = getAvailableSubgroupsIdsSet();
+            // Проверяем, что такие группы существуют.
+            if (!availableSubgroupsIdsSet.isEmpty()) {
+                Log.d(LOG_TAG, "Доступные группы есть!");
+                availableSubgroupsExist = true;
+                // Инициализируем массивы с названиями и id подгрупп.
+                availableSubgroupsCount = availableSubgroupsIdsSet.size();
+                availableSubgroupsNames = new String[availableSubgroupsCount];
+                availableSubgroupsIds = new int[availableSubgroupsCount];
+                // Заполняем эти массивы, если созданные пользователем подгруппы не залинкованны с нашим словом.
+                createdByUserSubgroups.moveToFirst();
+                int i = 0;
+                do {
+                    int thisEntryId = createdByUserSubgroups.getInt(createdByUserSubgroups.getColumnIndex(DatabaseHelper.SubgroupsTable.TABLE_SUBGROUPS_COLUMN_ID));
+                    if (availableSubgroupsIdsSet.contains(thisEntryId)) {
+                        availableSubgroupsNames[i] = createdByUserSubgroups.getString(createdByUserSubgroups.getColumnIndex(DatabaseHelper.SubgroupsTable.TABLE_SUBGROUPS_COLUMN_SUBGROUPNAME));
+                        availableSubgroupsIds[i] = thisEntryId;
+                        Log.d(LOG_TAG, "id = " + availableSubgroupsIds[i] + "; name = " + availableSubgroupsNames[i]);
+                        i++;
+                    }
+                } while (createdByUserSubgroups.moveToNext());
+            }
         }
-        else{
-            availableSubgroupsExist = false;
-        }
+        createdByUserSubgroups.close();
     }
 
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         Log.d(LOG_TAG, "onCreateDialog");
-        if (availableSubgroupsExist) {
-            final boolean[] checkedSubgroups = new boolean[availableSubgroups.length];
+        if (!createdByUserSubgroupsExist) {
+            return new AlertDialog.Builder(getActivity())
+                    .setTitle(R.string.dialog___link_word___title)
+                    .setMessage("Вы ещё не создали не одной группы! Сделать это вы можете на главной странице во вкладке группы.")
+                    .setPositiveButton(R.string.ok, null)
+                    .create();
+        }
+        else if (!availableSubgroupsExist) {
+            return new AlertDialog.Builder(getActivity())
+                    .setTitle(R.string.dialog___link_word___title)
+                    .setMessage(R.string.dialog___link_word___error_message)
+                    .setPositiveButton(R.string.ok, null)
+                    .create();
+        }
+        else {
+            checkedSubgroups = new boolean[availableSubgroupsCount];
             for (int i = 0; i < checkedSubgroups.length; i++)
                 checkedSubgroups[i] = false;
 
             return new AlertDialog.Builder(getActivity())
                     .setTitle(R.string.dialog___link_word___title)
-                    .setMultiChoiceItems(availableSubgroups, checkedSubgroups, new DialogInterface.OnMultiChoiceClickListener(){
+                    .setMultiChoiceItems(availableSubgroupsNames, null, new DialogInterface.OnMultiChoiceClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which, boolean isChecked) {
                             checkedSubgroups[which] = isChecked;
@@ -100,10 +129,8 @@ public class LinkWordDialogFragment extends DialogFragment {
                     .setPositiveButton(R.string.dialog___link_word___positive_button, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            for(int i = 0; i < checkedSubgroups.length; i++)
-                            {
-                                if (checkedSubgroups[i])
-                                {
+                            for (int i = 0; i < checkedSubgroups.length; i++) {
+                                if (checkedSubgroups[i]) {
                                     ContentValues linksTableEntry = new ContentValues();
                                     linksTableEntry.put(DatabaseHelper.LinksTable.TABLE_LINKS_COLUMN_SUBGROUPID, availableSubgroupsIds[i]);
                                     linksTableEntry.put(DatabaseHelper.LinksTable.TABLE_LINKS_COLUMN_WORDID, wordId);
@@ -114,15 +141,8 @@ public class LinkWordDialogFragment extends DialogFragment {
                     })
                     .setNegativeButton(R.string.cancel, null)
                     .create();
-        } else{
-            return new AlertDialog.Builder(getActivity())
-                    .setTitle(R.string.dialog___link_word___title)
-                    .setMessage(R.string.dialog___link_word___error_message)
-                    .setPositiveButton(R.string.ok, null)
-                    .create();
         }
     }
-
 
     @Nullable
     @Override
@@ -171,6 +191,24 @@ public class LinkWordDialogFragment extends DialogFragment {
     public void onDetach() {
         Log.d(LOG_TAG, "onDetach");
         super.onDetach();
+    }
+
+    private HashSet<Integer> getAvailableSubgroupsIdsSet() {
+        // Получаем id подгрупп уже связанных с нашим словом.
+        HashSet<Integer> linkedWithThisWordSubgroupsIds = databaseHelper.getLinkedSubgroupsIds(wordId);
+
+        // Создаём коллекцию для id подгрупп, созданных пользователем.
+        HashSet<Integer> createdByUserSubgroupsIds = new HashSet<>(createdByUserSubgroups.getCount());
+        // Заполняем данную коллекцию из курсора.
+        createdByUserSubgroups.moveToFirst();
+        do {
+            createdByUserSubgroupsIds.add(createdByUserSubgroups.getInt(createdByUserSubgroups.getColumnIndex(DatabaseHelper.SubgroupsTable.TABLE_SUBGROUPS_COLUMN_ID)));
+        } while (createdByUserSubgroups.moveToNext());
+
+        // Удаляем из коллекции те id подгрупп, с которыми уже залинковано слово.
+        createdByUserSubgroupsIds.removeAll(linkedWithThisWordSubgroupsIds);
+        // Теперь эта коллекция содержит только id подгрупп, созданных пользователем и незалинкованных с нашим словом.
+        return createdByUserSubgroupsIds;
     }
 
     /*final CharSequence[] items = {" Easy ", " Medium ", " Hard ", " Very Hard "};
