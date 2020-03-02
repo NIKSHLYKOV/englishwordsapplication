@@ -26,6 +26,7 @@
 
     <string name="dialog___delete_word___title">Удаление слова</string>
     <string name="dialog___delete_word___message">Выберите группы для удаления слова из них</string>
+    <string name="dialog___delete_word___error_links_do_not_exist">Отсутствуют группы, связанные с этим словом!</string>
     <string name="dialog___delete_word___positive_button">Удалить</string>
 
     <string name="dialog___copy_word___title">Копирование слова</string>

@@ -264,6 +264,8 @@ public class WordActivity extends AppCompatActivity {
             case R.id.delete_word:
                 Log.d(LOG_TAG, "Delete word");
                 DeleteWordDialogFragment deleteWordDialogFragment = new DeleteWordDialogFragment();
+                arguments.putLong(DeleteWordDialogFragment.EXSTRA_WORDID, wordId);
+                deleteWordDialogFragment.setArguments(arguments);
                 deleteWordDialogFragment.show(manager, DIALOG_DELETEWORD);
                 return true;
             default:
