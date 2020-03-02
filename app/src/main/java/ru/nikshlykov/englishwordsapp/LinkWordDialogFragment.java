@@ -30,7 +30,7 @@ public class LinkWordDialogFragment extends DialogFragment {
     private int[] availableSubgroupsIds;
     private boolean availableSubgroupsExist = false;
     private int availableSubgroupsCount;
-    boolean[] checkedSubgroups;
+    private boolean[] checkedSubgroups;
 
     // БД для работы с БД.
     private DatabaseHelper databaseHelper;

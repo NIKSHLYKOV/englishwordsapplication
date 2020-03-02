@@ -144,7 +144,7 @@ public class WordActivity extends AppCompatActivity {
                     // Обновление существующего слова.
                     else {
                         DatabaseHelper.update(DatabaseHelper.WordsTable.TABLE_WORDS, contentValues,
-                                DatabaseHelper.WordsTable.TABLE_WORDS_COLUMN_ID + "=" + String.valueOf(wordId), null);
+                                DatabaseHelper.WordsTable.TABLE_WORDS_COLUMN_ID + "=" + wordId, null);
                     }
                     // Закрываем Activity.
                     finish();
@@ -256,6 +256,8 @@ public class WordActivity extends AppCompatActivity {
             case R.id.activity_word___action___resetwordprogress:
                 Log.d(LOG_TAG, "Reset word progress");
                 ResetWordProgressDialogFragment resetWordProgressDialogFragment = new ResetWordProgressDialogFragment();
+                arguments.putLong(ResetWordProgressDialogFragment.EXSTRA_WORDID, wordId);
+                resetWordProgressDialogFragment.setArguments(arguments);
                 resetWordProgressDialogFragment.show(manager, DIALOG_RESETWORDPROGRESS);
                 return true;
             // Удаление слова из подгруппы / из всех подгрупп.
