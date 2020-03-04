@@ -7,19 +7,23 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class SubgroupActivity extends AppCompatActivity {
 
@@ -37,10 +41,18 @@ public class SubgroupActivity extends AppCompatActivity {
     Cursor wordsCursor;
 
     // View элементы.
-    private ListView wordsList;
     private Button buttonForNewWordCreating;
     private CheckBox learnSubgroupCheckBox;
     private Toolbar toolbar;
+
+    // RecyclerView и вспомогательные элементы.
+    private RecyclerView recyclerView;
+    private WordsRecyclerViewAdapter adapter;
+    private RecyclerView.LayoutManager layoutManager;
+    private DividerItemDecoration dividerItemDecoration;
+
+    // Для хранения слов текущей подгруппы.
+    public static ArrayList<Word> words;
 
     // Полученные данные из Intent'а.
     private Bundle arguments;
@@ -66,16 +78,9 @@ public class SubgroupActivity extends AppCompatActivity {
         // Создаём Helper для работы с БД.
         databaseHelper = new DatabaseHelper(SubgroupActivity.this);
 
-        // Присваеваем обработчик нажатия на элемент списка (слово), где открываем
-        // WordActivity, передавая в него id данного слова.
-        wordsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(getApplicationContext(), WordActivity.class);
-                intent.putExtra(EXTRA_WORD_ID, id);
-                startActivity(intent);
-            }
-        });
+        // Инициализируем список слов и заполняем его данными.
+        words = new ArrayList<>();
+        setWordsFromDbToWordsArrayList();
 
         // Присваиваем обработчик кнопке для создания нового слова.
         buttonForNewWordCreating.setOnClickListener(new View.OnClickListener() {
@@ -84,16 +89,15 @@ public class SubgroupActivity extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), WordActivity.class);
                 intent.putExtra(EXTRA_SUBGROUP_ID, subgroupID);
                 startActivity(intent);
-                //
                 // СДЕЛАТЬ ЕЩЁ REQUEST И RESPONSE КОДЫ.
-                //
+                // СДЕЛАТЬ ЕЩЁ REQUEST И RESPONSE КОДЫ.
+                // СДЕЛАТЬ ЕЩЁ REQUEST И RESPONSE КОДЫ.
             }
         });
 
         // Присваиваем чекбоксу изучения значение, находящееся в БД.
         // Делаем это до обработчика нажатся, чтобы данные не перезаписывались лишний раз.
-        learnSubgroupCheckBox.setChecked(isSugroupStudied());
-
+        learnSubgroupCheckBox.setChecked(isSubgroupStudied());
         // Присваиваем обработчик нажатия на чекбокс изучения подгруппы.
         learnSubgroupCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -127,34 +131,43 @@ public class SubgroupActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
-        /*// Открываем подключение.
-        try {
-            databaseHelper.openDataBaseToRead();
-        } catch (SQLException sqle) {
-            throw sqle;
-        }*/
-
-
         if (subgroupID > 0) {
-            // Выполняем запрос на получение слов из данной подгруппы.
-            wordsCursor = databaseHelper.rawQuery("Select " + DatabaseHelper.WordsTable.TABLE_WORDS + ".*" +
-                    " from " + DatabaseHelper.WordsTable.TABLE_WORDS + ", " + DatabaseHelper.LinksTable.TABLE_LINKS +
-                    " where " + DatabaseHelper.LinksTable.TABLE_LINKS + "." + DatabaseHelper.LinksTable.TABLE_LINKS_COLUMN_SUBGROUPID + "=" + subgroupID + " and " +
-                    DatabaseHelper.LinksTable.TABLE_LINKS + "." + DatabaseHelper.LinksTable.TABLE_LINKS_COLUMN_WORDID + "=" + DatabaseHelper.WordsTable.TABLE_WORDS + "." + DatabaseHelper.WordsTable.TABLE_WORDS_COLUMN_ID);
-            wordsCursor.moveToFirst();
+            recyclerView = findViewById(R.id.activity_subgroup___RecyclerView___words);
+            adapter = new WordsRecyclerViewAdapter(SubgroupActivity.this, words);
+            layoutManager = new LinearLayoutManager(SubgroupActivity.this);
+            dividerItemDecoration = new DividerItemDecoration(SubgroupActivity.this, DividerItemDecoration.VERTICAL);
+            recyclerView.setAdapter(adapter);
+            recyclerView.setLayoutManager(layoutManager);
+            recyclerView.addItemDecoration(dividerItemDecoration);
+            /*recyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+                @Override
+                public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
+                    return false;
+                }
 
-            // Определяем столбцы, которые будут выводиться.
-            String[] headers = new String[]{DatabaseHelper.WordsTable.TABLE_WORDS_COLUMN_WORD, DatabaseHelper.WordsTable.TABLE_WORDS_COLUMN_VALUE, DatabaseHelper.WordsTable.TABLE_WORDS_COLUMN_TRANSCRIPTION};
-            // Создаем адаптер, передаем в него курсор, который хранит результат запроса.
-            SimpleCursorAdapter userAdapter = new SimpleCursorAdapter(this, R.layout.subgroup_item,
-                    wordsCursor, headers, new int[]{R.id.subgroup_item___TextView___word, R.id.subgroup_item___TextView___value, R.id.subgroup_item___TextView___transcription}, 0);
-            wordsList.setAdapter(userAdapter);
+                @Override
+                public void onTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
 
+                }
 
+                @Override
+                public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
+                }
+            });*/
+            /*// Присваеваем обработчик нажатия на элемент списка (слово), где открываем
+            // WordActivity, передавая в него id данного слова.
+            holder.itemView.OnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, WordActivity.class);
+                    intent.putExtra(WordActivity.EXTRA_WORD_ID, words.get(position).getId());
+                    startActivity(intent);
+                }
+            });*/
         } else {
-            Toast toast = Toast.makeText(SubgroupActivity.this, "Произошла ошибка", Toast.LENGTH_LONG);
-            toast.show();
+            Toast.makeText(SubgroupActivity.this, "Произошла ошибка", Toast.LENGTH_LONG).show();
+            finish();
         }
         Log.d(LOG_TAG, "OnResume");
     }
@@ -162,26 +175,22 @@ public class SubgroupActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        //databaseHelper.close();
-
         Log.d(LOG_TAG, "OnStop");
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        wordsCursor.close();
         Log.d(LOG_TAG, "OnDestroy");
     }
 
     private void viewElementsFinding(){
-        wordsList = findViewById(R.id.activity_subgroup___ListView___words);
         buttonForNewWordCreating = findViewById(R.id.activity_subgroup___Button___new_word);
         learnSubgroupCheckBox = findViewById(R.id.activity_subgroup___CheckBox___study_subgroup);
         toolbar = findViewById(R.id.activity_subgroup___Toolbar___toolbar);
     }
 
-    boolean isSugroupStudied (){
+    boolean isSubgroupStudied(){
         // Находим запись данной подгруппы в таблице подгрупп.
         Cursor subgroupCursor = databaseHelper.getSubroupByID(subgroupID);
         subgroupCursor.moveToFirst();
@@ -195,6 +204,34 @@ public class SubgroupActivity extends AppCompatActivity {
         }
         // Возвращаем значение типа boolean.
         return isStudied == 1;
+    }
+
+    private void setWordsFromDbToWordsArrayList() {
+        Word newWord;
+        Cursor wordsCursor;
+        // Получаем курсор со всеми словами из подгруппы из БД.
+        wordsCursor = databaseHelper.rawQuery("Select " + DatabaseHelper.WordsTable.TABLE_WORDS + ".*" +
+                " from " + DatabaseHelper.WordsTable.TABLE_WORDS + ", " + DatabaseHelper.LinksTable.TABLE_LINKS +
+                " where " + DatabaseHelper.LinksTable.TABLE_LINKS + "." + DatabaseHelper.LinksTable.TABLE_LINKS_COLUMN_SUBGROUPID + "=" + subgroupID + " and " +
+                DatabaseHelper.LinksTable.TABLE_LINKS + "." + DatabaseHelper.LinksTable.TABLE_LINKS_COLUMN_WORDID + "=" + DatabaseHelper.WordsTable.TABLE_WORDS + "." + DatabaseHelper.WordsTable.TABLE_WORDS_COLUMN_ID);
+        // Проверяем, что курсор не пуст и проходим по нему, доставая данные.
+        if (wordsCursor.moveToFirst()) {
+            do {
+                // Получаем из элемента курсора id, имя, параметр выбора и id изображения.
+                String word = wordsCursor.getString(wordsCursor.getColumnIndex(DatabaseHelper.WordsTable.TABLE_WORDS_COLUMN_WORD));
+                String transcription = wordsCursor.getString(wordsCursor.getColumnIndex(DatabaseHelper.WordsTable.TABLE_WORDS_COLUMN_TRANSCRIPTION));
+                String value = wordsCursor.getString(wordsCursor.getColumnIndex(DatabaseHelper.WordsTable.TABLE_WORDS_COLUMN_VALUE));
+                long id = wordsCursor.getLong(wordsCursor.getColumnIndex(DatabaseHelper.WordsTable.TABLE_WORDS_COLUMN_ID));
+                // Создаём новый объект режима по полученным из курсора данным и добавляем его в нашу коллекцию.
+                newWord = new Word(word, transcription, value, id);
+                words.add(newWord);
+            } while (wordsCursor.moveToNext());
+        }
+        else
+            // Выводим сообщение, если полученный курсор режимов по какой-то причине пуст.
+            Toast.makeText(this, "Курсор пуст, что-то пошло не так!", Toast.LENGTH_LONG).show();
+        // Закрываем курсор с режимами.
+        wordsCursor.close();
     }
 
     @Override

@@ -26,8 +26,8 @@ public class WordActivity extends AppCompatActivity {
     private final static String LOG_TAG = "WordActivity";
 
     // Extras для получения данных из интента.
-    public String EXTRA_SUBGROUP_ID = "SubgroupId";
-    public String EXTRA_WORD_ID = "WordId";
+    public static String EXTRA_SUBGROUP_ID = "SubgroupId";
+    public static String EXTRA_WORD_ID = "WordId";
 
     // Теги для диалоговых фрагментов.
     private static final String DIALOG_RESETWORDPROGRESS = "ResetWordProgressDialogFragment";
