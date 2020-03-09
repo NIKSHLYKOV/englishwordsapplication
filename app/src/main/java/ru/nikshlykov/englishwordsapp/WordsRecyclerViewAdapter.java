@@ -2,23 +2,17 @@ package ru.nikshlykov.englishwordsapp;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class WordsRecyclerViewAdapter extends RecyclerView.Adapter<WordsRecyclerViewAdapter.WordsViewHolder>{
@@ -26,16 +20,6 @@ public class WordsRecyclerViewAdapter extends RecyclerView.Adapter<WordsRecycler
     private Context context;
 
     private ArrayList<Word> words;
-
-    private WordsRecyclerViewAdapter.Listener listener;
-
-    interface Listener {
-        void onClick(int position);
-    }
-
-    public void setOnClickListener(WordsRecyclerViewAdapter.Listener listener){
-        this.listener = listener;
-    }
 
     static class WordsViewHolder extends RecyclerView.ViewHolder{
 
@@ -76,7 +60,14 @@ public class WordsRecyclerViewAdapter extends RecyclerView.Adapter<WordsRecycler
         holder.word.setText(words.get(position).getWord());
         holder.transcription.setText(words.get(position).getTranscription());
         holder.value.setText(words.get(position).getValue());
-        /*holder.checkBox.setOnClickListener(new View.OnClickListener(){
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, WordActivity.class);
+                intent.putExtra(WordActivity.EXTRA_WORD_ID, words.get(position).getId());
+                holder.itemView.getContext().startActivity(intent);
+            }
+        });/*holder.checkBox.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 *//*if (listener != null)

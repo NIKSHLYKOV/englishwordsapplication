@@ -67,6 +67,8 @@ public class SubgroupActivity extends AppCompatActivity {
         arguments = getIntent().getExtras();
         if (arguments != null)
             subgroupID = arguments.getLong(EXTRA_SUBGROUP_ID);
+        else
+            finish();
 
         // Находим View элементы из разметки.
         viewElementsFinding();
@@ -77,10 +79,6 @@ public class SubgroupActivity extends AppCompatActivity {
 
         // Создаём Helper для работы с БД.
         databaseHelper = new DatabaseHelper(SubgroupActivity.this);
-
-        // Инициализируем список слов и заполняем его данными.
-        words = new ArrayList<>();
-        setWordsFromDbToWordsArrayList();
 
         // Присваиваем обработчик кнопке для создания нового слова.
         buttonForNewWordCreating.setOnClickListener(new View.OnClickListener() {
@@ -125,50 +123,29 @@ public class SubgroupActivity extends AppCompatActivity {
             }
         });
 
+
+        if (subgroupID > 0) {
+            layoutManager = new LinearLayoutManager(SubgroupActivity.this);
+            dividerItemDecoration = new DividerItemDecoration(SubgroupActivity.this, DividerItemDecoration.VERTICAL);
+            recyclerView.setLayoutManager(layoutManager);
+            recyclerView.addItemDecoration(dividerItemDecoration);
+        } else {
+            Toast.makeText(SubgroupActivity.this, "Произошла ошибка", Toast.LENGTH_LONG).show();
+            finish();
+        }
+
+
         Log.d(LOG_TAG, "OnCreate");
     }
 
     @Override
     protected void onResume() {
+        // Инициализируем список слов и заполняем его данными.
+        words = new ArrayList<>();
+        setWordsFromDbToWordsArrayList();
+        adapter = new WordsRecyclerViewAdapter(SubgroupActivity.this, words);
+        recyclerView.setAdapter(adapter);
         super.onResume();
-        if (subgroupID > 0) {
-            recyclerView = findViewById(R.id.activity_subgroup___RecyclerView___words);
-            adapter = new WordsRecyclerViewAdapter(SubgroupActivity.this, words);
-            layoutManager = new LinearLayoutManager(SubgroupActivity.this);
-            dividerItemDecoration = new DividerItemDecoration(SubgroupActivity.this, DividerItemDecoration.VERTICAL);
-            recyclerView.setAdapter(adapter);
-            recyclerView.setLayoutManager(layoutManager);
-            recyclerView.addItemDecoration(dividerItemDecoration);
-            /*recyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
-                @Override
-                public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
-                    return false;
-                }
-
-                @Override
-                public void onTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
-
-                }
-
-                @Override
-                public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-
-                }
-            });*/
-            /*// Присваеваем обработчик нажатия на элемент списка (слово), где открываем
-            // WordActivity, передавая в него id данного слова.
-            holder.itemView.OnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(context, WordActivity.class);
-                    intent.putExtra(WordActivity.EXTRA_WORD_ID, words.get(position).getId());
-                    startActivity(intent);
-                }
-            });*/
-        } else {
-            Toast.makeText(SubgroupActivity.this, "Произошла ошибка", Toast.LENGTH_LONG).show();
-            finish();
-        }
         Log.d(LOG_TAG, "OnResume");
     }
 
@@ -188,6 +165,7 @@ public class SubgroupActivity extends AppCompatActivity {
         buttonForNewWordCreating = findViewById(R.id.activity_subgroup___Button___new_word);
         learnSubgroupCheckBox = findViewById(R.id.activity_subgroup___CheckBox___study_subgroup);
         toolbar = findViewById(R.id.activity_subgroup___Toolbar___toolbar);
+        recyclerView = findViewById(R.id.activity_subgroup___RecyclerView___words);
     }
 
     boolean isSubgroupStudied(){

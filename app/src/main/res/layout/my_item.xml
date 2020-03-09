@@ -3,35 +3,43 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/card_mode___CardView"
     android:layout_width="match_parent"
-    android:layout_height="50dp">
+    android:layout_height="wrap_content"
+    >
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout_word_in_subgroup"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:paddingStart="8dp"
-        android:paddingEnd="8dp">
+        android:paddingEnd="8dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp">
 
 
         <TextView
             android:id="@+id/subgroup_item___TextView___word"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:maxLines="3"
+            android:singleLine="false"
             android:text="Слово"
             android:textColor="@android:color/black"
             android:textSize="18sp"
+            app:layout_constraintBottom_toTopOf="@id/subgroup_item___TextView___value"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+
         <TextView
             android:id="@+id/subgroup_item___TextView___value"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Перевод слова"
+            app:layout_constraintEnd_toStartOf="@+id/subgroup_item___ProgressBar___progress"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/subgroup_item___TextView___word" />
-
 
         <TextView
             android:id="@+id/subgroup_item___TextView___transcription"
@@ -40,9 +48,13 @@
             android:layout_marginStart="8dp"
             android:layout_weight="1"
             android:text="Транскрипция"
-            android:textSize="18sp"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toTopOf="@+id/subgroup_item___TextView___value"
+            app:layout_constraintEnd_toStartOf="@+id/subgroup_item___ProgressBar___progress"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/subgroup_item___TextView___word"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0" />
 
         <ProgressBar
             android:id="@+id/subgroup_item___ProgressBar___progress"
@@ -54,6 +66,7 @@
             android:max="7"
             android:progress="3"
             android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
