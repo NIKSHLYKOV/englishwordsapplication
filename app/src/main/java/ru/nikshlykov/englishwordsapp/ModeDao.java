@@ -9,12 +9,9 @@ import java.util.List;
 @Dao
 public interface ModeDao {
 
-    // НЕОБХОДИМО УЧЕСТЬ ТО, ЧТО ОБНОВЛЯЮТСЯ ВСЕ ПОЛЯ ИЗ ENTITY.
-    @Update
-    int update(Mode mode);
     // НЕОБХОДИМО УЧЕСТЬ ТО, ЧТО ОБНОВЛЯЮТСЯ ВСЕ ПОЛЯ ИЗ ENTITY.????
     @Update
-    int updateMultiple(List<Mode> modes);
+    int update(Mode[] modes);
 
     // Получаем все режимы.
     @Query("SELECT * FROM Modes")

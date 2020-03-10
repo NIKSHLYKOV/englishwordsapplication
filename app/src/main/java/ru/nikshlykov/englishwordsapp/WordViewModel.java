@@ -8,9 +8,12 @@ import androidx.lifecycle.AndroidViewModel;
 public class WordViewModel extends AndroidViewModel {
     private AppRepository repository;
 
-    public WordViewModel(@NonNull Application application){
+    Word word;
+
+    public WordViewModel(@NonNull Application application, long wordId){
         super(application);
         repository = new AppRepository(application);
+        word = getWordById(wordId);
     }
 
     public long insert(Word word){
@@ -25,7 +28,7 @@ public class WordViewModel extends AndroidViewModel {
         repository.delete(word);
     }
 
-    public Word getWordById(long wordID){
+    private Word getWordById(long wordID){
         return repository.getWordById(wordID);
     }
 }

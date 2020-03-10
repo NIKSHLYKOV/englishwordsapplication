@@ -21,6 +21,7 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract GroupDao groupDao();
     public abstract LinkDao linkDao();
     public abstract ModeDao modeDao();
+    public abstract SettingDao settingDao();
 
     public static synchronized AppDatabase getInstance(Context context){
         if(instance == null){

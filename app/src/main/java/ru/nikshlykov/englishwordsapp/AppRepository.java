@@ -21,6 +21,7 @@ public class AppRepository {
     private GroupDao groupDao;
     private LinkDao linkDao;
     private ModeDao modeDao;
+    private SettingDao settingDao;
 
 
     public AppRepository(Application application) {
@@ -31,6 +32,7 @@ public class AppRepository {
         groupDao = database.groupDao();
         modeDao = database.modeDao();
         linkDao = database.linkDao();
+        settingDao = database.settingDao();
     }
 
     /**
@@ -135,21 +137,6 @@ public class AppRepository {
             return wordDao.getWordById(longs[0]);
         }
     }
-
-    /*private static class GetWordsFromSubgroupAsyncTask extends AsyncTask<Long, Void, Word[]>{
-        private WordDao wordDao;
-
-        private GetWordsFromSubgroupAsyncTask(WordDao wordDao) {
-            this.wordDao = wordDao;
-        }
-
-        @Override
-        protected Word[] doInBackground(Long... longs) {
-            Log.i(LOG_TAG, "id слова в asyncTask = " + longs[0]);
-            return wordDao.getWordsFromSubgroup(longs[0]);
-        }
-    }*/
-
 
     /**
      * Методы для работы с подгруппами.
@@ -416,15 +403,15 @@ public class AppRepository {
     /**
      * Методы для работы с режимами.
      */
-    public void update(Mode mode) {
-        new UpdateModeAsyncTask(modeDao).execute(mode);
+    public void update(Mode[] modes) {
+        new UpdateModeAsyncTask(modeDao).execute(modes);
     }
 
     public Mode[] getAllModes() {
-        GetAllModesAsyncTask getAllModeAsyncTask = new GetAllModesAsyncTask(modeDao);
-        getAllModeAsyncTask.execute();
+        GetAllModesAsyncTask task = new GetAllModesAsyncTask(modeDao);
+        task.execute();
         try {
-            return getAllModeAsyncTask.get();
+            return task.get();
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
@@ -454,7 +441,7 @@ public class AppRepository {
 
         @Override
         protected Void doInBackground(Mode... modes) {
-            modeDao.update(modes[0]);
+            modeDao.update(modes);
             return null;
         }
     }
@@ -484,5 +471,57 @@ public class AppRepository {
             return modeDao.getSelectedModes();
         }
     }
+
+
+
+    /**
+     * Методы для работы с настройками.
+     */
+    public void update(Setting[] settings) {
+        new UpdateSettingsAsyncTask(settingDao).execute(settings);
+    }
+
+    public Setting[] getAllSettings() {
+        GetAllSettingsAsyncTask task = new GetAllSettingsAsyncTask(settingDao);
+        task.execute();
+        try {
+            return task.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * AsyncTasks для работы с настройками.
+     */
+    private static class UpdateSettingsAsyncTask extends AsyncTask<Setting, Void, Void> {
+        private SettingDao settingDao;
+
+        private UpdateSettingsAsyncTask(SettingDao settingDao) {
+            this.settingDao = settingDao;
+        }
+
+        @Override
+        protected Void doInBackground(Setting... settings) {
+            settingDao.update(settings);
+            return null;
+        }
+    }
+
+    private static class GetAllSettingsAsyncTask extends AsyncTask<Void, Void, Setting[]> {
+        private SettingDao settingDao;
+
+        private GetAllSettingsAsyncTask(SettingDao settingDao) {
+            this.settingDao = settingDao;
+        }
+
+        @Override
+        protected Setting[] doInBackground(Void... voids) {
+            return settingDao.getAllSettings();
+        }
+    }
+
+
 }
 

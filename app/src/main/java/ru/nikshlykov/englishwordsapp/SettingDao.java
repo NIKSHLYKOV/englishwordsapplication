@@ -14,7 +14,7 @@ public interface SettingDao {
     int update(Setting setting);
     // НЕОБХОДИМО УЧЕСТЬ ТО, ЧТО ОБНОВЛЯЮТСЯ ВСЕ ПОЛЯ ИЗ ENTITY.????
     @Update
-    int updateMultiple(List<Setting> settings);
+    int update(Setting[] settings);
 
     // Получаем все настройки.
     @Query("SELECT * FROM Settings")
