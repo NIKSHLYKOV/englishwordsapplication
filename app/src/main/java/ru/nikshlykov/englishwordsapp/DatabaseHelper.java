@@ -1,6 +1,5 @@
 package ru.nikshlykov.englishwordsapp;
 
-import android.app.Application;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -9,16 +8,13 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.HashSet;
 
-import static ru.nikshlykov.englishwordsapp.ModesFragment.modes;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -205,11 +201,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         int updatedLinesCount = 0;
         int selected = 0;
         int notSelected = 0;
-        for (int i = 0; i < ModesActivity.modes.size(); i++) {
+        for (int i = 0; i < ModesActivity.mode123s.size(); i++) {
             ContentValues contentValues = new ContentValues();
-            Mode mode = ModesActivity.modes.get(i);
-            String modeId = String.valueOf(mode.getId());
-            if (mode.getIsSelected()){
+            Mode123 mode123 = ModesActivity.mode123s.get(i);
+            String modeId = String.valueOf(mode123.getId());
+            if (mode123.getIsSelected()){
                 selected++;
                 contentValues.put(ModesTable.COLUMN_ISSELECTED, "1");
             }
@@ -232,8 +228,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         /*ArrayList<String> selectedModesIds = new ArrayList<>();
         ArrayList<String> notSelectedModesIds = new ArrayList<>();
 
-        for (int i = 0; i < modes.size(); i++) {
-            Mode mode = modes.get(i);
+        for (int i = 0; i < mode123s.size(); i++) {
+            Mode123 mode = mode123s.get(i);
             String modeId = String.valueOf(mode.getId());
             if (mode.getIsSelected())
                 selectedModesIds.add(modeId);

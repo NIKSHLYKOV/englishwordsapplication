@@ -19,7 +19,7 @@ public class ModesActivity extends AppCompatActivity {
     DatabaseHelper databaseHelper;
 
     // Список для хранения режимов.
-    public static ArrayList<Mode> modes;
+    public static ArrayList<Mode123> mode123s;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -29,7 +29,7 @@ public class ModesActivity extends AppCompatActivity {
         databaseHelper = new DatabaseHelper(this);
 
         // Инициализируем ArrayList с режимами и добавляем в него режимы из БД.
-        modes = new ArrayList<>();
+        mode123s = new ArrayList<>();
         setModesFromDbToModesArrayList();
 
         // Находим RecyclerView и устанавливаем ему adapter и layoutManager.
@@ -50,7 +50,7 @@ public class ModesActivity extends AppCompatActivity {
     }
 
     private void setModesFromDbToModesArrayList() {
-        Mode mode;
+        Mode123 mode123;
         Cursor modeCursor;
         // Получаем курсор со всеми режимами из БД.
         modeCursor = databaseHelper.getModes();
@@ -64,8 +64,8 @@ public class ModesActivity extends AppCompatActivity {
                 String modeImageResourceId = modeCursor.getString(modeCursor.getColumnIndex(DatabaseHelper.ModesTable.COLUMN_IMAGEID));
                 int integerModeImageResourceId = getResources().getIdentifier(modeImageResourceId, "drawable", this.getPackageName());
                 // Создаём новый объект режима по полученным из курсора данным и добавляем его в нашу коллекцию.
-                mode = new Mode(modeId, modeName, modeIsSelected, integerModeImageResourceId);
-                modes.add(mode);
+                mode123 = new Mode123(modeId, modeName, modeIsSelected, integerModeImageResourceId);
+                mode123s.add(mode123);
             } while (modeCursor.moveToNext());
         }
         else

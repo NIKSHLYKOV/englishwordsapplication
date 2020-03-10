@@ -1,13 +1,13 @@
 package ru.nikshlykov.englishwordsapp;
 
-public class Word {
+public class Word123 {
 
     private String word;
     private String transcription;
     private String value;
     private long id;
 
-    public Word(String word, String transcription, String value, long id) {
+    public Word123(String word, String transcription, String value, long id) {
         this.word = word;
         this.transcription = transcription;
         this.value = value;

@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -16,7 +15,6 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -52,7 +50,7 @@ public class SubgroupActivity extends AppCompatActivity {
     private DividerItemDecoration dividerItemDecoration;
 
     // Для хранения слов текущей подгруппы.
-    public static ArrayList<Word> words;
+    public static ArrayList<Word123> word123s;
 
     // Полученные данные из Intent'а.
     private Bundle arguments;
@@ -141,9 +139,9 @@ public class SubgroupActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         // Инициализируем список слов и заполняем его данными.
-        words = new ArrayList<>();
+        word123s = new ArrayList<>();
         setWordsFromDbToWordsArrayList();
-        adapter = new WordsRecyclerViewAdapter(SubgroupActivity.this, words);
+        adapter = new WordsRecyclerViewAdapter(SubgroupActivity.this, word123s);
         recyclerView.setAdapter(adapter);
         super.onResume();
         Log.d(LOG_TAG, "OnResume");
@@ -185,7 +183,7 @@ public class SubgroupActivity extends AppCompatActivity {
     }
 
     private void setWordsFromDbToWordsArrayList() {
-        Word newWord;
+        Word123 newWord123;
         Cursor wordsCursor;
         // Получаем курсор со всеми словами из подгруппы из БД.
         wordsCursor = databaseHelper.rawQuery("Select " + DatabaseHelper.WordsTable.TABLE_WORDS + ".*" +
@@ -201,8 +199,8 @@ public class SubgroupActivity extends AppCompatActivity {
                 String value = wordsCursor.getString(wordsCursor.getColumnIndex(DatabaseHelper.WordsTable.TABLE_WORDS_COLUMN_VALUE));
                 long id = wordsCursor.getLong(wordsCursor.getColumnIndex(DatabaseHelper.WordsTable.TABLE_WORDS_COLUMN_ID));
                 // Создаём новый объект режима по полученным из курсора данным и добавляем его в нашу коллекцию.
-                newWord = new Word(word, transcription, value, id);
-                words.add(newWord);
+                newWord123 = new Word123(word, transcription, value, id);
+                word123s.add(newWord123);
             } while (wordsCursor.moveToNext());
         }
         else
@@ -229,19 +227,19 @@ public class SubgroupActivity extends AppCompatActivity {
         switch (item.getItemId()){
             // Сортировка слов по алфавиту или сложности.
             case R.id.activity_subgroup___action___sort:
-                Log.d(LOG_TAG, "sort words");
+                Log.d(LOG_TAG, "sort word123s");
                 SortWordsDialogFragment sortWordsDialogFragment = new SortWordsDialogFragment();
                 sortWordsDialogFragment.show(manager, DIALOG_SORTWORDS);
                 return true;
             // Сбрасывание прогресса слов данной подгруппы.
             case R.id.activity_subgroup___action___reset_words_progress:
-                Log.d(LOG_TAG, "Reset words progress");
+                Log.d(LOG_TAG, "Reset word123s progress");
                 /*ResetWordProgressDialogFragment resetWordProgressDialogFragment = new ResetWordProgressDialogFragment();
                 resetWordProgressDialogFragment.show(manager, DIALOG_RESETWORDSPROGRESS);*/
                 return true;
             // Удаление слов из данной подгруппы.
             case R.id.activity_subgroup___action___delete_words:
-                Log.d(LOG_TAG, "Delete words");
+                Log.d(LOG_TAG, "Delete word123s");
                 /*CopyWordDialogFragment copyWordDialogFragment = new CopyWordDialogFragment();
                 copyWordDialogFragment.show(manager, DIALOG_DELETEWORDS);*/
                 return true;

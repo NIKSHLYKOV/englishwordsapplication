@@ -10,8 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
@@ -52,7 +50,7 @@ public class ModeRecyclerViewAdapter extends RecyclerView.Adapter<ModeRecyclerVi
 
     @Override
     public int getItemCount() {
-        return ModesActivity.modes.size();
+        return ModesActivity.mode123s.size();
     }
 
     @NonNull
@@ -64,19 +62,19 @@ public class ModeRecyclerViewAdapter extends RecyclerView.Adapter<ModeRecyclerVi
 
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder holder, final int position) {
-        Drawable drawable = ContextCompat.getDrawable(context, ModesActivity.modes.get(position).getImageResourceId() );
+        Drawable drawable = ContextCompat.getDrawable(context, ModesActivity.mode123s.get(position).getImageResourceId() );
         holder.imageView.setImageDrawable(drawable);
-        holder.textView.setText(ModesActivity.modes.get(position).getModeName());
-        holder.checkBox.setChecked(ModesActivity.modes.get(position).getIsSelected());
+        holder.textView.setText(ModesActivity.mode123s.get(position).getModeName());
+        holder.checkBox.setChecked(ModesActivity.mode123s.get(position).getIsSelected());
         holder.checkBox.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 /*if (listener != null)
                     listener.onClick(position);*/
                 boolean isChecked = holder.checkBox.isChecked();
-                ModesActivity.modes.get(position).setIsSelected(isChecked);
+                ModesActivity.mode123s.get(position).setIsSelected(isChecked);
                 Toast.makeText(context, "Вы нажали чекбокс режима " + position +
-                        ". Теперь его значение - " + ModesActivity.modes.get(position).getIsSelected(), Toast.LENGTH_LONG).show();
+                        ". Теперь его значение - " + ModesActivity.mode123s.get(position).getIsSelected(), Toast.LENGTH_LONG).show();
             }
         });
 

@@ -19,7 +19,7 @@ public class WordsRecyclerViewAdapter extends RecyclerView.Adapter<WordsRecycler
     private LayoutInflater inflater;
     private Context context;
 
-    private ArrayList<Word> words;
+    private ArrayList<Word123> word123s;
 
     static class WordsViewHolder extends RecyclerView.ViewHolder{
 
@@ -38,14 +38,14 @@ public class WordsRecyclerViewAdapter extends RecyclerView.Adapter<WordsRecycler
         }
     }
 
-    public WordsRecyclerViewAdapter(Context context, ArrayList<Word> words) {
+    public WordsRecyclerViewAdapter(Context context, ArrayList<Word123> word123s) {
         this.context = context;
-        this.words = words;
+        this.word123s = word123s;
     }
 
     @Override
     public int getItemCount() {
-        return words.size();
+        return word123s.size();
     }
 
     @NonNull
@@ -57,14 +57,14 @@ public class WordsRecyclerViewAdapter extends RecyclerView.Adapter<WordsRecycler
 
     @Override
     public void onBindViewHolder(@NonNull final WordsRecyclerViewAdapter.WordsViewHolder holder, final int position) {
-        holder.word.setText(words.get(position).getWord());
-        holder.transcription.setText(words.get(position).getTranscription());
-        holder.value.setText(words.get(position).getValue());
+        holder.word.setText(word123s.get(position).getWord());
+        holder.transcription.setText(word123s.get(position).getTranscription());
+        holder.value.setText(word123s.get(position).getValue());
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, WordActivity.class);
-                intent.putExtra(WordActivity.EXTRA_WORD_ID, words.get(position).getId());
+                intent.putExtra(WordActivity.EXTRA_WORD_ID, word123s.get(position).getId());
                 holder.itemView.getContext().startActivity(intent);
             }
         });/*holder.checkBox.setOnClickListener(new View.OnClickListener(){
@@ -73,9 +73,9 @@ public class WordsRecyclerViewAdapter extends RecyclerView.Adapter<WordsRecycler
                 *//*if (listener != null)
                     listener.onClick(position);*//*
                 boolean isChecked = holder.checkBox.isChecked();
-                ModesActivity.modes.get(position).setIsSelected(isChecked);
+                ModesActivity.mode123s.get(position).setIsSelected(isChecked);
                 Toast.makeText(context, "Вы нажали чекбокс режима " + position +
-                        ". Теперь его значение - " + ModesActivity.modes.get(position).getIsSelected(), Toast.LENGTH_LONG).show();
+                        ". Теперь его значение - " + ModesActivity.mode123s.get(position).getIsSelected(), Toast.LENGTH_LONG).show();
             }
         });*/
 

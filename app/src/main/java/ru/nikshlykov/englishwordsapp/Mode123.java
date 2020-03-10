@@ -1,12 +1,12 @@
 package ru.nikshlykov.englishwordsapp;
 
-public class Mode {
+public class Mode123 {
     private long id;
     private String modeName;
     private boolean isSelected;
     private int imageResourceId;
 
-    public Mode(long id, String modeName, boolean isSelected, int imageResourceId) {
+    public Mode123(long id, String modeName, boolean isSelected, int imageResourceId) {
         this.id = id;
         this.modeName = modeName;
         this.isSelected = isSelected;
