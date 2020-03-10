@@ -1,0 +1,19 @@
+package ru.nikshlykov.englishwordsapp;
+
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+@Entity(tableName = "Groups")
+public class Group {
+
+    @PrimaryKey()
+    @NonNull
+    @ColumnInfo(name = "_id")
+    public long id;
+
+    @NonNull
+    @ColumnInfo(name = "GroupName")
+    public String name;
+}
