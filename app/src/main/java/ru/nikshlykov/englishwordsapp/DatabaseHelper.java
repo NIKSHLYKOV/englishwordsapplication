@@ -43,8 +43,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static class LinksTable {
         // Названия таблицы связей и её колонок
         static final String TABLE_LINKS = "Links";
-        static final String TABLE_LINKS_COLUMN_WORDID = "WordID";
-        static final String TABLE_LINKS_COLUMN_SUBGROUPID = "SubgroupID";
+        static final String TABLE_LINKS_COLUMN_WORDID = "WordId";
+        static final String TABLE_LINKS_COLUMN_SUBGROUPID = "SubgroupId";
         static final String TABLE_LINKS_COLUMN_LEVELINPARENTGROUP = "LevelInParentGroup";
     }
 
@@ -53,7 +53,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         static final String TABLE_SUBGROUPS = "Subgroups";
         static final String TABLE_SUBGROUPS_COLUMN_ID = "_id";
         static final String TABLE_SUBGROUPS_COLUMN_SUBGROUPNAME = "SubgroupName";
-        static final String TABLE_SUBGROUPS_COLUMN_PARENTGROUPID = "ParentGroupID";
+        static final String TABLE_SUBGROUPS_COLUMN_PARENTGROUPID = "groupId";
         static final String TABLE_SUBGROUPS_COLUMN_ISSTUDIED = "IsStudied";
     }
 

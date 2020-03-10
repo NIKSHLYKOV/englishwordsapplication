@@ -13,7 +13,7 @@ public abstract class AppDatabase extends RoomDatabase {
 
     private static AppDatabase instance;
 
-    private static String DATABASE_NAME = "room_words.db";
+    private static String DATABASE_NAME = "words.db";
     private static String DATABASE_DIR = "words.db";
 
     public abstract WordDao wordDao();
