@@ -196,64 +196,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return updatedLinesCount;
     }
 
-    public static int[] updateModesInDb() {
-        openDataBaseToReadAndWrite();
-        int updatedLinesCount = 0;
-        int selected = 0;
-        int notSelected = 0;
-        for (int i = 0; i < ModesActivity.mode123s.size(); i++) {
-            ContentValues contentValues = new ContentValues();
-            Mode123 mode123 = ModesActivity.mode123s.get(i);
-            String modeId = String.valueOf(mode123.getId());
-            if (mode123.getIsSelected()){
-                selected++;
-                contentValues.put(ModesTable.COLUMN_ISSELECTED, "1");
-            }
-            else {
-                notSelected++;
-                contentValues.put(ModesTable.COLUMN_ISSELECTED, "0");
-            }
-            updatedLinesCount += myDataBase.update(ModesTable.TABLE_NAME, contentValues, "_id = ?", new String[] {modeId});
-        }
-        myDataBase.close();
-        myDataBase = null;
-
-        int[] returned = new int[3];
-        returned[0] = updatedLinesCount;
-        returned[1] = selected;
-        returned[2] = notSelected;
-
-        return returned;
-
-        /*ArrayList<String> selectedModesIds = new ArrayList<>();
-        ArrayList<String> notSelectedModesIds = new ArrayList<>();
-
-        for (int i = 0; i < mode123s.size(); i++) {
-            Mode123 mode = mode123s.get(i);
-            String modeId = String.valueOf(mode.getId());
-            if (mode.getIsSelected())
-                selectedModesIds.add(modeId);
-            else
-                notSelectedModesIds.add(modeId);
-        }
-
-        String[] arraySelectedModesIds = String[];
-
-        ContentValues selectedModesContentValues = new ContentValues();
-        selectedModesContentValues.put(ModesTable.COLUMN_ISSELECTED, "1");
-
-        ContentValues notSelectedModesContentValues = new ContentValues();
-        notSelectedModesContentValues.put(ModesTable.COLUMN_ISSELECTED, "0");
-
-
-        openDataBaseToReadAndWrite();
-        myDataBase.update(ModesTable.TABLE_NAME, selectedModesContentValues, "_id = ?", selectedModesIds)
-        myDataBase.update()
-        myDataBase.close();
-        myDataBase = null;
-        return updatedLinesCount;*/
-    }
-
     public static long insert(String table, String nullColumnHack, ContentValues values) {
         Log.d(LOG_TAG, "insert");
         openDataBaseToReadAndWrite();

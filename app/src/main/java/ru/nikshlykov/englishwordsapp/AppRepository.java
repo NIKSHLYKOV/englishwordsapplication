@@ -403,11 +403,11 @@ public class AppRepository {
     /**
      * Методы для работы с режимами.
      */
-    public void update(Mode[] modes) {
+    public void update(List<Mode> modes) {
         new UpdateModeAsyncTask(modeDao).execute(modes);
     }
 
-    public Mode[] getAllModes() {
+    public List<Mode> getAllModes() {
         GetAllModesAsyncTask task = new GetAllModesAsyncTask(modeDao);
         task.execute();
         try {
@@ -432,7 +432,7 @@ public class AppRepository {
     /**
      * AsyncTasks для работы с режимами.
      */
-    private static class UpdateModeAsyncTask extends AsyncTask<Mode, Void, Void> {
+    private static class UpdateModeAsyncTask extends AsyncTask<List<Mode>, Void, Void> {
         private ModeDao modeDao;
 
         private UpdateModeAsyncTask(ModeDao modeDao) {
@@ -440,13 +440,13 @@ public class AppRepository {
         }
 
         @Override
-        protected Void doInBackground(Mode... modes) {
-            modeDao.update(modes);
+        protected Void doInBackground(List<Mode>... modes) {
+            modeDao.update(modes[0]);
             return null;
         }
     }
 
-    private static class GetAllModesAsyncTask extends AsyncTask<Void, Void, Mode[]> {
+    private static class GetAllModesAsyncTask extends AsyncTask<Void, Void, List<Mode>> {
         private ModeDao modeDao;
 
         private GetAllModesAsyncTask(ModeDao modeDao) {
@@ -454,7 +454,7 @@ public class AppRepository {
         }
 
         @Override
-        protected Mode[] doInBackground(Void... voids) {
+        protected List<Mode> doInBackground(Void... voids) {
             return modeDao.getAllModes();
         }
     }

@@ -11,11 +11,11 @@ public interface ModeDao {
 
     // НЕОБХОДИМО УЧЕСТЬ ТО, ЧТО ОБНОВЛЯЮТСЯ ВСЕ ПОЛЯ ИЗ ENTITY.????
     @Update
-    int update(Mode[] modes);
+    int update(List<Mode> modes);
 
     // Получаем все режимы.
     @Query("SELECT * FROM Modes")
-    Mode[] getAllModes();
+    List<Mode> getAllModes();
 
     @Query("SELECT * FROM Modes WHERE IsSelected = 1")
     Mode[] getSelectedModes();

@@ -5,10 +5,12 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 
+import java.util.List;
+
 public class ModesViewModel extends AndroidViewModel {
     private AppRepository repository;
 
-    Mode[] modes;
+    List<Mode> modes;
 
     public ModesViewModel(@NonNull Application application) {
         super(application);
