@@ -2,6 +2,7 @@ package ru.nikshlykov.englishwordsapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 
 
 import java.util.ArrayList;
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -19,7 +21,9 @@ public class WordsRecyclerViewAdapter extends RecyclerView.Adapter<WordsRecycler
     private LayoutInflater inflater;
     private Context context;
 
-    private ArrayList<Word123> word123s;
+    // private ArrayList<Word123> word123s;
+
+    private List<Word> words = new ArrayList<Word>();
 
     static class WordsViewHolder extends RecyclerView.ViewHolder{
 
@@ -38,14 +42,16 @@ public class WordsRecyclerViewAdapter extends RecyclerView.Adapter<WordsRecycler
         }
     }
 
-    public WordsRecyclerViewAdapter(Context context, ArrayList<Word123> word123s) {
+    public WordsRecyclerViewAdapter(Context context) {
         this.context = context;
-        this.word123s = word123s;
+        //this.word123s = word123s;
     }
 
     @Override
     public int getItemCount() {
-        return word123s.size();
+
+        // return word123s.size();
+        return  words.size();
     }
 
     @NonNull
@@ -57,7 +63,19 @@ public class WordsRecyclerViewAdapter extends RecyclerView.Adapter<WordsRecycler
 
     @Override
     public void onBindViewHolder(@NonNull final WordsRecyclerViewAdapter.WordsViewHolder holder, final int position) {
-        holder.word.setText(word123s.get(position).getWord());
+        final Word currentWord = words.get(position);
+        holder.word.setText(currentWord.word);
+        holder.transcription.setText(currentWord.transcription);
+        holder.value.setText(currentWord.value);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, WordActivity.class);
+                intent.putExtra(WordActivity.EXTRA_WORD_ID, currentWord.id);
+                holder.itemView.getContext().startActivity(intent);
+            }
+        });
+       /* holder.word.setText(word123s.get(position).getWord());
         holder.transcription.setText(word123s.get(position).getTranscription());
         holder.value.setText(word123s.get(position).getValue());
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -67,7 +85,7 @@ public class WordsRecyclerViewAdapter extends RecyclerView.Adapter<WordsRecycler
                 intent.putExtra(WordActivity.EXTRA_WORD_ID, word123s.get(position).getId());
                 holder.itemView.getContext().startActivity(intent);
             }
-        });/*holder.checkBox.setOnClickListener(new View.OnClickListener(){
+        });*//*holder.checkBox.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 *//*if (listener != null)
@@ -79,6 +97,15 @@ public class WordsRecyclerViewAdapter extends RecyclerView.Adapter<WordsRecycler
             }
         });*/
 
+    }
+    public void setWords(List<Word> words) {
+        this.words = words;
+        notifyDataSetChanged();
+        for (Word word : words) {
+            Log.i("Test",
+                    "word: " + word.word
+                            + "; value: " + word.value);
+        }
     }
 
 }

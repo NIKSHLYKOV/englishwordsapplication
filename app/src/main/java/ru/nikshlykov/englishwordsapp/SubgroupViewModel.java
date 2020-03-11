@@ -21,7 +21,7 @@ public class SubgroupViewModel extends AndroidViewModel {
         words = repository.getWordsFromSubgroup(subgroupId);
     }
 
-    public void update(Subgroup subgroup){
+    public void update(){
         repository.update(subgroup);
     }
 
