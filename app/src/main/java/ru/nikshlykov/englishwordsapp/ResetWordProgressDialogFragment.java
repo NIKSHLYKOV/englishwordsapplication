@@ -18,7 +18,8 @@ import androidx.fragment.app.DialogFragment;
 public class ResetWordProgressDialogFragment extends DialogFragment {
 
     private static final String LOG_TAG = "ResetWordProgressDF";
-    public static final String EXSTRA_WORDID = "WordId";
+
+    public static final String EXTRA_WORD_ID = "WordId";
     private Context context;
     // Id нашего слова.
     private long wordId;
@@ -34,7 +35,7 @@ public class ResetWordProgressDialogFragment extends DialogFragment {
         super.onCreate(savedInstanceState);
         Bundle arguments = getArguments();
         try {
-            wordId = arguments.getLong(EXSTRA_WORDID);
+            wordId = arguments.getLong(EXTRA_WORD_ID);
         } catch (NullPointerException e) {
             Log.e(LOG_TAG, e.getMessage());
             // Здесь можно прописать явное закрытие фрагмента, если это возможно.

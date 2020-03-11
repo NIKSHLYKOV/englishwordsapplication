@@ -31,8 +31,6 @@ public class GroupsFragment extends Fragment {
 
     private String LOG_TAG = "GroupsFragment";
 
-    private String EXTRA_SUBGROUP_ID = "SubgroupId";
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -52,7 +50,7 @@ public class GroupsFragment extends Fragment {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
                 Intent intent = new Intent(context, SubgroupActivity.class);
-                intent.putExtra(EXTRA_SUBGROUP_ID, id);
+                intent.putExtra(SubgroupActivity.EXTRA_SUBGROUP_ID, id);
                 startActivity(intent);
                 return false;
             }

@@ -1,7 +1,6 @@
 package ru.nikshlykov.englishwordsapp;
 
 import android.app.Dialog;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
@@ -20,7 +19,7 @@ import java.util.HashSet;
 
 public class DeleteWordDialogFragment extends DialogFragment {
 
-    public static final String EXSTRA_WORDID = "WordId";
+    public static final String EXTRA_WORD_ID = "WordId";
     private static final String LOG_TAG = "DeleteWordDF";
     private Context context;
 
@@ -49,7 +48,7 @@ public class DeleteWordDialogFragment extends DialogFragment {
 
         Bundle arguments = getArguments();
         try {
-            wordId = arguments.getLong(EXSTRA_WORDID);
+            wordId = arguments.getLong(EXTRA_WORD_ID);
         } catch (NullPointerException e) {
             Log.e(LOG_TAG, e.getMessage());
             // Здесь можно прописать явное закрытие фрагмента, если это возможно.

@@ -23,11 +23,11 @@ import androidx.fragment.app.FragmentManager;
 
 public class WordActivity extends AppCompatActivity {
 
-    private final static String LOG_TAG = "WordActivity";
+    private static final String LOG_TAG = "WordActivity";
 
     // Extras для получения данных из интента.
-    public static String EXTRA_SUBGROUP_ID = "SubgroupId";
-    public static String EXTRA_WORD_ID = "WordId";
+    public static final String EXTRA_SUBGROUP_ID = "SubgroupId";
+    public static final String EXTRA_WORD_ID = "WordId";
 
     // Теги для диалоговых фрагментов.
     private static final String DIALOG_RESETWORDPROGRESS = "ResetWordProgressDialogFragment";
@@ -55,7 +55,7 @@ public class WordActivity extends AppCompatActivity {
 
     // Для синтезатора речи.
     private TextToSpeech TTS;
-    private final static String TTS_ERROR = "Ошибка воспроизведения!";
+    private static final String TTS_ERROR = "Ошибка воспроизведения!";
 
 
     @Override
@@ -248,7 +248,7 @@ public class WordActivity extends AppCompatActivity {
             case R.id.activity_word___action___linkword:
                 Log.d(LOG_TAG, "Link word");
                 LinkWordDialogFragment linkWordDialogFragment = new LinkWordDialogFragment();
-                arguments.putLong(LinkWordDialogFragment.EXSTRA_WORDID, wordId);
+                arguments.putLong(LinkWordDialogFragment.EXTRA_WORD_ID, wordId);
                 linkWordDialogFragment.setArguments(arguments);
                 linkWordDialogFragment.show(manager, DIALOG_LINKWORD);
                 return true;
@@ -256,7 +256,7 @@ public class WordActivity extends AppCompatActivity {
             case R.id.activity_word___action___resetwordprogress:
                 Log.d(LOG_TAG, "Reset word progress");
                 ResetWordProgressDialogFragment resetWordProgressDialogFragment = new ResetWordProgressDialogFragment();
-                arguments.putLong(ResetWordProgressDialogFragment.EXSTRA_WORDID, wordId);
+                arguments.putLong(ResetWordProgressDialogFragment.EXTRA_WORD_ID, wordId);
                 resetWordProgressDialogFragment.setArguments(arguments);
                 resetWordProgressDialogFragment.show(manager, DIALOG_RESETWORDPROGRESS);
                 return true;
@@ -264,7 +264,7 @@ public class WordActivity extends AppCompatActivity {
             case R.id.delete_word:
                 Log.d(LOG_TAG, "Delete word");
                 DeleteWordDialogFragment deleteWordDialogFragment = new DeleteWordDialogFragment();
-                arguments.putLong(DeleteWordDialogFragment.EXSTRA_WORDID, wordId);
+                arguments.putLong(DeleteWordDialogFragment.EXTRA_WORD_ID, wordId);
                 deleteWordDialogFragment.setArguments(arguments);
                 deleteWordDialogFragment.show(manager, DIALOG_DELETEWORD);
                 return true;

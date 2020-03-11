@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import java.util.HashSet;
 
@@ -21,7 +20,8 @@ import androidx.fragment.app.DialogFragment;
 
 public class LinkWordDialogFragment extends DialogFragment {
 
-    public static final String EXSTRA_WORDID = "WordId";
+    public static final String EXTRA_WORD_ID = "WordId";
+
     private static final String LOG_TAG = "LinkWordDialogFragment";
 
     private long wordId;
@@ -50,7 +50,7 @@ public class LinkWordDialogFragment extends DialogFragment {
 
         Bundle arguments = getArguments();
         try {
-            wordId = arguments.getLong(EXSTRA_WORDID);
+            wordId = arguments.getLong(EXTRA_WORD_ID);
         } catch (NullPointerException e) {
             Log.e(LOG_TAG, e.getMessage());
             // Здесь можно прописать явное закрытие фрагмента, если это возможно.

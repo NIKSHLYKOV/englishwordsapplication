@@ -25,14 +25,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class SubgroupActivity extends AppCompatActivity {
 
-    private String EXTRA_SUBGROUP_ID = "SubgroupId";
-    private String EXTRA_WORD_ID = "WordId";
+    public static final String EXTRA_SUBGROUP_ID = "SubgroupId";
 
-    private final static String LOG_TAG = "SubgroupActivity";
+    private static final String LOG_TAG = "SubgroupActivity";
 
-    private final static String DIALOG_SORTWORDS = "SortWordsDialogFragment";
-    private final static String DIALOG_RESETWORDSPROGRESS = "ResetWordsProgressDialogFragment";
-    private final static String DIALOG_DELETEWORDS = "DeleteWordsDialogFragment";
+    private static final String DIALOG_SORTWORDS = "SortWordsDialogFragment";
+    private static final String DIALOG_RESETWORDSPROGRESS = "ResetWordsProgressDialogFragment";
+    private static final String DIALOG_DELETEWORDS = "DeleteWordsDialogFragment";
 
     // Helper для работы с БД.
     private DatabaseHelper databaseHelper;
@@ -145,18 +144,6 @@ public class SubgroupActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
         super.onResume();
         Log.d(LOG_TAG, "OnResume");
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        Log.d(LOG_TAG, "OnStop");
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.d(LOG_TAG, "OnDestroy");
     }
 
     private void viewElementsFinding(){
