@@ -7,24 +7,24 @@
     android:layout_height="match_parent">
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/activity_subgroup___Toolbar___toolbar"
+        android:id="@+id/activity_subgroup___toolbar"
         style="@style/Toolbar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <CheckBox
-        android:id="@+id/activity_subgroup___CheckBox___study_subgroup"
+        android:id="@+id/activity_subgroup___check_box___study_subgroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:buttonTint="@color/colorPrimary"
         android:text="Изучать"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/activity_subgroup___Toolbar___toolbar" />
+        app:layout_constraintTop_toBottomOf="@+id/activity_subgroup___toolbar" />
 
     <Button
-        android:id="@+id/activity_subgroup___Button___new_word"
+        android:id="@+id/activity_subgroup___button___new_word"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -35,10 +35,10 @@
         android:text=" Создать новое слово"
         android:textColor="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/activity_subgroup___Toolbar___toolbar" />
+        app:layout_constraintTop_toBottomOf="@+id/activity_subgroup___toolbar" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/activity_subgroup___RecyclerView___words"
+        android:id="@+id/activity_subgroup___recycler_view___words"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:scrollbars="vertical"
@@ -46,6 +46,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/activity_subgroup___Button___new_word">
+        app:layout_constraintTop_toBottomOf="@id/activity_subgroup___button___new_word">
     </androidx.recyclerview.widget.RecyclerView>
 </androidx.constraintlayout.widget.ConstraintLayout>

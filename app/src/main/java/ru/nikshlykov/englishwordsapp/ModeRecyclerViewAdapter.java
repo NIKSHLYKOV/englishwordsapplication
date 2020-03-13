@@ -33,9 +33,9 @@ public class ModeRecyclerViewAdapter extends RecyclerView.Adapter<ModeRecyclerVi
         MyViewHolder(View itemView){
             super(itemView);
 
-            checkBox = (CheckBox) itemView.findViewById(R.id.card_mode___CheckBox);
-            imageView = (ImageView) itemView.findViewById(R.id.card_mode___ImageView);
-            textView = (TextView) itemView.findViewById(R.id.card_mode___TextView);
+            checkBox = (CheckBox) itemView.findViewById(R.id.card_mode___check_box___is_selected);
+            imageView = (ImageView) itemView.findViewById(R.id.card_mode___image_view);
+            textView = (TextView) itemView.findViewById(R.id.card_mode___text_view___mode_name);
         }
     }
 

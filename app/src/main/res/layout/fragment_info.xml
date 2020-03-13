@@ -7,7 +7,7 @@
     android:minHeight="650dp">
 
     <TextView
-        android:id="@+id/fragment_info___TextView___info"
+        android:id="@+id/fragment_info___text_view___info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"

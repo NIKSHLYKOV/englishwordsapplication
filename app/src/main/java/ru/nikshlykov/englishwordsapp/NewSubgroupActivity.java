@@ -29,10 +29,10 @@ public class NewSubgroupActivity extends AppCompatActivity {
         databaseHelper = new DatabaseHelper(this);
 
         // Находим editText, в котором будет прописываться название новой группы.
-        editText_groupName = findViewById(R.id.editText_groupName);
+        editText_groupName = findViewById(R.id.activity_new_subgroup___edit_text___group_name);
 
         // Находим кнопку сохранения и присваиваем ей обработчик.
-        creatingButton = findViewById(R.id.button_saveNewGroup);
+        creatingButton = findViewById(R.id.activity_new_subgroup___button___save_new_group);
         creatingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

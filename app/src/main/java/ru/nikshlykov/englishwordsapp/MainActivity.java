@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
      * Находит View элементы в разметке.
      */
     private void viewElementsFinding(){
-        contentLayout =  findViewById(R.id.activity_main___LinearLayout___content_layout);
+        contentLayout =  findViewById(R.id.activity_main___linear_layout___content_layout);
         navigation = (BottomNavigationView) findViewById(R.id.navigation);
     }
 

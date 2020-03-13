@@ -1,8 +1,6 @@
 package ru.nikshlykov.englishwordsapp;
 
-import android.content.ContentValues;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -13,7 +11,6 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.Nullable;
@@ -167,10 +164,10 @@ public class SubgroupActivity extends AppCompatActivity {
     }
 
     private void viewElementsFinding() {
-        buttonForNewWordCreating = findViewById(R.id.activity_subgroup___Button___new_word);
-        learnSubgroupCheckBox = findViewById(R.id.activity_subgroup___CheckBox___study_subgroup);
-        toolbar = findViewById(R.id.activity_subgroup___Toolbar___toolbar);
-        recyclerView = findViewById(R.id.activity_subgroup___RecyclerView___words);
+        buttonForNewWordCreating = findViewById(R.id.activity_subgroup___button___new_word);
+        learnSubgroupCheckBox = findViewById(R.id.activity_subgroup___check_box___study_subgroup);
+        toolbar = findViewById(R.id.activity_subgroup___toolbar);
+        recyclerView = findViewById(R.id.activity_subgroup___recycler_view___words);
     }
 
     /*boolean isSubgroupStudied(){

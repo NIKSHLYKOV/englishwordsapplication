@@ -7,7 +7,7 @@
     android:background="@android:color/white">
 
     <TextView
-        android:id="@+id/fragment_mode3___TextView___value"
+        android:id="@+id/fragment_mode3___text_view___value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -21,7 +21,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/fragment_mode3___EditText___userVariant"
+        android:id="@+id/fragment_mode3___edit_text___user_variant"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -32,18 +32,18 @@
         android:inputType="textPersonName"
         android:text="Name"
         android:textColor="@color/colorPrimary"
-        app:layout_constraintEnd_toStartOf="@+id/fragment_mode3___Button___confirm"
+        app:layout_constraintEnd_toStartOf="@+id/fragment_mode3___button___confirm"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fragment_mode3___TextView___value" />
+        app:layout_constraintTop_toBottomOf="@+id/fragment_mode3___text_view___value" />
 
     <ImageButton
-        android:id="@+id/fragment_mode3___Button___confirm"
+        android:id="@+id/fragment_mode3___button___confirm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:background="@android:color/white"
-        app:layout_constraintBottom_toBottomOf="@+id/fragment_mode3___EditText___userVariant"
+        app:layout_constraintBottom_toBottomOf="@+id/fragment_mode3___edit_text___user_variant"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/fragment_mode3___EditText___userVariant"
+        app:layout_constraintTop_toTopOf="@+id/fragment_mode3___edit_text___user_variant"
         app:srcCompat="@drawable/baseline_arrow_right_alt_black_36dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -49,7 +49,7 @@ public class InfoFragment extends Fragment {
 
         View v = inflater.inflate(R.layout.fragment_info, null);
 
-        infoText = v.findViewById(R.id.fragment_info___TextView___info);
+        infoText = v.findViewById(R.id.fragment_info___text_view___info);
 
         if (subgroupsAreNotChosen)
             infoText.setText("Для того, чтобы изучать слова, необходимо выбрать группы слов. Сделать это вы можете перейдя во вкладку \"Группы\"");

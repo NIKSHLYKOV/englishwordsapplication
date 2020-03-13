@@ -181,14 +181,14 @@ public class WordActivity extends AppCompatActivity {
      * Находит View элементы в разметке.
      */
     private void viewElementsFinding() {
-        editText_word = findViewById(R.id.activity_word___EditText___word);
-        editText_value = findViewById(R.id.activity_word___EditText___value);
-        editText_transcription = findViewById(R.id.activity_word___EditText___transcription);
-        saveButton = findViewById(R.id.activity_word___Button___saveWord);
-        ttsButton = findViewById(R.id.activity_word___Button___TTS);
-        learnProgressBar = findViewById(R.id.activity_word___ProgressBar___learnProgress);
-        textView_partOfSpeech = findViewById(R.id.activity_word___TextView_partOfSpeech);
-        toolbar = findViewById(R.id.activity_word___Toolbar___toolbar);
+        editText_word = findViewById(R.id.activity_word___edit_text___word);
+        editText_value = findViewById(R.id.activity_word___edit_text___value);
+        editText_transcription = findViewById(R.id.activity_word___edit_text___transcription);
+        saveButton = findViewById(R.id.activity_word___button___save_word);
+        ttsButton = findViewById(R.id.activity_word___button___tts);
+        learnProgressBar = findViewById(R.id.activity_word___progress_bar___learn_progress);
+        textView_partOfSpeech = findViewById(R.id.activity_word___text_view___part_of_speech);
+        toolbar = findViewById(R.id.activity_word___toolbar);
     }
 
     /**
@@ -196,7 +196,7 @@ public class WordActivity extends AppCompatActivity {
      */
     private void hidingViewsForNewWordCreating() {
         learnProgressBar.setVisibility(View.GONE);
-        TextView progressText = findViewById(R.id.activity_word___TextView___progress);
+        TextView progressText = findViewById(R.id.activity_word___text_view___progress);
         progressText.setVisibility(View.GONE);
         ttsButton.setVisibility(View.GONE);
         textView_partOfSpeech.setVisibility(View.GONE);

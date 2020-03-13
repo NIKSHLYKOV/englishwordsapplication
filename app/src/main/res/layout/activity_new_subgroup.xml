@@ -7,7 +7,7 @@
     tools:context=".WordActivity">
 
     <TextView
-        android:id="@+id/textView_groupName"
+        android:id="@+id/activity_new_subgroup___text_view___group_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -22,7 +22,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/editText_groupName"
+        android:id="@+id/activity_new_subgroup___edit_text___group_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -36,10 +36,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.043"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView_groupName" />
+        app:layout_constraintTop_toBottomOf="@+id/activity_new_subgroup___text_view___group_name" />
 
     <Button
-        android:id="@+id/button_saveNewGroup"
+        android:id="@+id/activity_new_subgroup___button___save_new_group"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"

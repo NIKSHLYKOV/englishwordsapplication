@@ -44,7 +44,7 @@ public class GroupsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_groups, null);
 
         // Находим ListView.
-        expandableListView = view.findViewById(R.id.fragment_groups___ExpandableListView___groupsAndSubgroups);
+        expandableListView = view.findViewById(R.id.fragment_groups___expandable_list_view);
         // Присваиваем ему обработчик.
         expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
@@ -56,7 +56,7 @@ public class GroupsFragment extends Fragment {
             }
         });
 
-        newSubgroupButton = view.findViewById(R.id.fragment_groups___Button___newSubgroup);
+        newSubgroupButton = view.findViewById(R.id.fragment_groups___button___new_subgroup);
         newSubgroupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

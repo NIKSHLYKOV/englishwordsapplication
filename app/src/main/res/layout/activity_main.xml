@@ -8,7 +8,7 @@
     tools:context=".MainActivity">
 
     <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/activity_main___LinearLayout___content_layout"
+        android:id="@+id/activity_main___linear_layout___content_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="vertical"

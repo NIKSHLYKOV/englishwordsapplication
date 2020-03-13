@@ -2,7 +2,7 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/card_mode___CardView"
+    android:id="@+id/card_mode___card_view"
     android:layout_width="match_parent"
     android:layout_height="100dp"
     android:layout_margin="8dp"
@@ -16,7 +16,7 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:id="@+id/card_mode___ImageView"
+            android:id="@+id/card_mode___image_view"
             android:layout_width="100dp"
             android:layout_height="match_parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -25,7 +25,7 @@
             tools:srcCompat="@tools:sample/avatars" />
 
         <TextView
-            android:id="@+id/card_mode___TextView"
+            android:id="@+id/card_mode___text_view___mode_name"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:paddingStart="8dp"
@@ -34,12 +34,12 @@
             android:text="TextView"
             android:textColor="@color/colorPrimary"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/card_mode___CheckBox"
-            app:layout_constraintStart_toEndOf="@+id/card_mode___ImageView"
-            app:layout_constraintTop_toTopOf="@+id/card_mode___CheckBox" />
+            app:layout_constraintEnd_toStartOf="@+id/card_mode___check_box___is_selected"
+            app:layout_constraintStart_toEndOf="@+id/card_mode___image_view"
+            app:layout_constraintTop_toTopOf="@+id/card_mode___check_box___is_selected" />
 
         <CheckBox
-            android:id="@+id/card_mode___CheckBox"
+            android:id="@+id/card_mode___check_box___is_selected"
             android:layout_width="30dp"
             android:layout_height="wrap_content"
             android:buttonTint="@color/colorPrimary"

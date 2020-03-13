@@ -4,24 +4,24 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/fragment_mode2___Layout___main"
+    android:id="@+id/fragment_mode2___layout___main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:minHeight="700dp">
 
 
     <LinearLayout
-        android:id="@+id/linearLayout2"
+        android:id="@+id/fragment_mode2___linear_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/frameLayout"
+        app:layout_constraintBottom_toTopOf="@+id/fragment_mode2___frame_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/fragment_mode2___TextView___value"
+            android:id="@+id/fragment_mode2___text_view___value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -32,7 +32,7 @@
             android:textSize="24sp" />
 
         <TextView
-            android:id="@+id/fragment_mode2___TextView___word"
+            android:id="@+id/fragment_mode2___text_view___word"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -43,7 +43,7 @@
             android:textSize="24sp" />
 
         <TextView
-            android:id="@+id/fragment_mode2___TextView___transcription"
+            android:id="@+id/fragment_mode2___text_view___transcription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -56,7 +56,7 @@
     </LinearLayout>
 
     <FrameLayout
-        android:id="@+id/frameLayout"
+        android:id="@+id/fragment_mode2___frame_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
@@ -65,7 +65,7 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <Button
-            android:id="@+id/fragment_mode2___Button___donotremember"
+            android:id="@+id/fragment_mode2___button___do_not_remember"
             style="@style/Base.Widget.AppCompat.Button.Colored"
             android:layout_width="150dp"
             android:layout_height="match_parent"
@@ -76,7 +76,7 @@
             android:textColor="@android:color/white" />
 
         <Button
-            android:id="@+id/fragment_mode2___Button___remember"
+            android:id="@+id/fragment_mode2___button___remember"
             style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="150dp"
             android:layout_height="match_parent"
