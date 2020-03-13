@@ -20,7 +20,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="150dp"
             android:gravity="center"
-            android:text="Слово"
+            android:text="@string/word"
             android:textColor="@color/colorPrimary"
             android:textSize="24sp" />
 
@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
-            android:text="Транскрипция"
+            android:text="@string/transcription"
             android:textColor="@color/colorPrimary"
             android:textSize="18sp" />
 
@@ -41,7 +41,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="20dp"
             android:gravity="center"
-            android:text="Перевод"
+            android:text="@string/value"
             android:textColor="@color/colorPrimary"
             android:textSize="24sp" />
 
@@ -59,7 +59,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@color/colorPrimary"
-            android:text="Знаю" />
+            android:text="@string/know" />
 
         <Button
             android:id="@+id/fragment_mode0___button___learn"
@@ -68,7 +68,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@color/colorPrimary"
-            android:text="Изучать" />
+            android:text="@string/to_learn" />
 
         <Button
             android:id="@+id/fragment_mode0___button___skip"
@@ -77,7 +77,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@color/colorPrimary"
-            android:text="Пропустить" />
+            android:text="@string/to_skip" />
 
     </LinearLayout>
 

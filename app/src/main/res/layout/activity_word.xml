@@ -83,7 +83,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:text="@string/part_of_speach" />
+                android:text="@string/part_of_speech" />
 
             <TextView
                 android:id="@+id/activity_word___text_view___word"

@@ -38,7 +38,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:text="Статистика"
+                android:text="@string/statistics"
                 android:textColor="@color/colorPrimary"
                 android:textSize="24sp" />
 
@@ -46,7 +46,7 @@
                 android:id="@+id/fragment_profile___button___to_statistics"
                 android:layout_width="50dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right"
+                android:layout_gravity="end"
                 android:background="@drawable/ic_action_navigate_next"
                 android:backgroundTint="@color/colorPrimary" />
         </FrameLayout>
@@ -69,7 +69,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
                     android:layout_weight="7"
-                    android:text="Уже известные слова"
+                    android:text="@string/already_known_words"
                     android:textColor="@color/colorAccent"
                     android:textSize="18sp" />
 
@@ -79,7 +79,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
                     android:layout_weight="7"
-                    android:text="Выученные слова"
+                    android:text="@string/learned_words"
                     android:textColor="@color/darkGreen"
                     android:textSize="18sp" />
 
@@ -89,7 +89,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
                     android:layout_weight="7"
-                    android:text="Изучаемые слова"
+                    android:text="@string/studied_words"
                     android:textColor="@color/darkYellow"
                     android:textSize="18sp" />
 
@@ -103,7 +103,7 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/fragment_profile___text_view___already_known_words_count'"
+                    android:id="@+id/fragment_profile___text_view___already_known_words_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
@@ -151,7 +151,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="Режимы"
+            android:text="@string/modes"
             android:textColor="@color/colorPrimary"
             android:textSize="24sp" />
 
