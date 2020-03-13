@@ -10,12 +10,12 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.settings_activity);
+        setContentView(R.layout.activity_settings);
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.settings, new SettingsFragment())
+                .replace(R.id.activity_settings___frame_layout___settings, new SettingsFragment())
                 .commit();
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.activity_settings___toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Настройки");
         /*if (toolbar != null) {

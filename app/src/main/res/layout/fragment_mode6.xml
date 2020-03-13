@@ -13,14 +13,14 @@
         app:layout_constraintBottom_toTopOf="@+id/linearLayout">
 
         <Button
-            android:id="@+id/fragment_mode6___Button___leftTopButton"
+            android:id="@+id/fragment_mode6___button___left_top_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Вариант значения 1" />
 
         <Button
-            android:id="@+id/fragment_mode6___Button___rightTopButton"
+            android:id="@+id/fragment_mode6___button___right_top_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -37,14 +37,14 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <Button
-            android:id="@+id/fragment_mode6___Button___leftBottomButton"
+            android:id="@+id/fragment_mode6___button___left_bottom_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Вариант значения 3" />
 
         <Button
-            android:id="@+id/fragment_mode6___Button___rightBottomButton"
+            android:id="@+id/fragment_mode6___button___right_bottom_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"

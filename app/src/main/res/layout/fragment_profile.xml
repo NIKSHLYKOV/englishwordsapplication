@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <Button
-        android:id="@+id/fragment_profile___Button___settings"
+        android:id="@+id/fragment_profile___button___settings"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginTop="8dp"
@@ -17,7 +17,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
-        android:id="@+id/linearLayout3"
+        android:id="@+id/fragment_profile___linear_layout___statistics"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -26,7 +26,7 @@
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fragment_profile___Button___settings">
+        app:layout_constraintTop_toBottomOf="@+id/fragment_profile___button___settings">
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -34,7 +34,7 @@
             android:layout_weight="1">
 
             <TextView
-                android:id="@+id/textView8"
+                android:id="@+id/fragment_profile___text_view___statistics"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -43,7 +43,7 @@
                 android:textSize="24sp" />
 
             <Button
-                android:id="@+id/fragment_profile___Button___toStatistics"
+                android:id="@+id/fragment_profile___button___to_statistics"
                 android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
@@ -64,7 +64,7 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/textView9"
+                    android:id="@+id/fragment_profile___text_view___already_known_words"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
@@ -74,7 +74,7 @@
                     android:textSize="18sp" />
 
                 <TextView
-                    android:id="@+id/textView11"
+                    android:id="@+id/fragment_profile___text_view___learned_words"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
@@ -84,7 +84,7 @@
                     android:textSize="18sp" />
 
                 <TextView
-                    android:id="@+id/textView12"
+                    android:id="@+id/fragment_profile___text_view___studied_words"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
@@ -103,7 +103,7 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/textView13"
+                    android:id="@+id/fragment_profile___text_view___already_known_words_count'"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
@@ -113,7 +113,7 @@
                     android:textSize="18sp" />
 
                 <TextView
-                    android:id="@+id/textView14"
+                    android:id="@+id/fragment_profile___text_view___learned_words_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
@@ -123,7 +123,7 @@
                     android:textSize="18sp" />
 
                 <TextView
-                    android:id="@+id/textView15"
+                    android:id="@+id/fragment_profile___text_view___studied_words_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
@@ -136,7 +136,7 @@
     </LinearLayout>
 
     <FrameLayout
-        android:id="@+id/frameLayout2"
+        android:id="@+id/fragment_profile___frame_layout___modes"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -144,10 +144,10 @@
         android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout3">
+        app:layout_constraintTop_toBottomOf="@+id/fragment_profile___linear_layout___statistics">
 
         <TextView
-            android:id="@+id/textView16"
+            android:id="@+id/fragment_profile___text_view___modes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -156,7 +156,7 @@
             android:textSize="24sp" />
 
         <Button
-            android:id="@+id/fragment_profile___Button___toModes"
+            android:id="@+id/fragment_profile___button___to_modes"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_gravity="right"

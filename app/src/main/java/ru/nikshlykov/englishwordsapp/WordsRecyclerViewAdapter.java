@@ -35,10 +35,10 @@ public class WordsRecyclerViewAdapter extends RecyclerView.Adapter<WordsRecycler
         WordsViewHolder(View itemView){
             super(itemView);
 
-            word = itemView.findViewById(R.id.subgroup_item___TextView___word);
-            transcription = itemView.findViewById(R.id.subgroup_item___TextView___transcription);
-            value = itemView.findViewById(R.id.subgroup_item___TextView___value);
-            progress = itemView.findViewById(R.id.subgroup_item___ProgressBar___progress);
+            word = itemView.findViewById(R.id.subgroup_item___text_view___word);
+            transcription = itemView.findViewById(R.id.subgroup_item___text_view___transcription);
+            value = itemView.findViewById(R.id.subgroup_item___text_view___value);
+            progress = itemView.findViewById(R.id.subgroup_item___progress_bar___progress);
         }
     }
 
@@ -57,7 +57,7 @@ public class WordsRecyclerViewAdapter extends RecyclerView.Adapter<WordsRecycler
     @NonNull
     @Override
     public WordsRecyclerViewAdapter.WordsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        CardView cardView = (CardView) LayoutInflater.from(parent.getContext()).inflate(R.layout.my_item, parent, false);
+        CardView cardView = (CardView) LayoutInflater.from(parent.getContext()).inflate(R.layout.word_in_subgroup_item, parent, false);
         return new WordsRecyclerViewAdapter.WordsViewHolder(cardView);
     }
 

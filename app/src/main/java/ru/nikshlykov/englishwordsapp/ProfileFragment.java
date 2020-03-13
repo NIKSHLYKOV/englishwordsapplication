@@ -52,8 +52,8 @@ public class ProfileFragment extends Fragment {
     }
 
     private void viewElementsFinding(View view) {
-        settings = view.findViewById(R.id.fragment_profile___Button___settings);
-        modes = view.findViewById(R.id.fragment_profile___Button___toModes);
-        statistics = view.findViewById(R.id.fragment_profile___Button___toStatistics);
+        settings = view.findViewById(R.id.fragment_profile___button___settings);
+        modes = view.findViewById(R.id.fragment_profile___button___to_modes);
+        statistics = view.findViewById(R.id.fragment_profile___button___to_statistics);
     }
 }
