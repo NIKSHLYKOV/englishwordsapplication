@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
     // Объекты для работы с фрагментами.
     private FragmentManager fragmentManager;
     private FragmentTransaction fragTrans;
-    int contentLayoutID;
+    int contentLayoutId;
 
     // Теги для идентификации фрагментов.
     private final static String TAG_GROUPS_FRAGMENT = "GroupsFragment";
@@ -35,8 +35,6 @@ public class MainActivity extends AppCompatActivity {
 
     // объекты для работы с базой данных.
     private DatabaseHelper databaseHelper;
-    /*Cursor userCursor;
-    SimpleCursorAdapter userAdapter;*/
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -68,8 +66,8 @@ public class MainActivity extends AppCompatActivity {
                             return true;
                         }
 
-                        fragTrans.replace(contentLayoutID, new Mode0Fragment(), TAG_STUDY_FRAGMENT).commit();
-
+                        fragTrans.replace(contentLayoutId, new Mode0Fragment(), TAG_STUDY_FRAGMENT).commit();
+                        // Здесь пропишем рандомизацию фрагментов и их запихивание в contentLayoutId.
                     }
 
                     return true;
@@ -78,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
                     fragment = fragmentManager.findFragmentByTag(TAG_GROUPS_FRAGMENT);
                     // Если фрагмент не создан, тогда меняем тот фрагмент, который на экране, только что созданным.
                     if (fragment == null) {
-                        fragTrans.replace(contentLayoutID, new GroupsFragment(), TAG_GROUPS_FRAGMENT).commit();
+                        fragTrans.replace(contentLayoutId, new GroupsFragment(), TAG_GROUPS_FRAGMENT).commit();
                     }
                     return true;
                 case R.id.activity_main_menu___profile:
@@ -86,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
                     fragment = fragmentManager.findFragmentByTag(TAG_PROFILE_FRAGMENT);
                     // Если фрагмент не создан, тогда меняем тот фрагмент, который на экране, только что созданным.
                     if (fragment == null) {
-                        fragTrans.replace(contentLayoutID, new ProfileFragment(),TAG_PROFILE_FRAGMENT).commit();
+                        fragTrans.replace(contentLayoutId, new ProfileFragment(),TAG_PROFILE_FRAGMENT).commit();
                     }
                     return true;
             }
@@ -99,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         viewElementsFinding();
-        contentLayoutID = contentLayout.getId();
+        contentLayoutId = contentLayout.getId();
         // Присвоение обработчика нажатия на нижнее меню.
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         // Инициализация менеджера работы с фрагментами.

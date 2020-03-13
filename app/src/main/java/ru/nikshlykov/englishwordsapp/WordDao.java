@@ -17,7 +17,6 @@ public interface WordDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     long insert(Word word);
 
-    // НЕОБХОДИМО УЧЕСТЬ ТО, ЧТО ОБНОВЛЯЮТСЯ ВСЕ ПОЛЯ ИЗ ENTITY.
     @Update
     int update(Word word);
 

@@ -9,10 +9,9 @@ import java.util.List;
 @Dao
 public interface SettingDao {
 
-    // НЕОБХОДИМО УЧЕСТЬ ТО, ЧТО ОБНОВЛЯЮТСЯ ВСЕ ПОЛЯ ИЗ ENTITY.
     @Update
     int update(Setting setting);
-    // НЕОБХОДИМО УЧЕСТЬ ТО, ЧТО ОБНОВЛЯЮТСЯ ВСЕ ПОЛЯ ИЗ ENTITY.????
+
     @Update
     int update(Setting[] settings);
 

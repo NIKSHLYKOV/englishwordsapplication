@@ -13,7 +13,6 @@ public interface SubgroupDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     long insert(Subgroup subgroup);
 
-    // НЕОБХОДИМО УЧЕСТЬ ТО, ЧТО ОБНОВЛЯЮТСЯ ВСЕ ПОЛЯ ИЗ ENTITY.
     @Update
     int update(Subgroup subgroup);
 

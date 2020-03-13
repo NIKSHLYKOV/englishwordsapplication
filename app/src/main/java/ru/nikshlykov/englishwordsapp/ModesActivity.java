@@ -16,6 +16,7 @@ public class ModesActivity extends AppCompatActivity {
     private ModeRecyclerViewAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
 
+    // ViewModel для работы с БД.
     ModesViewModel modesViewModel;
 
     @Override
@@ -23,6 +24,7 @@ public class ModesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_modes);
 
+        // Инициализируем ViewModel для работы с БД.
         modesViewModel = new ModesViewModel(getApplication());
 
         // Находим RecyclerView и устанавливаем ему adapter и layoutManager.
@@ -36,6 +38,7 @@ public class ModesActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        // Обновляем режимы в БД.
         modesViewModel.updateModes();
     }
 }

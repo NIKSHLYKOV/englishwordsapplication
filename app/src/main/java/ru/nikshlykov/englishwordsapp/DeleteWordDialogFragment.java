@@ -19,7 +19,9 @@ import java.util.HashSet;
 
 public class DeleteWordDialogFragment extends DialogFragment {
 
+    // Extra для получения id слова, которое предполагается удалять из некоторыйх групп.
     public static final String EXTRA_WORD_ID = "WordId";
+
     private static final String LOG_TAG = "DeleteWordDF";
     private Context context;
 
@@ -31,7 +33,7 @@ public class DeleteWordDialogFragment extends DialogFragment {
     private int availableSubgroupsCount;
     private boolean[] checkedSubgroups;
 
-    // БД для работы с БД.
+    // Переменные для работы с БД.
     private DatabaseHelper databaseHelper;
     private Cursor createdByUserSubgroups;
     private boolean createdByUserSubgroupsExist = false;

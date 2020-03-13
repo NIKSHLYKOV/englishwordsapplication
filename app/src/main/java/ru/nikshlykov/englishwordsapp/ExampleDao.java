@@ -18,10 +18,10 @@ public interface ExampleDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     List<Long> insertMultiple(List<Example> examples);
 
-    // НЕОБХОДИМО УЧЕСТЬ ТО, ЧТО ОБНОВЛЯЮТСЯ ВСЕ ПОЛЯ ИЗ ENTITY.
+
     @Update
     int update(Example example);
-    // НЕОБХОДИМО УЧЕСТЬ ТО, ЧТО ОБНОВЛЯЮТСЯ ВСЕ ПОЛЯ ИЗ ENTITY.????
+
     @Update
     int updateMultiple(List<Example> examples);
 

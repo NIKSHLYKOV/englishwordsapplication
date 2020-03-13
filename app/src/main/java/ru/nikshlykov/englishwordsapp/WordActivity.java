@@ -86,7 +86,7 @@ public class WordActivity extends AppCompatActivity {
             }
         });
 
-        // Получаем Exstras из Intent, проверяем их наличие и присваиваем переменным значения при наличии значений.
+        // Получаем Extras из Intent, проверяем их наличие и присваиваем переменным значения при наличии значений.
         arguments = getIntent().getExtras();
         if (arguments != null) {
             // Получаем id слова, которое было выбрано.
@@ -172,12 +172,6 @@ public class WordActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-        Log.d(LOG_TAG, "OnStop");
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
         TTS.shutdown();
@@ -198,7 +192,7 @@ public class WordActivity extends AppCompatActivity {
     }
 
     /**
-     * Скрывает элементы при создании нового слова.
+     * Скрывает некоторые View при создании нового слова.
      */
     private void hidingViewsForNewWordCreating() {
         learnProgressBar.setVisibility(View.GONE);

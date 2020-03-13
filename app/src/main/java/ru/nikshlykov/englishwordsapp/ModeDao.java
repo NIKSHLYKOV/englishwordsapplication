@@ -9,7 +9,6 @@ import java.util.List;
 @Dao
 public interface ModeDao {
 
-    // НЕОБХОДИМО УЧЕСТЬ ТО, ЧТО ОБНОВЛЯЮТСЯ ВСЕ ПОЛЯ ИЗ ENTITY.????
     @Update
     int update(List<Mode> modes);
 
