@@ -2,7 +2,7 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/card_mode___card_view"
+    android:id="@+id/word_in_subgroup_item___card_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -18,7 +18,7 @@
 
 
         <TextView
-            android:id="@+id/subgroup_item___text_view___word"
+            android:id="@+id/word_in_subgroup_item___text_view___word"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxLines="3"
@@ -26,37 +26,37 @@
             tools:text="@string/word"
             android:textColor="@android:color/black"
             android:textSize="18sp"
-            app:layout_constraintBottom_toTopOf="@id/subgroup_item___text_view___value"
+            app:layout_constraintBottom_toTopOf="@id/word_in_subgroup_item___text_view___value"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
 
         <TextView
-            android:id="@+id/subgroup_item___text_view___value"
+            android:id="@+id/word_in_subgroup_item___text_view___value"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             tools:text="@string/translation"
-            app:layout_constraintEnd_toStartOf="@+id/subgroup_item___progress_bar___progress"
+            app:layout_constraintEnd_toStartOf="@+id/word_in_subgroup_item___button___voice"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/subgroup_item___text_view___word" />
+            app:layout_constraintTop_toBottomOf="@+id/word_in_subgroup_item___text_view___word" />
 
         <TextView
-            android:id="@+id/subgroup_item___text_view___transcription"
+            android:id="@+id/word_in_subgroup_item___text_view___transcription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_weight="1"
             tools:text="@string/transcription"
             android:textSize="14sp"
-            app:layout_constraintBottom_toTopOf="@+id/subgroup_item___text_view___value"
-            app:layout_constraintEnd_toStartOf="@+id/subgroup_item___progress_bar___progress"
+            app:layout_constraintBottom_toTopOf="@+id/word_in_subgroup_item___text_view___value"
+            app:layout_constraintEnd_toStartOf="@+id/word_in_subgroup_item___button___voice"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@+id/subgroup_item___text_view___word"
+            app:layout_constraintStart_toEndOf="@+id/word_in_subgroup_item___text_view___word"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="1.0" />
 
-        <ProgressBar
+        <!--<ProgressBar
             android:id="@+id/subgroup_item___progress_bar___progress"
             style="?android:attr/progressBarStyle"
             android:layout_width="48dp"
@@ -66,6 +66,16 @@
             android:max="7"
             android:progress="3"
             android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" /> -->
+
+        <Button
+            android:id="@+id/word_in_subgroup_item___button___voice"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@android:drawable/ic_lock_silent_mode_off"
+            android:backgroundTint="@color/colorPrimary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

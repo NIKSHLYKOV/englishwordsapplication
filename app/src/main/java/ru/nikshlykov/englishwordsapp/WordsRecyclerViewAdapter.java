@@ -35,10 +35,10 @@ public class WordsRecyclerViewAdapter extends RecyclerView.Adapter<WordsRecycler
         WordsViewHolder(View itemView){
             super(itemView);
 
-            word = itemView.findViewById(R.id.subgroup_item___text_view___word);
-            transcription = itemView.findViewById(R.id.subgroup_item___text_view___transcription);
-            value = itemView.findViewById(R.id.subgroup_item___text_view___value);
-            progress = itemView.findViewById(R.id.subgroup_item___progress_bar___progress);
+            word = itemView.findViewById(R.id.word_in_subgroup_item___text_view___word);
+            transcription = itemView.findViewById(R.id.word_in_subgroup_item___text_view___transcription);
+            value = itemView.findViewById(R.id.word_in_subgroup_item___text_view___value);
+            //progress = itemView.findViewById(R.id.subgroup_item___progress_bar___progress);
         }
     }
 
