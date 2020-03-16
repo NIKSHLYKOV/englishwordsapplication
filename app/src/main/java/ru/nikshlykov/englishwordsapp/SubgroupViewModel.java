@@ -25,6 +25,14 @@ public class SubgroupViewModel extends AndroidViewModel {
         repository.update(subgroup);
     }
 
+    public long insert(Word word){
+        return repository.insert(word);
+    }
+
+    public void insert(Link link){
+        repository.insert(link);
+    }
+
     public LiveData<List<Word>> getWordsFromSubgroup(){
         return words;
     }

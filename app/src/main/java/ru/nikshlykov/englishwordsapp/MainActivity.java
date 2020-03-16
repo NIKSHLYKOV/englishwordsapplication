@@ -104,13 +104,14 @@ public class MainActivity extends AppCompatActivity {
         fragmentManager = getSupportFragmentManager();
         // Инициализация dbHelper для работы с БД.
         databaseHelper = new DatabaseHelper(MainActivity.this);
-        // Создание базы данных (при первом открытии).
+        /*// Создание базы данных (при первом открытии).
         try {
             databaseHelper.createDataBase();
         } catch (IOException ioe) {
             throw new Error("Unable to create database");
         }
-        databaseHelper.close();
+        databaseHelper.close();*/
+        SettingsViewModel s = new SettingsViewModel(getApplication());
     }
 
     /**

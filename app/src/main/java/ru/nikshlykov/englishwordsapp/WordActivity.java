@@ -1,6 +1,7 @@
 package ru.nikshlykov.englishwordsapp;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
@@ -28,6 +29,9 @@ public class WordActivity extends AppCompatActivity {
     // Extras для получения данных из интента.
     public static final String EXTRA_SUBGROUP_ID = "SubgroupId";
     public static final String EXTRA_WORD_ID = "WordId";
+    public static final String EXTRA_WORD = "Word";
+    public static final String EXTRA_TRANSCRIPTION = "Transcription";
+    public static final String EXTRA_VALUE = "value";
 
     // Теги для диалоговых фрагментов.
     private static final String DIALOG_RESETWORDPROGRESS = "ResetWordProgressDialogFragment";
@@ -62,7 +66,7 @@ public class WordActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_word);
-        viewElementsFinding();
+        findViews();
 
         // Создаём объект DatabaseHelper.
         databaseHelper = new DatabaseHelper(WordActivity.this);
@@ -91,6 +95,7 @@ public class WordActivity extends AppCompatActivity {
         if (arguments != null) {
             // Получаем id слова, которое было выбрано.
             wordId = arguments.getLong(EXTRA_WORD_ID);
+            Log.d(LOG_TAG, "wordId = " + wordId);
             // Если слово уже создано.
             if (wordId > 0) {
                 getWordAndSetItsParametersToViews();
@@ -100,20 +105,26 @@ public class WordActivity extends AppCompatActivity {
                 // Получаем id группы, из которой было вызвано Activity.
                 subgroupId = arguments.getLong(EXTRA_SUBGROUP_ID);
                 // Скрываем элементы.
-                hidingViewsForNewWordCreating();
+                hideViewsForNewWordCreating();
             }
         } else {
             Toast.makeText(this, "Произошла ошибка", Toast.LENGTH_LONG).show();
             Log.d(LOG_TAG, "arguments have not been transferred");
+            finish();
         }
-        Log.d(LOG_TAG, "wordId = " + wordId);
-        Log.d(LOG_TAG, "OnCreate");
-    }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        // Присваиваем обработчик кнопке сохранения слова.
+        // Присваиваем обработчик нажатия на кнопку воспроизведения слова.
+        ttsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Можно переделать под версии до 21ой.
+                // https://android-tools.ru/coding/kak-dobavit-text-to-speech-v-svoe-prilozhenie/
+                // https://developer.android.com/reference/android/speech/tts/TextToSpeech.html#speak(java.lang.CharSequence,%20int,%20android.os.Bundle,%20java.lang.String)
+                TTS.speak(editText_word.getText().toString(), TextToSpeech.QUEUE_ADD, null, "somethingID");
+            }
+        });
+
+        // Присваиваем обработчик нажатия на кнопку сохранения слова.
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -124,7 +135,7 @@ public class WordActivity extends AppCompatActivity {
 
                 // Проверяем, что поля слова и перевода не пустые
                 if (!word.isEmpty() && !value.isEmpty()) {
-                    // Создаём объект ContentValues и вводим в него данные через пары ключ-значение.
+                    /*// Создаём объект ContentValues и вводим в него данные через пары ключ-значение.
                     ContentValues contentValues = new ContentValues();
                     contentValues.put(DatabaseHelper.WordsTable.TABLE_WORDS_COLUMN_WORD, word);
                     contentValues.put(DatabaseHelper.WordsTable.TABLE_WORDS_COLUMN_VALUE, value);
@@ -143,33 +154,28 @@ public class WordActivity extends AppCompatActivity {
                     }
                     // Обновление существующего слова.
                     else {
-                        DatabaseHelper.update(DatabaseHelper.WordsTable.TABLE_WORDS, contentValues,
-                                DatabaseHelper.WordsTable.TABLE_WORDS_COLUMN_ID + "=" + wordId, null);
-                    }
-                    // Закрываем Activity.
+                        DatabaseHelper.update(DatabaseHelper.WordsTable.TABLE_WORDS, contentValues,DatabaseHelper.WordsTable.TABLE_WORDS_COLUMN_ID + "=" + wordId, null);
+                    }*/
+
+                    Intent wordData = new Intent();
+                    wordData.putExtra(EXTRA_WORD_ID, wordId);
+                    wordData.putExtra(EXTRA_WORD, word);
+                    wordData.putExtra(EXTRA_TRANSCRIPTION, transcription);
+                    wordData.putExtra(EXTRA_VALUE, value);
+                    setResult(RESULT_OK,  wordData);
                     finish();
+
+                    /*// Закрываем Activity.
+                    finish();*/
                 }
                 // Выводим Toast о том, что они должны быть заполнены.
                 else {
                     Toast.makeText(WordActivity.this, "Необходимо указать слово и его значения", Toast.LENGTH_LONG).show();
                 }
             }
-
-
         });
-
-        // Присваиваем обработчик нажатия на кнопку воспроизведения слова.
-        ttsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Можно переделать под версии до 21ой.
-                // https://android-tools.ru/coding/kak-dobavit-text-to-speech-v-svoe-prilozhenie/
-                // https://developer.android.com/reference/android/speech/tts/TextToSpeech.html#speak(java.lang.CharSequence,%20int,%20android.os.Bundle,%20java.lang.String)
-                TTS.speak(editText_word.getText().toString(), TextToSpeech.QUEUE_ADD, null, "somethingID");
-            }
-        });
-        Log.d(LOG_TAG, "OnResume");
     }
+
 
     @Override
     protected void onDestroy() {
@@ -180,7 +186,7 @@ public class WordActivity extends AppCompatActivity {
     /**
      * Находит View элементы в разметке.
      */
-    private void viewElementsFinding() {
+    private void findViews() {
         editText_word = findViewById(R.id.activity_word___edit_text___word);
         editText_value = findViewById(R.id.activity_word___edit_text___value);
         editText_transcription = findViewById(R.id.activity_word___edit_text___transcription);
@@ -194,12 +200,13 @@ public class WordActivity extends AppCompatActivity {
     /**
      * Скрывает некоторые View при создании нового слова.
      */
-    private void hidingViewsForNewWordCreating() {
+    private void hideViewsForNewWordCreating() {
         learnProgressBar.setVisibility(View.GONE);
         TextView progressText = findViewById(R.id.activity_word___text_view___progress);
         progressText.setVisibility(View.GONE);
         ttsButton.setVisibility(View.GONE);
         textView_partOfSpeech.setVisibility(View.GONE);
+        toolbar.setVisibility(View.GONE);
     }
 
     /**
@@ -235,6 +242,7 @@ public class WordActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         FragmentManager manager = getSupportFragmentManager();
 
+        // Bundle для передачи id слова в диалоговый фрагмент, который вызовется.
         Bundle arguments = new Bundle();
 
         switch (item.getItemId()){

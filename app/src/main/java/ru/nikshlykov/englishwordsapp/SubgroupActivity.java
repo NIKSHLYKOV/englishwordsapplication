@@ -25,6 +25,8 @@ import androidx.recyclerview.widget.RecyclerView;
 public class SubgroupActivity extends AppCompatActivity {
 
     public static final String EXTRA_SUBGROUP_ID = "SubgroupId";
+    private static final int REQUEST_CODE_EDIT_EXISTING_WORD = 1;
+    private static final int REQUEST_CODE_CREATE_NEW_WORD = 2;
 
     private static final String LOG_TAG = "SubgroupActivity";
 
@@ -83,9 +85,9 @@ public class SubgroupActivity extends AppCompatActivity {
         buttonForNewWordCreating.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), WordActivity.class);
-                intent.putExtra(EXTRA_SUBGROUP_ID, subgroupId);
-                startActivity(intent);
+                Intent createNewWordIntent = new Intent(getApplicationContext(), WordActivity.class);
+                createNewWordIntent.putExtra(EXTRA_SUBGROUP_ID, subgroupId);
+                startActivityForResult(createNewWordIntent, REQUEST_CODE_CREATE_NEW_WORD);
             }
         });
 
@@ -135,6 +137,25 @@ public class SubgroupActivity extends AppCompatActivity {
             dividerItemDecoration = new DividerItemDecoration(SubgroupActivity.this, DividerItemDecoration.VERTICAL);
             recyclerView.setLayoutManager(layoutManager);
             recyclerView.addItemDecoration(dividerItemDecoration);
+
+            adapter = new WordsRecyclerViewAdapter(SubgroupActivity.this);
+            adapter.setOnEntryClickListener(new WordsRecyclerViewAdapter.OnEntryClickListener() {
+                @Override
+                public void onEntryClick(View view, int position) {
+                    final Word currentWord = WordsRecyclerViewAdapter.getWords().get(position);
+                    Intent editExistingWordIntent = new Intent(SubgroupActivity.this, WordActivity.class);
+                    editExistingWordIntent.putExtra(WordActivity.EXTRA_WORD_ID, currentWord.id);
+                    startActivityForResult(editExistingWordIntent, REQUEST_CODE_EDIT_EXISTING_WORD);
+                }
+            });
+
+            subgroupViewModel.getWordsFromSubgroup().observe(this, new Observer<List<Word>>() {
+                @Override
+                public void onChanged(List<Word> words) {
+                    adapter.setWords(words);
+                }
+            });
+            recyclerView.setAdapter(adapter);
         } else {
             Toast.makeText(SubgroupActivity.this, "Произошла ошибка", Toast.LENGTH_LONG).show();
             finish();
@@ -151,15 +172,6 @@ public class SubgroupActivity extends AppCompatActivity {
         /*word123s = new ArrayList<>();
         setWordsFromDbToWordsArrayList();
         adapter = new WordsRecyclerViewAdapter(SubgroupActivity.this, word123s);*/
-        adapter = new WordsRecyclerViewAdapter(SubgroupActivity.this);
-        subgroupViewModel.getWordsFromSubgroup().observe(this, new Observer<List<Word>>() {
-            @Override
-            public void onChanged(List<Word> words) {
-                adapter.setWords(words);
-            }
-        });
-        recyclerView.setAdapter(adapter);
-
         Log.d(LOG_TAG, "OnResume");
     }
 
@@ -212,6 +224,43 @@ public class SubgroupActivity extends AppCompatActivity {
         // Закрываем курсор с режимами.
         wordsCursor.close();
     }*/
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == REQUEST_CODE_CREATE_NEW_WORD){
+            if(resultCode == RESULT_OK){
+
+                String word = data.getStringExtra(WordActivity.EXTRA_WORD);
+                String transcription = data.getStringExtra(WordActivity.EXTRA_TRANSCRIPTION);
+                String value = data.getStringExtra(WordActivity.EXTRA_VALUE);
+
+                Word newWord = new Word(word, transcription, value);
+                newWord.id = 2003L;
+                long newWordId = subgroupViewModel.insert(newWord);
+                //if (newWordId != 0L) {
+                    Link linkWithThisSubgroup = new Link(subgroupId, newWordId);
+                    subgroupViewModel.insert(linkWithThisSubgroup);
+                //}
+                Toast.makeText(this, "Новое слово было создано\n" +
+                        "",
+                        Toast.LENGTH_LONG).show();
+            }else{
+                Toast.makeText(this, "Новое слово не было создано", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        if(requestCode == REQUEST_CODE_EDIT_EXISTING_WORD){
+            if(resultCode == RESULT_OK){
+                Toast.makeText(this, "Существующее слово было изменено\n" +
+                        "",
+                        Toast.LENGTH_LONG).show();
+            }else{
+                Toast.makeText(this, "Существующее слово не было изменено", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

@@ -27,15 +27,36 @@ import static androidx.room.ForeignKey.CASCADE;
                 @Index("SubgroupId")})
 public class Link {
 
+    public Link(long subgroupId, long wordId) {
+        this.subgroupId = subgroupId;
+        this.wordId = wordId;
+    }
+
     @NonNull
     @ColumnInfo(name = "SubgroupId")
-    public long subgroupId;
+    private long subgroupId;
 
     @NonNull
     @ColumnInfo(name = "WordId")
-    public long wordId;
+    private long wordId;
 
     @NonNull
     @ColumnInfo(name = "LevelInParentGroup", defaultValue = "10")
-    public int levelInParentGroup;
+    private int levelInParentGroup;
+
+    public long getSubgroupId() {
+        return subgroupId;
+    }
+
+    public long getWordId() {
+        return wordId;
+    }
+
+    public int getLevelInParentGroup() {
+        return levelInParentGroup;
+    }
+
+    public void setLevelInParentGroup(int levelInParentGroup) {
+        this.levelInParentGroup = levelInParentGroup;
+    }
 }

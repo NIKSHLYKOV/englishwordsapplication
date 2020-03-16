@@ -48,6 +48,7 @@ public class AppRepository {
             newWordID = insertWordAsyncTask.get(5, TimeUnit.SECONDS);
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             e.printStackTrace();
+            return 0L;
         }
         return newWordID;
     }

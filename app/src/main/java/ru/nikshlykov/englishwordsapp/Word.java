@@ -9,6 +9,11 @@ import androidx.room.PrimaryKey;
 @Entity(tableName = "Words")
 public class Word {
 
+    public Word(@NonNull String word, String transcription, @NonNull String value) {
+        this.word = word;
+        this.transcription = transcription;
+        this.value = value;
+    }
 
     @PrimaryKey()
     @NonNull

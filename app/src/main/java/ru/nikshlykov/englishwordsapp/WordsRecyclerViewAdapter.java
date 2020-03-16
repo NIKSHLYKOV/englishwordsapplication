@@ -22,10 +22,21 @@ public class WordsRecyclerViewAdapter extends RecyclerView.Adapter<WordsRecycler
     private Context context;
 
     // private ArrayList<Word123> word123s;
+    private static List<Word> words = new ArrayList<Word>();
 
-    private List<Word> words = new ArrayList<Word>();
 
-    static class WordsViewHolder extends RecyclerView.ViewHolder{
+    private OnEntryClickListener mOnEntryClickListener;
+
+    public interface OnEntryClickListener {
+        void onEntryClick(View view, int position);
+    }
+
+    public void setOnEntryClickListener(OnEntryClickListener onEntryClickListener) {
+        mOnEntryClickListener = onEntryClickListener;
+    }
+
+
+    class WordsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private TextView word;
         private TextView transcription;
@@ -39,6 +50,15 @@ public class WordsRecyclerViewAdapter extends RecyclerView.Adapter<WordsRecycler
             transcription = itemView.findViewById(R.id.word_in_subgroup_item___text_view___transcription);
             value = itemView.findViewById(R.id.word_in_subgroup_item___text_view___value);
             //progress = itemView.findViewById(R.id.subgroup_item___progress_bar___progress);
+
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (mOnEntryClickListener != null) {
+                mOnEntryClickListener.onEntryClick(v, getLayoutPosition());
+            }
         }
     }
 
@@ -67,14 +87,17 @@ public class WordsRecyclerViewAdapter extends RecyclerView.Adapter<WordsRecycler
         holder.word.setText(currentWord.word);
         holder.transcription.setText(currentWord.transcription);
         holder.value.setText(currentWord.value);
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
+
+        /*holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, WordActivity.class);
                 intent.putExtra(WordActivity.EXTRA_WORD_ID, currentWord.id);
                 holder.itemView.getContext().startActivity(intent);
             }
-        });
+        });*/
+
+
        /* holder.word.setText(word123s.get(position).getWord());
         holder.transcription.setText(word123s.get(position).getTranscription());
         holder.value.setText(word123s.get(position).getValue());
@@ -85,19 +108,9 @@ public class WordsRecyclerViewAdapter extends RecyclerView.Adapter<WordsRecycler
                 intent.putExtra(WordActivity.EXTRA_WORD_ID, word123s.get(position).getId());
                 holder.itemView.getContext().startActivity(intent);
             }
-        });*//*holder.checkBox.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                *//*if (listener != null)
-                    listener.onClick(position);*//*
-                boolean isChecked = holder.checkBox.isChecked();
-                ModesActivity.mode123s.get(position).setIsSelected(isChecked);
-                Toast.makeText(context, "Вы нажали чекбокс режима " + position +
-                        ". Теперь его значение - " + ModesActivity.mode123s.get(position).getIsSelected(), Toast.LENGTH_LONG).show();
-            }
         });*/
-
     }
+
     public void setWords(List<Word> words) {
         this.words = words;
         notifyDataSetChanged();
@@ -108,4 +121,7 @@ public class WordsRecyclerViewAdapter extends RecyclerView.Adapter<WordsRecycler
         }
     }
 
+    public static List<Word> getWords(){
+        return words;
+    }
 }
