@@ -8,27 +8,28 @@ import androidx.lifecycle.AndroidViewModel;
 public class WordViewModel extends AndroidViewModel {
     private AppRepository repository;
 
-    Word word;
+    private Word word;
 
-    public WordViewModel(@NonNull Application application, long wordId){
+    public WordViewModel(@NonNull Application application){
         super(application);
         repository = new AppRepository(application);
-        word = getWordById(wordId);
+    }
+
+    public void setWord(long wordID){
+        word = repository.getWordById(wordID);
+    }
+    public Word getWord(){
+        return word;
+    }
+
+    public void update(){
+        repository.update(word);
+    }
+    public void delete(){
+        repository.delete(word);
     }
 
     public long insert(Word word){
         return repository.insert(word);
-    }
-
-    public void update(Word word){
-        repository.update(word);
-    }
-
-    public void delete(Word word){
-        repository.delete(word);
-    }
-
-    private Word getWordById(long wordID){
-        return repository.getWordById(wordID);
     }
 }

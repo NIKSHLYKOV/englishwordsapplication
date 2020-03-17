@@ -35,4 +35,13 @@ public class Subgroup {
     @NonNull
     @ColumnInfo(name = "IsStudied")
     public int isStudied; // Флаг изучения слов данной подгруппа (1 - изучается; 0 - не изучается).
+
+    public static class SubgroupsTable {
+        // Названия таблицы подгрупп и её колонок
+        static final String TABLE_SUBGROUPS = "Subgroups";
+        static final String TABLE_SUBGROUPS_COLUMN_ID = "_id";
+        static final String TABLE_SUBGROUPS_COLUMN_SUBGROUPNAME = "SubgroupName";
+        static final String TABLE_SUBGROUPS_COLUMN_PARENTGROUPID = "groupId";
+        static final String TABLE_SUBGROUPS_COLUMN_ISSTUDIED = "IsStudied";
+    }
 }
