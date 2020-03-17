@@ -16,4 +16,11 @@ public class Group {
     @NonNull
     @ColumnInfo(name = "GroupName")
     public String name;
+
+    public static class GroupsTable {
+        // Названия таблицы групп и её колонок
+        static final String TABLE_GROUPS = "Groups";
+        static final String TABLE_GROUPS_COLUMN_ID = "_id";
+        static final String TABLE_GROUPS_COLUMN_GROUPNAME = "GroupName";
+    }
 }

@@ -1,6 +1,7 @@
 package ru.nikshlykov.englishwordsapp;
 
 import android.app.Application;
+import android.database.Cursor;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -173,7 +174,7 @@ public class AppRepository {
         return null;
     }
 
-    public Subgroup[] getSubgroupsFromGroup(long groupId) {
+    public Cursor getSubgroupsFromGroup(long groupId) {
         GetSubgroupsFromGroupAsyncTask task = new GetSubgroupsFromGroupAsyncTask(subgroupDao);
         task.execute(groupId);
         try {
@@ -258,7 +259,7 @@ public class AppRepository {
         }
     }
 
-    private static class GetSubgroupsFromGroupAsyncTask extends AsyncTask<Long, Void, Subgroup[]> {
+    private static class GetSubgroupsFromGroupAsyncTask extends AsyncTask<Long, Void, Cursor> {
         private SubgroupDao subgroupDao;
 
         private GetSubgroupsFromGroupAsyncTask(SubgroupDao subgroupDao) {
@@ -266,7 +267,7 @@ public class AppRepository {
         }
 
         @Override
-        protected Subgroup[] doInBackground(Long... longs) {
+        protected Cursor doInBackground(Long... longs) {
             Log.i(LOG_TAG, "id подгруппы в asyncTask = " + longs[0]);
             return subgroupDao.getSubgroupsFromGroup(longs[0]);
         }
@@ -291,7 +292,7 @@ public class AppRepository {
     /**
      * Методы для работы с группами.
      */
-    public Group[] getAllGroups() {
+    public Cursor getAllGroups() {
         GetAllGroupsAsyncTask getAllGroupsAsyncTask = new GetAllGroupsAsyncTask(groupDao);
         getAllGroupsAsyncTask.execute();
         try {
@@ -316,7 +317,7 @@ public class AppRepository {
     /**
      * AsyncTasks для работы с группами.
      */
-    private static class GetAllGroupsAsyncTask extends AsyncTask<Void, Void, Group[]> {
+    private static class GetAllGroupsAsyncTask extends AsyncTask<Void, Void, Cursor> {
         private GroupDao groupDao;
 
         private GetAllGroupsAsyncTask(GroupDao groupDao) {
@@ -324,7 +325,7 @@ public class AppRepository {
         }
 
         @Override
-        protected Group[] doInBackground(Void... voids) {
+        protected Cursor doInBackground(Void... voids) {
             return groupDao.getAllGroups();
         }
     }

@@ -1,5 +1,7 @@
 package ru.nikshlykov.englishwordsapp;
 
+import android.database.Cursor;
+
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -23,7 +25,7 @@ public interface SubgroupDao {
     Subgroup getSubgroupById(long id);
 
     @Query("SELECT * FROM Subgroups WHERE groupId = :groupId")
-    Subgroup[] getSubgroupsFromGroup(long groupId);
+    Cursor getSubgroupsFromGroup(long groupId);
 
     @Query("SELECT * FROM Subgroups WHERE IsStudied = 1")
     Subgroup[] getStudiedSubgroups();

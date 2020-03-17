@@ -1,5 +1,7 @@
 package ru.nikshlykov.englishwordsapp;
 
+import android.database.Cursor;
+
 import androidx.room.Dao;
 import androidx.room.Query;
 
@@ -7,7 +9,7 @@ import androidx.room.Query;
 public interface GroupDao {
 
     @Query("SELECT * FROM Groups")
-    Group[] getAllGroups();
+    Cursor getAllGroups();
 
     @Query("SELECT * FROM Groups WHERE _id=:id")
     Group getGroupById(long id);
