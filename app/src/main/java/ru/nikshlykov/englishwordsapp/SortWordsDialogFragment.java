@@ -16,7 +16,7 @@ public class SortWordsDialogFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        String[] array = {"По алфавиту", "По сложности"};
+        String[] array = {"По алфавиту", "По прогрессу"};
         return new AlertDialog.Builder(getActivity())
                 .setTitle(R.string.dialog___sort_words___title)
                 .setSingleChoiceItems(array, 1, null)

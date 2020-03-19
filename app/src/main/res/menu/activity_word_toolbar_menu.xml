@@ -18,5 +18,5 @@
         android:id="@+id/delete_word"
         android:icon="@android:drawable/ic_menu_delete"
         android:title="@string/action___delete_word___title"
-        app:showAsAction="never"/>
+        app:showAsAction="ifRoom"/>
 </menu>
