@@ -10,51 +10,52 @@
         android:id="@+id/constraintLayout_word_in_subgroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp">
+        android:orientation="horizontal">
 
 
-        <TextView
-            android:id="@+id/word_in_subgroup_item___text_view___word"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:maxLines="3"
-            android:singleLine="false"
-            tools:text="@string/word"
-            android:textColor="@android:color/black"
-            android:textSize="18sp"
-            app:layout_constraintBottom_toTopOf="@id/word_in_subgroup_item___text_view___value"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-
-        <TextView
-            android:id="@+id/word_in_subgroup_item___text_view___value"
+        <LinearLayout
+            android:id="@+id/word_in_subgroup_item___layout___all_without_voice_button"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            tools:text="@string/translation"
-            app:layout_constraintEnd_toStartOf="@+id/word_in_subgroup_item___button___voice"
-            app:layout_constraintHorizontal_bias="0.0"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/word_in_subgroup_item___layout___voice_button"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/word_in_subgroup_item___text_view___word" />
+            app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/word_in_subgroup_item___text_view___transcription"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_weight="1"
-            tools:text="@string/transcription"
-            android:textSize="14sp"
-            app:layout_constraintBottom_toTopOf="@+id/word_in_subgroup_item___text_view___value"
-            app:layout_constraintEnd_toStartOf="@+id/word_in_subgroup_item___button___voice"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@+id/word_in_subgroup_item___text_view___word"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/word_in_subgroup_item___text_view___word"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="18sp"
+                    tools:text="@string/word" />
+
+                <TextView
+                    android:id="@+id/word_in_subgroup_item___text_view___transcription"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:layout_marginStart="8dp"
+                    android:textSize="14sp"
+                    tools:text="@string/transcription" />
+
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/word_in_subgroup_item___text_view___value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="@string/translation" />
+
+        </LinearLayout>
+
 
         <!--<ProgressBar
             android:id="@+id/subgroup_item___progress_bar___progress"
@@ -70,14 +71,25 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" /> -->
 
-        <Button
-            android:id="@+id/word_in_subgroup_item___button___voice"
+        <RelativeLayout
+            android:id="@+id/word_in_subgroup_item___layout___voice_button"
             android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:background="@android:drawable/ic_lock_silent_mode_off"
-            android:backgroundTint="@color/colorPrimary"
+            android:layout_height="0dp"
+            android:gravity="center"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <Button
+                android:id="@+id/word_in_subgroup_item___button___voice"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@android:drawable/ic_lock_silent_mode_off"
+                android:backgroundTint="@color/colorPrimary"
+                tools:layout_editor_absoluteX="290dp"
+                tools:layout_editor_absoluteY="6dp" />
+        </RelativeLayout>
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

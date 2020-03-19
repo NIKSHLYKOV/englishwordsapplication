@@ -2,28 +2,35 @@ package ru.nikshlykov.englishwordsapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class WordsRecyclerViewAdapter extends RecyclerView.Adapter<WordsRecyclerViewAdapter.WordsViewHolder>{
+public class WordsRecyclerViewAdapter extends RecyclerView.Adapter<WordsRecyclerViewAdapter.WordsViewHolder> {
     private LayoutInflater inflater;
     private Context context;
 
     // private ArrayList<Word123> word123s;
     private static List<Word> words = new ArrayList<Word>();
 
+    private TextToSpeech textToSpeech;
+    private static final String TTS_ERROR = "Ошибка воспроизведения!";
 
     private OnEntryClickListener mOnEntryClickListener;
 
@@ -41,37 +48,59 @@ public class WordsRecyclerViewAdapter extends RecyclerView.Adapter<WordsRecycler
         private TextView word;
         private TextView transcription;
         private TextView value;
-        private ProgressBar progress;
+        //private ProgressBar progress;
 
-        WordsViewHolder(View itemView){
+        WordsViewHolder(View itemView) {
             super(itemView);
 
             word = itemView.findViewById(R.id.word_in_subgroup_item___text_view___word);
             transcription = itemView.findViewById(R.id.word_in_subgroup_item___text_view___transcription);
             value = itemView.findViewById(R.id.word_in_subgroup_item___text_view___value);
+            Button ttsButton = itemView.findViewById(R.id.word_in_subgroup_item___button___voice);
+            ttsButton.setOnClickListener(this);
             //progress = itemView.findViewById(R.id.subgroup_item___progress_bar___progress);
-
-            itemView.setOnClickListener(this);
+            LinearLayout allWithoutVoiceButtonLayout = itemView.findViewById(R.id.word_in_subgroup_item___layout___all_without_voice_button);
+            allWithoutVoiceButtonLayout.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-            if (mOnEntryClickListener != null) {
-                mOnEntryClickListener.onEntryClick(v, getLayoutPosition());
+            switch (v.getId()) {
+                case R.id.word_in_subgroup_item___button___voice:
+                    textToSpeech.speak(word.getText().toString(), TextToSpeech.QUEUE_FLUSH, null, "somethingID");
+                    break;
+                case R.id.word_in_subgroup_item___layout___all_without_voice_button:
+                    if (mOnEntryClickListener != null) {
+                        mOnEntryClickListener.onEntryClick(v, getLayoutPosition());
+                    }
+                    break;
             }
         }
+
     }
 
-    public WordsRecyclerViewAdapter(Context context) {
+
+    public WordsRecyclerViewAdapter(final Context context) {
         this.context = context;
-        //this.word123s = word123s;
+        // Создаём TTS
+        textToSpeech = new TextToSpeech(context, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if (status == TextToSpeech.SUCCESS) {
+                    // Установка языка, высоты и скорости речи.
+                    textToSpeech.setLanguage(Locale.US);
+                    textToSpeech.setPitch(1.3f);
+                    textToSpeech.setSpeechRate(0.7f);
+                } else if (status == TextToSpeech.ERROR) {
+                    Toast.makeText(context, TTS_ERROR, Toast.LENGTH_LONG).show();
+                }
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
-
-        // return word123s.size();
-        return  words.size();
+        return words.size();
     }
 
     @NonNull
@@ -87,28 +116,6 @@ public class WordsRecyclerViewAdapter extends RecyclerView.Adapter<WordsRecycler
         holder.word.setText(currentWord.word);
         holder.transcription.setText(currentWord.transcription);
         holder.value.setText(currentWord.value);
-
-        /*holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, WordActivity.class);
-                intent.putExtra(WordActivity.EXTRA_WORD_ID, currentWord.id);
-                holder.itemView.getContext().startActivity(intent);
-            }
-        });*/
-
-
-       /* holder.word.setText(word123s.get(position).getWord());
-        holder.transcription.setText(word123s.get(position).getTranscription());
-        holder.value.setText(word123s.get(position).getValue());
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, WordActivity.class);
-                intent.putExtra(WordActivity.EXTRA_WORD_ID, word123s.get(position).getId());
-                holder.itemView.getContext().startActivity(intent);
-            }
-        });*/
     }
 
     public void setWords(List<Word> words) {
@@ -121,7 +128,7 @@ public class WordsRecyclerViewAdapter extends RecyclerView.Adapter<WordsRecycler
         }
     }
 
-    public static List<Word> getWords(){
+    public static List<Word> getWords() {
         return words;
     }
 }
