@@ -1,7 +1,6 @@
 package ru.nikshlykov.englishwordsapp;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
@@ -23,20 +22,19 @@ import androidx.fragment.app.FragmentManager;
 
 public class WordActivity extends AppCompatActivity {
 
+    // Тег для логирования.
     private static final String LOG_TAG = "WordActivity";
 
     // Extras для получения данных из интента.
-    public static final String EXTRA_SUBGROUP_ID = "SubgroupId";
     public static final String EXTRA_WORD_ID = "WordId";
     public static final String EXTRA_WORD = "Word";
     public static final String EXTRA_TRANSCRIPTION = "Transcription";
     public static final String EXTRA_VALUE = "Value";
 
     // Теги для диалоговых фрагментов.
-    private static final String DIALOG_RESETWORDPROGRESS = "ResetWordProgressDialogFragment";
-    private static final String DIALOG_LINKWORD = "LinkWordDialogFragment";
-    private static final String DIALOG_DELETEWORD = "DeleteWordDialogFragment";
-    private static final String DIALOG_COPYWORD = "CopyWordDialogFragment";
+    private static final String DIALOG_RESET_WORD_PROGRESS = "ResetWordProgressDialogFragment";
+    private static final String DIALOG_LINK_WORD = "LinkWordDialogFragment";
+    private static final String DIALOG_DELETE_WORD = "DeleteWordDialogFragment";
 
     // View элементы.
     private EditText editText_word;
@@ -48,28 +46,24 @@ public class WordActivity extends AppCompatActivity {
     private ProgressBar learnProgressBar;
     private Toolbar toolbar;
 
-    // Переменные для получения данных.
+    // id слова, для которого открылось Activity. Будет равно 0, если слово создаётся.
     private long wordId = 0L;
-    private long subgroupId = 0L;
-    private Bundle arguments;
 
-    // Helper для работы с БД.
-    private DatabaseHelper databaseHelper;
+    // ViewModel для работы с БД.
     private WordViewModel wordViewModel;
 
     // Для синтезатора речи.
     private TextToSpeech TTS;
     private static final String TTS_ERROR = "Ошибка воспроизведения!";
 
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_word);
+        // Находим View в разметке.
         findViews();
 
-        // Создаём объект DatabaseHelper.
-        databaseHelper = new DatabaseHelper(WordActivity.this);
+        // Создаём ViewModel для работы с БД.
         wordViewModel = new WordViewModel(getApplication());
 
         // Устанавливаем тулбар.
@@ -92,21 +86,18 @@ public class WordActivity extends AppCompatActivity {
         });
 
         // Получаем Extras из Intent, проверяем их наличие и присваиваем переменным значения при наличии значений.
-        arguments = getIntent().getExtras();
+        Bundle arguments = getIntent().getExtras();
         if (arguments != null) {
             // Получаем id слова, которое было выбрано.
             wordId = arguments.getLong(EXTRA_WORD_ID);
-            Log.d(LOG_TAG, "wordId = " + wordId);
+            Log.i(LOG_TAG, "wordId = " + wordId);
             // Если слово уже создано.
             if (wordId != 0) {
-                //getWordAndSetItsParametersToViews();
                 wordViewModel.setWord(wordId);
                 setWordToViews();
             }
             // Если пользователь создаёт новое слово.
             else {
-                // Получаем id группы, из которой было вызвано Activity.
-                subgroupId = arguments.getLong(EXTRA_SUBGROUP_ID);
                 // Скрываем элементы.
                 hideViewsForNewWordCreating();
             }
@@ -158,7 +149,6 @@ public class WordActivity extends AppCompatActivity {
         });
     }
 
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -179,6 +169,9 @@ public class WordActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.activity_word___toolbar);
     }
 
+    /**
+     * Устанавливаем параметры слова (слово, транскрипция, перевод, часть речи, прогресс в разные View.
+     */
     private void setWordToViews(){
         // Получаем текущее слово.
         Word thisWord = wordViewModel.getWord();
@@ -229,7 +222,7 @@ public class WordActivity extends AppCompatActivity {
                 LinkWordDialogFragment linkWordDialogFragment = new LinkWordDialogFragment();
                 arguments.putLong(LinkWordDialogFragment.EXTRA_WORD_ID, wordId);
                 linkWordDialogFragment.setArguments(arguments);
-                linkWordDialogFragment.show(manager, DIALOG_LINKWORD);
+                linkWordDialogFragment.show(manager, DIALOG_LINK_WORD);
                 return true;
             // Сбрасывание прогресса слова
             case R.id.activity_word___action___resetwordprogress:
@@ -237,7 +230,7 @@ public class WordActivity extends AppCompatActivity {
                 ResetWordProgressDialogFragment resetWordProgressDialogFragment = new ResetWordProgressDialogFragment();
                 arguments.putLong(ResetWordProgressDialogFragment.EXTRA_WORD_ID, wordId);
                 resetWordProgressDialogFragment.setArguments(arguments);
-                resetWordProgressDialogFragment.show(manager, DIALOG_RESETWORDPROGRESS);
+                resetWordProgressDialogFragment.show(manager, DIALOG_RESET_WORD_PROGRESS);
                 return true;
             // Удаление слова из подгруппы / из всех подгрупп.
             case R.id.delete_word:
@@ -245,7 +238,7 @@ public class WordActivity extends AppCompatActivity {
                 DeleteWordDialogFragment deleteWordDialogFragment = new DeleteWordDialogFragment();
                 arguments.putLong(DeleteWordDialogFragment.EXTRA_WORD_ID, wordId);
                 deleteWordDialogFragment.setArguments(arguments);
-                deleteWordDialogFragment.show(manager, DIALOG_DELETEWORD);
+                deleteWordDialogFragment.show(manager, DIALOG_DELETE_WORD);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
