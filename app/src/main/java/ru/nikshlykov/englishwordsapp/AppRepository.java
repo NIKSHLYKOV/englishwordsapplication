@@ -273,7 +273,7 @@ public class AppRepository {
         }
     }
 
-    private static class GetStudiedSubgroupsAsyncTask extends AsyncTask<Long, Void, Subgroup[]> {
+    private static class GetStudiedSubgroupsAsyncTask extends AsyncTask<Void, Void, Subgroup[]> {
         private SubgroupDao subgroupDao;
 
         private GetStudiedSubgroupsAsyncTask(SubgroupDao subgroupDao) {
@@ -281,8 +281,7 @@ public class AppRepository {
         }
 
         @Override
-        protected Subgroup[] doInBackground(Long... longs) {
-            Log.i(LOG_TAG, "id подгруппы в asyncTask = " + longs[0]);
+        protected Subgroup[] doInBackground(Void... longs) {
             return subgroupDao.getStudiedSubgroups();
         }
     }

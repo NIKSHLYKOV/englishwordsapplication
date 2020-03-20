@@ -33,8 +33,8 @@ public class MainActivity extends AppCompatActivity {
     private final static String TAG_STUDY_FRAGMENT = "StudyFragment";
     private final static String TAG_PROFILE_FRAGMENT = "ProfileFragment";
 
-    // объекты для работы с базой данных.
-    private DatabaseHelper databaseHelper;
+    // ViewModel для работы с БД.
+    private StudyViewModel studyViewModel;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -49,23 +49,16 @@ public class MainActivity extends AppCompatActivity {
                     // Пытаемся найти фрагмент и проверяем, создан ли он (на экране).
                     fragment = fragmentManager.findFragmentByTag(TAG_STUDY_FRAGMENT);
                     // Если фрагмент не создан, тогда меняем тот фрагмент, который на экране, только что созданным.
-                    //
-                    // ПОКА ИСПОЛЬЗУЕТСЯ ТОЛЬКО ИНФОРМАЦИОННЫЙ ФРАГМЕНТ.
-                    //
                     if (fragment == null) {
-                        // Находим количество выбранных для изучения подгрупп.
-                        Cursor studiedSubgroups = databaseHelper.getStudiedSubgroups();
-                        if (studiedSubgroups.getCount() == 0) {
-                            displayInfoFragment(InfoFragment.EXTRA_SUBGROUPSARENOTCHOSEN);
-                            return true;
-                        }
-                        // Находим количество выбранных режимов.
-                        Cursor selectedModes = databaseHelper.getSelectedModes();
-                        if (selectedModes.getCount() == 0) {
+                        // Проверяем на выбранные режимы и подгруппы.
+                        if (!studyViewModel.selectedModesExist()) {
                             displayInfoFragment(InfoFragment.EXTRA_MODESARENOTCHOSEN);
                             return true;
                         }
-
+                        if (!studyViewModel.studiedSubgroupsExist()) {
+                            displayInfoFragment(InfoFragment.EXTRA_SUBGROUPSARENOTCHOSEN);
+                            return true;
+                        }
                         fragTrans.replace(contentLayoutId, new Mode0Fragment(), TAG_STUDY_FRAGMENT).commit();
                         // Здесь пропишем рандомизацию фрагментов и их запихивание в contentLayoutId.
                     }
@@ -84,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
                     fragment = fragmentManager.findFragmentByTag(TAG_PROFILE_FRAGMENT);
                     // Если фрагмент не создан, тогда меняем тот фрагмент, который на экране, только что созданным.
                     if (fragment == null) {
-                        fragTrans.replace(contentLayoutId, new ProfileFragment(),TAG_PROFILE_FRAGMENT).commit();
+                        fragTrans.replace(contentLayoutId, new ProfileFragment(), TAG_PROFILE_FRAGMENT).commit();
                     }
                     return true;
             }
@@ -102,23 +95,15 @@ public class MainActivity extends AppCompatActivity {
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         // Инициализация менеджера работы с фрагментами.
         fragmentManager = getSupportFragmentManager();
-        // Инициализация dbHelper для работы с БД.
-        databaseHelper = new DatabaseHelper(MainActivity.this);
-        /*// Создание базы данных (при первом открытии).
-        try {
-            databaseHelper.createDataBase();
-        } catch (IOException ioe) {
-            throw new Error("Unable to create database");
-        }
-        databaseHelper.close();*/
-        SettingsViewModel s = new SettingsViewModel(getApplication());
+
+        studyViewModel = new StudyViewModel(getApplication());
     }
 
     /**
      * Находит View элементы в разметке.
      */
-    private void viewElementsFinding(){
-        contentLayout =  findViewById(R.id.activity_main___linear_layout___content_layout);
+    private void viewElementsFinding() {
+        contentLayout = findViewById(R.id.activity_main___linear_layout___content_layout);
         navigation = (BottomNavigationView) findViewById(R.id.navigation);
     }
 
