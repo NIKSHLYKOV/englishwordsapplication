@@ -8,10 +8,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class ModesActivity extends AppCompatActivity {
 
-    // RecyclerView и вспомогательные элементы.
-    private RecyclerView modesRecyclerView;
-    private ModeRecyclerViewAdapter adapter;
-
     // ViewModel для работы с БД.
     ModesViewModel modesViewModel;
 
@@ -24,8 +20,8 @@ public class ModesActivity extends AppCompatActivity {
         modesViewModel = new ModesViewModel(getApplication());
 
         // Находим RecyclerView и устанавливаем ему adapter и layoutManager.
-        modesRecyclerView = findViewById(R.id.activity_modes___RecyclerView);
-        adapter = new ModeRecyclerViewAdapter(this, modesViewModel.modes);
+        RecyclerView modesRecyclerView = findViewById(R.id.activity_modes___RecyclerView);
+        ModeRecyclerViewAdapter adapter = new ModeRecyclerViewAdapter(this, modesViewModel.modes);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         modesRecyclerView.setAdapter(adapter);
         modesRecyclerView.setLayoutManager(layoutManager);

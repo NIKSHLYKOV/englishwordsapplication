@@ -1,6 +1,5 @@
 package ru.nikshlykov.englishwordsapp;
 
-import android.database.Cursor;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,8 +13,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.view.MenuItem;
-
-import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -38,7 +35,6 @@ public class MainActivity extends AppCompatActivity {
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
-
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             fragTrans = fragmentManager.beginTransaction();
@@ -52,11 +48,11 @@ public class MainActivity extends AppCompatActivity {
                     if (fragment == null) {
                         // Проверяем на выбранные режимы и подгруппы.
                         if (!studyViewModel.selectedModesExist()) {
-                            displayInfoFragment(InfoFragment.EXTRA_MODESARENOTCHOSEN);
+                            displayInfoFragment(InfoFragment.EXTRA_MODES_ARE_NOT_CHOSEN);
                             return true;
                         }
                         if (!studyViewModel.studiedSubgroupsExist()) {
-                            displayInfoFragment(InfoFragment.EXTRA_SUBGROUPSARENOTCHOSEN);
+                            displayInfoFragment(InfoFragment.EXTRA_SUBGROUPS_ARE_NOT_CHOSEN);
                             return true;
                         }
                         fragTrans.replace(contentLayoutId, new Mode0Fragment(), TAG_STUDY_FRAGMENT).commit();
@@ -111,8 +107,8 @@ public class MainActivity extends AppCompatActivity {
      * Запускает информационный фрагмент, если не выбраны группы слов или режимы.
      */
     private void displayInfoFragment(String flag) {
-        if (flag.equals(InfoFragment.EXTRA_MODESARENOTCHOSEN) ||
-                flag.equals(InfoFragment.EXTRA_SUBGROUPSARENOTCHOSEN)) {
+        if (flag.equals(InfoFragment.EXTRA_MODES_ARE_NOT_CHOSEN) ||
+                flag.equals(InfoFragment.EXTRA_SUBGROUPS_ARE_NOT_CHOSEN)) {
             InfoFragment infoFragment = new InfoFragment();
             Bundle arguments = new Bundle();
             arguments.putBoolean(flag, true);

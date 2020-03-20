@@ -9,7 +9,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class NewSubgroupActivity extends AppCompatActivity {
+public class AddSubgroupActivity extends AppCompatActivity {
     final long groupsForNewSubgroupsId = 21;
 
     // View элементы.
@@ -36,12 +36,12 @@ public class NewSubgroupActivity extends AppCompatActivity {
         creatingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String groupName = editText_groupName.getText().toString();
+                String subgroupName = editText_groupName.getText().toString();
                 // Проверяем, что поле названия группы не пустое.
-                if (!groupName.isEmpty()) {
+                if (!subgroupName.isEmpty()) {
                     // Создаём объект ContentValues и вводим в него название подгруппы через пару ключ-значение.
                     contentValues = new ContentValues();
-                    contentValues.put(DatabaseHelper.SubgroupsTable.TABLE_SUBGROUPS_COLUMN_SUBGROUPNAME, groupName);
+                    contentValues.put(DatabaseHelper.SubgroupsTable.TABLE_SUBGROUPS_COLUMN_SUBGROUPNAME, subgroupName);
                     contentValues.put(DatabaseHelper.SubgroupsTable.TABLE_SUBGROUPS_COLUMN_ISSTUDIED, 0);
                     contentValues.put(DatabaseHelper.SubgroupsTable.TABLE_SUBGROUPS_COLUMN_PARENTGROUPID, groupsForNewSubgroupsId);
                     // Добавляем подгруппу в таблицу групп.

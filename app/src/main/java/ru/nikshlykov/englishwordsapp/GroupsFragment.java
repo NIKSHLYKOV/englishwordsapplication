@@ -11,20 +11,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ExpandableListView;
-import android.widget.SimpleCursorAdapter;
 import android.widget.SimpleCursorTreeAdapter;
-import android.widget.SimpleExpandableListAdapter;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 public class GroupsFragment extends Fragment {
 
+    // ViewModel для взаимодействия с БД.
     private GroupViewModel groupViewModel;
 
     // View компоненты фрагмента.
@@ -63,7 +58,7 @@ public class GroupsFragment extends Fragment {
         newSubgroupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, NewSubgroupActivity.class);
+                Intent intent = new Intent(context, AddSubgroupActivity.class);
                 startActivity(intent);
             }
         });
@@ -93,31 +88,6 @@ public class GroupsFragment extends Fragment {
                 android.R.layout.simple_list_item_1, subgroupFrom, subgroupTo);
 
         expandableListView.setAdapter(adapter);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        /*//
-        // Подготавливаем данные для адаптера.
-        //
-        // Получаем данные из бд (группы) в виде курсора.
-        // Cursor groupsCursor = databaseHelper.rawQuery("select * from " + DatabaseHelper.GroupsTable.TABLE_GROUPS);
-        // Сопоставление данных и View для групп.
-        String[] groupFrom = {DatabaseHelper.GroupsTable.TABLE_GROUPS_COLUMN_GROUPNAME};
-        int[] groupTo = {android.R.id.text1};
-        // Сопоставление данных и View для подгрупп.
-        String[] subgroupFrom = {DatabaseHelper.SubgroupsTable.TABLE_SUBGROUPS_COLUMN_SUBGROUPNAME};
-        int[] subgroupTo = {android.R.id.text1};
-
-        // Создаём адаптер для расположения данных из БД в ExpandableList.
-        SimpleCursorTreeAdapter simpleCursorTreeAdapter = new MySimpleCursorTreeAdapter(context, groupsCursor,
-                android.R.layout.simple_expandable_list_item_1, groupFrom, groupTo,
-                android.R.layout.simple_list_item_1, subgroupFrom, subgroupTo);
-
-        expandableListView.setAdapter(simpleCursorTreeAdapter);*/
-        Log.d(LOG_TAG, "onResume");
     }
 
     private void findViews(View view){

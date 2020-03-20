@@ -38,7 +38,7 @@
             android:name=".ModesActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".NewSubgroupActivity"
+            android:name=".AddSubgroupActivity"
             android:screenOrientation="portrait" />
     </application>
 

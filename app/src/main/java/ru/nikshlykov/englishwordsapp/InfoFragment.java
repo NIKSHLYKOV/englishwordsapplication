@@ -12,14 +12,11 @@ import android.widget.TextView;
 
 public class InfoFragment extends Fragment {
 
-    static final String EXTRA_SUBGROUPSARENOTCHOSEN = "SubgroupsAreNotChosen";
-    static final String EXTRA_MODESARENOTCHOSEN = "ModesAreNotChosen";
+    static final String EXTRA_SUBGROUPS_ARE_NOT_CHOSEN = "SubgroupsAreNotChosen";
+    static final String EXTRA_MODES_ARE_NOT_CHOSEN = "ModesAreNotChosen";
 
     private boolean subgroupsAreNotChosen = false;
     private boolean modesAreNotChosen = false;
-
-    private TextView infoText;
-
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -27,14 +24,14 @@ public class InfoFragment extends Fragment {
         Log.d("InfoFragment", "onCreate");
         Bundle arguments = getArguments();
         try {
-            subgroupsAreNotChosen = arguments.getBoolean(EXTRA_SUBGROUPSARENOTCHOSEN);
+            subgroupsAreNotChosen = arguments.getBoolean(EXTRA_SUBGROUPS_ARE_NOT_CHOSEN);
         }
         catch (NullPointerException ex){
             subgroupsAreNotChosen = false;
             ex.getMessage();
         }
         try {
-            modesAreNotChosen = arguments.getBoolean(EXTRA_MODESARENOTCHOSEN);
+            modesAreNotChosen = arguments.getBoolean(EXTRA_MODES_ARE_NOT_CHOSEN);
         }
         catch (NullPointerException ex){
             modesAreNotChosen = false;
@@ -49,7 +46,7 @@ public class InfoFragment extends Fragment {
 
         View v = inflater.inflate(R.layout.fragment_info, null);
 
-        infoText = v.findViewById(R.id.fragment_info___text_view___info);
+        TextView infoText = v.findViewById(R.id.fragment_info___text_view___info);
 
         if (subgroupsAreNotChosen)
             infoText.setText("Для того, чтобы изучать слова, необходимо выбрать группы слов. Сделать это вы можете перейдя во вкладку \"Группы\"");
