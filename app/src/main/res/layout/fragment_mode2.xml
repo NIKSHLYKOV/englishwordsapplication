@@ -1,24 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/fragment_mode2___layout___main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:minHeight="700dp">
+    android:orientation="vertical">
 
 
     <LinearLayout
         android:id="@+id/fragment_mode2___linear_layout"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/fragment_mode2___frame_layout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/fragment_mode2___text_view___value"
@@ -59,10 +54,7 @@
         android:id="@+id/fragment_mode2___frame_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        android:layout_alignParentBottom="true">
 
         <Button
             android:id="@+id/fragment_mode2___button___do_not_remember"
@@ -71,7 +63,6 @@
             android:layout_height="match_parent"
             android:layout_gravity="left"
             android:layout_marginLeft="20dp"
-            android:background="@color/colorPrimary"
             android:text="@string/do_not_remember"
             android:textColor="@android:color/white" />
 
@@ -82,11 +73,10 @@
             android:layout_height="match_parent"
             android:layout_gravity="right"
             android:layout_marginRight="20dp"
-            android:background="@color/colorPrimary"
             android:text="@string/remember"
             android:textColor="@android:color/white" />
 
     </FrameLayout>
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>

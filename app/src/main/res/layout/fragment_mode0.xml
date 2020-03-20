@@ -58,7 +58,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@color/colorPrimary"
             android:text="@string/know" />
 
         <Button
@@ -67,7 +66,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@color/colorPrimary"
             android:text="@string/to_learn" />
 
         <Button
@@ -76,7 +74,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@color/colorPrimary"
             android:text="@string/to_skip" />
 
     </LinearLayout>
