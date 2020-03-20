@@ -11,6 +11,8 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.Toast;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.util.List;
 
 import androidx.annotation.Nullable;
@@ -39,7 +41,7 @@ public class SubgroupActivity extends AppCompatActivity {
     Cursor wordsCursor;
 */
     // View элементы.
-    private Button buttonForNewWordCreating;
+    private FloatingActionButton buttonForNewWordCreating;
     private CheckBox learnSubgroupCheckBox;
     private Toolbar toolbar;
 
@@ -145,7 +147,7 @@ public class SubgroupActivity extends AppCompatActivity {
     }
 
     private void findViews() {
-        buttonForNewWordCreating = findViewById(R.id.activity_subgroup___button___new_word);
+        buttonForNewWordCreating = findViewById(R.id.activity_subgroup___floating_action_button___new_word);
         learnSubgroupCheckBox = findViewById(R.id.activity_subgroup___check_box___study_subgroup);
         toolbar = findViewById(R.id.activity_subgroup___toolbar);
         recyclerView = findViewById(R.id.activity_subgroup___recycler_view___words);

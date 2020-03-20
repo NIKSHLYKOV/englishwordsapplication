@@ -10,7 +10,8 @@
         android:id="@+id/constraintLayout_word_in_subgroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:padding="8dp">
 
 
         <LinearLayout
