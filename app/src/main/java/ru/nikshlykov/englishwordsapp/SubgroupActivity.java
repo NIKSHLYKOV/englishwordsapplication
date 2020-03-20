@@ -175,7 +175,7 @@ public class SubgroupActivity extends AppCompatActivity {
 
             if (requestCode == REQUEST_CODE_CREATE_NEW_WORD) {
                 Word newWord = new Word(word, transcription, value);
-                newWord.id = 2005L;
+                //newWord.id = 2005L;
                 long newWordId = subgroupViewModel.insert(newWord);
 
                 Link linkWithThisSubgroup = new Link(subgroupId, newWordId);

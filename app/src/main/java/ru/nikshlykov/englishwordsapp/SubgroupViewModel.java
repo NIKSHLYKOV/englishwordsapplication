@@ -37,6 +37,7 @@ public class SubgroupViewModel extends AndroidViewModel {
     }
 
     public long insert(Word word){
+        word.id = repository.getMinWordId() - 1;
         return repository.insert(word);
     }
     public void insert(Link link){

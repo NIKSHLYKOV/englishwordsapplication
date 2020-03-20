@@ -98,7 +98,7 @@ public class WordActivity extends AppCompatActivity {
             wordId = arguments.getLong(EXTRA_WORD_ID);
             Log.d(LOG_TAG, "wordId = " + wordId);
             // Если слово уже создано.
-            if (wordId > 0) {
+            if (wordId != 0) {
                 //getWordAndSetItsParametersToViews();
                 wordViewModel.setWord(wordId);
                 setWordToViews();

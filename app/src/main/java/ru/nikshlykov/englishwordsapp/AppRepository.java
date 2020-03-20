@@ -39,6 +39,18 @@ public class AppRepository {
     /**
      * Методы для работы со словами.
      */
+    public long getMinWordId(){
+        GetMinWordIdAsyncTask task = new GetMinWordIdAsyncTask(wordDao);
+        task.execute();
+        long minWordId = 0L;
+        try {
+            minWordId = task.get(5, TimeUnit.SECONDS);
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            e.printStackTrace();
+        }
+        return minWordId;
+    }
+
     public long insert(Word word) {
         InsertWordAsyncTask insertWordAsyncTask = new InsertWordAsyncTask(wordDao);
         insertWordAsyncTask.execute(word);
@@ -80,6 +92,19 @@ public class AppRepository {
     /**
      * AsyncTasks для работы со словами.
      */
+    private static class GetMinWordIdAsyncTask extends AsyncTask<Void, Void, Long> {
+        private WordDao wordDao;
+
+        private GetMinWordIdAsyncTask(WordDao wordDao) {
+            this.wordDao = wordDao;
+        }
+
+        @Override
+        protected Long doInBackground(Void... voids) {
+            return wordDao.getWordWithMinId().id;
+        }
+    }
+
     private static class InsertWordAsyncTask extends AsyncTask<Word, Void, Long> {
         private WordDao wordDao;
 

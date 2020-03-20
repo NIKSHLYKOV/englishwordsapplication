@@ -38,5 +38,8 @@ public interface WordDao {
 
     @Query("SELECT Words.* FROM Words, Links WHERE Words._id = Links.WordId and Links.SubgroupId = :subgroupId")
     LiveData<List<Word>> getWordsFromSubgroup(long subgroupId);
+
+    @Query("SELECT * FROM Words ORDER BY _id LIMIT 1")
+    Word getWordWithMinId();
 }
 
