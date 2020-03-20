@@ -11,12 +11,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class GroupViewModel extends AndroidViewModel {
+public class GroupsViewModel extends AndroidViewModel {
     private AppRepository repository;
 
     private Cursor groups;
 
-    public GroupViewModel(@NonNull Application application) {
+    private static final long GROUP_ID_FOR_NEW_SUBGROUP = 21L;
+
+    public GroupsViewModel(@NonNull Application application) {
         super(application);
         repository = new AppRepository(application);
         groups = repository.getAllGroups();
@@ -28,6 +30,16 @@ public class GroupViewModel extends AndroidViewModel {
 
     public Cursor getSubgroupsFromGroup(long groupId){
         return repository.getSubgroupsFromGroup(groupId);
+    }
+
+    public void insertSubgroup(String newSubgroupName){
+        long newSubgroupId = repository.getLastSubgroupId() + 1;
+        Subgroup newSubgroup = new Subgroup();
+        newSubgroup.name = newSubgroupName;
+        newSubgroup.groupId = GROUP_ID_FOR_NEW_SUBGROUP;
+        newSubgroup.isStudied = 0;
+        newSubgroup.id = newSubgroupId;
+        repository.insert(newSubgroup);
     }
 
     /*

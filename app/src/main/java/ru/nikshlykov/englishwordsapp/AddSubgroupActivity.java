@@ -1,6 +1,7 @@
 package ru.nikshlykov.englishwordsapp;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -11,6 +12,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class AddSubgroupActivity extends AppCompatActivity {
     final long groupsForNewSubgroupsId = 21;
+
+    public static final String EXTRA_NEW_SUBGROUP_NAME = "NewSubgroupName";
 
     // View элементы.
     Button creatingButton;
@@ -39,7 +42,12 @@ public class AddSubgroupActivity extends AppCompatActivity {
                 String subgroupName = editText_groupName.getText().toString();
                 // Проверяем, что поле названия группы не пустое.
                 if (!subgroupName.isEmpty()) {
-                    // Создаём объект ContentValues и вводим в него название подгруппы через пару ключ-значение.
+                    Intent newSubgroupData = new Intent();
+                    newSubgroupData.putExtra(EXTRA_NEW_SUBGROUP_NAME, subgroupName);
+                    setResult(RESULT_OK, newSubgroupData);
+                    finish();
+
+                    /*// Создаём объект ContentValues и вводим в него название подгруппы через пару ключ-значение.
                     contentValues = new ContentValues();
                     contentValues.put(DatabaseHelper.SubgroupsTable.TABLE_SUBGROUPS_COLUMN_SUBGROUPNAME, subgroupName);
                     contentValues.put(DatabaseHelper.SubgroupsTable.TABLE_SUBGROUPS_COLUMN_ISSTUDIED, 0);
@@ -47,7 +55,7 @@ public class AddSubgroupActivity extends AppCompatActivity {
                     // Добавляем подгруппу в таблицу групп.
                     databaseHelper.insert(DatabaseHelper.SubgroupsTable.TABLE_SUBGROUPS, null, contentValues);
                     // Закрываем activity, возвращаясь к предыдущему.
-                    finish();
+                    finish();*/
                 }
                 // Выводим Toast о том, что поле названия не должно быть пустым.
                 else {

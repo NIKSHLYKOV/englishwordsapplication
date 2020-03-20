@@ -29,4 +29,7 @@ public interface SubgroupDao {
 
     @Query("SELECT * FROM Subgroups WHERE IsStudied = 1")
     Subgroup[] getStudiedSubgroups();
+
+    @Query("SELECT * FROM Subgroups ORDER BY _id DESC LIMIT 1")
+    Subgroup getSubgroupWithMaxId();
 }

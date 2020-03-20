@@ -17,10 +17,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import static android.app.Activity.RESULT_OK;
+
 public class GroupsFragment extends Fragment {
 
+    private static final int REQUEST_CODE_CREATE_SUBGROUP = 1;
+
     // ViewModel для взаимодействия с БД.
-    private GroupViewModel groupViewModel;
+    private GroupsViewModel groupsViewModel;
 
     // View компоненты фрагмента.
     private ExpandableListView expandableListView;
@@ -59,7 +63,7 @@ public class GroupsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, AddSubgroupActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, REQUEST_CODE_CREATE_SUBGROUP);
             }
         });
 
@@ -70,10 +74,10 @@ public class GroupsFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        groupViewModel = new GroupViewModel(getActivity().getApplication());
+        groupsViewModel = new GroupsViewModel(getActivity().getApplication());
 
         // Данные по группам.
-        Cursor groupsCursor = groupViewModel.getGroups();
+        Cursor groupsCursor = groupsViewModel.getGroups();
 
         // Сопоставление данных и View для групп.
         final String[] groupFrom = {Group.GroupsTable.TABLE_GROUPS_COLUMN_GROUPNAME};
@@ -109,9 +113,17 @@ public class GroupsFragment extends Fragment {
             // Получаем id родителя (группы).
             long groupId = groupCursor.getLong(groupCursor.getColumnIndex(Group.GroupsTable.TABLE_GROUPS_COLUMN_ID));
             // получаем курсор по элементам-детям (подгруппам) для конкретного родителя (группы).
-            return groupViewModel.getSubgroupsFromGroup(groupId);
+            return groupsViewModel.getSubgroupsFromGroup(groupId);
         }
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
+        if(requestCode == REQUEST_CODE_CREATE_SUBGROUP && resultCode == RESULT_OK){
+            String newSubgroupName = data.getStringExtra(AddSubgroupActivity.EXTRA_NEW_SUBGROUP_NAME);
+            groupsViewModel.insertSubgroup(newSubgroupName);
+        }
+    }
 }

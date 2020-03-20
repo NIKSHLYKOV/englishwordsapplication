@@ -37,7 +37,7 @@ public class AppRepository {
     }
 
     /**
-     *  Методы для работы со словами.
+     * Методы для работы со словами.
      */
     public long insert(Word word) {
         InsertWordAsyncTask insertWordAsyncTask = new InsertWordAsyncTask(wordDao);
@@ -143,6 +143,18 @@ public class AppRepository {
     /**
      * Методы для работы с подгруппами.
      */
+    public long getLastSubgroupId() {
+        GetLastSubgroupIdAsyncTask task = new GetLastSubgroupIdAsyncTask(subgroupDao);
+        task.execute();
+        long lastSubgroupId = 0L;
+        try {
+            lastSubgroupId = task.get(5, TimeUnit.SECONDS);
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            e.printStackTrace();
+        }
+        return lastSubgroupId;
+    }
+
     public long insert(Subgroup subgroup) {
         InsertSubgroupAsyncTask insertSubgroupAsyncTask = new InsertSubgroupAsyncTask(subgroupDao);
         insertSubgroupAsyncTask.execute(subgroup);
@@ -199,6 +211,19 @@ public class AppRepository {
     /**
      * AsyncTasks для работы с подгруппами.
      */
+    private static class GetLastSubgroupIdAsyncTask extends AsyncTask<Void, Void, Long> {
+        private SubgroupDao subgroupDao;
+
+        private GetLastSubgroupIdAsyncTask(SubgroupDao subgroupDao) {
+            this.subgroupDao = subgroupDao;
+        }
+
+        @Override
+        protected Long doInBackground(Void... voids) {
+            return subgroupDao.getSubgroupWithMaxId().id;
+        }
+    }
+
     private static class InsertSubgroupAsyncTask extends AsyncTask<Subgroup, Void, Long> {
         private SubgroupDao subgroupDao;
 
@@ -287,7 +312,6 @@ public class AppRepository {
     }
 
 
-
     /**
      * Методы для работы с группами.
      */
@@ -344,7 +368,6 @@ public class AppRepository {
     }
 
 
-
     /**
      * Методы для работы со связями.
      */
@@ -398,7 +421,6 @@ public class AppRepository {
             return null;
         }
     }
-
 
 
     /**
@@ -472,7 +494,6 @@ public class AppRepository {
             return modeDao.getSelectedModes();
         }
     }
-
 
 
     /**

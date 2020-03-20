@@ -30,7 +30,7 @@ public class Subgroup {
 
     @NonNull
     @ColumnInfo(name = "groupId")
-    public int groupId; // id группы, которой принадлежит данная подгруппа.
+    public long groupId; // id группы, которой принадлежит данная подгруппа.
 
     @NonNull
     @ColumnInfo(name = "IsStudied")
