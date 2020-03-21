@@ -20,7 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
 
-public class WordActivity extends AppCompatActivity {
+public class WordActivity extends AppCompatActivity implements ResetWordProgressDialogFragment.ReportListener{
 
     // Тег для логирования.
     private static final String LOG_TAG = "WordActivity";
@@ -244,5 +244,17 @@ public class WordActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
 
+    }
+
+    /**
+     * Принимает сообщение от ResetWordProgressDialogFragment.
+     * @param message представляет из себя сообщение.
+     */
+    @Override
+    public void reportMessage(String message) {
+        if (message.equals(ResetWordProgressDialogFragment.RESET_MESSAGE)){
+            wordViewModel.getWord().learnProgress = 0;
+            wordViewModel.update();
+        }
     }
 }

@@ -14,7 +14,7 @@ import java.util.concurrent.TimeoutException;
 
 public class AppRepository {
 
-    private final static String LOG_TAG = "AppRepository";
+    private static final String LOG_TAG = "AppRepository";
     private AppDatabase database;
 
     private WordDao wordDao;
@@ -233,6 +233,17 @@ public class AppRepository {
         return null;
     }
 
+    public Subgroup[] getCreatedByUserSubgroups(){
+        GetCreatedByUserSubgroupsAsyncTask task = new GetCreatedByUserSubgroupsAsyncTask(subgroupDao);
+        task.execute();
+        try {
+            return task.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     /**
      * AsyncTasks для работы с подгруппами.
      */
@@ -336,6 +347,20 @@ public class AppRepository {
         }
     }
 
+    private static class GetCreatedByUserSubgroupsAsyncTask extends AsyncTask<Void, Void, Subgroup[]> {
+        private SubgroupDao subgroupDao;
+
+        private GetCreatedByUserSubgroupsAsyncTask(SubgroupDao subgroupDao) {
+            this.subgroupDao = subgroupDao;
+        }
+
+        @Override
+        protected Subgroup[] doInBackground(Void... longs) {
+            return subgroupDao.getCreatedByUserSubgroups();
+        }
+    }
+
+
 
     /**
      * Методы для работы с группами.
@@ -412,6 +437,17 @@ public class AppRepository {
         new DeleteLinkAsyncTask(linkDao).execute(link);
     }
 
+    public Link[] getLinksByWordId(long wordId){
+        GetLinksByWordIdAsyncTask task = new GetLinksByWordIdAsyncTask(linkDao);
+        task.execute(wordId);
+        try {
+            return task.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     /**
      * AsyncTasks для работы со связями.
      */
@@ -444,6 +480,19 @@ public class AppRepository {
         protected Void doInBackground(Link... links) {
             linkDao.delete(links[0]);
             return null;
+        }
+    }
+
+    private static class GetLinksByWordIdAsyncTask extends AsyncTask<Long, Void, Link[]> {
+        private LinkDao linkDao;
+
+        private GetLinksByWordIdAsyncTask(LinkDao linkDao) {
+            this.linkDao = linkDao;
+        }
+
+        @Override
+        protected Link[] doInBackground(Long... longs) {
+            return linkDao.getLinksByWordId(longs[0]);
         }
     }
 

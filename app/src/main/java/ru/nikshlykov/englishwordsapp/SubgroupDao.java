@@ -12,6 +12,8 @@ import androidx.room.Update;
 @Dao
 public interface SubgroupDao {
 
+    public static final long GROUP_FOR_NEW_SUBGROUPS_ID = 21L;
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     long insert(Subgroup subgroup);
 
@@ -32,4 +34,7 @@ public interface SubgroupDao {
 
     @Query("SELECT * FROM Subgroups ORDER BY _id DESC LIMIT 1")
     Subgroup getSubgroupWithMaxId();
+
+    @Query("SELECT * FROM Subgroups WHERE groupId = " + GROUP_FOR_NEW_SUBGROUPS_ID)
+    Subgroup[] getCreatedByUserSubgroups();
 }

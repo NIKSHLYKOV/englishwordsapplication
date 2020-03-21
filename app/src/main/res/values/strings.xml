@@ -45,19 +45,14 @@
     <string name="dialog___reset_word_progress___title">Сбросить прогресс</string>
     <string name="dialog___reset_word_progress___message">Вы действительно хотите сбросить прогресс?</string>
 
-    <string name="dialog___link_word___title">Связать слово</string>
-    <string name="dialog___link_word___message">Выберите группы для связывания слова с ними</string>
-    <string name="dialog___link_word___error_message">Отсутствуют группы для связывания! Добавьте их во вкладке группы.</string>
+    <string name="dialog___link_word___title">Связывание слова</string>
+    <string name="dialog___link_word___error_message">Вы можете связывать слова только со своими подгруппами (созданными вами)!На данный момент группы, доступные для связывания с данным словом отсутствуют!</string>
     <string name="dialog___link_word___positive_button">Связать</string>
 
     <string name="dialog___delete_word___title">Удаление слова</string>
-    <string name="dialog___delete_word___message">Выберите группы для удаления слова из них</string>
-    <string name="dialog___delete_word___error_links_do_not_exist">Отсутствуют группы, связанные с этим словом!</string>
+    <string name="dialog___delete_word___error_links_do_not_exist">Вы можете удалять слова только из своих групп (созданными вами)! На данный момент группы, связанные с данным словом отсутствуют!</string>
     <string name="dialog___delete_word___positive_button">Удалить</string>
 
-    <string name="dialog___copy_word___title">Копирование слова</string>
-    <string name="dialog___copy_word___message">Выберите группы для копирования слова в них</string>
-    <string name="dialog___copy_word___positive_button">Копировать</string>
 
     <string name="dialog___sort_words___title">Сортировать слова</string>
 

@@ -17,58 +17,67 @@ import androidx.fragment.app.DialogFragment;
 
 public class ResetWordProgressDialogFragment extends DialogFragment {
 
+    // Контекст.
+    private Context context;
+
+    // Тег для логирования.
     private static final String LOG_TAG = "ResetWordProgressDF";
 
+    // Extras для передачи данных.
     public static final String EXTRA_WORD_ID = "WordId";
-    private Context context;
-    // Id нашего слова.
+
+    // Сообщение о том, что сбрасывание подтверждено.
+    public static final String RESET_MESSAGE = "Reset";
+
+    // id нашего слова.
     private long wordId;
+
+    // Интерфейс для взаимодействия с Activity.
+    private ReportListener reportListener;
+    public interface ReportListener {
+        void reportMessage(String message);
+    }
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         this.context = context;
+        // Присваиваем слушатель.
+        reportListener = (ReportListener) context;
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Bundle arguments = getArguments();
+
+        // Получаем id слова.
         try {
-            wordId = arguments.getLong(EXTRA_WORD_ID);
+            wordId = getArguments().getLong(EXTRA_WORD_ID);
         } catch (NullPointerException e) {
             Log.e(LOG_TAG, e.getMessage());
-            // Здесь можно прописать явное закрытие фрагмента, если это возможно.
-            // Здесь можно прописать явное закрытие фрагмента, если это возможно.
-            // Здесь можно прописать явное закрытие фрагмента, если это возможно.
-
         }
     }
 
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        //return super.onCreateDialog(savedInstanceState);
         return new AlertDialog.Builder(getActivity())
                 .setTitle(R.string.dialog___reset_word_progress___title)
                 .setMessage(R.string.dialog___reset_word_progress___message)
                 .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        DatabaseHelper databaseHelper = new DatabaseHelper(context);
+                        /*DatabaseHelper databaseHelper = new DatabaseHelper(context);
                         ContentValues contentValues = new ContentValues();
                         contentValues.put(DatabaseHelper.WordsTable.TABLE_WORDS_COLUMN_LEARNPROGRESS, 0);
                         databaseHelper.update(DatabaseHelper.WordsTable.TABLE_WORDS, contentValues,
-                                DatabaseHelper.WordsTable.TABLE_WORDS_COLUMN_ID + "=" + wordId, null);
+                                DatabaseHelper.WordsTable.TABLE_WORDS_COLUMN_ID + "=" + wordId, null);*/
+
+                        // Отправляем Activity сообщение о том, что сбрасывание подтверждено.
+                        reportListener.reportMessage(RESET_MESSAGE);
                     }
                 })
                 .setNegativeButton(R.string.no, null)
                 .create();
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
     }
 }
