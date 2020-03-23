@@ -17,23 +17,26 @@ public class AppRepository {
     private static final String LOG_TAG = "AppRepository";
     private AppDatabase database;
 
-    private WordDao wordDao;
-    private SubgroupDao subgroupDao;
+    private ExampleDao exampleDao;
     private GroupDao groupDao;
     private LinkDao linkDao;
     private ModeDao modeDao;
+    private RepeatDao repeatDao;
     private SettingDao settingDao;
-
+    private SubgroupDao subgroupDao;
+    private WordDao wordDao;
 
     public AppRepository(Application application) {
         database = AppDatabase.getInstance(application);
 
-        wordDao = database.wordDao();
-        subgroupDao = database.subgroupDao();
+        exampleDao = database.exampleDao();
         groupDao = database.groupDao();
-        modeDao = database.modeDao();
         linkDao = database.linkDao();
+        modeDao = database.modeDao();
+        repeatDao = database.repeatDao();
         settingDao = database.settingDao();
+        subgroupDao = database.subgroupDao();
+        wordDao = database.wordDao();
     }
 
     /**

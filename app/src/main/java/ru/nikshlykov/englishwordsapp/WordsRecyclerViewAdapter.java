@@ -26,7 +26,6 @@ public class WordsRecyclerViewAdapter extends RecyclerView.Adapter<WordsRecycler
     private LayoutInflater inflater;
     private Context context;
 
-    // private ArrayList<Word123> word123s;
     private static List<Word> words = new ArrayList<Word>();
 
     private TextToSpeech textToSpeech;
