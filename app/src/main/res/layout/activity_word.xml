@@ -25,21 +25,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <Button
-                android:id="@+id/activity_word___button___tts"
-                android:layout_width="58dp"
-                android:layout_height="match_parent"
-                android:background="@android:drawable/ic_lock_silent_mode_off"
-                android:backgroundTint="@color/colorPrimary"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_gravity="right"
                 android:gravity="center"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp">
 
 
                 <TextView
@@ -48,27 +40,26 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="8dp"
                     android:text="@string/progress"
-                    android:textColor="@color/colorPrimary"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:textColor="@color/colorPrimary"/>
 
                 <ProgressBar
                     android:id="@+id/activity_word___progress_bar___learn_progress"
                     style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="8dp"
                     android:clickable="false"
                     android:max="7"
                     android:progress="4"
-                    android:progressTint="#6D1470"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toEndOf="@+id/activity_word___text_view___progress"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-
+                    android:progressTint="#6D1470"/>
             </LinearLayout>
+
+            <Button
+                android:id="@+id/activity_word___button___tts"
+                android:layout_width="58dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="right"
+                android:background="@android:drawable/ic_lock_silent_mode_off"
+                android:backgroundTint="@color/colorPrimary"/>
         </FrameLayout>
 
         <LinearLayout
