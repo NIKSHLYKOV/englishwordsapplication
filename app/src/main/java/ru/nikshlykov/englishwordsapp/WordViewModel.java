@@ -15,11 +15,14 @@ public class WordViewModel extends AndroidViewModel {
         repository = new AppRepository(application);
     }
 
-    public void setWord(long wordID){
-        word = repository.getWordById(wordID);
+    public void setWord(long wordId){
+        word = repository.getWordById(wordId);
     }
     public Word getWord(){
         return word;
+    }
+    public Word getWordById(long id){
+        return repository.getWordById(id);
     }
 
     public void update(){

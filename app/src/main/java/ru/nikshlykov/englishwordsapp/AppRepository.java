@@ -39,6 +39,7 @@ public class AppRepository {
         wordDao = database.wordDao();
     }
 
+
     /**
      * Методы для работы со словами.
      */
@@ -90,6 +91,17 @@ public class AppRepository {
 
     public LiveData<List<Word>> getWordsFromSubgroup(long subgroupId) {
         return wordDao.getWordsFromSubgroup(subgroupId);
+    }
+
+    public Word[] getAllWordsFromStudiedSubgroups(){
+        GetAllWordsFromStudiedSubgroupsByIdAsyncTask task = new GetAllWordsFromStudiedSubgroupsByIdAsyncTask(wordDao);
+        task.execute();
+        try {
+            return task.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**
@@ -167,6 +179,20 @@ public class AppRepository {
             return wordDao.getWordById(longs[0]);
         }
     }
+
+    private static class GetAllWordsFromStudiedSubgroupsByIdAsyncTask extends AsyncTask<Void, Void, Word[]> {
+        private WordDao wordDao;
+
+        private GetAllWordsFromStudiedSubgroupsByIdAsyncTask(WordDao wordDao) {
+            this.wordDao = wordDao;
+        }
+
+        @Override
+        protected Word[] doInBackground(Void... voids) {
+            return wordDao.getAllWordsFromStudiedSubgrops();
+        }
+    }
+
 
     /**
      * Методы для работы с подгруппами.
@@ -362,7 +388,6 @@ public class AppRepository {
             return subgroupDao.getCreatedByUserSubgroups();
         }
     }
-
 
 
     /**

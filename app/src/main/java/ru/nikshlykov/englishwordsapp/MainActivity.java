@@ -11,10 +11,17 @@ import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Observer;
 
+import android.util.Log;
 import android.view.MenuItem;
 
-public class MainActivity extends AppCompatActivity {
+import java.util.List;
+
+public class MainActivity extends AppCompatActivity implements Mode0Fragment.ReportListener {
+
+    // Тег для логирования.
+    private static final String LOG_TAG = "MainActivity";
 
     // View элементы.
     private BottomNavigationView navigation; // Нижнее меню.
@@ -32,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
 
     // ViewModel для работы с БД.
     private StudyViewModel studyViewModel;
+    Word[] words;
+    int meter = 0;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -55,10 +64,18 @@ public class MainActivity extends AppCompatActivity {
                             displayInfoFragment(InfoFragment.EXTRA_SUBGROUPS_ARE_NOT_CHOSEN);
                             return true;
                         }
-                        fragTrans.replace(contentLayoutId, new Mode0Fragment(), TAG_STUDY_FRAGMENT).commit();
-                        // Здесь пропишем рандомизацию фрагментов и их запихивание в contentLayoutId.
-                    }
 
+                        studyViewModel.loadWords();
+                        words = studyViewModel.getWordsFromStudiedSubgroups();
+                        for(Word word: words){
+                            Log.i(LOG_TAG,
+                                    "Word: " + word.word +
+                                    "; Transcription: " + word.transcription +
+                                    "; Value: " + word.value);
+                        }
+                        // Здесь пропишем рандомизацию фрагментов и их запихивание в contentLayoutId.
+                        replaceFragment();
+                    }
                     return true;
                 case R.id.activity_main_menu___groups:
                     // Пытаемся найти фрагмент и проверяем, создан ли он (на экране).
@@ -117,4 +134,19 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void replaceFragment(){
+        if(meter < words.length) {
+            Mode0Fragment mode0Fragment = new Mode0Fragment();
+            Bundle arguments = new Bundle();
+            arguments.putLong("WordId", words[meter].id);
+            mode0Fragment.setArguments(arguments);
+            meter++;
+            getSupportFragmentManager().beginTransaction().replace(contentLayoutId, mode0Fragment, TAG_STUDY_FRAGMENT).commit();
+        }
+    }
+
+    @Override
+    public void reportMessage(int result) {
+        replaceFragment();
+    }
 }

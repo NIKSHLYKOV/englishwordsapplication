@@ -49,9 +49,6 @@ public class SubgroupActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private WordsRecyclerViewAdapter adapter;
 
-    /*// Для хранения слов текущей подгруппы.
-    public static ArrayList<Word123> word123s;
-*/
     // Полученные данные из Intent'а.
     private Bundle arguments;
     private long subgroupId;
