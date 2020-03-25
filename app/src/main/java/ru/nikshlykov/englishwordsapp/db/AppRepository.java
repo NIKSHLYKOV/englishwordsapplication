@@ -43,7 +43,7 @@ public class AppRepository {
     /**
      * Методы для работы со словами.
      */
-    public long getMinWordId(){
+    public long getMinWordId() {
         GetMinWordIdAsyncTask task = new GetMinWordIdAsyncTask(wordDao);
         task.execute();
         long minWordId = 0L;
@@ -93,7 +93,7 @@ public class AppRepository {
         return wordDao.getWordsFromSubgroup(subgroupId);
     }
 
-    public Word[] getAllWordsFromStudiedSubgroups(){
+    public Word[] getAllWordsFromStudiedSubgroups() {
         GetAllWordsFromStudiedSubgroupsByIdAsyncTask task = new GetAllWordsFromStudiedSubgroupsByIdAsyncTask(wordDao);
         task.execute();
         try {
@@ -189,7 +189,7 @@ public class AppRepository {
 
         @Override
         protected Word[] doInBackground(Void... voids) {
-            return wordDao.getAllWordsFromStudiedSubgrops();
+            return wordDao.getAllWordsFromStudiedSubgroups();
         }
     }
 
@@ -262,7 +262,7 @@ public class AppRepository {
         return null;
     }
 
-    public Subgroup[] getCreatedByUserSubgroups(){
+    public Subgroup[] getCreatedByUserSubgroups() {
         GetCreatedByUserSubgroupsAsyncTask task = new GetCreatedByUserSubgroupsAsyncTask(subgroupDao);
         task.execute();
         try {
@@ -465,7 +465,7 @@ public class AppRepository {
         new DeleteLinkAsyncTask(linkDao).execute(link);
     }
 
-    public Link[] getLinksByWordId(long wordId){
+    public Link[] getLinksByWordId(long wordId) {
         GetLinksByWordIdAsyncTask task = new GetLinksByWordIdAsyncTask(linkDao);
         task.execute(wordId);
         try {
@@ -646,6 +646,118 @@ public class AppRepository {
         }
     }
 
+    /**
+     * Методы для работы с повторами.
+     */
+    public long insert(Repeat repeat) {
+        InsertRepeatAsyncTask insertWordAsyncTask = new InsertRepeatAsyncTask(repeatDao);
+        insertWordAsyncTask.execute(repeat);
 
+        long newRepeatId = 0L;
+
+        try {
+            newRepeatId = insertWordAsyncTask.get(5, TimeUnit.SECONDS);
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            e.printStackTrace();
+            return 0L;
+        }
+        return newRepeatId;
+    }
+
+    public int delete(Repeat repeat) {
+        DeleteRepeatAsyncTask insertWordAsyncTask = new DeleteRepeatAsyncTask(repeatDao);
+        insertWordAsyncTask.execute(repeat);
+
+        int deletedRepeatsCount = 0;
+
+        try {
+            deletedRepeatsCount = insertWordAsyncTask.get(5, TimeUnit.SECONDS);
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            e.printStackTrace();
+            return deletedRepeatsCount;
+        }
+        return deletedRepeatsCount;
+    }
+
+    public Repeat getLastRepeatByWord(long wordId) {
+        GetLastRepeatByWordAsyncTask task = new GetLastRepeatByWordAsyncTask(repeatDao);
+        task.execute(wordId);
+        try {
+            return task.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public long getLastRepeatId() {
+        GetLastRepeatIdAsyncTask task = new GetLastRepeatIdAsyncTask(repeatDao);
+        task.execute();
+        try {
+            return task.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        return 0L;
+    }
+
+    /**
+     * AsyncTasks для работы с повторами.
+     */
+    private static class InsertRepeatAsyncTask extends AsyncTask<Repeat, Void, Long> {
+        private RepeatDao repeatDao;
+
+        private InsertRepeatAsyncTask(RepeatDao repeatDao) {
+            this.repeatDao = repeatDao;
+        }
+
+        @Override
+        protected Long doInBackground(Repeat... repeats) {
+            return repeatDao.insert(repeats[0]);
+        }
+    }
+
+    private static class DeleteRepeatAsyncTask extends AsyncTask<Repeat, Void, Integer> {
+        private RepeatDao repeatDao;
+
+        private DeleteRepeatAsyncTask(RepeatDao repeatDao) {
+            this.repeatDao = repeatDao;
+        }
+
+        @Override
+        protected Integer doInBackground(Repeat... repeats) {
+            return repeatDao.delete(repeats[0]);
+        }
+    }
+
+    private static class GetLastRepeatByWordAsyncTask extends AsyncTask<Long, Void, Repeat> {
+        private RepeatDao repeatDao;
+
+        private GetLastRepeatByWordAsyncTask(RepeatDao repeatDao) {
+            this.repeatDao = repeatDao;
+        }
+
+        @Override
+        protected Repeat doInBackground(Long... longs) {
+            return repeatDao.getLastRepeatByWord(longs[0]);
+        }
+    }
+
+    private static class GetLastRepeatIdAsyncTask extends AsyncTask<Void, Void, Long> {
+        private RepeatDao repeatDao;
+
+        private GetLastRepeatIdAsyncTask(RepeatDao repeatDao) {
+            this.repeatDao = repeatDao;
+        }
+
+        @Override
+        protected Long doInBackground(Void... voids) {
+            Repeat lastRepeat = repeatDao.getRepeatWithMaxId();
+            if (lastRepeat != null)
+                return lastRepeat.getId();
+            else
+                return 0L;
+        }
+    }
 }
 

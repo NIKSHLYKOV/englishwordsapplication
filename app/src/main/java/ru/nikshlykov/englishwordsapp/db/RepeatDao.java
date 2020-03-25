@@ -18,9 +18,12 @@ public interface RepeatDao {
     @Insert
     long insert(Repeat repeat);
 
-    @Query("SELECT * FROM repeats WHERE WordId = :wordId")
+    @Query("SELECT * FROM Repeats WHERE WordId = :wordId")
     Repeat[] getRepeatsByWord(long wordId);
 
-    @Query("SELECT * FROM repeats WHERE WordId = :wordId ORDER BY Date DESC LIMIT 1")
+    @Query("SELECT * FROM Repeats WHERE WordId = :wordId ORDER BY Date DESC LIMIT 1")
     Repeat getLastRepeatByWord(long wordId);
+
+    @Query("SELECT * FROM Repeats ORDER BY _id DESC LIMIT 1")
+    Repeat getRepeatWithMaxId();
 }
