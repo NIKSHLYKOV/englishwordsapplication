@@ -1,9 +1,11 @@
 package ru.nikshlykov.englishwordsapp;
 
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,30 +14,26 @@ import android.widget.TextView;
 
 public class InfoFragment extends Fragment {
 
-    static final String EXTRA_SUBGROUPS_ARE_NOT_CHOSEN = "SubgroupsAreNotChosen";
-    static final String EXTRA_MODES_ARE_NOT_CHOSEN = "ModesAreNotChosen";
+    // Ключ для передачи флага фрагменту.
+    public static final String KEY_INFO_FLAG = "InfoFlag";
 
-    private boolean subgroupsAreNotChosen = false;
-    private boolean modesAreNotChosen = false;
+    // Флаги.
+    public static final int FLAG_SUBGROUPS_ARE_NOT_CHOSEN = 1;
+    public static final int FLAG_MODES_ARE_NOT_CHOSEN = 2;
+    public static final int FLAG_AVAILABLE_WORDS_ARE_NOT_EXISTING = 3;
+
+    // Флаг, получаемый из Activity.
+    private int flag;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("InfoFragment", "onCreate");
+        Log.i("InfoFragment", "onCreate");
         Bundle arguments = getArguments();
         try {
-            subgroupsAreNotChosen = arguments.getBoolean(EXTRA_SUBGROUPS_ARE_NOT_CHOSEN);
-        }
-        catch (NullPointerException ex){
-            subgroupsAreNotChosen = false;
-            ex.getMessage();
-        }
-        try {
-            modesAreNotChosen = arguments.getBoolean(EXTRA_MODES_ARE_NOT_CHOSEN);
-        }
-        catch (NullPointerException ex){
-            modesAreNotChosen = false;
-            ex.getMessage();
+            flag = arguments.getInt(KEY_INFO_FLAG);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
         }
     }
 
@@ -43,17 +41,26 @@ public class InfoFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d("InfoFragment", "onCreateView");
-
+        // Получаем разметку для фрагмента.
         View v = inflater.inflate(R.layout.fragment_info, null);
-
+        // Находим textView для вывода текста.
         TextView infoText = v.findViewById(R.id.fragment_info___text_view___info);
-
-        if (subgroupsAreNotChosen)
-            infoText.setText("Для того, чтобы изучать слова, необходимо выбрать группы слов. Сделать это вы можете перейдя во вкладку \"Группы\"");
-        else if (modesAreNotChosen)
-            infoText.setText("Для того, чтобы изучать слова, необходимо выбрать режимы изучения. Сделать это вы можете перейдя во вкладку \"Режимы\"");
-        else
-            infoText.setText("Произошла ошибка! Это фрагмент не должен был открываться.");
+        // Объявляем переменную для текста и находим необходимый для вывода текст.
+        String text = "";
+        switch (flag){
+            case FLAG_MODES_ARE_NOT_CHOSEN:
+                text = "Для того, чтобы изучать слова, необходимо выбрать режимы изучения. Сделать это вы можете перейдя во вкладку \"Режимы\"";
+                break;
+            case FLAG_SUBGROUPS_ARE_NOT_CHOSEN:
+                text = "Для того, чтобы изучать слова, необходимо выбрать группы слов. Сделать это вы можете перейдя во вкладку \"Группы\"";
+                break;
+            case FLAG_AVAILABLE_WORDS_ARE_NOT_EXISTING:
+                text = "Доступных слов на данный момент нет! Приходите попозже.";
+                break;
+        }
+        // Устанавливаем текст в TextView.
+        infoText.setText(text);
+        // Возвращаем View.
         return v;
     }
 }

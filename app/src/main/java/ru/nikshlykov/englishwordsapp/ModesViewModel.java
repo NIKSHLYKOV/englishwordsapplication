@@ -4,6 +4,8 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
+import ru.nikshlykov.englishwordsapp.db.AppRepository;
+import ru.nikshlykov.englishwordsapp.db.Mode;
 
 import java.util.List;
 

@@ -5,11 +5,8 @@ import android.database.Cursor;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import ru.nikshlykov.englishwordsapp.db.AppRepository;
+import ru.nikshlykov.englishwordsapp.db.Subgroup;
 
 public class GroupsViewModel extends AndroidViewModel {
     private AppRepository repository;

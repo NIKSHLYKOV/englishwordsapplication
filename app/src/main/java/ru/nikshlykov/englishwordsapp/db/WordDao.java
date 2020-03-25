@@ -1,4 +1,4 @@
-package ru.nikshlykov.englishwordsapp;
+package ru.nikshlykov.englishwordsapp.db;
 
 
 import androidx.lifecycle.LiveData;

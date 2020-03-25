@@ -57,7 +57,9 @@ public class DeleteWordDialogFragment extends DialogFragment {
 
         // Получаем названия подгрупп, доступных для удаления из них слова.
         String[] availableSubgroupsNames = wordDialogsViewModel.getAvailableSubgroupsNames();
-        int availableSubgroupsCount = availableSubgroupsNames.length;
+        int availableSubgroupsCount = 0;
+        if (availableSubgroupsNames != null)
+            availableSubgroupsCount = availableSubgroupsNames.length;
 
         // Выводим dialog в зависимости от того, есть доступные подгруппы или их нет.
         if (availableSubgroupsCount == 0){

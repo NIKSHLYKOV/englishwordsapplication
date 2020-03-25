@@ -5,6 +5,10 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import ru.nikshlykov.englishwordsapp.db.AppRepository;
+import ru.nikshlykov.englishwordsapp.db.Link;
+import ru.nikshlykov.englishwordsapp.db.Subgroup;
+import ru.nikshlykov.englishwordsapp.db.Word;
 
 import java.util.List;
 

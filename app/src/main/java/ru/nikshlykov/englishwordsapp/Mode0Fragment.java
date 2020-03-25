@@ -6,14 +6,14 @@ import android.content.Context;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import ru.nikshlykov.englishwordsapp.db.Word;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 public class Mode0Fragment extends Fragment {
 
@@ -50,11 +50,11 @@ public class Mode0Fragment extends Fragment {
         tvTranscription.setText(word.transcription);
         tvValue.setText(word.value);
         tvWord.setText(word.word);
-        Button button = view.findViewById(R.id.fragment_mode0___button___know);
+        Button button = view.findViewById(R.id.fragment_mode0___button___learn);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                reportListener.reportMessage(1);
+                reportListener.reportMessage(word.id, 1);
             }
         });
         return view;
@@ -67,6 +67,6 @@ public class Mode0Fragment extends Fragment {
     }
 
     public interface ReportListener{
-        void reportMessage(int result);
+        void reportMessage(long wordId, int result);
     }
 }

@@ -16,6 +16,8 @@ import android.widget.SimpleCursorTreeAdapter;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import ru.nikshlykov.englishwordsapp.db.Group;
+import ru.nikshlykov.englishwordsapp.db.Subgroup;
 
 import static android.app.Activity.RESULT_OK;
 

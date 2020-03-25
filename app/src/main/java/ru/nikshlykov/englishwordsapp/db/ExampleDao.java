@@ -1,4 +1,4 @@
-package ru.nikshlykov.englishwordsapp;
+package ru.nikshlykov.englishwordsapp.db;
 
 import androidx.room.Dao;
 import androidx.room.Delete;
@@ -6,6 +6,7 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
+import ru.nikshlykov.englishwordsapp.db.Example;
 
 import java.util.List;
 

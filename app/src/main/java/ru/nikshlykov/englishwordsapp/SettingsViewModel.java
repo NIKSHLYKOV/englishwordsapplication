@@ -4,6 +4,9 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
+import ru.nikshlykov.englishwordsapp.db.AppRepository;
+import ru.nikshlykov.englishwordsapp.db.Setting;
+import ru.nikshlykov.englishwordsapp.db.Word;
 
 public class SettingsViewModel extends AndroidViewModel {
     private AppRepository repository;

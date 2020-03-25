@@ -11,12 +11,11 @@ import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.Observer;
+import ru.nikshlykov.englishwordsapp.db.Word;
 
 import android.util.Log;
 import android.view.MenuItem;
-
-import java.util.List;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements Mode0Fragment.ReportListener {
 
@@ -39,7 +38,9 @@ public class MainActivity extends AppCompatActivity implements Mode0Fragment.Rep
 
     // ViewModel для работы с БД.
     private StudyViewModel studyViewModel;
-    Word[] words;
+    // Доступные для повтора слова.
+    Word[] availableToRepeatWords;
+
     int meter = 0;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -57,24 +58,23 @@ public class MainActivity extends AppCompatActivity implements Mode0Fragment.Rep
                     if (fragment == null) {
                         // Проверяем на выбранные режимы и подгруппы.
                         if (!studyViewModel.selectedModesExist()) {
-                            displayInfoFragment(InfoFragment.EXTRA_MODES_ARE_NOT_CHOSEN);
+                            displayInfoFragment(InfoFragment.FLAG_MODES_ARE_NOT_CHOSEN);
                             return true;
                         }
                         if (!studyViewModel.studiedSubgroupsExist()) {
-                            displayInfoFragment(InfoFragment.EXTRA_SUBGROUPS_ARE_NOT_CHOSEN);
+                            displayInfoFragment(InfoFragment.FLAG_SUBGROUPS_ARE_NOT_CHOSEN);
                             return true;
                         }
 
                         studyViewModel.loadWords();
-                        words = studyViewModel.getWordsFromStudiedSubgroups();
-                        for(Word word: words){
+                        availableToRepeatWords = studyViewModel.getWordsFromStudiedSubgroups();
+                        for (Word word : availableToRepeatWords) {
                             Log.i(LOG_TAG,
                                     "Word: " + word.word +
-                                    "; Transcription: " + word.transcription +
-                                    "; Value: " + word.value);
+                                            "; Transcription: " + word.transcription +
+                                            "; Value: " + word.value);
                         }
-                        // Здесь пропишем рандомизацию фрагментов и их запихивание в contentLayoutId.
-                        replaceFragment();
+                        replaceFragment(false);
                     }
                     return true;
                 case R.id.activity_main_menu___groups:
@@ -102,20 +102,20 @@ public class MainActivity extends AppCompatActivity implements Mode0Fragment.Rep
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        viewElementsFinding();
+        findViews();
         contentLayoutId = contentLayout.getId();
-        // Присвоение обработчика нажатия на нижнее меню.
+        // Присваиваем обработчик нажатия на нижнее меню.
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        // Инициализация менеджера работы с фрагментами.
+        // Инициализируем менеджер работы с фрагментами.
         fragmentManager = getSupportFragmentManager();
-
+        // Создаём ViewModel для работы с БД.
         studyViewModel = new StudyViewModel(getApplication());
     }
 
     /**
      * Находит View элементы в разметке.
      */
-    private void viewElementsFinding() {
+    private void findViews() {
         contentLayout = findViewById(R.id.activity_main___linear_layout___content_layout);
         navigation = (BottomNavigationView) findViewById(R.id.navigation);
     }
@@ -123,30 +123,60 @@ public class MainActivity extends AppCompatActivity implements Mode0Fragment.Rep
     /**
      * Запускает информационный фрагмент, если не выбраны группы слов или режимы.
      */
-    private void displayInfoFragment(String flag) {
-        if (flag.equals(InfoFragment.EXTRA_MODES_ARE_NOT_CHOSEN) ||
-                flag.equals(InfoFragment.EXTRA_SUBGROUPS_ARE_NOT_CHOSEN)) {
+    private void displayInfoFragment(int flag) {
+        if (flag == InfoFragment.FLAG_AVAILABLE_WORDS_ARE_NOT_EXISTING ||
+        flag == InfoFragment.FLAG_MODES_ARE_NOT_CHOSEN ||
+        flag == InfoFragment.FLAG_SUBGROUPS_ARE_NOT_CHOSEN) {
             InfoFragment infoFragment = new InfoFragment();
             Bundle arguments = new Bundle();
-            arguments.putBoolean(flag, true);
+            arguments.putInt(InfoFragment.KEY_INFO_FLAG, flag);
             infoFragment.setArguments(arguments);
             fragTrans.replace(contentLayout.getId(), infoFragment, TAG_STUDY_FRAGMENT).commit();
         }
     }
 
-    private void replaceFragment(){
-        if(meter < words.length) {
-            Mode0Fragment mode0Fragment = new Mode0Fragment();
-            Bundle arguments = new Bundle();
-            arguments.putLong("WordId", words[meter].id);
-            mode0Fragment.setArguments(arguments);
-            meter++;
-            getSupportFragmentManager().beginTransaction().replace(contentLayoutId, mode0Fragment, TAG_STUDY_FRAGMENT).commit();
+    private void replaceFragment(boolean meterPlus) {
+        Log.i(LOG_TAG, "replaceFragment()");
+        if (meter < availableToRepeatWords.length) {
+            if (availableToRepeatWords[meter].learnProgress == 0) {
+                Mode0Fragment mode0Fragment = new Mode0Fragment();
+                Bundle arguments = new Bundle();
+                arguments.putLong("WordId", availableToRepeatWords[meter].id);
+                mode0Fragment.setArguments(arguments);
+                if(meterPlus) {
+                    meter++;
+                }
+                getSupportFragmentManager().beginTransaction().replace(contentLayoutId, mode0Fragment, TAG_STUDY_FRAGMENT).commit();
+            } else {
+                //
+                // Прописать рандомизацию фрагмента
+                //
+                Mode1Fragment mode1Fragment = new Mode1Fragment();
+                Bundle arguments = new Bundle();
+                arguments.putLong("WordId", availableToRepeatWords[meter].id);
+                mode1Fragment.setArguments(arguments);
+                meter++;
+                getSupportFragmentManager().beginTransaction().replace(contentLayoutId, mode1Fragment, TAG_STUDY_FRAGMENT).commit();
+            }
+        } else {
+            displayInfoFragment(InfoFragment.FLAG_AVAILABLE_WORDS_ARE_NOT_EXISTING);
         }
     }
 
     @Override
-    public void reportMessage(int result) {
-        replaceFragment();
+    public void reportMessage(long wordId, int result) {
+        Log.i(LOG_TAG, "reportMessage()");
+        resultProcessing(wordId, result);
+        replaceFragment(true);
+    }
+
+    public void resultProcessing(long wordId, int result) {
+        Log.i(LOG_TAG, "resultProcessing()");
+        Log.i(LOG_TAG, "result = " + result);
+        if (result == 0 || result == 1) {
+            studyViewModel.insertRepeat(wordId, result);
+        } else {
+            Toast.makeText(this, "Произошла ошибка. Фрагмент отдал неправильный результат", Toast.LENGTH_SHORT).show();
+        }
     }
 }
