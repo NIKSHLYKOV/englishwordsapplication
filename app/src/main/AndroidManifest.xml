@@ -10,16 +10,16 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".SettingsActivity"
+            android:name=".ui.settings.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName=".ui.main.MainActivity"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="ru.nikshlykov.englishwordsapp.MainActivity" />
+                android:value="ru.nikshlykov.englishwordsapp.ui.main.MainActivity" />
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.main.MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -29,16 +29,16 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SubgroupActivity"
+            android:name=".ui.subgroup.SubgroupActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".WordActivity"
+            android:name=".ui.word.WordActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ModesActivity"
+            android:name=".ui.modes.ModesActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".AddSubgroupActivity"
+            android:name=".ui.subgroup.AddSubgroupActivity"
             android:screenOrientation="portrait" />
     </application>
 

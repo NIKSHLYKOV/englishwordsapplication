@@ -12,6 +12,22 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import ru.nikshlykov.englishwordsapp.db.example.ExampleDao;
+import ru.nikshlykov.englishwordsapp.db.group.Group;
+import ru.nikshlykov.englishwordsapp.db.group.GroupDao;
+import ru.nikshlykov.englishwordsapp.db.link.Link;
+import ru.nikshlykov.englishwordsapp.db.link.LinkDao;
+import ru.nikshlykov.englishwordsapp.db.mode.Mode;
+import ru.nikshlykov.englishwordsapp.db.mode.ModeDao;
+import ru.nikshlykov.englishwordsapp.db.repeat.Repeat;
+import ru.nikshlykov.englishwordsapp.db.repeat.RepeatDao;
+import ru.nikshlykov.englishwordsapp.db.setting.Setting;
+import ru.nikshlykov.englishwordsapp.db.setting.SettingDao;
+import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup;
+import ru.nikshlykov.englishwordsapp.db.subgroup.SubgroupDao;
+import ru.nikshlykov.englishwordsapp.db.word.Word;
+import ru.nikshlykov.englishwordsapp.db.word.WordDao;
+
 public class AppRepository {
 
     private static final String LOG_TAG = "AppRepository";
