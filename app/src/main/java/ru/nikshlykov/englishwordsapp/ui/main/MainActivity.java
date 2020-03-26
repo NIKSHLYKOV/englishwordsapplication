@@ -15,15 +15,17 @@ import androidx.fragment.app.FragmentTransaction;
 import ru.nikshlykov.englishwordsapp.R;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
 import ru.nikshlykov.englishwordsapp.ui.group.GroupsFragment;
-import ru.nikshlykov.englishwordsapp.ui.study.Mode0Fragment;
-import ru.nikshlykov.englishwordsapp.ui.study.Mode1Fragment;
+import ru.nikshlykov.englishwordsapp.ui.study.FirstShowModeFragment;
+import ru.nikshlykov.englishwordsapp.ui.study.DictionaryCardsModeFragment;
 import ru.nikshlykov.englishwordsapp.ui.study.StudyViewModel;
 
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity implements Mode0Fragment.ReportListener {
+public class MainActivity extends AppCompatActivity
+        implements FirstShowModeFragment.Mode0ReportListener,
+        DictionaryCardsModeFragment.DictionaryCardsModeReportListener {
 
     // Тег для логирования.
     private static final String LOG_TAG = "MainActivity";
@@ -145,24 +147,24 @@ public class MainActivity extends AppCompatActivity implements Mode0Fragment.Rep
         Log.i(LOG_TAG, "replaceFragment()");
         if (meter < availableToRepeatWords.length) {
             if (availableToRepeatWords[meter].learnProgress == 0) {
-                Mode0Fragment mode0Fragment = new Mode0Fragment();
+                FirstShowModeFragment firstShowModeFragment = new FirstShowModeFragment();
                 Bundle arguments = new Bundle();
                 arguments.putLong("WordId", availableToRepeatWords[meter].id);
-                mode0Fragment.setArguments(arguments);
+                firstShowModeFragment.setArguments(arguments);
                 if(meterPlus) {
                     meter++;
                 }
-                getSupportFragmentManager().beginTransaction().replace(contentLayoutId, mode0Fragment, TAG_STUDY_FRAGMENT).commit();
+                getSupportFragmentManager().beginTransaction().replace(contentLayoutId, firstShowModeFragment, TAG_STUDY_FRAGMENT).commit();
             } else {
                 //
                 // Прописать рандомизацию фрагмента
                 //
-                Mode1Fragment mode1Fragment = new Mode1Fragment();
+                DictionaryCardsModeFragment dictionaryCardsModeFragment = new DictionaryCardsModeFragment();
                 Bundle arguments = new Bundle();
                 arguments.putLong("WordId", availableToRepeatWords[meter].id);
-                mode1Fragment.setArguments(arguments);
+                dictionaryCardsModeFragment.setArguments(arguments);
                 meter++;
-                getSupportFragmentManager().beginTransaction().replace(contentLayoutId, mode1Fragment, TAG_STUDY_FRAGMENT).commit();
+                getSupportFragmentManager().beginTransaction().replace(contentLayoutId, dictionaryCardsModeFragment, TAG_STUDY_FRAGMENT).commit();
             }
         } else {
             displayInfoFragment(InfoFragment.FLAG_AVAILABLE_WORDS_ARE_NOT_EXISTING);
@@ -170,17 +172,23 @@ public class MainActivity extends AppCompatActivity implements Mode0Fragment.Rep
     }
 
     @Override
-    public void reportMessage(long wordId, int result) {
-        Log.i(LOG_TAG, "reportMessage()");
-        resultProcessing(wordId, result);
+    public void firstShowResultMessage(long wordId, int result) {
+        Log.i(LOG_TAG, "firstShowResultMessage()");
+        repeatProcessing(wordId, result);
         replaceFragment(true);
     }
 
-    public void resultProcessing(long wordId, int result) {
-        Log.i(LOG_TAG, "resultProcessing()");
+    @Override
+    public void dictionaryCardsResultMessage(long wordId, int result) {
+        repeatProcessing(wordId, result);
+        replaceFragment(true);
+    }
+
+    public void repeatProcessing(long wordId, int result) {
+        Log.i(LOG_TAG, "repeatProcessing()");
         Log.i(LOG_TAG, "result = " + result);
-        if (result == 0 || result == 1) {
-            studyViewModel.insertRepeat(wordId, result);
+        if (result == 0 || result == 1 || result == 2) {
+            studyViewModel.repeatProcessing(wordId, result);
         } else {
             Toast.makeText(this, "Произошла ошибка. Фрагмент отдал неправильный результат", Toast.LENGTH_SHORT).show();
         }

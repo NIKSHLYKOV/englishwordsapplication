@@ -10,19 +10,19 @@ public enum ModeFactory {
     FIRST_VIEW(0) {
         @Override
         public Fragment createFragment(Context context) {
-            return new Mode0Fragment();
+            return new FirstShowModeFragment();
         }
     },
     VOC_CARD_ENG_TO_RUS(1) {
         @Override
         public Fragment createFragment(Context context) {
-            return new Mode1Fragment();
+            return new DictionaryCardsModeFragment();
         }
     },
     VOC_CARD_RUS_TO_ENG(2) {
         @Override
         public Fragment createFragment(Context context) {
-            return new Mode2Fragment();
+            return new DictionaryCardsModeFragment();
         }
     },
     WRITE_WORD_FROM_VALUE(3) {
