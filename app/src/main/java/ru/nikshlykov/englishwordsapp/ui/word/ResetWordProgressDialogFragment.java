@@ -69,12 +69,6 @@ public class ResetWordProgressDialogFragment extends DialogFragment {
                 .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        /*DatabaseHelper databaseHelper = new DatabaseHelper(context);
-                        ContentValues contentValues = new ContentValues();
-                        contentValues.put(DatabaseHelper.WordsTable.TABLE_WORDS_COLUMN_LEARNPROGRESS, 0);
-                        databaseHelper.update(DatabaseHelper.WordsTable.TABLE_WORDS, contentValues,
-                                DatabaseHelper.WordsTable.TABLE_WORDS_COLUMN_ID + "=" + wordId, null);*/
-
                         // Отправляем Activity сообщение о том, что сбрасывание подтверждено.
                         reportListener.reportMessage(RESET_MESSAGE);
                     }

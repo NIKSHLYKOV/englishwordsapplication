@@ -7,6 +7,7 @@ import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -110,7 +111,8 @@ public class AppRepository {
     }
 
     public Word[] getAllWordsFromStudiedSubgroups() {
-        GetAllWordsFromStudiedSubgroupsByIdAsyncTask task = new GetAllWordsFromStudiedSubgroupsByIdAsyncTask(wordDao);
+        GetAllWordsFromStudiedSubgroupsByIdAsyncTask task
+                = new GetAllWordsFromStudiedSubgroupsByIdAsyncTask(wordDao);
         task.execute();
         try {
             return task.get();
@@ -119,6 +121,19 @@ public class AppRepository {
         }
         return null;
     }
+
+    public ArrayList<Word> getAvailableToRepeatWords() {
+        GetAvailableToRepeatWordsAsyncTask task
+                = new GetAvailableToRepeatWordsAsyncTask(wordDao);
+        task.execute();
+        try {
+            return task.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 
     /**
      * AsyncTasks для работы со словами.
@@ -209,6 +224,25 @@ public class AppRepository {
         }
     }
 
+    private static class GetAvailableToRepeatWordsAsyncTask extends AsyncTask<Void, Void, ArrayList<Word>> {
+        private WordDao wordDao;
+
+        private GetAvailableToRepeatWordsAsyncTask(WordDao wordDao) {
+            this.wordDao = wordDao;
+        }
+
+        @Override
+        protected ArrayList<Word> doInBackground(Void... voids) {
+            Word[] wordsFromStudiedSubgroups = wordDao.getAllWordsFromStudiedSubgroups();
+            ArrayList<Word> availableToRepeatWords = new ArrayList<>();
+            for (Word word : wordsFromStudiedSubgroups) {
+                if(word.isAvailableToRepeat()){
+                    availableToRepeatWords.add(word);
+                }
+            }
+            return availableToRepeatWords;
+        }
+    }
 
     /**
      * Методы для работы с подгруппами.

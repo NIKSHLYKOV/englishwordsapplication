@@ -42,6 +42,7 @@ public class StudyViewModel extends AndroidViewModel {
         return wordsFromStudiedSubgroups;
     }
 
+
     public void repeatProcessing(long wordId, int result) {
         // Получаем слово по id.
         Word word = repository.getWordById(wordId);
