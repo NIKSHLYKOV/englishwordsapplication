@@ -25,28 +25,28 @@ public enum ModeFactory {
             return new DictionaryCardsModeFragment();
         }
     },
-    WRITE_WORD_FROM_VALUE(3) {
+    WRITE_WORD_BY_VALUE(3) {
         @Override
         public Fragment createFragment(Context context) {
-            return new Mode3Fragment();
+            return new WriteWordByValueModeFragment();
         }
     },
     COLLECT_WORD_BY_LETTERS(4) {
         @Override
         public Fragment createFragment(Context context) {
-            return new Mode4Fragment();
+            return new CollectWordByLettersModeFragment();
         }
     },
-    WRITE_WORD_FROM_VOICE(5) {
+    WRITE_WORD_BY_VOICE(5) {
         @Override
         public Fragment createFragment(Context context) {
-            return new Mode5Fragment();
+            return new WriteWordByVoiceModeFragment();
         }
     },
     CHOOSE_FROM_FOUR_VARIANTS(6) {
         @Override
         public Fragment createFragment(Context context) {
-            return new Mode6Fragment();
+            return new ChooseFromFourVariantsModeFragment();
         }
     };
 

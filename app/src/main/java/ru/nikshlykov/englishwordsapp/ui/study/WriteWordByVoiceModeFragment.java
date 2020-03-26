@@ -11,10 +11,10 @@ import androidx.fragment.app.Fragment;
 
 import ru.nikshlykov.englishwordsapp.R;
 
-public class Mode6Fragment extends Fragment {
+public class WriteWordByVoiceModeFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_mode6, null);
+        return inflater.inflate(R.layout.fragment_mode5, null);
     }
 }
