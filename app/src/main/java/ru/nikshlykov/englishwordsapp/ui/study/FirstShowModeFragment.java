@@ -21,35 +21,34 @@ import android.widget.TextView;
 
 public class FirstShowModeFragment extends Fragment {
 
+    public static final String EXTRA_WORD_ID = "WordId";
+
     // View для отображения параметров слова.
     private TextView wordTextView;
     private TextView transcriptionTextView;
     private TextView valueTextView;
 
-    // Модель для работы с БД.
-    private WordViewModel wordViewModel;
-
     // Слово.
     private Word word;
 
-    private Mode0ReportListener mode0ReportListener;
-    public interface Mode0ReportListener {
-        void firstShowResultMessage(long wordId, int result);
+    private FirstShowModeReportListener firstShowModeReportListener;
+    public interface FirstShowModeReportListener {
+        void firstShowModeResultMessage(long wordId, int result);
     }
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        mode0ReportListener = (Mode0ReportListener) context;
+        firstShowModeReportListener = (FirstShowModeReportListener) context;
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        wordViewModel = new WordViewModel(getActivity().getApplication());
+        WordViewModel wordViewModel = new WordViewModel(getActivity().getApplication());
 
         // Получаем id слова.
-        long wordId = getArguments().getLong("WordId");
+        long wordId = getArguments().getLong(EXTRA_WORD_ID);
         // Получаем слово по id из БД.
         word = wordViewModel.getWordById(wordId);
     }
@@ -58,7 +57,7 @@ public class FirstShowModeFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d("FirstShowModeFragment", "onCreateView");
-        View view = inflater.inflate(R.layout.fragment_mode0, null);
+        View view = inflater.inflate(R.layout.fragment_first_show_mode, null);
         findViews(view);
         // Устанавливаем параметры слова в наши view.
         setWordParametersToViews();
@@ -67,7 +66,7 @@ public class FirstShowModeFragment extends Fragment {
         learnButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mode0ReportListener.firstShowResultMessage(word.id, 1);
+                firstShowModeReportListener.firstShowModeResultMessage(word.id, 1);
             }
         });
 
@@ -75,7 +74,7 @@ public class FirstShowModeFragment extends Fragment {
         knowButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mode0ReportListener.firstShowResultMessage(word.id, 2);
+                firstShowModeReportListener.firstShowModeResultMessage(word.id, 2);
             }
         });
 
@@ -83,7 +82,7 @@ public class FirstShowModeFragment extends Fragment {
         skipButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mode0ReportListener.firstShowResultMessage(word.id, 0);
+                firstShowModeReportListener.firstShowModeResultMessage(word.id, 0);
             }
         });
 

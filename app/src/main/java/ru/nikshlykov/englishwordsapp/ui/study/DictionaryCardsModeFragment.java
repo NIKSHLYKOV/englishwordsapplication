@@ -14,7 +14,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import ru.nikshlykov.englishwordsapp.R;
-import ru.nikshlykov.englishwordsapp.db.word.Word;
 import ru.nikshlykov.englishwordsapp.ui.word.WordViewModel;
 
 public class DictionaryCardsModeFragment extends Fragment {
@@ -68,11 +67,11 @@ public class DictionaryCardsModeFragment extends Fragment {
         View view = null;
         switch (flag){
             case FLAG_ENG_TO_RUS:
-                view = inflater.inflate(R.layout.fragment_mode1, null);
+                view = inflater.inflate(R.layout.fragment_dictionary_cards_eng_to_rus, null);
                 findViewsEngToRus(view);
                 break;
             case FLAG_RUS_TO_ENG:
-                view = inflater.inflate(R.layout.fragment_mode2, null);
+                view = inflater.inflate(R.layout.fragment_dictionary_cards_rus_to_eng, null);
                 findViewsRusToEng(view);
                 break;
         }

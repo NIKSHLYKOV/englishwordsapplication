@@ -15,6 +15,6 @@ public class CollectWordByLettersModeFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_mode4, null);
+        return inflater.inflate(R.layout.fragment_collect_word_by_letters_mode, null);
     }
 }

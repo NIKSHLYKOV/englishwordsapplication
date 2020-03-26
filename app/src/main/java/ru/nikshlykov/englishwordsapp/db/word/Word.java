@@ -46,7 +46,7 @@ public class Word {
 
     @NonNull
     @ColumnInfo(name = "LastRepetitionDate", defaultValue = "0")
-    public int lastRepetitionDate; // Дата последнего повтора слова.
+    public long lastRepetitionDate; // Дата последнего повтора слова.
 
     public static class WordsTable {
         // Названия таблицы слов и её колонок

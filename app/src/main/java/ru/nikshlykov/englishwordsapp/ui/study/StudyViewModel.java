@@ -2,6 +2,7 @@ package ru.nikshlykov.englishwordsapp.ui.study;
 
 import android.app.Application;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import androidx.annotation.NonNull;
@@ -30,34 +31,23 @@ public class StudyViewModel extends AndroidViewModel {
         return repository.getSelectedModes().length != 0;
     }
 
-    /*Word[] getAllWordsFromStudiedSubgoups(){
-        return repository.getAllWordsFromStudiedSubgroups();
-    }*/
 
-    public void loadWords() {
-        wordsFromStudiedSubgroups = repository.getAllWordsFromStudiedSubgroups();
-    }
 
-    public Word[] getWordsFromStudiedSubgroups() {
-        return wordsFromStudiedSubgroups;
+    public Word getNextAvailableToRepeatWord() {
+        // Обновляем доступные для повтора слова.
+        ArrayList<Word> availableToRepeatWords = repository.getAvailableToRepeatWords();
+
+        // Возвращаем первое слово.
+        // На всякий случай будем удалять его, когда сделаем LiveData.
+        if (!availableToRepeatWords.isEmpty()) {
+            return availableToRepeatWords.get(0);
+        } else {
+            return null;
+        }
     }
 
 
     public void repeatProcessing(long wordId, int result) {
-        // Получаем слово по id.
-        Word word = repository.getWordById(wordId);
-        // Устанавливаем ему новый прогресс в зависимости от результата повтора.
-        if (result == 0) {
-            if (word.learnProgress > 0)
-                word.learnProgress--;
-        } else if (result == 1) {
-            if (word.learnProgress < 7)
-                word.learnProgress++;
-        }
-        // Обновляем слово.
-        repository.update(word);
-
-
         // Находим порядковый номер данного повтора.
         int newRepeatSequenceNumber = 0;
         // Получаем последний повтор по данному слову.
@@ -76,7 +66,7 @@ public class StudyViewModel extends AndroidViewModel {
                     newRepeatSequenceNumber = lastRepeat.getSequenceNumber() - 1;
                 }
             }
-            insertRepeat(wordId, newRepeatSequenceNumber, result);
+            insertRepeatAndUpdateWord(wordId, newRepeatSequenceNumber, result);
         }
     }
 
@@ -87,7 +77,7 @@ public class StudyViewModel extends AndroidViewModel {
                 // Необходимо добавить столбец для приоритета в таблицу слов.
                 break;
             case 1:
-                insertRepeat(wordId, 0, result);
+                insertRepeatAndUpdateWord(wordId, 0, result);
                 break;
             case 2:
                 // Если пользователь при первом показе слова указал, что он его знает.
@@ -101,12 +91,31 @@ public class StudyViewModel extends AndroidViewModel {
         }
     }
 
-    private void insertRepeat(long wordId, int sequenceNumber, int result){
+    private void insertRepeatAndUpdateWord(long wordId, int sequenceNumber, int result) {
         // Получаем текущую дату.
         Date currentDate = new Date();
         // Создаём повтор и вставляем его в БД.
         Repeat newRepeat = new Repeat(wordId, sequenceNumber, currentDate.getTime(), result);
         newRepeat.setId(repository.getLastRepeatId() + 1);
         repository.insert(newRepeat);
+
+        // Получаем слово по id.
+        Word word = repository.getWordById(wordId);
+        // Устанавливаем дату последнего повтора.
+        word.lastRepetitionDate = currentDate.getTime();
+        // Устанавливаем ему новый прогресс в зависимости от результата повтора.
+        if (result == 0) {
+            if (word.learnProgress > 0)
+                word.learnProgress--;
+        } else if (result == 1) {
+            if (word.learnProgress < 7)
+                word.learnProgress++;
+        }
+        // Обновляем слово.
+        repository.update(word);
+    }
+
+    public Word getWordById(long id){
+        return repository.getWordById(id);
     }
 }

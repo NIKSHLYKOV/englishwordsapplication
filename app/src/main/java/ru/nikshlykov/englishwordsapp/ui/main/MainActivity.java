@@ -24,7 +24,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity
-        implements FirstShowModeFragment.Mode0ReportListener,
+        implements FirstShowModeFragment.FirstShowModeReportListener,
         DictionaryCardsModeFragment.DictionaryCardsModeReportListener {
 
     // Тег для логирования.
@@ -47,9 +47,9 @@ public class MainActivity extends AppCompatActivity
     // ViewModel для работы с БД.
     private StudyViewModel studyViewModel;
     // Доступные для повтора слова.
-    Word[] availableToRepeatWords;
+    /*Word[] availableToRepeatWords;
 
-    int meter = 0;
+    int meter = 0;*/
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -73,16 +73,7 @@ public class MainActivity extends AppCompatActivity
                             displayInfoFragment(InfoFragment.FLAG_SUBGROUPS_ARE_NOT_CHOSEN);
                             return true;
                         }
-
-                        studyViewModel.loadWords();
-                        availableToRepeatWords = studyViewModel.getWordsFromStudiedSubgroups();
-                        for (Word word : availableToRepeatWords) {
-                            Log.i(LOG_TAG,
-                                    "Word: " + word.word +
-                                            "; Transcription: " + word.transcription +
-                                            "; Value: " + word.value);
-                        }
-                        replaceFragment(false);
+                        replaceFragment();
                     }
                     return true;
                 case R.id.activity_main_menu___groups:
@@ -143,27 +134,26 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    private void replaceFragment(boolean meterPlus) {
+    private void replaceFragment() {
         Log.i(LOG_TAG, "replaceFragment()");
-        if (meter < availableToRepeatWords.length) {
-            if (availableToRepeatWords[meter].learnProgress == 0) {
+
+        Word nextWord = studyViewModel.getNextAvailableToRepeatWord();
+        if (nextWord != null){
+            // ГДЕ ХРАНИТЬ EXTRA_WORD_ID ДЛЯ ВСЕХ ФРАГМЕНТОВ?
+
+            // Создаём Bundle для отправки id слова фрагменту.
+            Bundle arguments = new Bundle();
+            arguments.putLong("WordId", nextWord.id);
+
+            if (nextWord.learnProgress == -1){
                 FirstShowModeFragment firstShowModeFragment = new FirstShowModeFragment();
-                Bundle arguments = new Bundle();
-                arguments.putLong("WordId", availableToRepeatWords[meter].id);
                 firstShowModeFragment.setArguments(arguments);
-                if(meterPlus) {
-                    meter++;
-                }
                 getSupportFragmentManager().beginTransaction().replace(contentLayoutId, firstShowModeFragment, TAG_STUDY_FRAGMENT).commit();
-            } else {
-                //
-                // Прописать рандомизацию фрагмента
-                //
+            }
+            else {
+                arguments.putInt(DictionaryCardsModeFragment.KEY_MODE_FLAG, DictionaryCardsModeFragment.FLAG_ENG_TO_RUS);
                 DictionaryCardsModeFragment dictionaryCardsModeFragment = new DictionaryCardsModeFragment();
-                Bundle arguments = new Bundle();
-                arguments.putLong("WordId", availableToRepeatWords[meter].id);
                 dictionaryCardsModeFragment.setArguments(arguments);
-                meter++;
                 getSupportFragmentManager().beginTransaction().replace(contentLayoutId, dictionaryCardsModeFragment, TAG_STUDY_FRAGMENT).commit();
             }
         } else {
@@ -171,26 +161,20 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+
     @Override
-    public void firstShowResultMessage(long wordId, int result) {
-        Log.i(LOG_TAG, "firstShowResultMessage()");
-        repeatProcessing(wordId, result);
-        replaceFragment(true);
+    public void firstShowModeResultMessage(long wordId, int result) {
+        Log.i(LOG_TAG, "firstShowModeResultMessage()");
+        Log.i(LOG_TAG, "result = " + result);
+        studyViewModel.firstShowProcessing(wordId, result);
+        replaceFragment();
     }
 
     @Override
     public void dictionaryCardsResultMessage(long wordId, int result) {
-        repeatProcessing(wordId, result);
-        replaceFragment(true);
-    }
-
-    public void repeatProcessing(long wordId, int result) {
-        Log.i(LOG_TAG, "repeatProcessing()");
+        Log.i(LOG_TAG, "dictionaryCardsResultMessage()");
         Log.i(LOG_TAG, "result = " + result);
-        if (result == 0 || result == 1 || result == 2) {
-            studyViewModel.repeatProcessing(wordId, result);
-        } else {
-            Toast.makeText(this, "Произошла ошибка. Фрагмент отдал неправильный результат", Toast.LENGTH_SHORT).show();
-        }
+        studyViewModel.repeatProcessing(wordId, result);
+        replaceFragment();
     }
 }

@@ -15,6 +15,6 @@ public class WriteWordByVoiceModeFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_mode5, null);
+        return inflater.inflate(R.layout.fragment_write_word_by_voice_mode, null);
     }
 }
