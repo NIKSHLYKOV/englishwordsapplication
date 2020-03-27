@@ -18,14 +18,18 @@ import ru.nikshlykov.englishwordsapp.ui.group.GroupsFragment;
 import ru.nikshlykov.englishwordsapp.ui.study.FirstShowModeFragment;
 import ru.nikshlykov.englishwordsapp.ui.study.DictionaryCardsModeFragment;
 import ru.nikshlykov.englishwordsapp.ui.study.StudyViewModel;
+import ru.nikshlykov.englishwordsapp.ui.study.WriteWordByValueModeFragment;
 
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import java.util.Random;
+
 public class MainActivity extends AppCompatActivity
         implements FirstShowModeFragment.FirstShowModeReportListener,
-        DictionaryCardsModeFragment.DictionaryCardsModeReportListener {
+        DictionaryCardsModeFragment.DictionaryCardsModeReportListener,
+        WriteWordByValueModeFragment.WriteWordByValueReportListener {
 
     // Тег для логирования.
     private static final String LOG_TAG = "MainActivity";
@@ -124,8 +128,8 @@ public class MainActivity extends AppCompatActivity
      */
     private void displayInfoFragment(int flag) {
         if (flag == InfoFragment.FLAG_AVAILABLE_WORDS_ARE_NOT_EXISTING ||
-        flag == InfoFragment.FLAG_MODES_ARE_NOT_CHOSEN ||
-        flag == InfoFragment.FLAG_SUBGROUPS_ARE_NOT_CHOSEN) {
+                flag == InfoFragment.FLAG_MODES_ARE_NOT_CHOSEN ||
+                flag == InfoFragment.FLAG_SUBGROUPS_ARE_NOT_CHOSEN) {
             InfoFragment infoFragment = new InfoFragment();
             Bundle arguments = new Bundle();
             arguments.putInt(InfoFragment.KEY_INFO_FLAG, flag);
@@ -138,23 +142,43 @@ public class MainActivity extends AppCompatActivity
         Log.i(LOG_TAG, "replaceFragment()");
 
         Word nextWord = studyViewModel.getNextAvailableToRepeatWord();
-        if (nextWord != null){
+        if (nextWord != null) {
+            Log.i(LOG_TAG,
+                    "word = " + nextWord.word +
+                            "; learnProgress = " + nextWord.learnProgress +
+                            "; lastRepetitionDate = " + nextWord.lastRepetitionDate);
+            // ГДЕ ХРАНИТЬ EXTRA_WORD_ID ДЛЯ ВСЕХ ФРАГМЕНТОВ?
+            // ГДЕ ХРАНИТЬ EXTRA_WORD_ID ДЛЯ ВСЕХ ФРАГМЕНТОВ?
             // ГДЕ ХРАНИТЬ EXTRA_WORD_ID ДЛЯ ВСЕХ ФРАГМЕНТОВ?
 
             // Создаём Bundle для отправки id слова фрагменту.
             Bundle arguments = new Bundle();
             arguments.putLong("WordId", nextWord.id);
 
-            if (nextWord.learnProgress == -1){
+            if (nextWord.learnProgress == -1) {
                 FirstShowModeFragment firstShowModeFragment = new FirstShowModeFragment();
                 firstShowModeFragment.setArguments(arguments);
                 getSupportFragmentManager().beginTransaction().replace(contentLayoutId, firstShowModeFragment, TAG_STUDY_FRAGMENT).commit();
-            }
-            else {
-                arguments.putInt(DictionaryCardsModeFragment.KEY_MODE_FLAG, DictionaryCardsModeFragment.FLAG_ENG_TO_RUS);
-                DictionaryCardsModeFragment dictionaryCardsModeFragment = new DictionaryCardsModeFragment();
-                dictionaryCardsModeFragment.setArguments(arguments);
-                getSupportFragmentManager().beginTransaction().replace(contentLayoutId, dictionaryCardsModeFragment, TAG_STUDY_FRAGMENT).commit();
+            } else {
+                Random random = new Random();
+                int randomInt = random.nextInt(2);
+                Log.i(LOG_TAG, "random = " + randomInt);
+                if (randomInt == 0) {
+                    arguments.putInt(DictionaryCardsModeFragment.KEY_MODE_FLAG, DictionaryCardsModeFragment.FLAG_ENG_TO_RUS);
+                    DictionaryCardsModeFragment dictionaryCardsModeFragment = new DictionaryCardsModeFragment();
+                    dictionaryCardsModeFragment.setArguments(arguments);
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(contentLayoutId, dictionaryCardsModeFragment, TAG_STUDY_FRAGMENT)
+                            .commit();
+                } else if (randomInt == 1){
+                    WriteWordByValueModeFragment writeWordByValueModeFragment = new WriteWordByValueModeFragment();
+                    writeWordByValueModeFragment.setArguments(arguments);
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(contentLayoutId, writeWordByValueModeFragment, TAG_STUDY_FRAGMENT)
+                            .commit();
+                }
             }
         } else {
             displayInfoFragment(InfoFragment.FLAG_AVAILABLE_WORDS_ARE_NOT_EXISTING);
@@ -173,6 +197,16 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void dictionaryCardsResultMessage(long wordId, int result) {
         Log.i(LOG_TAG, "dictionaryCardsResultMessage()");
+        Log.i(LOG_TAG, "wordId = " + wordId);
+        Log.i(LOG_TAG, "result = " + result);
+        studyViewModel.repeatProcessing(wordId, result);
+        replaceFragment();
+    }
+
+    @Override
+    public void writeWordByValueResultMessage(long wordId, int result) {
+        Log.i(LOG_TAG, "writeWordByValueResultMessage()");
+        Log.i(LOG_TAG, "wordId = " + wordId);
         Log.i(LOG_TAG, "result = " + result);
         studyViewModel.repeatProcessing(wordId, result);
         replaceFragment();

@@ -1,6 +1,7 @@
 package ru.nikshlykov.englishwordsapp.ui.study;
 
 import android.app.Application;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -13,6 +14,9 @@ import ru.nikshlykov.englishwordsapp.db.repeat.Repeat;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
 
 public class StudyViewModel extends AndroidViewModel {
+
+    private static final String LOG_TAG = "StudyViewModel";
+
     private AppRepository repository;
 
     private Word[] wordsFromStudiedSubgroups;
@@ -30,7 +34,6 @@ public class StudyViewModel extends AndroidViewModel {
     public boolean selectedModesExist() {
         return repository.getSelectedModes().length != 0;
     }
-
 
 
     public Word getNextAvailableToRepeatWord() {
@@ -92,6 +95,10 @@ public class StudyViewModel extends AndroidViewModel {
     }
 
     private void insertRepeatAndUpdateWord(long wordId, int sequenceNumber, int result) {
+        Log.i(LOG_TAG, "insertRepeatAndUpdateWord()");
+        Log.i(LOG_TAG,
+                "sequenceNumber = " + sequenceNumber +
+                        "; result = " + result);
         // Получаем текущую дату.
         Date currentDate = new Date();
         // Создаём повтор и вставляем его в БД.
@@ -111,11 +118,15 @@ public class StudyViewModel extends AndroidViewModel {
             if (word.learnProgress < 7)
                 word.learnProgress++;
         }
+        Log.i(LOG_TAG,
+                "word = " + word.word +
+                "; learnProgress = " + word.learnProgress +
+                        "; lastRepetitionDate = " + word.lastRepetitionDate);
         // Обновляем слово.
         repository.update(word);
     }
 
-    public Word getWordById(long id){
+    public Word getWordById(long id) {
         return repository.getWordById(id);
     }
 }

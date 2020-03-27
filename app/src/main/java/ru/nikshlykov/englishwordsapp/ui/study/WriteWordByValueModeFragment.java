@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 
@@ -22,10 +23,7 @@ public class WriteWordByValueModeFragment extends Fragment {
     // Views.
     private TextView valueTextView;
     private EditText userVariantEditText;
-    private Button confirmButton;
-
-    // id слова.
-    private long wordId;
+    private ImageButton confirmButton;
 
     // ViewModel для работы с БД.
     private WordViewModel wordViewModel;
@@ -69,7 +67,7 @@ public class WriteWordByValueModeFragment extends Fragment {
                 if (userVariantOfWord.equals(wordViewModel.getWord().word)){
                     result = 1;
                 }
-                writeWordByValueReportListener.writeWordByValueResultMessage(wordId, result);
+                writeWordByValueReportListener.writeWordByValueResultMessage(wordViewModel.getWord().id, result);
             }
         });
 
