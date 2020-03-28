@@ -7,7 +7,7 @@
     android:background="@android:color/white">
 
     <TextView
-        android:id="@+id/fragment_mode3___text_view___value"
+        android:id="@+id/fragment_write_word_by_value___text_view___value"
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:gravity="center"
@@ -24,11 +24,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_below="@id/fragment_mode3___text_view___value"
-        android:layout_marginTop="200dp">
+        android:layout_below="@id/fragment_write_word_by_value___text_view___value"
+        android:layout_marginTop="150dp">
 
         <EditText
-            android:id="@+id/fragment_mode3___edit_text___user_variant"
+            android:id="@+id/fragment_write_word_by_value___edit_text___user_variant"
 
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -42,7 +42,8 @@
             android:textColor="@color/colorPrimary" />
 
         <ImageButton
-            android:id="@+id/fragment_mode3___button___confirm"
+            android:id="@+id/fragment_write_word_by_value___button___confirm"
+            style="@style/Widget.AppCompat.ImageButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"

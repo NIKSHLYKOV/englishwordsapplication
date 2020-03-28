@@ -76,8 +76,10 @@ public class StudyViewModel extends AndroidViewModel {
     public void firstShowProcessing(long wordId, int result) {
         switch (result) {
             case 0:
-                // Здесь будет приоритета слова.
-                // Необходимо добавить столбец для приоритета в таблицу слов.
+                // Увеличиваем столбец приоритетности - слово с меньшей вероятностью будет появляться.
+                Word skippedWord = repository.getWordById(wordId);
+                skippedWord.priority++;
+                repository.update(skippedWord);
                 break;
             case 1:
                 insertRepeatAndUpdateWord(wordId, 0, result);

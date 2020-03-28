@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -75,8 +74,8 @@ public class WriteWordByValueModeFragment extends Fragment {
     }
 
     private void findViews(View v){
-        valueTextView = v.findViewById(R.id.fragment_mode3___text_view___value);
-        userVariantEditText = v.findViewById(R.id.fragment_mode3___edit_text___user_variant);
-        confirmButton = v.findViewById(R.id.fragment_mode3___button___confirm);
+        valueTextView = v.findViewById(R.id.fragment_write_word_by_value___text_view___value);
+        userVariantEditText = v.findViewById(R.id.fragment_write_word_by_value___edit_text___user_variant);
+        confirmButton = v.findViewById(R.id.fragment_write_word_by_value___button___confirm);
     }
 }

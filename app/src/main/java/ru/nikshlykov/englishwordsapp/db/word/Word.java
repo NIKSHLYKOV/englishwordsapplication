@@ -48,6 +48,10 @@ public class Word {
     @ColumnInfo(name = "LastRepetitionDate", defaultValue = "0")
     public long lastRepetitionDate; // Дата последнего повтора слова.
 
+    @NonNull
+    @ColumnInfo(name = "Priority", defaultValue = "0")
+    public int priority; // Приоритет слова. Если слово пропускается, то значение увеличивается.
+
     public static class WordsTable {
         // Названия таблицы слов и её колонок
         public static final String TABLE_NAME = "Words";

@@ -97,19 +97,19 @@ public class DictionaryCardsModeFragment extends Fragment {
     }
 
     private void findViewsEngToRus(View v){
-        wordTextView = v.findViewById(R.id.fragment_mode1___text_view___word);
-        valueTextView = v.findViewById(R.id.fragment_mode1___TextView___value);
-        transcriptionTextView = v.findViewById(R.id.fragment_mode1___text_view___transcription);
-        doNotRememberButton = v.findViewById(R.id.fragment_mode1___button___do_not_remember);
-        rememberNumber = v.findViewById(R.id.fragment_mode1___button___remember);
+        wordTextView = v.findViewById(R.id.fragment_dictionary_cards_eng_to_rus___text_view___word);
+        valueTextView = v.findViewById(R.id.fragment_dictionary_cards_eng_to_rus___text_view___value);
+        transcriptionTextView = v.findViewById(R.id.fragment_dictionary_cards_eng_to_rus___text_view___transcription);
+        doNotRememberButton = v.findViewById(R.id.fragment_dictionary_cards_eng_to_rus___button___do_not_remember);
+        rememberNumber = v.findViewById(R.id.fragment_dictionary_cards_eng_to_rus___button___remember);
     }
 
     private void findViewsRusToEng(View v){
-        wordTextView = v.findViewById(R.id.fragment_mode2___text_view___word);
-        valueTextView = v.findViewById(R.id.fragment_mode2___text_view___value);
-        transcriptionTextView = v.findViewById(R.id.fragment_mode2___text_view___transcription);
-        doNotRememberButton = v.findViewById(R.id.fragment_mode2___button___do_not_remember);
-        rememberNumber = v.findViewById(R.id.fragment_mode2___button___remember);
+        wordTextView = v.findViewById(R.id.fragment_dictionary_cards_rus_to_eng___layout___main___text_view___word);
+        valueTextView = v.findViewById(R.id.fragment_dictionary_cards_rus_to_eng___layout___main___text_view___value);
+        transcriptionTextView = v.findViewById(R.id.fragment_dictionary_cards_rus_to_eng___layout___main___text_view___transcription);
+        doNotRememberButton = v.findViewById(R.id.fragment_dictionary_cards_rus_to_eng___layout___main___button___do_not_remember);
+        rememberNumber = v.findViewById(R.id.fragment_dictionary_cards_rus_to_eng___layout___main___button___remember);
     }
 
     private void setWordParametersToViews() {

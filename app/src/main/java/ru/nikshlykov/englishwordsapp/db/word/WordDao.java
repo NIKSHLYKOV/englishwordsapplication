@@ -32,7 +32,7 @@ public interface WordDao {
     @Query("SELECT * FROM Words ORDER BY _id LIMIT 1")
     Word getWordWithMinId();
 
-    @Query("SELECT DISTINCT Words.* FROM Words, Links, Subgroups WHERE Words._id = Links.WordId AND Subgroups._id = Links.SubgroupId AND Subgroups.IsStudied = 1")
+    @Query("SELECT DISTINCT Words.* FROM Words, Links, Subgroups WHERE Words._id = Links.WordId AND Subgroups._id = Links.SubgroupId AND Subgroups.IsStudied = 1 ORDER BY Words.Priority")
     Word[] getAllWordsFromStudiedSubgroups();
 }
 

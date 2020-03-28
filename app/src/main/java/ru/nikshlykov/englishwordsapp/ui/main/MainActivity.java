@@ -22,7 +22,6 @@ import ru.nikshlykov.englishwordsapp.ui.study.WriteWordByValueModeFragment;
 
 import android.util.Log;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import java.util.Random;
 
@@ -158,7 +157,11 @@ public class MainActivity extends AppCompatActivity
             if (nextWord.learnProgress == -1) {
                 FirstShowModeFragment firstShowModeFragment = new FirstShowModeFragment();
                 firstShowModeFragment.setArguments(arguments);
-                getSupportFragmentManager().beginTransaction().replace(contentLayoutId, firstShowModeFragment, TAG_STUDY_FRAGMENT).commit();
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .setCustomAnimations(R.anim.enter_slide_in_left, R.anim.exit_slide_in_left)
+                        .replace(contentLayoutId, firstShowModeFragment, TAG_STUDY_FRAGMENT)
+                        .commit();
             } else {
                 Random random = new Random();
                 int randomInt = random.nextInt(2);
@@ -169,6 +172,7 @@ public class MainActivity extends AppCompatActivity
                     dictionaryCardsModeFragment.setArguments(arguments);
                     getSupportFragmentManager()
                             .beginTransaction()
+                            .setCustomAnimations(R.anim.enter_slide_in_left, R.anim.exit_slide_in_left)
                             .replace(contentLayoutId, dictionaryCardsModeFragment, TAG_STUDY_FRAGMENT)
                             .commit();
                 } else if (randomInt == 1){
@@ -176,6 +180,7 @@ public class MainActivity extends AppCompatActivity
                     writeWordByValueModeFragment.setArguments(arguments);
                     getSupportFragmentManager()
                             .beginTransaction()
+                            .setCustomAnimations(R.anim.enter_slide_in_left, R.anim.exit_slide_in_left)
                             .replace(contentLayoutId, writeWordByValueModeFragment, TAG_STUDY_FRAGMENT)
                             .commit();
                 }
