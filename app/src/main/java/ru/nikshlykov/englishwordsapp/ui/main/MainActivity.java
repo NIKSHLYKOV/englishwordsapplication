@@ -49,10 +49,6 @@ public class MainActivity extends AppCompatActivity
 
     // ViewModel для работы с БД.
     private StudyViewModel studyViewModel;
-    // Доступные для повтора слова.
-    /*Word[] availableToRepeatWords;
-
-    int meter = 0;*/
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -112,6 +108,8 @@ public class MainActivity extends AppCompatActivity
         fragmentManager = getSupportFragmentManager();
         // Создаём ViewModel для работы с БД.
         studyViewModel = new StudyViewModel(getApplication());
+
+        replaceFragment();
     }
 
     /**

@@ -89,7 +89,7 @@ public class DeleteWordDialogFragment extends DialogFragment {
                             checkedSubgroups[which] = isChecked;
                         }
                     })
-                    .setPositiveButton(R.string.dialog___link_word___positive_button, new DialogInterface.OnClickListener() {
+                    .setPositiveButton(R.string.dialog___delete_word___positive_button, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             // Удаляем связь между подгруппой и словом, если чекбокс выставлен.
