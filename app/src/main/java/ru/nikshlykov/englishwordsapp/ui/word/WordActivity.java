@@ -23,7 +23,7 @@ import androidx.fragment.app.FragmentManager;
 import ru.nikshlykov.englishwordsapp.R;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
 
-public class WordActivity extends AppCompatActivity implements ResetWordProgressDialogFragment.ReportListener{
+public class WordActivity extends AppCompatActivity implements ResetWordProgressDialogFragment.ReportListener {
 
     // Тег для логирования.
     private static final String LOG_TAG = "WordActivity";
@@ -140,7 +140,7 @@ public class WordActivity extends AppCompatActivity implements ResetWordProgress
                     wordData.putExtra(EXTRA_WORD, word);
                     wordData.putExtra(EXTRA_TRANSCRIPTION, transcription);
                     wordData.putExtra(EXTRA_VALUE, value);
-                    setResult(RESULT_OK,  wordData);
+                    setResult(RESULT_OK, wordData);
                     // Закрываем Activity.
                     finish();
                 }
@@ -175,15 +175,19 @@ public class WordActivity extends AppCompatActivity implements ResetWordProgress
     /**
      * Устанавливаем параметры слова (слово, транскрипция, перевод, часть речи, прогресс в разные View.
      */
-    private void setWordToViews(){
+    private void setWordToViews() {
         // Получаем текущее слово.
         Word thisWord = wordViewModel.getWord();
         // Устанавливаем параметры слова в EditText'ы.
         editText_word.setText(thisWord.word);
         editText_value.setText(thisWord.value);
         editText_transcription.setText(thisWord.transcription);
-        // Устанавливаем часть речи.
-        textView_partOfSpeech.setText(thisWord.partOfSpeech);
+        if (thisWord.partOfSpeech != null) {
+            // Устанавливаем часть речи.
+            textView_partOfSpeech.setText(thisWord.partOfSpeech);
+        } else {
+            textView_partOfSpeech.setVisibility(View.GONE);
+        }
     }
 
     /**
@@ -218,7 +222,7 @@ public class WordActivity extends AppCompatActivity implements ResetWordProgress
         // Bundle для передачи id слова в диалоговый фрагмент, который вызовется.
         Bundle arguments = new Bundle();
 
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             // Связывание слова с другой подгруппой.
             case R.id.activity_word___action___linkword:
                 Log.d(LOG_TAG, "Link word");
@@ -251,11 +255,12 @@ public class WordActivity extends AppCompatActivity implements ResetWordProgress
 
     /**
      * Принимает сообщение от ResetWordProgressDialogFragment.
+     *
      * @param message представляет из себя сообщение.
      */
     @Override
     public void reportMessage(String message) {
-        if (message.equals(ResetWordProgressDialogFragment.RESET_MESSAGE)){
+        if (message.equals(ResetWordProgressDialogFragment.RESET_MESSAGE)) {
             wordViewModel.getWord().learnProgress = 0;
             wordViewModel.update();
         }
