@@ -21,6 +21,8 @@ import android.widget.TextView;
 
 public class FirstShowModeFragment extends Fragment {
 
+    private static final String LOG_TAG = "FirstShowModeFragment";
+
     public static final String EXTRA_WORD_ID = "WordId";
 
     // View для отображения параметров слова.
@@ -56,12 +58,13 @@ public class FirstShowModeFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.d("FirstShowModeFragment", "onCreateView");
+        Log.d(LOG_TAG, "onCreateView()");
         View view = inflater.inflate(R.layout.fragment_first_show_mode, null);
         findViews(view);
         // Устанавливаем параметры слова в наши view.
         setWordParametersToViews();
 
+        // Находим кнопку начала изучения слова и присваиваем ей обработчик.
         Button learnButton = view.findViewById(R.id.fragment_first_show_mode___button___learn);
         learnButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,6 +73,7 @@ public class FirstShowModeFragment extends Fragment {
             }
         });
 
+        // Находим кнопку начала изучения слова и присваиваем ей обработчик.
         Button knowButton = view.findViewById(R.id.fragment_first_show_mode___button___know);
         knowButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,6 +82,7 @@ public class FirstShowModeFragment extends Fragment {
             }
         });
 
+        // Находим кнопку знания слова и присваиваем ей обработчик.
         Button skipButton = view.findViewById(R.id.fragment_first_show_mode___button___skip);
         skipButton.setOnClickListener(new View.OnClickListener() {
             @Override

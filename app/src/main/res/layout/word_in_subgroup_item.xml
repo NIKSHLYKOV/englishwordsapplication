@@ -14,14 +14,25 @@
         android:padding="8dp">
 
 
+        <View
+            android:id="@+id/word_in_subgroup_item___view___progress"
+            android:layout_width="10dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="4dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:background="@drawable/shape_progress"/>
+
         <LinearLayout
             android:id="@+id/word_in_subgroup_item___layout___all_without_voice_button"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:orientation="vertical"
+            android:layout_marginStart="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/word_in_subgroup_item___layout___voice_button"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@id/word_in_subgroup_item___view___progress"
             app:layout_constraintTop_toTopOf="parent">
 
             <LinearLayout
@@ -41,8 +52,8 @@
                     android:id="@+id/word_in_subgroup_item___text_view___transcription"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:gravity="center"
                     android:layout_marginStart="8dp"
+                    android:gravity="center"
                     android:textSize="14sp"
                     tools:text="@string/transcription" />
 
@@ -56,21 +67,6 @@
                 tools:text="@string/translation" />
 
         </LinearLayout>
-
-
-        <!--<ProgressBar
-            android:id="@+id/subgroup_item___progress_bar___progress"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="48dp"
-            android:layout_height="38dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="4dp"
-            android:max="7"
-            android:progress="3"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" /> -->
 
         <RelativeLayout
             android:id="@+id/word_in_subgroup_item___layout___voice_button"

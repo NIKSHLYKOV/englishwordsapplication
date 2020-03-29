@@ -22,7 +22,6 @@ import java.util.List;
 
 public class ModeRecyclerViewAdapter extends RecyclerView.Adapter<ModeRecyclerViewAdapter.MyViewHolder> {
 
-    private LayoutInflater inflater;
     private Context context;
 
     private List<Mode> modes;
