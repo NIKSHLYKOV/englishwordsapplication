@@ -27,13 +27,13 @@ public class ModeRecyclerViewAdapter extends RecyclerView.Adapter<ModeRecyclerVi
 
     private List<Mode> modes;
 
-    static class MyViewHolder extends RecyclerView.ViewHolder{
+    static class MyViewHolder extends RecyclerView.ViewHolder {
 
         private CheckBox checkBox;
         private ImageView imageView;
         private TextView textView;
 
-        MyViewHolder(View itemView){
+        MyViewHolder(View itemView) {
             super(itemView);
 
             checkBox = (CheckBox) itemView.findViewById(R.id.card_mode___check_box___is_selected);
@@ -68,19 +68,14 @@ public class ModeRecyclerViewAdapter extends RecyclerView.Adapter<ModeRecyclerVi
         holder.imageView.setImageDrawable(drawable);
         holder.textView.setText(currentMode.name);
         holder.checkBox.setChecked(currentMode.isSelected == 1);
-        holder.checkBox.setOnClickListener(new View.OnClickListener(){
+        holder.checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (holder.checkBox.isChecked())
                     currentMode.isSelected = 1;
                 else
                     currentMode.isSelected = 0;
-                Toast.makeText(context, "Вы нажали чекбокс режима " + position +
-                        ". Теперь его значение - " + currentMode.isSelected, Toast.LENGTH_LONG).show();
             }
         });
-
     }
-
-
 }

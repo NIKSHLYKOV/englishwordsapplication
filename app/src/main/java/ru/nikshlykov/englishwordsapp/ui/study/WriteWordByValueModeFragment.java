@@ -41,10 +41,9 @@ public class WriteWordByValueModeFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Bundle arguments = getArguments();
 
         // Получаем id слова.
-        long wordId = arguments.getLong("WordId");
+        long wordId = getArguments().getLong("WordId");
 
         wordViewModel = new WordViewModel(getActivity().getApplication());
         wordViewModel.setWord(wordId);
@@ -53,7 +52,7 @@ public class WriteWordByValueModeFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_write_word_by_value, null);
+        View view = inflater.inflate(R.layout.fragment_write_word_by_value_mode, null);
         findViews(view);
 
         valueTextView.setText(wordViewModel.getWord().value);
@@ -74,8 +73,8 @@ public class WriteWordByValueModeFragment extends Fragment {
     }
 
     private void findViews(View v){
-        valueTextView = v.findViewById(R.id.fragment_write_word_by_value___text_view___value);
-        userVariantEditText = v.findViewById(R.id.fragment_write_word_by_value___edit_text___user_variant);
-        confirmButton = v.findViewById(R.id.fragment_write_word_by_value___button___confirm);
+        valueTextView = v.findViewById(R.id.fragment_write_word_by_value_mode___text_view___value);
+        userVariantEditText = v.findViewById(R.id.fragment_write_word_by_value_mode___edit_text___user_variant);
+        confirmButton = v.findViewById(R.id.fragment_write_word_by_value_mode___button___confirm);
     }
 }

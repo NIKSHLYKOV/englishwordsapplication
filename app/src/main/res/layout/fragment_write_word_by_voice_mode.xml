@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <ImageButton
-        android:id="@+id/fragment_mode5___image_button___voice"
+        android:id="@+id/fragment_write_word_by_voice_mode___image_button___voice"
         android:contentDescription="voice_button"
         android:layout_width="100dp"
         android:layout_height="100dp"
@@ -17,7 +17,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/fragment_mode5___edit_text___user_variant"
+        android:id="@+id/fragment_write_word_by_voice_mode___edit_text___user_variant"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -26,20 +26,20 @@
         android:ems="10"
         android:inputType="textPersonName"
         android:hint="@string/word"
-        app:layout_constraintEnd_toStartOf="@+id/fragment_mode5___image_button___confirm"
+        app:layout_constraintEnd_toStartOf="@+id/fragment_write_word_by_voice_mode___image_button___confirm"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fragment_mode5___image_button___voice" />
+        app:layout_constraintTop_toBottomOf="@+id/fragment_write_word_by_voice_mode___image_button___voice" />
 
     <ImageButton
-        android:id="@+id/fragment_mode5___image_button___confirm"
+        android:id="@+id/fragment_write_word_by_voice_mode___image_button___confirm"
         android:contentDescription="confirm_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:background="@android:color/white"
         android:src="@drawable/baseline_arrow_right_alt_black_36dp"
-        app:layout_constraintBottom_toBottomOf="@+id/fragment_mode5___edit_text___user_variant"
+        app:layout_constraintBottom_toBottomOf="@+id/fragment_write_word_by_voice_mode___edit_text___user_variant"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/fragment_mode5___edit_text___user_variant" />
+        app:layout_constraintTop_toTopOf="@+id/fragment_write_word_by_voice_mode___edit_text___user_variant" />
 </androidx.constraintlayout.widget.ConstraintLayout>

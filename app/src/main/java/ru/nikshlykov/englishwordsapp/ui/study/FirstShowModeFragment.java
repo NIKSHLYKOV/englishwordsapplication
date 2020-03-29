@@ -62,7 +62,7 @@ public class FirstShowModeFragment extends Fragment {
         // Устанавливаем параметры слова в наши view.
         setWordParametersToViews();
 
-        Button learnButton = view.findViewById(R.id.fragment_first_show___button___learn);
+        Button learnButton = view.findViewById(R.id.fragment_first_show_mode___button___learn);
         learnButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -70,7 +70,7 @@ public class FirstShowModeFragment extends Fragment {
             }
         });
 
-        Button knowButton = view.findViewById(R.id.fragment_first_show___button___know);
+        Button knowButton = view.findViewById(R.id.fragment_first_show_mode___button___know);
         knowButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -78,7 +78,7 @@ public class FirstShowModeFragment extends Fragment {
             }
         });
 
-        Button skipButton = view.findViewById(R.id.fragment_first_show___button___skip);
+        Button skipButton = view.findViewById(R.id.fragment_first_show_mode___button___skip);
         skipButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -90,9 +90,9 @@ public class FirstShowModeFragment extends Fragment {
     }
 
     private void findViews(View v) {
-        wordTextView = v.findViewById(R.id.fragment_first_show___text_view___word);
-        valueTextView = v.findViewById(R.id.fragment_first_show___text_view___value);
-        transcriptionTextView = v.findViewById(R.id.fragment_first_show___text_view___transcription);
+        wordTextView = v.findViewById(R.id.fragment_first_show_mode___text_view___word);
+        valueTextView = v.findViewById(R.id.fragment_first_show_mode___text_view___value);
+        transcriptionTextView = v.findViewById(R.id.fragment_first_show_mode___text_view___transcription);
     }
 
     private void setWordParametersToViews() {

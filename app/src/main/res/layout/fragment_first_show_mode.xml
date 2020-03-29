@@ -2,7 +2,7 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/fragment_first_show___layout___main_layout"
+    android:id="@+id/fragment_first_show_mode___layout___main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -14,7 +14,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/fragment_first_show___text_view___word"
+            android:id="@+id/fragment_first_show_mode___text_view___word"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -25,7 +25,7 @@
             android:textSize="24sp" />
 
         <TextView
-            android:id="@+id/fragment_first_show___text_view___transcription"
+            android:id="@+id/fragment_first_show_mode___text_view___transcription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -35,7 +35,7 @@
             android:textSize="18sp" />
 
         <TextView
-            android:id="@+id/fragment_first_show___text_view___value"
+            android:id="@+id/fragment_first_show_mode___text_view___value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -53,7 +53,7 @@
         android:layout_alignParentBottom="true">
 
         <Button
-            android:id="@+id/fragment_first_show___button___know"
+            android:id="@+id/fragment_first_show_mode___button___know"
             style="@style/Base.Widget.AppCompat.Button.Colored"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -61,7 +61,7 @@
             android:text="@string/know" />
 
         <Button
-            android:id="@+id/fragment_first_show___button___learn"
+            android:id="@+id/fragment_first_show_mode___button___learn"
             style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -69,7 +69,7 @@
             android:text="@string/to_learn" />
 
         <Button
-            android:id="@+id/fragment_first_show___button___skip"
+            android:id="@+id/fragment_first_show_mode___button___skip"
             style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

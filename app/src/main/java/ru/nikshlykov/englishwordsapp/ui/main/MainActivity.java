@@ -17,6 +17,7 @@ import ru.nikshlykov.englishwordsapp.db.word.Word;
 import ru.nikshlykov.englishwordsapp.ui.group.GroupsFragment;
 import ru.nikshlykov.englishwordsapp.ui.study.FirstShowModeFragment;
 import ru.nikshlykov.englishwordsapp.ui.study.DictionaryCardsModeFragment;
+import ru.nikshlykov.englishwordsapp.ui.study.RepeatResultListener;
 import ru.nikshlykov.englishwordsapp.ui.study.StudyViewModel;
 import ru.nikshlykov.englishwordsapp.ui.study.WriteWordByValueModeFragment;
 
@@ -26,7 +27,9 @@ import android.view.MenuItem;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity
-        implements FirstShowModeFragment.FirstShowModeReportListener,
+        implements
+        RepeatResultListener,
+        FirstShowModeFragment.FirstShowModeReportListener,
         DictionaryCardsModeFragment.DictionaryCardsModeReportListener,
         WriteWordByValueModeFragment.WriteWordByValueReportListener {
 
@@ -72,7 +75,7 @@ public class MainActivity extends AppCompatActivity
                             displayInfoFragment(InfoFragment.FLAG_SUBGROUPS_ARE_NOT_CHOSEN);
                             return true;
                         }
-                        replaceFragment();
+                        showNextMode();
                     }
                     return true;
                 case R.id.activity_main_menu___groups:
@@ -109,7 +112,7 @@ public class MainActivity extends AppCompatActivity
         // Создаём ViewModel для работы с БД.
         studyViewModel = new StudyViewModel(getApplication());
 
-        replaceFragment();
+        showNextMode();
     }
 
     /**
@@ -135,8 +138,8 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    private void replaceFragment() {
-        Log.i(LOG_TAG, "replaceFragment()");
+    private void showNextMode() {
+        Log.i(LOG_TAG, "showNextMode()");
 
         Word nextWord = studyViewModel.getNextAvailableToRepeatWord();
         if (nextWord != null) {
@@ -194,7 +197,7 @@ public class MainActivity extends AppCompatActivity
         Log.i(LOG_TAG, "firstShowModeResultMessage()");
         Log.i(LOG_TAG, "result = " + result);
         studyViewModel.firstShowProcessing(wordId, result);
-        replaceFragment();
+        showNextMode();
     }
 
     @Override
@@ -203,7 +206,7 @@ public class MainActivity extends AppCompatActivity
         Log.i(LOG_TAG, "wordId = " + wordId);
         Log.i(LOG_TAG, "result = " + result);
         studyViewModel.repeatProcessing(wordId, result);
-        replaceFragment();
+        showNextMode();
     }
 
     @Override
@@ -212,6 +215,12 @@ public class MainActivity extends AppCompatActivity
         Log.i(LOG_TAG, "wordId = " + wordId);
         Log.i(LOG_TAG, "result = " + result);
         studyViewModel.repeatProcessing(wordId, result);
-        replaceFragment();
+        showNextMode();
+    }
+
+    @Override
+    public void result(long wordId, int result) {
+        studyViewModel.repeatProcessing(wordId, result);
+        showNextMode();
     }
 }
