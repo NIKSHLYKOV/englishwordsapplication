@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/fragment_mode4___text_view___value"
+        android:id="@+id/fragment_collect_word_by_letters_mode___text_view___value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -20,26 +20,26 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/fragment_mode4___edit_text___word"
+        android:id="@+id/fragment_collect_word_by_letters_mode___button___user_variant"
         android:layout_width="0dp"
         android:layout_height="50dp"
         android:layout_marginTop="128dp"
         android:backgroundTint="@color/colorPrimary"
         tools:text="@string/word"
         android:textColor="@android:color/white"
-        app:layout_constraintEnd_toStartOf="@+id/fragment_mode4___image_button___remove_letter"
+        app:layout_constraintEnd_toStartOf="@+id/fragment_collect_word_by_letters_mode___image_button___remove_letter"
         app:layout_constraintStart_toStartOf="@+id/fragment_mode4___scroll_view___letters"
-        app:layout_constraintTop_toBottomOf="@+id/fragment_mode4___text_view___value" />
+        app:layout_constraintTop_toBottomOf="@+id/fragment_collect_word_by_letters_mode___text_view___value" />
 
     <ImageButton
-        android:id="@+id/fragment_mode4___image_button___remove_letter"
+        android:id="@+id/fragment_collect_word_by_letters_mode___image_button___remove_letter"
         style="@style/Widget.AppCompat.ImageButton"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:backgroundTint="@color/colorPrimary"
-        app:layout_constraintBottom_toBottomOf="@+id/fragment_mode4___edit_text___word"
+        app:layout_constraintBottom_toBottomOf="@+id/fragment_collect_word_by_letters_mode___button___user_variant"
         app:layout_constraintEnd_toEndOf="@+id/fragment_mode4___scroll_view___letters"
-        app:layout_constraintTop_toTopOf="@+id/fragment_mode4___edit_text___word"
+        app:layout_constraintTop_toTopOf="@+id/fragment_collect_word_by_letters_mode___button___user_variant"
         app:srcCompat="@drawable/ic_action_back" />
 
     <ScrollView
@@ -54,7 +54,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fragment_mode4___edit_text___word">
+        app:layout_constraintTop_toBottomOf="@+id/fragment_collect_word_by_letters_mode___button___user_variant">
 
         <LinearLayout
             android:layout_width="match_parent"
