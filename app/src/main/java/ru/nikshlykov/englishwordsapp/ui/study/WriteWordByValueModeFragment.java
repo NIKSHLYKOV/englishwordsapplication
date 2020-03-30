@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import ru.nikshlykov.englishwordsapp.R;
+import ru.nikshlykov.englishwordsapp.db.repeat.Repeat;
 import ru.nikshlykov.englishwordsapp.ui.word.WordViewModel;
 
 public class WriteWordByValueModeFragment extends Fragment {
@@ -27,15 +28,12 @@ public class WriteWordByValueModeFragment extends Fragment {
     // ViewModel для работы с БД.
     private WordViewModel wordViewModel;
 
-    private WriteWordByValueReportListener writeWordByValueReportListener;
-    public interface WriteWordByValueReportListener {
-        void writeWordByValueResultMessage(long wordId, int result);
-    }
+    private RepeatResultListener repeatResultListener;
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        writeWordByValueReportListener = (WriteWordByValueReportListener) context;
+        repeatResultListener = (RepeatResultListener) context;
     }
 
     @Override
@@ -65,7 +63,7 @@ public class WriteWordByValueModeFragment extends Fragment {
                 if (userVariantOfWord.equals(wordViewModel.getWord().word)){
                     result = 1;
                 }
-                writeWordByValueReportListener.writeWordByValueResultMessage(wordViewModel.getWord().id, result);
+                repeatResultListener.result(wordViewModel.getWord().id, result);
             }
         });
 

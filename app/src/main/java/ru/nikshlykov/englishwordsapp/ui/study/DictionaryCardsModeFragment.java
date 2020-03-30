@@ -35,15 +35,14 @@ public class DictionaryCardsModeFragment extends Fragment {
     private Button doNotRememberButton;
     private Button rememberNumber;
 
-
-    private DictionaryCardsModeReportListener mReportListener;
+    private RepeatResultListener repeatResultListener;
 
     private WordViewModel wordViewModel;
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        mReportListener = (DictionaryCardsModeReportListener) context;
+        repeatResultListener = (RepeatResultListener) context;
     }
 
     @Override
@@ -82,14 +81,14 @@ public class DictionaryCardsModeFragment extends Fragment {
         doNotRememberButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mReportListener.dictionaryCardsResultMessage(wordViewModel.getWord().id, 0);
+                repeatResultListener.result(wordViewModel.getWord().id, 0);
             }
         });
 
         rememberNumber.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mReportListener.dictionaryCardsResultMessage(wordViewModel.getWord().id, 1);
+                repeatResultListener.result(wordViewModel.getWord().id, 1);
             }
         });
 
@@ -116,9 +115,5 @@ public class DictionaryCardsModeFragment extends Fragment {
         transcriptionTextView.setText(wordViewModel.getWord().transcription);
         valueTextView.setText(wordViewModel.getWord().value);
         wordTextView.setText(wordViewModel.getWord().word);
-    }
-
-    public interface DictionaryCardsModeReportListener {
-        void dictionaryCardsResultMessage(long wordId, int result);
     }
 }

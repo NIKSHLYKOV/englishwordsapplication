@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import androidx.lifecycle.ViewModelProvider;
 import ru.nikshlykov.englishwordsapp.R;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
 import ru.nikshlykov.englishwordsapp.ui.group.GroupsFragment;
@@ -20,6 +21,7 @@ import ru.nikshlykov.englishwordsapp.ui.study.DictionaryCardsModeFragment;
 import ru.nikshlykov.englishwordsapp.ui.study.RepeatResultListener;
 import ru.nikshlykov.englishwordsapp.ui.study.StudyViewModel;
 import ru.nikshlykov.englishwordsapp.ui.study.WriteWordByValueModeFragment;
+import ru.nikshlykov.englishwordsapp.ui.study.WriteWordByVoiceModeFragment;
 
 import android.util.Log;
 import android.view.MenuItem;
@@ -27,11 +29,8 @@ import android.view.MenuItem;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity
-        implements
-        RepeatResultListener,
-        FirstShowModeFragment.FirstShowModeReportListener,
-        DictionaryCardsModeFragment.DictionaryCardsModeReportListener,
-        WriteWordByValueModeFragment.WriteWordByValueReportListener {
+        implements RepeatResultListener,
+        FirstShowModeFragment.FirstShowModeReportListener {
 
     // Тег для логирования.
     private static final String LOG_TAG = "MainActivity";
@@ -112,6 +111,8 @@ public class MainActivity extends AppCompatActivity
         // Создаём ViewModel для работы с БД.
         studyViewModel = new StudyViewModel(getApplication());
 
+        /*studyViewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication()).create(studyViewModel.getClass());
+        new ViewModelProvider(this).get(studyViewModel.getClass());*/
         showNextMode();
     }
 
@@ -165,7 +166,7 @@ public class MainActivity extends AppCompatActivity
                         .commit();
             } else {
                 Random random = new Random();
-                int randomInt = random.nextInt(2);
+                int randomInt = random.nextInt(3);
                 Log.i(LOG_TAG, "random = " + randomInt);
                 if (randomInt == 0) {
                     arguments.putInt(DictionaryCardsModeFragment.KEY_MODE_FLAG, DictionaryCardsModeFragment.FLAG_ENG_TO_RUS);
@@ -185,6 +186,15 @@ public class MainActivity extends AppCompatActivity
                             .replace(contentLayoutId, writeWordByValueModeFragment, TAG_STUDY_FRAGMENT)
                             .commit();
                 }
+                else if(randomInt == 2){
+                    WriteWordByVoiceModeFragment writeWordByVoiceModeFragment = new WriteWordByVoiceModeFragment();
+                    writeWordByVoiceModeFragment.setArguments(arguments);
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .setCustomAnimations(R.anim.enter_slide_in_left, R.anim.exit_slide_in_left)
+                            .replace(contentLayoutId, writeWordByVoiceModeFragment, TAG_STUDY_FRAGMENT)
+                            .commit();
+                }
             }
         } else {
             displayInfoFragment(InfoFragment.FLAG_AVAILABLE_WORDS_ARE_NOT_EXISTING);
@@ -197,24 +207,6 @@ public class MainActivity extends AppCompatActivity
         Log.i(LOG_TAG, "firstShowModeResultMessage()");
         Log.i(LOG_TAG, "result = " + result);
         studyViewModel.firstShowProcessing(wordId, result);
-        showNextMode();
-    }
-
-    @Override
-    public void dictionaryCardsResultMessage(long wordId, int result) {
-        Log.i(LOG_TAG, "dictionaryCardsResultMessage()");
-        Log.i(LOG_TAG, "wordId = " + wordId);
-        Log.i(LOG_TAG, "result = " + result);
-        studyViewModel.repeatProcessing(wordId, result);
-        showNextMode();
-    }
-
-    @Override
-    public void writeWordByValueResultMessage(long wordId, int result) {
-        Log.i(LOG_TAG, "writeWordByValueResultMessage()");
-        Log.i(LOG_TAG, "wordId = " + wordId);
-        Log.i(LOG_TAG, "result = " + result);
-        studyViewModel.repeatProcessing(wordId, result);
         showNextMode();
     }
 
