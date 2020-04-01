@@ -28,7 +28,7 @@ import ru.nikshlykov.englishwordsapp.db.link.Link;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
 import ru.nikshlykov.englishwordsapp.ui.word.WordActivity;
 
-public class SubgroupActivity extends AppCompatActivity {
+public class SubgroupActivity extends AppCompatActivity implements SortWordsDialogFragment.SortWordsListener {
 
     public static final String EXTRA_SUBGROUP_ID = "SubgroupId";
     private static final int REQUEST_CODE_EDIT_EXISTING_WORD = 1;
@@ -242,6 +242,17 @@ public class SubgroupActivity extends AppCompatActivity {
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void sort(int param) {
+        // Тут будет сортировка слов.
+        switch (param) {
+            case SortWordsDialogFragment.BY_ALPHABET:
+                break;
+            case SortWordsDialogFragment.BY_PROGRESS:
+                break;
         }
     }
 }

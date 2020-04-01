@@ -20,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
 
+import androidx.lifecycle.ViewModelProvider;
 import ru.nikshlykov.englishwordsapp.R;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
 
@@ -67,7 +68,9 @@ public class WordActivity extends AppCompatActivity implements ResetWordProgress
         findViews();
 
         // Создаём ViewModel для работы с БД.
-        wordViewModel = new WordViewModel(getApplication());
+        //wordViewModel = new WordViewModel(getApplication());
+
+        wordViewModel = new ViewModelProvider(this).get(WordViewModel.class);
 
         // Устанавливаем тулбар.
         setSupportActionBar(toolbar);
