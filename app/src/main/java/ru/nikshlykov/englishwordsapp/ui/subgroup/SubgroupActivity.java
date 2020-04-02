@@ -84,15 +84,21 @@ public class SubgroupActivity extends AppCompatActivity implements SortWordsDial
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(subgroupViewModel.subgroup.name);
 
-        // Присваиваем обработчик кнопке для создания нового слова.
-        buttonForNewWordCreating.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent createNewWordIntent = new Intent(getApplicationContext(), WordActivity.class);
-                createNewWordIntent.putExtra(EXTRA_SUBGROUP_ID, subgroupId);
-                startActivityForResult(createNewWordIntent, REQUEST_CODE_CREATE_NEW_WORD);
-            }
-        });
+        if (subgroupViewModel.subgroup.groupId == 21L) {
+            // Присваиваем обработчик кнопке для создания нового слова.
+            buttonForNewWordCreating.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent createNewWordIntent = new Intent(getApplicationContext(), WordActivity.class);
+                    createNewWordIntent.putExtra(EXTRA_SUBGROUP_ID, subgroupId);
+                    startActivityForResult(createNewWordIntent, REQUEST_CODE_CREATE_NEW_WORD);
+                }
+            });
+        }
+        else{
+            buttonForNewWordCreating.setVisibility(View.GONE);
+            buttonForNewWordCreating.setClickable(false);
+        }
 
         // Присваиваем чекбоксу изучения значение, находящееся в БД.
         // Делаем это до обработчика нажатся, чтобы данные не перезаписывались лишний раз.
