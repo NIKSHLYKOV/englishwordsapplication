@@ -43,7 +43,6 @@
             android:layout_gravity="center"
             android:gravity="center"
             android:text="@string/transcription"
-            android:textColor="@color/colorPrimary"
             android:textSize="18sp" />
 
 

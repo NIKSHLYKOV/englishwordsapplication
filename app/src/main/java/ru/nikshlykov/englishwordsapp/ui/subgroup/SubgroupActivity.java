@@ -14,12 +14,14 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -143,6 +145,22 @@ public class SubgroupActivity extends AppCompatActivity implements SortWordsDial
 
         // Соединяем RecyclerView с адаптером для него.
         recyclerView.setAdapter(adapter);
+
+        // Добавляем swipe на удаление из своей подгруппы.
+        if (subgroupViewModel.subgroup.groupId == 21L) {
+            new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
+                    ItemTouchHelper.RIGHT) {
+                @Override
+                public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                    return false;
+                }
+
+                @Override
+                public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                    subgroupViewModel.deleteLinkWithSubgroup(adapter.getWordAt(viewHolder.getLayoutPosition()).id);
+                }
+            }).attachToRecyclerView(recyclerView);
+        }
 
         Log.d(LOG_TAG, "OnCreate");
     }

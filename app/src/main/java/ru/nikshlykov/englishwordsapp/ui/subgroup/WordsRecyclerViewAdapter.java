@@ -18,12 +18,14 @@ import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import ru.nikshlykov.englishwordsapp.R;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
 
-public class WordsRecyclerViewAdapter extends RecyclerView.Adapter<WordsRecyclerViewAdapter.WordsViewHolder> {
+public class WordsRecyclerViewAdapter
+        extends RecyclerView.Adapter<WordsRecyclerViewAdapter.WordsViewHolder> {
     private LayoutInflater inflater;
     private Context context;
 
@@ -48,7 +50,7 @@ public class WordsRecyclerViewAdapter extends RecyclerView.Adapter<WordsRecycler
         private TextView word;
         private TextView transcription;
         private TextView value;
-        //private ProgressBar progress;
+        private View progress;
 
         WordsViewHolder(View itemView) {
             super(itemView);
@@ -56,9 +58,11 @@ public class WordsRecyclerViewAdapter extends RecyclerView.Adapter<WordsRecycler
             word = itemView.findViewById(R.id.word_in_subgroup_item___text_view___word);
             transcription = itemView.findViewById(R.id.word_in_subgroup_item___text_view___transcription);
             value = itemView.findViewById(R.id.word_in_subgroup_item___text_view___value);
+            progress = itemView.findViewById(R.id.word_in_subgroup_item___view___progress);
+
             Button ttsButton = itemView.findViewById(R.id.word_in_subgroup_item___button___voice);
             ttsButton.setOnClickListener(this);
-            //progress = itemView.findViewById(R.id.subgroup_item___progress_bar___progress);
+
             LinearLayout allWithoutVoiceButtonLayout = itemView.findViewById(R.id.word_in_subgroup_item___layout___all_without_voice_button);
             allWithoutVoiceButtonLayout.setOnClickListener(this);
         }
@@ -116,6 +120,35 @@ public class WordsRecyclerViewAdapter extends RecyclerView.Adapter<WordsRecycler
         holder.word.setText(currentWord.word);
         holder.transcription.setText(currentWord.transcription);
         holder.value.setText(currentWord.value);
+        switch (currentWord.learnProgress) {
+            case -1:
+                holder.progress.setBackgroundResource(R.drawable.shape_progress);
+                break;
+            case 0:
+                holder.progress.setBackgroundResource(R.drawable.shape_progress_0);
+                break;
+            case 1:
+                holder.progress.setBackgroundResource(R.drawable.shape_progress_1);
+                break;
+            case 2:
+                holder.progress.setBackgroundResource(R.drawable.shape_progress_2);
+                break;
+            case 3:
+                holder.progress.setBackgroundResource(R.drawable.shape_progress_3);
+                break;
+            case 4:
+                holder.progress.setBackgroundResource(R.drawable.shape_progress_4);
+                break;
+            case 5:
+                holder.progress.setBackgroundResource(R.drawable.shape_progress_5);
+                break;
+            case 6:
+                holder.progress.setBackgroundResource(R.drawable.shape_progress_6);
+                break;
+            case 7:
+                holder.progress.setBackgroundResource(R.drawable.shape_progress_7);
+                break;
+        }
     }
 
     public void setWords(List<Word> words) {
@@ -130,5 +163,9 @@ public class WordsRecyclerViewAdapter extends RecyclerView.Adapter<WordsRecycler
 
     public static List<Word> getWords() {
         return words;
+    }
+
+    public Word getWordAt(int position) {
+        return words.get(position);
     }
 }

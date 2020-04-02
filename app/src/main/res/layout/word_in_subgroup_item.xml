@@ -16,20 +16,20 @@
 
         <View
             android:id="@+id/word_in_subgroup_item___view___progress"
-            android:layout_width="10dp"
+            android:layout_width="6dp"
             android:layout_height="0dp"
             android:layout_marginTop="4dp"
+            android:background="@drawable/shape_progress"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:background="@drawable/shape_progress"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <LinearLayout
             android:id="@+id/word_in_subgroup_item___layout___all_without_voice_button"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:orientation="vertical"
             android:layout_marginStart="8dp"
+            android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/word_in_subgroup_item___layout___voice_button"
             app:layout_constraintStart_toEndOf="@id/word_in_subgroup_item___view___progress"
@@ -46,7 +46,8 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/colorPrimary"
                     android:textSize="18sp"
-                    tools:text="@string/word" />
+                    tools:text="@string/word"
+                    android:textStyle="bold"/>
 
                 <TextView
                     android:id="@+id/word_in_subgroup_item___text_view___transcription"
@@ -64,7 +65,7 @@
                 android:id="@+id/word_in_subgroup_item___text_view___value"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:text="@string/translation" />
+                tools:text="@string/translation"/>
 
         </LinearLayout>
 

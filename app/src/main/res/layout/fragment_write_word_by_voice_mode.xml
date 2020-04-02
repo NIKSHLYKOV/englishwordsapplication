@@ -11,10 +11,12 @@
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_marginTop="150dp"
-        android:src="@drawable/ic_volume_up"
+        android:src="@drawable/ic_volume_up_blue"
+        android:background="@color/colorAccent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintCircleRadius="10dp"/>
 
     <EditText
         android:id="@+id/fragment_write_word_by_voice_mode___edit_text___user_variant"
@@ -33,11 +35,11 @@
 
     <ImageButton
         android:id="@+id/fragment_write_word_by_voice_mode___image_button___confirm"
-        android:contentDescription="confirm_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:background="@android:color/white"
+        android:backgroundTint="@color/yellow"
+        android:contentDescription="confirm_button"
         android:src="@drawable/baseline_arrow_right_alt_black_36dp"
         app:layout_constraintBottom_toBottomOf="@+id/fragment_write_word_by_voice_mode___edit_text___user_variant"
         app:layout_constraintEnd_toEndOf="parent"

@@ -49,11 +49,8 @@ public class DictionaryCardsModeFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Bundle arguments = getArguments();
-
         // Получаем id слова.
-        long wordId = arguments.getLong("WordId");
-        flag = arguments.getInt(KEY_MODE_FLAG);
+        long wordId = getArguments().getLong("WordId");
 
         wordViewModel = new WordViewModel(getActivity().getApplication());
         wordViewModel.setWord(wordId);
@@ -115,5 +112,10 @@ public class DictionaryCardsModeFragment extends Fragment {
         transcriptionTextView.setText(wordViewModel.getWord().transcription);
         valueTextView.setText(wordViewModel.getWord().value);
         wordTextView.setText(wordViewModel.getWord().word);
+    }
+
+    public void setFlag(int flag){
+        if((flag == FLAG_ENG_TO_RUS) || (flag == FLAG_RUS_TO_ENG))
+            this.flag = flag;
     }
 }

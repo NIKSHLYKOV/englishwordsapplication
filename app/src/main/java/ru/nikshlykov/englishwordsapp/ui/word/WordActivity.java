@@ -68,9 +68,7 @@ public class WordActivity extends AppCompatActivity implements ResetWordProgress
         findViews();
 
         // Создаём ViewModel для работы с БД.
-        //wordViewModel = new WordViewModel(getApplication());
-
-        wordViewModel = new ViewModelProvider(this).get(WordViewModel.class);
+        wordViewModel = new WordViewModel(getApplication());
 
         // Устанавливаем тулбар.
         setSupportActionBar(toolbar);

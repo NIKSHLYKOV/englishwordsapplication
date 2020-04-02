@@ -2,10 +2,25 @@
 <resources>
     <color name="colorPrimary">#000530</color>
     <color name="colorPrimaryDark">#050831</color>
-    <color name="colorAccent">#37003C</color>
+    <!--<color name="colorAccent">#37003C</color>-->
+    <color name="colorAccent">#FCD366</color>
 
     <color name="yellow">#FCD366</color>
-
     <color name="darkGreen">#073200</color>
     <color name="darkYellow">#3D2B00</color>
+
+
+
+    <color name="progress_7">#5BC0EB</color>
+    <color name="progress_6">#ADF5FF</color>
+    <color name="progress_5">#7FB069</color>
+    <color name="progress_4">#C0DF85</color>
+    <color name="progress_3">#FCD366</color>
+    <color name="progress_2">#FF785A</color>
+    <color name="progress_1">#CC444B</color>
+    <color name="progress_0">#721121</color>
+    <color name="progress_not_started">#626C66</color>
+
+
+
 </resources>

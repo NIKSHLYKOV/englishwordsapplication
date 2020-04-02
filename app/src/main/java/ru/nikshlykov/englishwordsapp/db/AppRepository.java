@@ -526,6 +526,17 @@ public class AppRepository {
         return null;
     }
 
+    public Link getLink(long wordId, long subgroupId) {
+        GetLinkAsyncTask task = new GetLinkAsyncTask(linkDao);
+        task.execute(wordId, subgroupId);
+        try {
+            return task.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     /**
      * AsyncTasks для работы со связями.
      */
@@ -571,6 +582,19 @@ public class AppRepository {
         @Override
         protected Link[] doInBackground(Long... longs) {
             return linkDao.getLinksByWordId(longs[0]);
+        }
+    }
+
+    private static class GetLinkAsyncTask extends AsyncTask<Long, Void, Link> {
+        private LinkDao linkDao;
+
+        private GetLinkAsyncTask(LinkDao linkDao) {
+            this.linkDao = linkDao;
+        }
+
+        @Override
+        protected Link doInBackground(Long... longs) {
+            return linkDao.getLink(longs[0], longs[1]);
         }
     }
 

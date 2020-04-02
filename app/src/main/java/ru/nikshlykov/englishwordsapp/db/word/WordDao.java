@@ -26,7 +26,10 @@ public interface WordDao {
     @Query("SELECT * FROM Words WHERE _id = :wordID")
     Word getWordById(long wordID);
 
-    @Query("SELECT Words.* FROM Words, Links WHERE Words._id = Links.WordId and Links.SubgroupId = :subgroupId")
+    // ПРОВЕРИТЬ СРОЧНО НА ВЫСТАВЛЕНИЕ LEARNPROGRESS ПОСЛЕ ПОВТОРА.
+    // ПРОВЕРИТЬ СРОЧНО НА ВЫСТАВЛЕНИЕ LEARNPROGRESS ПОСЛЕ ПОВТОРА.
+    // ПРОВЕРИТЬ СРОЧНО НА ВЫСТАВЛЕНИЕ LEARNPROGRESS ПОСЛЕ ПОВТОРА.
+    @Query("SELECT Words.* FROM Words, Links WHERE Words._id = Links.WordId and Links.SubgroupId = :subgroupId ORDER BY Words.LearnProgress DESC")
     LiveData<List<Word>> getWordsFromSubgroup(long subgroupId);
 
     @Query("SELECT * FROM Words ORDER BY _id LIMIT 1")

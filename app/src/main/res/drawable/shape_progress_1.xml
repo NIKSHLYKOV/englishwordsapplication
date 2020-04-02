@@ -2,7 +2,7 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape>
-            <solid android:color="@color/progress_not_started"/>
+            <solid android:color="@color/progress_1"/>
             <corners android:radius="4dp"/>
         </shape>
     </item>

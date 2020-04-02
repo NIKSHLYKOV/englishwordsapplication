@@ -25,6 +25,7 @@ public class SubgroupViewModel extends AndroidViewModel {
         words = repository.getWordsFromSubgroup(subgroupId);
     }
 
+
     public LiveData<List<Word>> getWordsFromSubgroup(){
         return words;
     }
@@ -44,7 +45,12 @@ public class SubgroupViewModel extends AndroidViewModel {
         word.id = repository.getMinWordId() - 1;
         return repository.insert(word);
     }
+
     public void insert(Link link){
         repository.insert(link);
+    }
+    public void deleteLinkWithSubgroup(long wordId){
+        Link link = repository.getLink(wordId, subgroup.id);
+        repository.delete(link);
     }
 }

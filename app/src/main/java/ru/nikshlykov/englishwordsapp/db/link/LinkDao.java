@@ -25,4 +25,7 @@ public interface LinkDao {
 
     @Query("SELECT * FROM Links WHERE WordId = :wordId")
     Link[] getLinksByWordId(long wordId);
+
+    @Query("SELECT * FROM Links WHERE WordId = :wordId AND SubgroupId = :subgroupId")
+    Link getLink(long wordId, long subgroupId);
 }
