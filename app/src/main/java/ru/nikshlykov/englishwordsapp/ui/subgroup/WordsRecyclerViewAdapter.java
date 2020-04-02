@@ -148,6 +148,9 @@ public class WordsRecyclerViewAdapter
             case 7:
                 holder.progress.setBackgroundResource(R.drawable.shape_progress_7);
                 break;
+            case 8:
+                holder.progress.setBackgroundResource(R.drawable.shape_progress_7);
+                break;
         }
     }
 

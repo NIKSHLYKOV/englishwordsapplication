@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -33,7 +34,8 @@ public class DictionaryCardsModeFragment extends Fragment {
     private TextView transcriptionTextView;
     private TextView valueTextView;
     private Button doNotRememberButton;
-    private Button rememberNumber;
+    private Button rememberButton;
+    private ImageButton showImageButton;
 
     private RepeatResultListener repeatResultListener;
 
@@ -82,10 +84,26 @@ public class DictionaryCardsModeFragment extends Fragment {
             }
         });
 
-        rememberNumber.setOnClickListener(new View.OnClickListener() {
+        rememberButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 repeatResultListener.result(wordViewModel.getWord().id, 1);
+            }
+        });
+
+        showImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch (flag){
+                    case FLAG_ENG_TO_RUS:
+                        valueTextView.setVisibility(View.VISIBLE);
+                        break;
+                    case FLAG_RUS_TO_ENG:
+                        wordTextView.setVisibility(View.VISIBLE);
+                        transcriptionTextView.setVisibility(View.VISIBLE);
+                        break;
+                }
+                showImageButton.setVisibility(View.GONE);
             }
         });
 
@@ -97,7 +115,8 @@ public class DictionaryCardsModeFragment extends Fragment {
         valueTextView = v.findViewById(R.id.fragment_dictionary_cards_eng_to_rus___text_view___value);
         transcriptionTextView = v.findViewById(R.id.fragment_dictionary_cards_eng_to_rus___text_view___transcription);
         doNotRememberButton = v.findViewById(R.id.fragment_dictionary_cards_eng_to_rus___button___do_not_remember);
-        rememberNumber = v.findViewById(R.id.fragment_dictionary_cards_eng_to_rus___button___remember);
+        rememberButton = v.findViewById(R.id.fragment_dictionary_cards_eng_to_rus___button___remember);
+        showImageButton = v.findViewById(R.id.fragment_dictionary_cards_eng_to_rus___image_button___show);
     }
 
     private void findViewsRusToEng(View v){
@@ -105,7 +124,8 @@ public class DictionaryCardsModeFragment extends Fragment {
         valueTextView = v.findViewById(R.id.fragment_dictionary_cards_rus_to_eng___layout___main___text_view___value);
         transcriptionTextView = v.findViewById(R.id.fragment_dictionary_cards_rus_to_eng___layout___main___text_view___transcription);
         doNotRememberButton = v.findViewById(R.id.fragment_dictionary_cards_rus_to_eng___layout___main___button___do_not_remember);
-        rememberNumber = v.findViewById(R.id.fragment_dictionary_cards_rus_to_eng___layout___main___button___remember);
+        rememberButton = v.findViewById(R.id.fragment_dictionary_cards_rus_to_eng___layout___main___button___remember);
+        showImageButton = v.findViewById(R.id.fragment_dictionary_cards_rus_to_eng___image_button___show);
     }
 
     private void setWordParametersToViews() {

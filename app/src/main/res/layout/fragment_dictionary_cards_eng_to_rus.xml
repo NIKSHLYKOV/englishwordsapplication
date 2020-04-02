@@ -8,10 +8,9 @@
     android:orientation="vertical">
 
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
         <TextView
             android:id="@+id/fragment_dictionary_cards_eng_to_rus___text_view___word"
@@ -22,7 +21,10 @@
             android:gravity="center"
             android:text="@string/word"
             android:textColor="@color/colorPrimary"
-            android:textSize="24sp" />
+            android:textSize="24sp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
         <TextView
             android:id="@+id/fragment_dictionary_cards_eng_to_rus___text_view___transcription"
@@ -31,20 +33,36 @@
             android:layout_gravity="center"
             android:gravity="center"
             android:text="@string/transcription"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/fragment_dictionary_cards_eng_to_rus___text_view___word"/>
 
         <TextView
             android:id="@+id/fragment_dictionary_cards_eng_to_rus___text_view___value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:layout_marginTop="100dp"
-            android:gravity="center"
             android:text="@string/value"
             android:textColor="@color/colorPrimary"
-            android:textSize="24sp" />
+            android:textSize="24sp"
+            android:visibility="invisible"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/fragment_dictionary_cards_eng_to_rus___text_view___transcription"/>
 
-    </LinearLayout>
+        <ImageButton
+            android:id="@+id/fragment_dictionary_cards_eng_to_rus___image_button___show"
+            android:layout_width="80dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_visible_blue"
+            android:layout_marginTop="300dp"
+            style="@style/Widget.AppCompat.Button.Colored"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
