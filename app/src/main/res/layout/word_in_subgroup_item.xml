@@ -82,10 +82,7 @@
                 android:id="@+id/word_in_subgroup_item___button___voice"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:background="@android:drawable/ic_lock_silent_mode_off"
-                android:backgroundTint="@color/colorPrimary"
-                tools:layout_editor_absoluteX="290dp"
-                tools:layout_editor_absoluteY="6dp" />
+                android:background="@drawable/ic_play_arrow_black_24dp" />
         </RelativeLayout>
 
 
