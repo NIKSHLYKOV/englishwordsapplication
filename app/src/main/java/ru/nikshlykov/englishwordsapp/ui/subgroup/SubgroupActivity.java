@@ -11,6 +11,7 @@ import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
 
@@ -27,6 +28,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import ru.nikshlykov.englishwordsapp.R;
 import ru.nikshlykov.englishwordsapp.db.link.Link;
+import ru.nikshlykov.englishwordsapp.db.subgroup.SubgroupDao;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
 import ru.nikshlykov.englishwordsapp.ui.word.WordActivity;
 
@@ -38,16 +40,12 @@ public class SubgroupActivity extends AppCompatActivity implements SortWordsDial
 
     private static final String LOG_TAG = "SubgroupActivity";
 
-    private static final String DIALOG_SORTWORDS = "SortWordsDialogFragment";
-    private static final String DIALOG_RESETWORDSPROGRESS = "ResetWordsProgressDialogFragment";
-    private static final String DIALOG_DELETEWORDS = "DeleteWordsDialogFragment";
+    private static final String DIALOG_SORT_WORDS = "SortWordsDialogFragment";
+    private static final String DIALOG_RESET_WORDS_PROGRESS = "ResetWordsProgressDialogFragment";
+    private static final String DIALOG_DELETE_WORDS = "DeleteWordsDialogFragment";
 
-    // Helper для работы с БД.
-    /*private DatabaseHelper databaseHelper;
-    Cursor wordsCursor;
-*/
     // View элементы.
-    private FloatingActionButton buttonForNewWordCreating;
+    private FloatingActionButton createWordFloatingActionButton;
     private CheckBox learnSubgroupCheckBox;
     private Toolbar toolbar;
 
@@ -60,6 +58,7 @@ public class SubgroupActivity extends AppCompatActivity implements SortWordsDial
     private long subgroupId;
 
     private SubgroupViewModel subgroupViewModel;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -84,9 +83,10 @@ public class SubgroupActivity extends AppCompatActivity implements SortWordsDial
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(subgroupViewModel.subgroup.name);
 
-        if (subgroupViewModel.subgroup.groupId == 21L) {
+        // Проверяем, что подгруппа создана пользователем.
+        if (subgroupViewModel.subgroup.groupId == SubgroupDao.GROUP_FOR_NEW_SUBGROUPS_ID) {
             // Присваиваем обработчик кнопке для создания нового слова.
-            buttonForNewWordCreating.setOnClickListener(new View.OnClickListener() {
+            createWordFloatingActionButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent createNewWordIntent = new Intent(getApplicationContext(), WordActivity.class);
@@ -94,16 +94,15 @@ public class SubgroupActivity extends AppCompatActivity implements SortWordsDial
                     startActivityForResult(createNewWordIntent, REQUEST_CODE_CREATE_NEW_WORD);
                 }
             });
-        }
-        else{
-            buttonForNewWordCreating.setVisibility(View.GONE);
-            buttonForNewWordCreating.setClickable(false);
+        } else {
+            // Скрываем fab для создания нового слова.
+            createWordFloatingActionButton.setVisibility(View.GONE);
+            createWordFloatingActionButton.setClickable(false);
         }
 
         // Присваиваем чекбоксу изучения значение, находящееся в БД.
-        // Делаем это до обработчика нажатся, чтобы данные не перезаписывались лишний раз.
+        // Делаем это до обработчика нажатия, чтобы данные не перезаписывались лишний раз.
         learnSubgroupCheckBox.setChecked(subgroupViewModel.subgroup.isStudied == 1);
-
         // Присваиваем обработчик нажатия на чекбокс изучения подгруппы.
         learnSubgroupCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -142,9 +141,23 @@ public class SubgroupActivity extends AppCompatActivity implements SortWordsDial
         });
 
         // Закидываем данные в адаптер, подписывая его на изменения в LiveData.
-        subgroupViewModel.getWordsFromSubgroup().observe(this, new Observer<List<Word>>() {
+        subgroupViewModel.getWords().observe(this, new Observer<List<Word>>() {
             @Override
             public void onChanged(List<Word> words) {
+                Log.i(LOG_TAG, "onChanged()");
+
+                // Если слов нет, то скрываем CheckBox изучения подгруппы.
+                if (words.isEmpty()) {
+                    learnSubgroupCheckBox.setVisibility(View.GONE);
+                    Toast.makeText(SubgroupActivity.this,
+                            "На данный момент ваша группа пуста! Добавьте в неё слова из " +
+                                    "других групп или создайте свои.", Toast.LENGTH_LONG)
+                            .show();
+                    // Пуста может быть только подгруппа созданная пользователем.
+                } else {
+                    learnSubgroupCheckBox.setVisibility(View.VISIBLE);
+                }
+
                 adapter.setWords(words);
             }
         });
@@ -153,7 +166,7 @@ public class SubgroupActivity extends AppCompatActivity implements SortWordsDial
         recyclerView.setAdapter(adapter);
 
         // Добавляем swipe на удаление из своей подгруппы.
-        if (subgroupViewModel.subgroup.groupId == 21L) {
+        if (subgroupViewModel.subgroup.groupId == SubgroupDao.GROUP_FOR_NEW_SUBGROUPS_ID) {
             new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
                     ItemTouchHelper.RIGHT) {
                 @Override
@@ -162,8 +175,17 @@ public class SubgroupActivity extends AppCompatActivity implements SortWordsDial
                 }
 
                 @Override
-                public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                    subgroupViewModel.deleteLinkWithSubgroup(adapter.getWordAt(viewHolder.getLayoutPosition()).id);
+                public void onSwiped(@NonNull final RecyclerView.ViewHolder viewHolder, int direction) {
+                    final int removedPosition = viewHolder.getAdapterPosition();
+                    final Word removedWord = adapter.getWordAt(removedPosition);
+                    subgroupViewModel.deleteLinkWithSubgroup(removedWord.id);
+                    Snackbar.make(viewHolder.itemView, "Слово удалено", Snackbar.LENGTH_LONG)
+                            .setAction("Oтменить", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    subgroupViewModel.insertLinkWithSubgroup(removedWord.id);
+                                }
+                            }).show();
                 }
             }).attachToRecyclerView(recyclerView);
         }
@@ -172,7 +194,7 @@ public class SubgroupActivity extends AppCompatActivity implements SortWordsDial
     }
 
     private void findViews() {
-        buttonForNewWordCreating = findViewById(R.id.activity_subgroup___floating_action_button___new_word);
+        createWordFloatingActionButton = findViewById(R.id.activity_subgroup___floating_action_button___new_word);
         learnSubgroupCheckBox = findViewById(R.id.activity_subgroup___check_box___study_subgroup);
         toolbar = findViewById(R.id.activity_subgroup___toolbar);
         recyclerView = findViewById(R.id.activity_subgroup___recycler_view___words);
@@ -220,9 +242,6 @@ public class SubgroupActivity extends AppCompatActivity implements SortWordsDial
                     editWord.transcription = transcription;
                     editWord.value = value;
                     subgroupViewModel.update(editWord);
-                    /*Toast.makeText(this, "Существующее слово было изменено\n" +
-                                "",
-                        Toast.LENGTH_LONG).show();*/
                 }
             }
         }
@@ -248,21 +267,21 @@ public class SubgroupActivity extends AppCompatActivity implements SortWordsDial
         switch (item.getItemId()) {
             // Сортировка слов по алфавиту или сложности.
             case R.id.activity_subgroup___action___sort:
-                Log.d(LOG_TAG, "sort word123s");
+                Log.d(LOG_TAG, "sort words");
                 SortWordsDialogFragment sortWordsDialogFragment = new SortWordsDialogFragment();
-                sortWordsDialogFragment.show(manager, DIALOG_SORTWORDS);
+                sortWordsDialogFragment.show(manager, DIALOG_SORT_WORDS);
                 return true;
             // Сбрасывание прогресса слов данной подгруппы.
             case R.id.activity_subgroup___action___reset_words_progress:
-                Log.d(LOG_TAG, "Reset word123s progress");
+                Log.d(LOG_TAG, "Reset words progress");
                 /*ResetWordProgressDialogFragment resetWordProgressDialogFragment = new ResetWordProgressDialogFragment();
-                resetWordProgressDialogFragment.show(manager, DIALOG_RESETWORDSPROGRESS);*/
+                resetWordProgressDialogFragment.show(manager, DIALOG_RESET_WORDS_PROGRESS);*/
                 return true;
             // Удаление слов из данной подгруппы.
             case R.id.activity_subgroup___action___delete_words:
-                Log.d(LOG_TAG, "Delete word123s");
+                Log.d(LOG_TAG, "Delete words");
                 /*CopyWordDialogFragment copyWordDialogFragment = new CopyWordDialogFragment();
-                copyWordDialogFragment.show(manager, DIALOG_DELETEWORDS);*/
+                copyWordDialogFragment.show(manager, DIALOG_DELETE_WORDS);*/
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -271,12 +290,7 @@ public class SubgroupActivity extends AppCompatActivity implements SortWordsDial
 
     @Override
     public void sort(int param) {
-        // Тут будет сортировка слов.
-        switch (param) {
-            case SortWordsDialogFragment.BY_ALPHABET:
-                break;
-            case SortWordsDialogFragment.BY_PROGRESS:
-                break;
-        }
+        subgroupViewModel.sortWords(param);
+        recyclerView.getAdapter().notifyDataSetChanged();
     }
 }

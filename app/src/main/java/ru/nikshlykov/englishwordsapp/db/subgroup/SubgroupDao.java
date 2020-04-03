@@ -12,7 +12,7 @@ import androidx.room.Update;
 @Dao
 public interface SubgroupDao {
 
-    public static final long GROUP_FOR_NEW_SUBGROUPS_ID = 21L;
+    public static final long GROUP_FOR_NEW_SUBGROUPS_ID = -1L;
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     long insert(Subgroup subgroup);

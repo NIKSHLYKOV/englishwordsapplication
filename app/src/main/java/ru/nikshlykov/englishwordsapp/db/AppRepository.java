@@ -106,9 +106,13 @@ public class AppRepository {
         return null;
     }
 
-    public LiveData<List<Word>> getWordsFromSubgroup(long subgroupId) {
-        return wordDao.getWordsFromSubgroup(subgroupId);
+    public LiveData<List<Word>> getWordsFromSubgroupByProgress(long subgroupId) {
+        return wordDao.getWordsFromSubgroupByProgress(subgroupId);
     }
+
+    /*public LiveData<List<Word>> getWordsFromSubgroupByAlphabet(long subgroupId) {
+        return wordDao.getWordsFromSubgroupByAlphabet(subgroupId);
+    }*/
 
     public Word[] getAllWordsFromStudiedSubgroups() {
         GetAllWordsFromStudiedSubgroupsByIdAsyncTask task

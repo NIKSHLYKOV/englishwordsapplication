@@ -37,7 +37,7 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d(LOG_TAG, "onCreateView");
         View view = inflater.inflate(R.layout.fragment_profile, null);
-        viewElementsFinding(view);
+        findViews(view);
         modes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -55,7 +55,7 @@ public class ProfileFragment extends Fragment {
         return view;
     }
 
-    private void viewElementsFinding(View view) {
+    private void findViews(View view) {
         settings = view.findViewById(R.id.fragment_profile___button___settings);
         modes = view.findViewById(R.id.fragment_profile___button___to_modes);
         statistics = view.findViewById(R.id.fragment_profile___button___to_statistics);

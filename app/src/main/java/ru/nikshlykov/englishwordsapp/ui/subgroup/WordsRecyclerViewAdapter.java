@@ -26,65 +26,28 @@ import ru.nikshlykov.englishwordsapp.db.word.Word;
 
 public class WordsRecyclerViewAdapter
         extends RecyclerView.Adapter<WordsRecyclerViewAdapter.WordsViewHolder> {
-    private LayoutInflater inflater;
+
     private Context context;
 
+    // Слова подгруппы.
     private static List<Word> words = new ArrayList<Word>();
 
+    // TextToSpeech, который будет воспроизводить слова.
     private TextToSpeech textToSpeech;
     private static final String TTS_ERROR = "Ошибка воспроизведения!";
 
-    private OnEntryClickListener mOnEntryClickListener;
-
+    // Интерфейс для реагирования на нажатие элемента RecyclerView.
     public interface OnEntryClickListener {
         void onEntryClick(View view, int position);
     }
-
+    private OnEntryClickListener mOnEntryClickListener;
     public void setOnEntryClickListener(OnEntryClickListener onEntryClickListener) {
         mOnEntryClickListener = onEntryClickListener;
     }
 
 
-    class WordsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
-        private TextView word;
-        private TextView transcription;
-        private TextView value;
-        private View progress;
-
-        WordsViewHolder(View itemView) {
-            super(itemView);
-
-            word = itemView.findViewById(R.id.word_in_subgroup_item___text_view___word);
-            transcription = itemView.findViewById(R.id.word_in_subgroup_item___text_view___transcription);
-            value = itemView.findViewById(R.id.word_in_subgroup_item___text_view___value);
-            progress = itemView.findViewById(R.id.word_in_subgroup_item___view___progress);
-
-            Button ttsButton = itemView.findViewById(R.id.word_in_subgroup_item___button___voice);
-            ttsButton.setOnClickListener(this);
-
-            LinearLayout allWithoutVoiceButtonLayout = itemView.findViewById(R.id.word_in_subgroup_item___layout___all_without_voice_button);
-            allWithoutVoiceButtonLayout.setOnClickListener(this);
-        }
-
-        @Override
-        public void onClick(View v) {
-            switch (v.getId()) {
-                case R.id.word_in_subgroup_item___button___voice:
-                    textToSpeech.speak(word.getText().toString(), TextToSpeech.QUEUE_FLUSH, null, "somethingID");
-                    break;
-                case R.id.word_in_subgroup_item___layout___all_without_voice_button:
-                    if (mOnEntryClickListener != null) {
-                        mOnEntryClickListener.onEntryClick(v, getLayoutPosition());
-                    }
-                    break;
-            }
-        }
-
-    }
-
-
     public WordsRecyclerViewAdapter(final Context context) {
+
         this.context = context;
         // Создаём TTS
         textToSpeech = new TextToSpeech(context, new TextToSpeech.OnInitListener() {
@@ -105,6 +68,55 @@ public class WordsRecyclerViewAdapter
     @Override
     public int getItemCount() {
         return words.size();
+    }
+
+
+    class WordsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+        // View для параметров слова.
+        private TextView word;
+        private TextView transcription;
+        private TextView value;
+        private View progress;
+
+        WordsViewHolder(View itemView) {
+            super(itemView);
+
+            // Находим View, в которые будем устанавливать контент в onBindViewHolder().
+            word = itemView.findViewById(R.id.word_in_subgroup_item___text_view___word);
+            transcription = itemView.findViewById(R.id.word_in_subgroup_item___text_view___transcription);
+            value = itemView.findViewById(R.id.word_in_subgroup_item___text_view___value);
+            progress = itemView.findViewById(R.id.word_in_subgroup_item___view___progress);
+
+            // Находим кнопку для воспроизведения слова и присваиваем ей обработчик нажатия -
+            // сам ViewHolder.
+            Button ttsButton = itemView.findViewById(R.id.word_in_subgroup_item___button___voice);
+            ttsButton.setOnClickListener(this);
+
+            // Находим контейнер, который хранит в себе всё кроме кнопки воспроизведения слова
+            // и присваиваем ей обработчик нажатия.
+            LinearLayout allWithoutVoiceButtonLayout = itemView.findViewById(R.id.word_in_subgroup_item___layout___all_without_voice_button);
+            allWithoutVoiceButtonLayout.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.word_in_subgroup_item___button___voice:
+                    // Воспроизводим слово.
+                    textToSpeech.speak(word.getText().toString(), TextToSpeech.QUEUE_FLUSH, null, "somethingID");
+                    break;
+                case R.id.word_in_subgroup_item___layout___all_without_voice_button:
+                    // Вызываем метод слушателя, который реализован в SubgroupActivity.
+                    // Прежде всего это необходимо для того, чтобы запускать WordActivity
+                    // через startActivityForResult().
+                    if (mOnEntryClickListener != null) {
+                        mOnEntryClickListener.onEntryClick(v, getLayoutPosition());
+                    }
+                    break;
+            }
+        }
+
     }
 
     @NonNull
@@ -154,14 +166,10 @@ public class WordsRecyclerViewAdapter
         }
     }
 
+
     public void setWords(List<Word> words) {
         this.words = words;
         notifyDataSetChanged();
-        for (Word word : words) {
-            Log.i("Test",
-                    "word: " + word.word
-                            + "; value: " + word.value);
-        }
     }
 
     public static List<Word> getWords() {

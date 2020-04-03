@@ -30,7 +30,10 @@ public interface WordDao {
     // ПРОВЕРИТЬ СРОЧНО НА ВЫСТАВЛЕНИЕ LEARNPROGRESS ПОСЛЕ ПОВТОРА.
     // ПРОВЕРИТЬ СРОЧНО НА ВЫСТАВЛЕНИЕ LEARNPROGRESS ПОСЛЕ ПОВТОРА.
     @Query("SELECT Words.* FROM Words, Links WHERE Words._id = Links.WordId and Links.SubgroupId = :subgroupId ORDER BY Words.LearnProgress DESC")
-    LiveData<List<Word>> getWordsFromSubgroup(long subgroupId);
+    LiveData<List<Word>> getWordsFromSubgroupByProgress(long subgroupId);
+
+    /*@Query("SELECT Words.* FROM Words, Links WHERE Words._id = Links.WordId and Links.SubgroupId = :subgroupId ORDER BY Words.Word")
+    LiveData<List<Word>> getWordsFromSubgroupByAlphabet(long subgroupId);*/
 
     @Query("SELECT * FROM Words ORDER BY _id LIMIT 1")
     Word getWordWithMinId();

@@ -29,7 +29,6 @@ public class SortWordsDialogFragment extends DialogFragment {
     }
     private SortWordsListener sortWordsListener;
 
-
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -40,16 +39,16 @@ public class SortWordsDialogFragment extends DialogFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Здесь получим уже выставленный параметр сортировки.
-        SettingsViewModel settingsViewModel = new SettingsViewModel(getActivity().getApplication());
+        //SettingsViewModel settingsViewModel = new SettingsViewModel(getActivity().getApplication());
     }
 
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        // НЕ ЗАБЫТЬ ПОМЕНЯТЬ ЕДИНИЦУ В SETSINGLECHOICEITEMS.
+        // НЕ ЗАБЫТЬ ПОМЕНЯТЬ default value В SETSINGLECHOICEITEMS.
         return new AlertDialog.Builder(getActivity())
                 .setTitle(R.string.dialog___sort_words___title)
-                .setSingleChoiceItems(sortParams, 1, new DialogInterface.OnClickListener() {
+                .setSingleChoiceItems(sortParams, -1, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         sortParam = which;

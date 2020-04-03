@@ -20,7 +20,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
 
-import androidx.lifecycle.ViewModelProvider;
 import ru.nikshlykov.englishwordsapp.R;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
 
@@ -41,10 +40,10 @@ public class WordActivity extends AppCompatActivity implements ResetWordProgress
     private static final String DIALOG_DELETE_WORD = "DeleteWordDialogFragment";
 
     // View элементы.
-    private EditText editText_word;
-    private EditText editText_value;
-    private EditText editText_transcription;
-    private TextView textView_partOfSpeech;
+    private EditText wordEditText;
+    private EditText valueEditText;
+    private EditText transcriptionEditText;
+    private TextView partOfSpeechTextView;
     private Button saveButton;
     private Button ttsButton;
     private ProgressBar learnProgressBar;
@@ -119,7 +118,7 @@ public class WordActivity extends AppCompatActivity implements ResetWordProgress
                 // Можно переделать под версии до 21ой.
                 // https://android-tools.ru/coding/kak-dobavit-text-to-speech-v-svoe-prilozhenie/
                 // https://developer.android.com/reference/android/speech/tts/TextToSpeech.html#speak(java.lang.CharSequence,%20int,%20android.os.Bundle,%20java.lang.String)
-                TTS.speak(editText_word.getText().toString(), TextToSpeech.QUEUE_ADD, null, "somethingID");
+                TTS.speak(wordEditText.getText().toString(), TextToSpeech.QUEUE_ADD, null, "somethingID");
             }
         });
 
@@ -128,9 +127,9 @@ public class WordActivity extends AppCompatActivity implements ResetWordProgress
             @Override
             public void onClick(View v) {
                 // Получаем строки из EditText'ов.
-                String word = editText_word.getText().toString();
-                String value = editText_value.getText().toString();
-                String transcription = editText_transcription.getText().toString();
+                String word = wordEditText.getText().toString();
+                String value = valueEditText.getText().toString();
+                String transcription = transcriptionEditText.getText().toString();
 
                 // Проверяем, что поля слова и перевода не пустые
                 if (!word.isEmpty() && !value.isEmpty()) {
@@ -163,13 +162,13 @@ public class WordActivity extends AppCompatActivity implements ResetWordProgress
      * Находит View элементы в разметке.
      */
     private void findViews() {
-        editText_word = findViewById(R.id.activity_word___edit_text___word);
-        editText_value = findViewById(R.id.activity_word___edit_text___value);
-        editText_transcription = findViewById(R.id.activity_word___edit_text___transcription);
+        wordEditText = findViewById(R.id.activity_word___edit_text___word);
+        valueEditText = findViewById(R.id.activity_word___edit_text___value);
+        transcriptionEditText = findViewById(R.id.activity_word___edit_text___transcription);
         saveButton = findViewById(R.id.activity_word___button___save_word);
         ttsButton = findViewById(R.id.activity_word___button___tts);
         learnProgressBar = findViewById(R.id.activity_word___progress_bar___learn_progress);
-        textView_partOfSpeech = findViewById(R.id.activity_word___text_view___part_of_speech);
+        partOfSpeechTextView = findViewById(R.id.activity_word___text_view___part_of_speech);
         toolbar = findViewById(R.id.activity_word___toolbar);
     }
 
@@ -180,14 +179,14 @@ public class WordActivity extends AppCompatActivity implements ResetWordProgress
         // Получаем текущее слово.
         Word thisWord = wordViewModel.getWord();
         // Устанавливаем параметры слова в EditText'ы.
-        editText_word.setText(thisWord.word);
-        editText_value.setText(thisWord.value);
-        editText_transcription.setText(thisWord.transcription);
+        wordEditText.setText(thisWord.word);
+        valueEditText.setText(thisWord.value);
+        transcriptionEditText.setText(thisWord.transcription);
         if (thisWord.partOfSpeech != null) {
             // Устанавливаем часть речи.
-            textView_partOfSpeech.setText(thisWord.partOfSpeech);
+            partOfSpeechTextView.setText(thisWord.partOfSpeech);
         } else {
-            textView_partOfSpeech.setVisibility(View.GONE);
+            partOfSpeechTextView.setVisibility(View.GONE);
         }
     }
 
@@ -199,7 +198,7 @@ public class WordActivity extends AppCompatActivity implements ResetWordProgress
         TextView progressText = findViewById(R.id.activity_word___text_view___progress);
         progressText.setVisibility(View.GONE);
         ttsButton.setVisibility(View.GONE);
-        textView_partOfSpeech.setVisibility(View.GONE);
+        partOfSpeechTextView.setVisibility(View.GONE);
         toolbar.setVisibility(View.GONE);
     }
 

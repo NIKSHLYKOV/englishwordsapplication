@@ -16,6 +16,15 @@
 
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <PreferenceCategory app:title="Обучение">
+
+        <Preference
+            app:key="new_words_max_count_for_day"
+            app:title="Макс. количество новых слов в день"
+            app:summary="Позволяет ограничить количество новых слов в день, чтобы не отнимать много времени."/>
+
+    </PreferenceCategory>
+
     <PreferenceCategory app:title="@string/messages_header">
 
         <EditTextPreference
