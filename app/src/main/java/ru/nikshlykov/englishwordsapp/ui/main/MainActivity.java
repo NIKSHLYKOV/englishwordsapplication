@@ -10,22 +10,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import ru.nikshlykov.englishwordsapp.R;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
-import ru.nikshlykov.englishwordsapp.ui.group.GroupsFragment;
+import ru.nikshlykov.englishwordsapp.ui.groups.GroupsFragment;
 import ru.nikshlykov.englishwordsapp.ui.study.FirstShowModeFragment;
-import ru.nikshlykov.englishwordsapp.ui.study.DictionaryCardsModeFragment;
 import ru.nikshlykov.englishwordsapp.ui.study.ModeFragmentsFactory;
 import ru.nikshlykov.englishwordsapp.ui.study.RepeatResultListener;
 import ru.nikshlykov.englishwordsapp.ui.study.StudyViewModel;
-import ru.nikshlykov.englishwordsapp.ui.study.WriteWordByValueModeFragment;
-import ru.nikshlykov.englishwordsapp.ui.study.WriteWordByVoiceModeFragment;
 
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 
 import java.util.Random;
 

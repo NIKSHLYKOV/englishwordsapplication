@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white">
+
+    <TextView
+        android:id="@+id/fragment_write_word_by_value_mode___text_view___value"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:gravity="center"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginEnd="50dp"
+        android:text="@string/value"
+        android:maxLines="3"
+        android:textColor="@color/colorPrimary"
+        android:textSize="24sp" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/fragment_write_word_by_value_mode___text_view___value"
+        android:layout_marginTop="150dp">
+
+        <EditText
+            android:id="@+id/fragment_write_word_by_value_mode___edit_text___user_variant"
+
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:backgroundTint="@color/colorPrimary"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:hint="@string/word"
+            android:textColor="@color/colorPrimary" />
+
+        <ImageButton
+            android:id="@+id/fragment_write_word_by_value_mode___button___confirm"
+            style="@style/Widget.AppCompat.ImageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            app:srcCompat="@drawable/ic_arrow_forward_dark_blue_24dp" />
+    </LinearLayout>
+</RelativeLayout>

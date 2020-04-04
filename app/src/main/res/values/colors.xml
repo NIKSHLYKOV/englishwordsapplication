@@ -5,11 +5,8 @@
     <!--<color name="colorAccent">#37003C</color>-->
     <color name="colorAccent">#FCD366</color>
 
+    <color name="dark_blue">#000530</color>
     <color name="yellow">#FCD366</color>
-    <color name="darkGreen">#073200</color>
-    <color name="darkYellow">#3D2B00</color>
-
-
 
     <color name="progress_7">#5BC0EB</color>
     <color name="progress_6">#ADF5FF</color>

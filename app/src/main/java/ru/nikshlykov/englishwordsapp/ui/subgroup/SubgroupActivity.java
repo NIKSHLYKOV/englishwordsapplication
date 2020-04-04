@@ -1,6 +1,11 @@
 package ru.nikshlykov.englishwordsapp.ui.subgroup;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -19,6 +24,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -28,6 +34,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import ru.nikshlykov.englishwordsapp.R;
 import ru.nikshlykov.englishwordsapp.db.link.Link;
+import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup;
 import ru.nikshlykov.englishwordsapp.db.subgroup.SubgroupDao;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
 import ru.nikshlykov.englishwordsapp.ui.word.WordActivity;
@@ -52,6 +59,8 @@ public class SubgroupActivity extends AppCompatActivity implements SortWordsDial
     // RecyclerView и вспомогательные элементы.
     private RecyclerView recyclerView;
     private WordsRecyclerViewAdapter adapter;
+    Drawable deleteIcon;
+    Drawable linkIcon;
 
     // Полученные данные из Intent'а.
     private Bundle arguments;
@@ -165,10 +174,13 @@ public class SubgroupActivity extends AppCompatActivity implements SortWordsDial
         // Соединяем RecyclerView с адаптером для него.
         recyclerView.setAdapter(adapter);
 
+        deleteIcon = ContextCompat.getDrawable(this, R.drawable.ic_delete_white_24dp);
+        linkIcon = ContextCompat.getDrawable(this, R.drawable.ic_link_white_24dp);
+
         // Добавляем swipe на удаление из своей подгруппы.
         if (subgroupViewModel.subgroup.groupId == SubgroupDao.GROUP_FOR_NEW_SUBGROUPS_ID) {
             new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
-                    ItemTouchHelper.RIGHT) {
+                    ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
                 @Override
                 public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
                     return false;
@@ -176,16 +188,66 @@ public class SubgroupActivity extends AppCompatActivity implements SortWordsDial
 
                 @Override
                 public void onSwiped(@NonNull final RecyclerView.ViewHolder viewHolder, int direction) {
-                    final int removedPosition = viewHolder.getAdapterPosition();
-                    final Word removedWord = adapter.getWordAt(removedPosition);
-                    subgroupViewModel.deleteLinkWithSubgroup(removedWord.id);
-                    Snackbar.make(viewHolder.itemView, "Слово удалено", Snackbar.LENGTH_LONG)
-                            .setAction("Oтменить", new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    subgroupViewModel.insertLinkWithSubgroup(removedWord.id);
-                                }
-                            }).show();
+                    if (direction == ItemTouchHelper.LEFT) {
+                        final int removedPosition = viewHolder.getAdapterPosition();
+                        final Word removedWord = adapter.getWordAt(removedPosition);
+                        subgroupViewModel.deleteLinkWithSubgroup(removedWord.id);
+                        Snackbar.make(viewHolder.itemView, "Слово удалено", Snackbar.LENGTH_LONG)
+                                .setAction("Oтменить", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        subgroupViewModel.insertLinkWithSubgroup(removedWord.id);
+                                    }
+                                }).show();
+                    }
+                }
+
+                @Override
+                public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView,
+                                        @NonNull RecyclerView.ViewHolder viewHolder,
+                                        float dX, float dY, int actionState,
+                                        boolean isCurrentlyActive) {
+                    View itemView = viewHolder.itemView;
+                    ColorDrawable swipeBackground = new ColorDrawable();
+
+                    int deleteIconMargin = (itemView.getHeight() - deleteIcon.getIntrinsicHeight()) / 2;
+                    int linkIconMargin = (itemView.getHeight() - linkIcon.getIntrinsicHeight()) / 2;
+
+                    if (dX > 0) {
+                        // НЕОБХОДИМО ПРОПИСАТЬ ВЫЗОВ ДИАЛОГА ДЛЯ ЛИНКОВКИ СЛОВА.
+                        swipeBackground.setColor(Color.parseColor("#7FB069"));
+                        swipeBackground.setBounds(
+                                itemView.getLeft(),
+                                itemView.getTop(),
+                                (int) dX,
+                                itemView.getBottom());
+                    } else {
+                        swipeBackground.setColor(Color.parseColor("#CC444B"));
+                        swipeBackground.setBounds(
+                                itemView.getRight() + (int) dX,
+                                itemView.getTop(),
+                                itemView.getRight(),
+                                itemView.getBottom());
+                    }
+                    swipeBackground.draw(c);
+
+                    if(dX > 0){
+                        linkIcon.setBounds(
+                                itemView.getLeft() + linkIconMargin,
+                                itemView.getTop() + linkIconMargin,
+                                itemView.getLeft() + linkIconMargin + linkIcon.getIntrinsicWidth(),
+                                itemView.getBottom() - linkIconMargin);
+                        linkIcon.draw(c);
+                    }
+                    else{
+                        deleteIcon.setBounds(
+                                itemView.getRight() - deleteIconMargin - deleteIcon.getIntrinsicWidth(),
+                                itemView.getTop() + deleteIconMargin,
+                                itemView.getRight() - deleteIconMargin,
+                                itemView.getBottom() - deleteIconMargin);
+                        deleteIcon.draw(c);
+                    }
+                    super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
                 }
             }).attachToRecyclerView(recyclerView);
         }

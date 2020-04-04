@@ -5,135 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Button
+    <ImageButton
         android:id="@+id/fragment_profile___button___settings"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:background="@drawable/ic_action_settings_dark"
+        android:background="@drawable/ic_settings_dark_blue_24dp"
         android:backgroundTint="@color/colorPrimary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <LinearLayout
-        android:id="@+id/fragment_profile___linear_layout___statistics"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fragment_profile___button___settings">
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
-
-            <TextView
-                android:id="@+id/fragment_profile___text_view___statistics"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:text="@string/statistics"
-                android:textColor="@color/colorPrimary"
-                android:textSize="24sp" />
-
-            <Button
-                android:id="@+id/fragment_profile___button___to_statistics"
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:background="@drawable/ic_action_navigate_next"
-                android:backgroundTint="@color/colorPrimary" />
-        </FrameLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="horizontal">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="7"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/fragment_profile___text_view___already_known_words"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:layout_weight="7"
-                    android:text="@string/already_known_words"
-                    android:textColor="@color/colorAccent"
-                    android:textSize="18sp" />
-
-                <TextView
-                    android:id="@+id/fragment_profile___text_view___learned_words"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:layout_weight="7"
-                    android:text="@string/learned_words"
-                    android:textColor="@color/darkGreen"
-                    android:textSize="18sp" />
-
-                <TextView
-                    android:id="@+id/fragment_profile___text_view___studied_words"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:layout_weight="7"
-                    android:text="@string/studied_words"
-                    android:textColor="@color/darkYellow"
-                    android:textSize="18sp" />
-
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="3"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/fragment_profile___text_view___already_known_words_count"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:layout_weight="3"
-                    android:text="500 слов"
-                    android:textColor="@color/colorAccent"
-                    android:textSize="18sp" />
-
-                <TextView
-                    android:id="@+id/fragment_profile___text_view___learned_words_count"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:layout_weight="3"
-                    android:text="201 слово"
-                    android:textColor="@color/darkGreen"
-                    android:textSize="18sp" />
-
-                <TextView
-                    android:id="@+id/fragment_profile___text_view___studied_words_count"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:layout_weight="3"
-                    android:text="232 слова"
-                    android:textColor="@color/darkYellow"
-                    android:textSize="18sp" />
-            </LinearLayout>
-        </LinearLayout>
-    </LinearLayout>
 
     <FrameLayout
         android:id="@+id/fragment_profile___frame_layout___modes"
@@ -144,7 +25,7 @@
         android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fragment_profile___linear_layout___statistics">
+        app:layout_constraintTop_toBottomOf="@+id/fragment_profile___button___settings">
 
         <TextView
             android:id="@+id/fragment_profile___text_view___modes"
@@ -160,8 +41,55 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_gravity="right"
-            android:background="@drawable/ic_action_navigate_next"
-            android:backgroundTint="@color/colorPrimary" />
+            android:background="@drawable/ic_keyboard_arrow_right_black_24dp"
+            android:backgroundTint="@color/colorPrimary"
+            />
     </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/fragment_profile___frame_layout___modes"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:padding="10dp"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/fragment_profile___button___modes"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="100dp"
+
+            android:gravity="center|bottom"
+
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            android:layout_margin="8dp"
+
+            android:text="@string/modes"
+            android:textSize="18dp"
+            android:textColor="@android:color/white"
+
+            android:background="@drawable/shape_lightgreen_20dp"
+            android:drawableTop="@drawable/ic_library_books_black_48dp"/>
+        <Button
+            android:id="@+id/fragment_profile___button___statistics"
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:layout_weight="1"
+
+            android:gravity="center|bottom"
+
+            android:layout_margin="8dp"
+            android:paddingBottom="16dp"
+            android:paddingTop="16dp"
+
+            android:text="@string/statistics"
+            android:textSize="18dp"
+            android:textColor="@android:color/white"
+
+            android:background="@drawable/shape_yellow_20dp"
+            android:drawableTop="@drawable/ic_pie_chart_blue_24dp" />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,17 +3,17 @@
 
     <item
         android:id="@+id/activity_main_menu___study"
-        android:icon="@drawable/ic_school"
+        android:icon="@drawable/ic_school_24px"
         android:title="@string/title_study" />
 
     <item
         android:id="@+id/activity_main_menu___groups"
-        android:icon="@drawable/ic_list"
+        android:icon="@drawable/ic_list_black_24dp"
         android:title="@string/title_groups" />
 
     <item
         android:id="@+id/activity_main_menu___profile"
-        android:icon="@drawable/ic_person"
+        android:icon="@drawable/ic_account_circle_24px"
         android:title="@string/title_profile" />
 
 </menu>

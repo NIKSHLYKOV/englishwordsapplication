@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,7 +23,7 @@ public class ProfileFragment extends Fragment {
     private Context context;
 
     // View элементы.
-    private Button settings;
+    private ImageButton settings;
     private Button modes;
     private Button statistics;
 
@@ -57,7 +58,7 @@ public class ProfileFragment extends Fragment {
 
     private void findViews(View view) {
         settings = view.findViewById(R.id.fragment_profile___button___settings);
-        modes = view.findViewById(R.id.fragment_profile___button___to_modes);
-        statistics = view.findViewById(R.id.fragment_profile___button___to_statistics);
+        modes = view.findViewById(R.id.fragment_profile___button___modes);
+        statistics = view.findViewById(R.id.fragment_profile___button___statistics);
     }
 }
