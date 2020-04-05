@@ -72,24 +72,25 @@
 
             android:background="@drawable/shape_lightgreen_20dp"
             android:drawableTop="@drawable/ic_library_books_black_48dp"/>
+
         <Button
             android:id="@+id/fragment_profile___button___statistics"
             android:layout_width="0dp"
             android:layout_height="100dp"
+            android:layout_margin="8dp"
+
             android:layout_weight="1"
 
+            android:background="@drawable/shape_yellow_20dp"
+            android:drawableTop="@drawable/ic_pie_chart_blue_24dp"
             android:gravity="center|bottom"
 
-            android:layout_margin="8dp"
-            android:paddingBottom="16dp"
             android:paddingTop="16dp"
-
+            android:paddingBottom="16dp"
             android:text="@string/statistics"
-            android:textSize="18dp"
-            android:textColor="@android:color/white"
 
-            android:background="@drawable/shape_yellow_20dp"
-            android:drawableTop="@drawable/ic_pie_chart_blue_24dp" />
+            android:textColor="@android:color/white"
+            android:textSize="18dp" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

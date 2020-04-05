@@ -75,15 +75,16 @@
 
         <Button
             android:id="@+id/fragment_dictionary_cards_eng_to_rus___button___do_not_remember"
-            style="@style/Widget.AppCompat.Button.Colored"
+            android:background="@drawable/shape_red_20dp"
             android:layout_width="150dp"
             android:layout_height="match_parent"
             android:layout_gravity="left"
-            android:text="@string/do_not_remember" />
+            android:text="@string/do_not_remember"
+            android:textColor="@android:color/white" />
 
         <Button
             android:id="@+id/fragment_dictionary_cards_eng_to_rus___button___remember"
-            style="@style/Widget.AppCompat.Button.Colored"
+            android:background="@drawable/shape_lightgreen_20dp"
             android:layout_width="150dp"
             android:layout_height="match_parent"
             android:layout_gravity="right"
