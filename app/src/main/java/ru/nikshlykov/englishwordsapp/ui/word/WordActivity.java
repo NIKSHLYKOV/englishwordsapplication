@@ -1,5 +1,6 @@
 package ru.nikshlykov.englishwordsapp.ui.word;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
@@ -9,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,7 +20,9 @@ import java.util.Locale;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.ViewModelProvider;
 
 import ru.nikshlykov.englishwordsapp.R;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
@@ -46,7 +50,7 @@ public class WordActivity extends AppCompatActivity implements ResetWordProgress
     private TextView partOfSpeechTextView;
     private Button saveButton;
     private Button ttsButton;
-    private ProgressBar learnProgressBar;
+    //private View learnProgressView;
     private Toolbar toolbar;
 
     // id слова, для которого открылось Activity. Будет равно 0, если слово создаётся.
@@ -67,7 +71,7 @@ public class WordActivity extends AppCompatActivity implements ResetWordProgress
         findViews();
 
         // Создаём ViewModel для работы с БД.
-        wordViewModel = new WordViewModel(getApplication());
+        wordViewModel = new ViewModelProvider(this).get(WordViewModel.class);
 
         // Устанавливаем тулбар.
         setSupportActionBar(toolbar);
@@ -167,7 +171,7 @@ public class WordActivity extends AppCompatActivity implements ResetWordProgress
         transcriptionEditText = findViewById(R.id.activity_word___edit_text___transcription);
         saveButton = findViewById(R.id.activity_word___button___save_word);
         ttsButton = findViewById(R.id.activity_word___button___tts);
-        learnProgressBar = findViewById(R.id.activity_word___progress_bar___learn_progress);
+        //learnProgressView = findViewById(R.id.activity_word___progress_bar___learn_progress);
         partOfSpeechTextView = findViewById(R.id.activity_word___text_view___part_of_speech);
         toolbar = findViewById(R.id.activity_word___toolbar);
     }
@@ -188,13 +192,62 @@ public class WordActivity extends AppCompatActivity implements ResetWordProgress
         } else {
             partOfSpeechTextView.setVisibility(View.GONE);
         }
+
+        View learnProgressView = new View(this);
+
+        LinearLayout layout = findViewById(R.id.activity_word___linear_layout___progress_view_background);
+
+        switch (thisWord.learnProgress) {
+            case -1:
+                learnProgressView.setBackgroundResource(R.drawable.shape_progress);
+                learnProgressView.setLayoutParams(new LinearLayout.LayoutParams(dpToPx(0), dpToPx(10)));
+                break;
+            case 0:
+                learnProgressView.setBackgroundResource(R.drawable.shape_progress_0);
+                learnProgressView.setLayoutParams(new LinearLayout.LayoutParams(dpToPx(25), dpToPx(10)));
+                break;
+            case 1:
+                learnProgressView.setBackgroundResource(R.drawable.shape_progress_1);
+                learnProgressView.setLayoutParams(new LinearLayout.LayoutParams(dpToPx(50), dpToPx(10)));
+                break;
+            case 2:
+                learnProgressView.setBackgroundResource(R.drawable.shape_progress_2);
+                learnProgressView.setLayoutParams(new LinearLayout.LayoutParams(dpToPx(75), dpToPx(10)));
+                break;
+            case 3:
+                learnProgressView.setBackgroundResource(R.drawable.shape_progress_3);
+                learnProgressView.setLayoutParams(new LinearLayout.LayoutParams(dpToPx(100), dpToPx(10)));
+                break;
+            case 4:
+                learnProgressView.setBackgroundResource(R.drawable.shape_progress_4);
+                learnProgressView.setLayoutParams(new LinearLayout.LayoutParams(dpToPx(125), dpToPx(10)));
+                break;
+            case 5:
+                learnProgressView.setBackgroundResource(R.drawable.shape_progress_5);
+                learnProgressView.setLayoutParams(new LinearLayout.LayoutParams(dpToPx(150), dpToPx(10)));
+                break;
+            case 6:
+                learnProgressView.setBackgroundResource(R.drawable.shape_progress_6);
+                learnProgressView.setLayoutParams(new LinearLayout.LayoutParams(dpToPx(175), dpToPx(10)));
+                break;
+            case 7:
+                learnProgressView.setBackgroundResource(R.drawable.shape_progress_7);
+                learnProgressView.setLayoutParams(new LinearLayout.LayoutParams(dpToPx(200), dpToPx(10)));
+                break;
+            case 8:
+                learnProgressView.setBackgroundResource(R.drawable.shape_progress_7);
+                learnProgressView.setLayoutParams(new LinearLayout.LayoutParams(dpToPx(200), dpToPx(10)));
+                break;
+        }
+
+        layout.addView(learnProgressView);
     }
 
     /**
      * Скрывает некоторые View при создании нового слова.
      */
     private void hideViewsForNewWordCreating() {
-        learnProgressBar.setVisibility(View.GONE);
+        //learnProgressView.setVisibility(View.GONE);
         TextView progressText = findViewById(R.id.activity_word___text_view___progress);
         progressText.setVisibility(View.GONE);
         ttsButton.setVisibility(View.GONE);
@@ -264,5 +317,10 @@ public class WordActivity extends AppCompatActivity implements ResetWordProgress
             wordViewModel.getWord().learnProgress = 0;
             wordViewModel.update();
         }
+    }
+
+    public int dpToPx(int dp) {
+        float density = this.getResources().getDisplayMetrics().density;
+        return Math.round((float) dp * density);
     }
 }

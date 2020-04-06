@@ -29,7 +29,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:layout_gravity="center|left"
+                android:layout_gravity="center|start"
                 android:orientation="horizontal"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp">
@@ -39,19 +39,25 @@
                     android:id="@+id/activity_word___text_view___progress"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="8dp"
+                    android:layout_marginEnd="8dp"
                     android:text="@string/progress"
                     android:textColor="@color/colorPrimary"/>
 
-                <ProgressBar
-                    android:id="@+id/activity_word___progress_bar___learn_progress"
-                    style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:clickable="false"
-                    android:max="7"
-                    android:progress="4"
-                    android:progressTint="#6D1470"/>
+                <LinearLayout
+                    android:id="@+id/activity_word___linear_layout___progress_view_background"
+                    android:layout_width="202dp"
+                    android:layout_height="12dp"
+                    android:layout_marginTop="2dp"
+                    android:background="@drawable/shape_background_progress"
+                    android:padding="1dp">
+
+                    <!--<View
+                        android:id="@+id/activity_word___progress_bar___learn_progress"
+                        android:layout_width="100dp"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/shape_progress_3" />-->
+                </LinearLayout>
+
             </LinearLayout>
 
             <Button
@@ -59,9 +65,9 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_marginTop="4dp"
-                android:layout_marginRight="8dp"
-                android:layout_gravity="center|right"
-                android:background="@drawable/ic_play_circle_outline_blue_36dp" />
+                android:layout_marginEnd="8dp"
+                android:layout_gravity="center|end"
+                android:background="@drawable/ic_play_circle_outline_dark_blue_36dp" />
         </FrameLayout>
 
         <LinearLayout
@@ -85,9 +91,9 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="8dp"
-                android:editable="false"
                 android:inputType="none"
-                android:paddingLeft="3dp"
+                android:paddingStart="3dp"
+                android:paddingEnd="3dp"
                 android:text="@string/word"
                 android:textColor="@color/colorPrimary"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -117,7 +123,8 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="8dp"
-                android:paddingLeft="3dp"
+                android:paddingStart="3dp"
+                android:paddingEnd="3dp"
                 android:text="@string/transcription"
                 android:textColor="@color/colorPrimary"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -145,7 +152,8 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="8dp"
-                android:paddingLeft="3dp"
+                android:paddingStart="3dp"
+                android:paddingEnd="3dp"
                 android:text="@string/value"
                 android:textColor="@color/colorPrimary"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -171,18 +179,17 @@
 
     <Button
         android:id="@+id/activity_word___button___save_word"
-        style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:text="Сохранить слово"
+        android:background="@drawable/shape_darkblue_20dp"
+        android:text="@string/save_word"
+        android:textColor="@android:color/white"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
-
-
 </FrameLayout>

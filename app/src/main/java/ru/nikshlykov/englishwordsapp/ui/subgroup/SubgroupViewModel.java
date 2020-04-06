@@ -19,18 +19,27 @@ import java.util.List;
 public class SubgroupViewModel extends AndroidViewModel {
     private AppRepository repository;
 
-    Subgroup subgroup;
-    LiveData<List<Word>> words;
+    private Subgroup subgroup;
+    private LiveData<List<Word>> words;
 
-    public SubgroupViewModel(@NonNull Application application, long subgroupId){
+    public SubgroupViewModel(@NonNull Application application){
         super(application);
         repository = new AppRepository(application);
-        subgroup = repository.getSubgroupById(subgroupId);
-        words = repository.getWordsFromSubgroupByProgress(subgroupId);
     }
 
 
+    public void setSubgroup(long subgroupId){
+        subgroup = repository.getSubgroupById(subgroupId);
+    }
+
+    public Subgroup getSubgroup() {
+        return subgroup;
+    }
+
     public LiveData<List<Word>> getWords(){
+        if(words == null){
+            words = repository.getWordsFromSubgroupByProgress(subgroup.id);
+        }
         return words;
     }
 

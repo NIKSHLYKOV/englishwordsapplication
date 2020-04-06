@@ -16,6 +16,7 @@ import android.widget.SimpleCursorTreeAdapter;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import ru.nikshlykov.englishwordsapp.R;
 import ru.nikshlykov.englishwordsapp.db.group.Group;
@@ -47,6 +48,7 @@ public class GroupsFragment extends Fragment {
         this.context = context;
         Log.d(LOG_TAG, "onAttach");
     }
+
 
     @Nullable
     @Override
@@ -80,7 +82,7 @@ public class GroupsFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        groupsViewModel = new GroupsViewModel(getActivity().getApplication());
+        groupsViewModel = new ViewModelProvider(getActivity()).get(GroupsViewModel.class);
 
         // Данные по группам.
         Cursor groupsCursor = groupsViewModel.getGroups();
@@ -100,7 +102,7 @@ public class GroupsFragment extends Fragment {
         expandableListView.setAdapter(adapter);
     }
 
-    private void findViews(View view){
+    private void findViews(View view) {
         expandableListView = view.findViewById(R.id.fragment_groups___expandable_list_view);
         newSubgroupButton = view.findViewById(R.id.fragment_groups___button___new_subgroup);
     }
@@ -109,8 +111,8 @@ public class GroupsFragment extends Fragment {
     private class MySimpleCursorTreeAdapter extends SimpleCursorTreeAdapter {
 
         private MySimpleCursorTreeAdapter(Context context, Cursor cursor, int groupLayout,
-                                         String[] groupFrom, int[] groupTo, int childLayout,
-                                         String[] childFrom, int[] childTo) {
+                                          String[] groupFrom, int[] groupTo, int childLayout,
+                                          String[] childFrom, int[] childTo) {
             super(context, cursor, groupLayout, groupFrom, groupTo,
                     childLayout, childFrom, childTo);
         }
@@ -127,7 +129,7 @@ public class GroupsFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == REQUEST_CODE_CREATE_SUBGROUP && resultCode == RESULT_OK){
+        if (requestCode == REQUEST_CODE_CREATE_SUBGROUP && resultCode == RESULT_OK) {
             String newSubgroupName = data.getStringExtra(AddSubgroupActivity.EXTRA_NEW_SUBGROUP_NAME);
             groupsViewModel.insertSubgroup(newSubgroupName);
         }

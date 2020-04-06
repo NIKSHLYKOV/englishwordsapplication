@@ -82,7 +82,7 @@
                 android:id="@+id/word_in_subgroup_item___button___voice"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:background="@drawable/ic_play_arrow_black_24dp" />
+                android:background="@drawable/ic_play_arrow_dark_blue_24dp" />
         </RelativeLayout>
 
 

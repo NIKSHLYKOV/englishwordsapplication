@@ -3,6 +3,7 @@ package ru.nikshlykov.englishwordsapp.ui.modes;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -19,7 +20,7 @@ public class ModesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_modes);
 
         // Инициализируем ViewModel для работы с БД.
-        modesViewModel = new ModesViewModel(getApplication());
+        modesViewModel = new ViewModelProvider(this).get(ModesViewModel.class);
 
         // Находим RecyclerView и устанавливаем ему adapter и layoutManager.
         RecyclerView modesRecyclerView = findViewById(R.id.activity_modes___RecyclerView);

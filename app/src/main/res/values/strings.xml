@@ -20,6 +20,7 @@
     <string name="part_of_speech">Часть речи</string>
     <!-- Методы работы со словом -->
     <string name="create_new_word">Создать новое слово</string>
+    <string name="save_word">Сохранить слово</string>
     <string name="to_skip">Пропустить</string>
     <string name="know">Знаю</string>
     <string name="remember">Помню</string>

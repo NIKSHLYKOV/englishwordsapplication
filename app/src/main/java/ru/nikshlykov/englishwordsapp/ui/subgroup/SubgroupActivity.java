@@ -1,6 +1,5 @@
 package ru.nikshlykov.englishwordsapp.ui.subgroup;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -27,6 +26,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -34,7 +34,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import ru.nikshlykov.englishwordsapp.R;
 import ru.nikshlykov.englishwordsapp.db.link.Link;
-import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup;
 import ru.nikshlykov.englishwordsapp.db.subgroup.SubgroupDao;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
 import ru.nikshlykov.englishwordsapp.ui.word.WordActivity;
@@ -68,7 +67,6 @@ public class SubgroupActivity extends AppCompatActivity implements SortWordsDial
 
     private SubgroupViewModel subgroupViewModel;
 
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,18 +80,19 @@ public class SubgroupActivity extends AppCompatActivity implements SortWordsDial
         // Получаем id подгруппы.
         subgroupId = arguments.getLong(EXTRA_SUBGROUP_ID);
 
-        // Создаём для Activity ViewModel на основе полученного id подгруппы.
-        subgroupViewModel = new SubgroupViewModel(getApplication(), subgroupId);
+        // Создаём для Activity ViewModel.
+        subgroupViewModel = new ViewModelProvider(this).get(SubgroupViewModel.class);
+        subgroupViewModel.setSubgroup(subgroupId);
 
         // Находим View элементы из разметки.
         findViews();
 
         // Устанавливаем наш toolbar и закидываем ему заглавие в виде имени текущей подгруппы.
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(subgroupViewModel.subgroup.name);
+        getSupportActionBar().setTitle(subgroupViewModel.getSubgroup().name);
 
         // Проверяем, что подгруппа создана пользователем.
-        if (subgroupViewModel.subgroup.groupId == SubgroupDao.GROUP_FOR_NEW_SUBGROUPS_ID) {
+        if (subgroupViewModel.getSubgroup().groupId == SubgroupDao.GROUP_FOR_NEW_SUBGROUPS_ID) {
             // Присваиваем обработчик кнопке для создания нового слова.
             createWordFloatingActionButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -111,7 +110,7 @@ public class SubgroupActivity extends AppCompatActivity implements SortWordsDial
 
         // Присваиваем чекбоксу изучения значение, находящееся в БД.
         // Делаем это до обработчика нажатия, чтобы данные не перезаписывались лишний раз.
-        learnSubgroupCheckBox.setChecked(subgroupViewModel.subgroup.isStudied == 1);
+        learnSubgroupCheckBox.setChecked(subgroupViewModel.getSubgroup().isStudied == 1);
         // Присваиваем обработчик нажатия на чекбокс изучения подгруппы.
         learnSubgroupCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -120,9 +119,9 @@ public class SubgroupActivity extends AppCompatActivity implements SortWordsDial
                 // Если флажок выставлен, то isStudied должен стать 1.
                 // Если же флажок не выставлени, то isStudied должен стать 0.
                 if (isChecked)
-                    subgroupViewModel.subgroup.isStudied = 1;
+                    subgroupViewModel.getSubgroup().isStudied = 1;
                 else
-                    subgroupViewModel.subgroup.isStudied = 0;
+                    subgroupViewModel.getSubgroup().isStudied = 0;
                 // Обновляем поле изучения подгруппы в БД.
                 subgroupViewModel.update();
             }
@@ -178,7 +177,7 @@ public class SubgroupActivity extends AppCompatActivity implements SortWordsDial
         linkIcon = ContextCompat.getDrawable(this, R.drawable.ic_link_white_24dp);
 
         // Добавляем swipe на удаление из своей подгруппы.
-        if (subgroupViewModel.subgroup.groupId == SubgroupDao.GROUP_FOR_NEW_SUBGROUPS_ID) {
+        if (subgroupViewModel.getSubgroup().groupId == SubgroupDao.GROUP_FOR_NEW_SUBGROUPS_ID) {
             new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
                     ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
                 @Override

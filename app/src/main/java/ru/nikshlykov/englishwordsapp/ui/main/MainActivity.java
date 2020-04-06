@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.ViewModelProvider;
 
 import ru.nikshlykov.englishwordsapp.R;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
@@ -111,7 +112,7 @@ public class MainActivity extends AppCompatActivity
         // Инициализируем менеджер работы с фрагментами.
         fragmentManager = getSupportFragmentManager();
         // Создаём ViewModel для работы с БД.
-        studyViewModel = new StudyViewModel(getApplication());
+        studyViewModel = new ViewModelProvider(this).get(StudyViewModel.class);
 
         /*studyViewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication()).create(studyViewModel.getClass());
         new ViewModelProvider(this).get(studyViewModel.getClass());*/
