@@ -20,17 +20,21 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import ru.nikshlykov.englishwordsapp.R;
+import ru.nikshlykov.englishwordsapp.db.word.Word;
 import ru.nikshlykov.englishwordsapp.ui.word.WordViewModel;
 
 public class WriteWordByVoiceModeFragment extends Fragment {
 
     private Context context;
 
+    // Слушатель результата повтора.
     private RepeatResultListener repeatResultListener;
 
     private TextToSpeech textToSpeech;
@@ -44,6 +48,7 @@ public class WriteWordByVoiceModeFragment extends Fragment {
 
     // ViewModel для работы с БД.
     private WordViewModel wordViewModel;
+    private long wordId;
 
     private Handler handler;
 
@@ -59,10 +64,11 @@ public class WriteWordByVoiceModeFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         // Получаем id слова.
-        long wordId = getArguments().getLong("WordId");
+        wordId = getArguments().getLong("WordId");
 
-        wordViewModel = new WordViewModel(getActivity().getApplication());
-        wordViewModel.setWord(wordId);
+        wordViewModel = new ViewModelProvider(getActivity()).get(WordViewModel.class);
+        wordViewModel.setLiveDataWord(wordId);
+
 
         textToSpeech = new TextToSpeech(context, new TextToSpeech.OnInitListener() {
             @Override
@@ -78,11 +84,11 @@ public class WriteWordByVoiceModeFragment extends Fragment {
             }
         });
 
-        handler = new Handler(){
+        handler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
-                repeatResultListener.result(wordViewModel.getWord().id, msg.what);
+                repeatResultListener.result(wordId, msg.what);
             }
         };
     }
@@ -92,46 +98,56 @@ public class WriteWordByVoiceModeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_write_word_by_voice_mode, null);
         findViews(view);
-
-        voiceImageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                textToSpeech.speak(wordViewModel.getWord().word, TextToSpeech.QUEUE_FLUSH, null, "somethingID");
-            }
-        });
-
-        confirmImageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                voiceImageButton.setVisibility(View.GONE);
-                confirmImageButton.setVisibility(View.GONE);
-                userVariantEditText.setVisibility(View.GONE);
-
-                ConstraintLayout mainLayout = (ConstraintLayout) v.getParent();
-
-                int result = 0;
-                String userVariantOfWord = userVariantEditText.getText().toString();
-                if (userVariantOfWord.equals(wordViewModel.getWord().word)) {
-                    result = 1;
-                    resultImageView.setImageResource(R.drawable.ic_done_white_48dp);
-                    mainLayout.setBackgroundResource(R.color.progress_4);
-                } else {
-                    resultImageView.setImageResource(R.drawable.ic_clear_white_48dp);
-                    mainLayout.setBackgroundResource(R.color.progress_1);
-                }
-                resultImageView.setVisibility(View.VISIBLE);
-
-                handler.sendEmptyMessageDelayed(result, 1000);
-            }
-        });
-
         return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        wordViewModel.getLiveDataWord().observe(getViewLifecycleOwner(), new Observer<Word>() {
+            @Override
+            public void onChanged(final Word word) {
+                if(word != null) {
+                    voiceImageButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            textToSpeech.speak(word.word, TextToSpeech.QUEUE_FLUSH, null, "somethingID");
+                        }
+                    });
+
+                    confirmImageButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            voiceImageButton.setVisibility(View.GONE);
+                            confirmImageButton.setVisibility(View.GONE);
+                            userVariantEditText.setVisibility(View.GONE);
+
+                            ConstraintLayout mainLayout = (ConstraintLayout) v.getParent();
+
+                            int result = 0;
+                            String userVariantOfWord = userVariantEditText.getText().toString();
+                            if (userVariantOfWord.equals(word.word)) {
+                                result = 1;
+                                resultImageView.setImageResource(R.drawable.ic_done_white_48dp);
+                                mainLayout.setBackgroundResource(R.color.progress_4);
+                            } else {
+                                resultImageView.setImageResource(R.drawable.ic_clear_white_48dp);
+                                mainLayout.setBackgroundResource(R.color.progress_1);
+                            }
+                            resultImageView.setVisibility(View.VISIBLE);
+
+                            handler.sendEmptyMessageDelayed(result, 1000);
+                        }
+                    });
+                }
+            }
+        });
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        textToSpeech.speak(wordViewModel.getWord().word, TextToSpeech.QUEUE_FLUSH, null, "somethingID");
+        //textToSpeech.speak(wordViewModel.getLiveDataWord().getValue().word, TextToSpeech.QUEUE_FLUSH, null, "somethingID");
     }
 
     private void findViews(View v) {

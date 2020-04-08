@@ -1,6 +1,5 @@
 package ru.nikshlykov.englishwordsapp.ui.word;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
@@ -11,7 +10,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,8 +18,8 @@ import java.util.Locale;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import ru.nikshlykov.englishwordsapp.R;
@@ -43,6 +41,8 @@ public class WordActivity extends AppCompatActivity implements ResetWordProgress
     private static final String DIALOG_LINK_WORD = "LinkWordDialogFragment";
     private static final String DIALOG_DELETE_WORD = "DeleteWordDialogFragment";
 
+    private static final int PROGRESS_VIEW_INDEX = 0;
+
     // View элементы.
     private EditText wordEditText;
     private EditText valueEditText;
@@ -50,7 +50,6 @@ public class WordActivity extends AppCompatActivity implements ResetWordProgress
     private TextView partOfSpeechTextView;
     private Button saveButton;
     private Button ttsButton;
-    //private View learnProgressView;
     private Toolbar toolbar;
 
     // id слова, для которого открылось Activity. Будет равно 0, если слово создаётся.
@@ -100,8 +99,17 @@ public class WordActivity extends AppCompatActivity implements ResetWordProgress
             Log.i(LOG_TAG, "wordId = " + wordId);
             // Если слово уже создано.
             if (wordId != 0) {
-                wordViewModel.setWord(wordId);
-                setWordToViews();
+                //wordViewModel.setWord(wordId);
+
+                wordViewModel.setLiveDataWord(wordId);
+                wordViewModel.getLiveDataWord().observe(this, new Observer<Word>() {
+                    @Override
+                    public void onChanged(Word word) {
+                        if (word != null) {
+                            setWordToViews(word);
+                        }
+                    }
+                });
             }
             // Если пользователь создаёт новое слово.
             else {
@@ -119,12 +127,10 @@ public class WordActivity extends AppCompatActivity implements ResetWordProgress
         ttsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Можно переделать под версии до 21ой.
-                // https://android-tools.ru/coding/kak-dobavit-text-to-speech-v-svoe-prilozhenie/
-                // https://developer.android.com/reference/android/speech/tts/TextToSpeech.html#speak(java.lang.CharSequence,%20int,%20android.os.Bundle,%20java.lang.String)
                 TTS.speak(wordEditText.getText().toString(), TextToSpeech.QUEUE_ADD, null, "somethingID");
             }
         });
+
 
         // Присваиваем обработчик нажатия на кнопку сохранения слова.
         saveButton.setOnClickListener(new View.OnClickListener() {
@@ -171,7 +177,6 @@ public class WordActivity extends AppCompatActivity implements ResetWordProgress
         transcriptionEditText = findViewById(R.id.activity_word___edit_text___transcription);
         saveButton = findViewById(R.id.activity_word___button___save_word);
         ttsButton = findViewById(R.id.activity_word___button___tts);
-        //learnProgressView = findViewById(R.id.activity_word___progress_bar___learn_progress);
         partOfSpeechTextView = findViewById(R.id.activity_word___text_view___part_of_speech);
         toolbar = findViewById(R.id.activity_word___toolbar);
     }
@@ -179,25 +184,21 @@ public class WordActivity extends AppCompatActivity implements ResetWordProgress
     /**
      * Устанавливаем параметры слова (слово, транскрипция, перевод, часть речи, прогресс в разные View.
      */
-    private void setWordToViews() {
-        // Получаем текущее слово.
-        Word thisWord = wordViewModel.getWord();
+    private void setWordToViews(Word word) {
         // Устанавливаем параметры слова в EditText'ы.
-        wordEditText.setText(thisWord.word);
-        valueEditText.setText(thisWord.value);
-        transcriptionEditText.setText(thisWord.transcription);
-        if (thisWord.partOfSpeech != null) {
+        wordEditText.setText(word.word);
+        valueEditText.setText(word.value);
+        transcriptionEditText.setText(word.transcription);
+        if (word.partOfSpeech != null) {
             // Устанавливаем часть речи.
-            partOfSpeechTextView.setText(thisWord.partOfSpeech);
+            partOfSpeechTextView.setText(word.partOfSpeech);
         } else {
             partOfSpeechTextView.setVisibility(View.GONE);
         }
 
         View learnProgressView = new View(this);
-
         LinearLayout layout = findViewById(R.id.activity_word___linear_layout___progress_view_background);
-
-        switch (thisWord.learnProgress) {
+        switch (word.learnProgress) {
             case -1:
                 learnProgressView.setBackgroundResource(R.drawable.shape_progress);
                 learnProgressView.setLayoutParams(new LinearLayout.LayoutParams(dpToPx(0), dpToPx(10)));
@@ -231,16 +232,15 @@ public class WordActivity extends AppCompatActivity implements ResetWordProgress
                 learnProgressView.setLayoutParams(new LinearLayout.LayoutParams(dpToPx(175), dpToPx(10)));
                 break;
             case 7:
-                learnProgressView.setBackgroundResource(R.drawable.shape_progress_7);
-                learnProgressView.setLayoutParams(new LinearLayout.LayoutParams(dpToPx(200), dpToPx(10)));
-                break;
             case 8:
                 learnProgressView.setBackgroundResource(R.drawable.shape_progress_7);
                 learnProgressView.setLayoutParams(new LinearLayout.LayoutParams(dpToPx(200), dpToPx(10)));
                 break;
         }
-
-        layout.addView(learnProgressView);
+        if (layout.getChildAt(PROGRESS_VIEW_INDEX) != null) {
+            layout.removeViewAt(PROGRESS_VIEW_INDEX);
+        }
+        layout.addView(learnProgressView, PROGRESS_VIEW_INDEX);
     }
 
     /**
@@ -314,8 +314,7 @@ public class WordActivity extends AppCompatActivity implements ResetWordProgress
     @Override
     public void reportMessage(String message) {
         if (message.equals(ResetWordProgressDialogFragment.RESET_MESSAGE)) {
-            wordViewModel.getWord().learnProgress = 0;
-            wordViewModel.update();
+            wordViewModel.resetProgress();
         }
     }
 

@@ -5,16 +5,16 @@
         android:id="@+id/activity_subgroup___action___sort"
         android:icon="@drawable/ic_sort_by_alpha_white_24dp"
         android:title="@string/action___sort___title"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="always"/>
 
     <item
         android:id="@+id/activity_subgroup___action___reset_words_progress"
         android:icon="@drawable/ic_replay_white_24dp"
         android:title="@string/action___reset_word_progress___title"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="always"/>
 
     <item
-        android:id="@+id/activity_subgroup___action___delete_words"
+        android:id="@+id/activity_subgroup___action___delete_subgroup"
         android:icon="@drawable/ic_delete_white_24dp"
         android:title="@string/action___delete_word___title"
         app:showAsAction="ifRoom"/>

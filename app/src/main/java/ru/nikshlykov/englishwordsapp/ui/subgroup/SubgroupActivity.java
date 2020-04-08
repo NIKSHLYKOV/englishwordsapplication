@@ -25,6 +25,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -34,6 +35,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import ru.nikshlykov.englishwordsapp.R;
 import ru.nikshlykov.englishwordsapp.db.link.Link;
+import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup;
 import ru.nikshlykov.englishwordsapp.db.subgroup.SubgroupDao;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
 import ru.nikshlykov.englishwordsapp.ui.word.WordActivity;
@@ -72,12 +74,10 @@ public class SubgroupActivity extends AppCompatActivity implements SortWordsDial
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_subgroup);
 
-        // Получаем Extras из Intent'а.
+        // Получаем Extras из Intent'а и из него id подгруппы.
         arguments = getIntent().getExtras();
         if (arguments == null)
             finish();
-
-        // Получаем id подгруппы.
         subgroupId = arguments.getLong(EXTRA_SUBGROUP_ID);
 
         // Создаём для Activity ViewModel.
@@ -90,6 +90,18 @@ public class SubgroupActivity extends AppCompatActivity implements SortWordsDial
         // Устанавливаем наш toolbar и закидываем ему заглавие в виде имени текущей подгруппы.
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(subgroupViewModel.getSubgroup().name);
+
+        subgroupViewModel.setLiveDataSubgroup(subgroupId);
+        subgroupViewModel.getLiveDataSubgroup().observe(this, new Observer<Subgroup>() {
+            @Override
+            public void onChanged(Subgroup subgroup) {
+                Toast.makeText(SubgroupActivity.this, "LiveDataSubgroup onChanged()" +
+                        "\nid = " + subgroup.id +
+                        "\nname = " + subgroup.name +
+                        "\ngroupId = " + subgroup.groupId +
+                        "\nisStudied = " + subgroup.isStudied, Toast.LENGTH_SHORT).show();
+            }
+        });
 
         // Проверяем, что подгруппа создана пользователем.
         if (subgroupViewModel.getSubgroup().groupId == SubgroupDao.GROUP_FOR_NEW_SUBGROUPS_ID) {
@@ -164,9 +176,8 @@ public class SubgroupActivity extends AppCompatActivity implements SortWordsDial
                     // Пуста может быть только подгруппа созданная пользователем.
                 } else {
                     learnSubgroupCheckBox.setVisibility(View.VISIBLE);
+                    adapter.setWords(words);
                 }
-
-                adapter.setWords(words);
             }
         });
 
@@ -338,11 +349,9 @@ public class SubgroupActivity extends AppCompatActivity implements SortWordsDial
                 /*ResetWordProgressDialogFragment resetWordProgressDialogFragment = new ResetWordProgressDialogFragment();
                 resetWordProgressDialogFragment.show(manager, DIALOG_RESET_WORDS_PROGRESS);*/
                 return true;
-            // Удаление слов из данной подгруппы.
-            case R.id.activity_subgroup___action___delete_words:
-                Log.d(LOG_TAG, "Delete words");
-                /*CopyWordDialogFragment copyWordDialogFragment = new CopyWordDialogFragment();
-                copyWordDialogFragment.show(manager, DIALOG_DELETE_WORDS);*/
+            // Удаление подгруппы.
+            case R.id.activity_subgroup___action___delete_subgroup:
+                Log.d(LOG_TAG, "Delete subgroup");
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

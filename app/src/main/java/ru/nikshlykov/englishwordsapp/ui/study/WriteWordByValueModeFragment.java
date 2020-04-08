@@ -13,9 +13,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import ru.nikshlykov.englishwordsapp.R;
 import ru.nikshlykov.englishwordsapp.db.repeat.Repeat;
+import ru.nikshlykov.englishwordsapp.db.word.Word;
 import ru.nikshlykov.englishwordsapp.ui.word.WordViewModel;
 
 public class WriteWordByValueModeFragment extends Fragment {
@@ -26,8 +29,10 @@ public class WriteWordByValueModeFragment extends Fragment {
     private ImageButton confirmButton;
 
     // ViewModel для работы с БД.
+    private long wordId;
     private WordViewModel wordViewModel;
 
+    // Слушатель результата повтора.
     private RepeatResultListener repeatResultListener;
 
     @Override
@@ -41,10 +46,10 @@ public class WriteWordByValueModeFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         // Получаем id слова.
-        long wordId = getArguments().getLong("WordId");
+        wordId = getArguments().getLong("WordId");
 
-        wordViewModel = new WordViewModel(getActivity().getApplication());
-        wordViewModel.setWord(wordId);
+        wordViewModel = new ViewModelProvider(getActivity()).get(WordViewModel.class);
+        wordViewModel.setLiveDataWord(wordId);
     }
 
     @Nullable
@@ -52,25 +57,35 @@ public class WriteWordByValueModeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_write_word_by_value_mode, null);
         findViews(view);
-
-        valueTextView.setText(wordViewModel.getWord().value);
-
-        confirmButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int result = 0;
-                String userVariantOfWord = userVariantEditText.getText().toString();
-                if (userVariantOfWord.equals(wordViewModel.getWord().word)){
-                    result = 1;
-                }
-                repeatResultListener.result(wordViewModel.getWord().id, result);
-            }
-        });
-
         return view;
     }
 
-    private void findViews(View v){
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        wordViewModel.getLiveDataWord().observe(getViewLifecycleOwner(), new Observer<Word>() {
+            @Override
+            public void onChanged(final Word word) {
+                if (word != null){
+                    valueTextView.setText(word.value);
+
+                    confirmButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            int result = 0;
+                            String userVariantOfWord = userVariantEditText.getText().toString();
+                            if (userVariantOfWord.equals(word.word)) {
+                                result = 1;
+                            }
+                            repeatResultListener.result(wordId, result);
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    private void findViews(@NonNull View v) {
         valueTextView = v.findViewById(R.id.fragment_write_word_by_value_mode___text_view___value);
         userVariantEditText = v.findViewById(R.id.fragment_write_word_by_value_mode___edit_text___user_variant);
         confirmButton = v.findViewById(R.id.fragment_write_word_by_value_mode___button___confirm);

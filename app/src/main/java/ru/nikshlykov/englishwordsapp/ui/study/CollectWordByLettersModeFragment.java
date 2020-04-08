@@ -12,11 +12,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import java.util.ArrayList;
 import java.util.Random;
 
 import ru.nikshlykov.englishwordsapp.R;
+import ru.nikshlykov.englishwordsapp.db.word.Word;
 import ru.nikshlykov.englishwordsapp.ui.word.WordViewModel;
 
 public class CollectWordByLettersModeFragment extends Fragment {
@@ -44,10 +47,10 @@ public class CollectWordByLettersModeFragment extends Fragment {
         // Получаем id слова.
         long wordId = arguments.getLong("WordId");
 
-        wordViewModel = new WordViewModel(getActivity().getApplication());
-        wordViewModel.setWord(wordId);
+        wordViewModel = new ViewModelProvider(getActivity()).get(WordViewModel.class);
+        wordViewModel.setLiveDataWord(wordId);
 
-        String word = wordViewModel.getWord().word;
+        /*String word = wordViewModel.getWord().word;
         int lettersCount = word.length();
         ArrayList<Character> letters = new ArrayList<>(lettersCount);
         for (int i = 0; i < lettersCount; i++){
@@ -70,7 +73,7 @@ public class CollectWordByLettersModeFragment extends Fragment {
 
                 }
             });
-        }
+        }*/
     }
 
     @Nullable
@@ -79,12 +82,23 @@ public class CollectWordByLettersModeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_collect_word_by_letters_mode, null);
         findViews(view);
 
-        valueTextView.setText(wordViewModel.getWord().value);
-
         return view;
     }
 
-    private void findViews(View v){
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        wordViewModel.getLiveDataWord().observe(getViewLifecycleOwner(), new Observer<Word>() {
+            @Override
+            public void onChanged(Word word) {
+                if (word != null) {
+                    valueTextView.setText(word.value);
+                }
+            }
+        });
+    }
+
+    private void findViews(View v) {
         userVariantButton = v.findViewById(R.id.fragment_collect_word_by_letters_mode___button___user_variant);
         removeLetterImageButton = v.findViewById(R.id.fragment_collect_word_by_letters_mode___image_button___remove_letter);
         valueTextView = v.findViewById(R.id.fragment_collect_word_by_letters_mode___text_view___value);

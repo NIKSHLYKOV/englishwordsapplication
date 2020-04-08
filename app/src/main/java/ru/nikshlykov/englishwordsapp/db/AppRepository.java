@@ -106,6 +106,10 @@ public class AppRepository {
         return null;
     }
 
+    public LiveData<Word> getLiveDataWordById(long wordId){
+        return wordDao.getLiveDataWordById(wordId);
+    }
+
     public LiveData<List<Word>> getWordsFromSubgroupByProgress(long subgroupId) {
         return wordDao.getWordsFromSubgroupByProgress(subgroupId);
     }
@@ -292,6 +296,10 @@ public class AppRepository {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public LiveData<Subgroup> getLiveDataSubgroupById(long subgroupId){
+        return subgroupDao.getLiveDataSubgroupById(subgroupId);
     }
 
     public Cursor getSubgroupsFromGroup(long groupId) {

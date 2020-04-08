@@ -2,6 +2,7 @@ package ru.nikshlykov.englishwordsapp.db.subgroup;
 
 import android.database.Cursor;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -25,6 +26,9 @@ public interface SubgroupDao {
 
     @Query("SELECT * FROM Subgroups WHERE _id = :id")
     Subgroup getSubgroupById(long id);
+
+    @Query("SELECT * FROM Subgroups WHERE _id = :id")
+    LiveData<Subgroup> getLiveDataSubgroupById(long id);
 
     @Query("SELECT * FROM Subgroups WHERE groupId = :groupId")
     Cursor getSubgroupsFromGroup(long groupId);

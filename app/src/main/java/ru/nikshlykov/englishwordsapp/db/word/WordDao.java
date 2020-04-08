@@ -23,12 +23,12 @@ public interface WordDao {
     @Delete
     int delete(Word word);
 
-    @Query("SELECT * FROM Words WHERE _id = :wordID")
-    Word getWordById(long wordID);
+    @Query("SELECT * FROM Words WHERE _id = :wordId")
+    Word getWordById(long wordId);
 
-    // ПРОВЕРИТЬ СРОЧНО НА ВЫСТАВЛЕНИЕ LEARNPROGRESS ПОСЛЕ ПОВТОРА.
-    // ПРОВЕРИТЬ СРОЧНО НА ВЫСТАВЛЕНИЕ LEARNPROGRESS ПОСЛЕ ПОВТОРА.
-    // ПРОВЕРИТЬ СРОЧНО НА ВЫСТАВЛЕНИЕ LEARNPROGRESS ПОСЛЕ ПОВТОРА.
+    @Query("SELECT * FROM Words WHERE _id = :wordId")
+    LiveData<Word> getLiveDataWordById(long wordId);
+
     @Query("SELECT Words.* FROM Words, Links WHERE Words._id = Links.WordId and Links.SubgroupId = :subgroupId ORDER BY Words.LearnProgress DESC")
     LiveData<List<Word>> getWordsFromSubgroupByProgress(long subgroupId);
 
