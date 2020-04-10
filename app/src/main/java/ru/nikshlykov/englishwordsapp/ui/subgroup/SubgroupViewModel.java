@@ -40,16 +40,24 @@ public class SubgroupViewModel extends AndroidViewModel {
 
     public void setLiveDataSubgroup(long id) {
         liveDataSubgroup = repository.getLiveDataSubgroupById(id);
+        words = repository.getWordsFromSubgroupByProgress(id);
     }
 
     public LiveData<Subgroup> getLiveDataSubgroup() {
         return liveDataSubgroup;
     }
 
-    public LiveData<List<Word>> getWords() {
-        if (words == null) {
-            words = repository.getWordsFromSubgroupByProgress(subgroup.id);
+    public void setIsStudied(boolean isStudied) {
+        if (liveDataSubgroup.getValue() != null) {
+            if (isStudied) {
+                liveDataSubgroup.getValue().isStudied = 1;
+            } else {
+                liveDataSubgroup.getValue().isStudied = 0;
+            }
         }
+    }
+
+    public LiveData<List<Word>> getWords() {
         return words;
     }
 
@@ -76,10 +84,10 @@ public class SubgroupViewModel extends AndroidViewModel {
 
 
     public void update() {
-        repository.update(subgroup);
+        repository.update(liveDataSubgroup.getValue());
     }
 
-    public Word getWord(long id) {
+    public Word getWordById(long id) {
         return repository.getWordById(id);
     }
 
@@ -97,12 +105,16 @@ public class SubgroupViewModel extends AndroidViewModel {
     }
 
     public void deleteLinkWithSubgroup(long wordId) {
-        Link link = repository.getLink(wordId, subgroup.id);
-        repository.delete(link);
+        if (liveDataSubgroup.getValue() != null) {
+            Link link = repository.getLink(wordId, liveDataSubgroup.getValue().id);
+            repository.delete(link);
+        }
     }
 
     public void insertLinkWithSubgroup(long wordId) {
-        Link link = new Link(subgroup.id, wordId);
-        repository.insert(link);
+        if (liveDataSubgroup.getValue() != null) {
+            Link link = new Link(liveDataSubgroup.getValue().id, wordId);
+            repository.insert(link);
+        }
     }
 }

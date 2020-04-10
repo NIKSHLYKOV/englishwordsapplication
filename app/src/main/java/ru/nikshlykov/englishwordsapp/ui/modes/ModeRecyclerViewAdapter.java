@@ -35,20 +35,23 @@ public class ModeRecyclerViewAdapter extends RecyclerView.Adapter<ModeRecyclerVi
         MyViewHolder(View itemView) {
             super(itemView);
 
-            checkBox = (CheckBox) itemView.findViewById(R.id.card_mode___check_box___is_selected);
-            imageView = (ImageView) itemView.findViewById(R.id.card_mode___image_view);
-            textView = (TextView) itemView.findViewById(R.id.card_mode___text_view___mode_name);
+            checkBox = itemView.findViewById(R.id.card_mode___check_box___is_selected);
+            imageView = itemView.findViewById(R.id.card_mode___image_view);
+            textView = itemView.findViewById(R.id.card_mode___text_view___mode_name);
         }
     }
 
-    public ModeRecyclerViewAdapter(Context context, List<Mode> modes) {
+    public ModeRecyclerViewAdapter(Context context) {
         this.context = context;
-        this.modes = modes;
     }
 
     @Override
     public int getItemCount() {
-        return modes.size();
+        if (modes != null) {
+            return modes.size();
+        } else {
+            return 0;
+        }
     }
 
     @NonNull
@@ -76,5 +79,10 @@ public class ModeRecyclerViewAdapter extends RecyclerView.Adapter<ModeRecyclerVi
                     currentMode.isSelected = 0;
             }
         });
+    }
+
+    public void setModes(List<Mode> modes) {
+        this.modes = modes;
+        notifyDataSetChanged();
     }
 }

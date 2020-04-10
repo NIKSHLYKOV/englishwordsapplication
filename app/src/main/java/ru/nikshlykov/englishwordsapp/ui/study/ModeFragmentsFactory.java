@@ -7,7 +7,7 @@ import androidx.fragment.app.Fragment;
 // Перечисление режимов.
 // Необходимо для того, чтобы возвращать определённый вновь созданный фрагмент по id режима.
 public enum ModeFragmentsFactory {
-    VOC_CARD_ENG_TO_RUS(1) {
+    VOC_CARD_ENG_TO_RUS(1L) {
         @Override
         public Fragment createFragment(Context context) {
             DictionaryCardsModeFragment fragment = new DictionaryCardsModeFragment();
@@ -15,7 +15,7 @@ public enum ModeFragmentsFactory {
             return fragment;
         }
     },
-    VOC_CARD_RUS_TO_ENG(2) {
+    VOC_CARD_RUS_TO_ENG(2L) {
         @Override
         public Fragment createFragment(Context context) {
             DictionaryCardsModeFragment fragment = new DictionaryCardsModeFragment();
@@ -23,40 +23,40 @@ public enum ModeFragmentsFactory {
             return fragment;
         }
     },
-    WRITE_WORD_BY_VALUE(3) {
+    WRITE_WORD_BY_VALUE(3L) {
         @Override
         public Fragment createFragment(Context context) {
             return new WriteWordByValueModeFragment();
         }
     },
-    COLLECT_WORD_BY_LETTERS(5) {
+    COLLECT_WORD_BY_LETTERS(4L) {
         @Override
         public Fragment createFragment(Context context) {
             return new CollectWordByLettersModeFragment();
         }
     },
-    WRITE_WORD_BY_VOICE(4) {
+    WRITE_WORD_BY_VOICE(5L) {
         @Override
         public Fragment createFragment(Context context) {
             return new WriteWordByVoiceModeFragment();
         }
     },
-    CHOOSE_FROM_FOUR_VARIANTS(6) {
+    CHOOSE_FROM_FOUR_VARIANTS(6L) {
         @Override
         public Fragment createFragment(Context context) {
             return new ChooseFromFourVariantsModeFragment();
         }
     };
 
-    private final int id;
+    private final long id;
 
-    ModeFragmentsFactory(int id) {
+    ModeFragmentsFactory(long id) {
         this.id = id;
     }
 
     public abstract Fragment createFragment(Context context);
 
-    public static ModeFragmentsFactory byId(int id) {
+    public static ModeFragmentsFactory byId(long id) {
         for (ModeFragmentsFactory mode : values()) {
             if (mode.id == id) {
                 return mode;

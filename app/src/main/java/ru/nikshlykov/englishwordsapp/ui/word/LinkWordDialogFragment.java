@@ -28,7 +28,7 @@ public class LinkWordDialogFragment extends DialogFragment {
     private boolean[] checkedSubgroups;
 
     // ViewModel для работы с БД.
-    WordDialogsViewModel wordDialogsViewModel;
+    private WordDialogsViewModel wordDialogsViewModel;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -49,7 +49,9 @@ public class LinkWordDialogFragment extends DialogFragment {
         }
 
         // Создаём ViewModel.
-        wordDialogsViewModel = new WordDialogsViewModel(getActivity().getApplication(), wordId, WordDialogsViewModel.TO_LINK);
+        wordDialogsViewModel = new WordDialogsViewModel(getActivity().getApplication());
+        wordDialogsViewModel.setWordId(wordId);
+        wordDialogsViewModel.setAvailableSubgroups(WordDialogsViewModel.TO_LINK);
     }
 
     @NonNull

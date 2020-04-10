@@ -1,5 +1,6 @@
 package ru.nikshlykov.englishwordsapp.db.mode;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Query;
 import androidx.room.Update;
@@ -18,4 +19,7 @@ public interface ModeDao {
 
     @Query("SELECT * FROM Modes WHERE IsSelected = 1")
     Mode[] getSelectedModes();
+
+    @Query("SELECT * FROM Modes")
+    LiveData<List<Mode>> getLiveDataModes();
 }

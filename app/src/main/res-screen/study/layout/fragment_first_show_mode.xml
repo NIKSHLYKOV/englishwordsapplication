@@ -55,30 +55,33 @@
 
         <Button
             android:id="@+id/fragment_first_show_mode___button___know"
-            android:background="@drawable/shape_lightgreen_20dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
             android:layout_margin="4dp"
-            android:text="@string/know" />
+            android:layout_weight="1"
+            android:background="@drawable/shape_lightgreen_20dp"
+            android:text="@string/know"
+            android:textColor="@android:color/white" />
 
         <Button
             android:id="@+id/fragment_first_show_mode___button___learn"
-            android:background="@drawable/shape_yellow_20dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
             android:layout_margin="4dp"
-            android:text="@string/to_learn" />
+            android:layout_weight="1"
+            android:background="@drawable/shape_yellow_20dp"
+            android:text="@string/to_learn"
+            android:textColor="@android:color/white" />
 
         <Button
             android:id="@+id/fragment_first_show_mode___button___skip"
-            android:background="@drawable/shape_red_20dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
             android:layout_margin="4dp"
-            android:text="@string/to_skip" />
+            android:layout_weight="1"
+            android:background="@drawable/shape_red_20dp"
+            android:text="@string/to_skip"
+            android:textColor="@android:color/white" />
 
     </LinearLayout>
 

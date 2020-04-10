@@ -21,15 +21,16 @@ public class WordDialogsViewModel extends AndroidViewModel {
 
     private AppRepository repository;
 
-    public WordDialogsViewModel(@NonNull Application application, long wordId, int flag) {
+    public WordDialogsViewModel(@NonNull Application application) {
         super(application);
         repository = new AppRepository(application);
-
-        this.wordId = wordId;
-        setAvailableSubgroups(flag);
     }
 
-    private void setAvailableSubgroups(int flag) {
+    public void setWordId(long wordId) {
+        this.wordId = wordId;
+    }
+
+    public void setAvailableSubgroups(int flag) {
         // Получаем подгруппы, созданные пользователем и проверяем, что они вообще есть.
         Subgroup[] createdByUserSubgroups = repository.getCreatedByUserSubgroups();
         if (createdByUserSubgroups.length != 0) {
@@ -86,6 +87,7 @@ public class WordDialogsViewModel extends AndroidViewModel {
         return availableSubgroups.get(position).id;
     }
 
+    
     public void deleteLink(long subgroupId) {
         Link linkToDelete = new Link(subgroupId, wordId);
         repository.delete(linkToDelete);

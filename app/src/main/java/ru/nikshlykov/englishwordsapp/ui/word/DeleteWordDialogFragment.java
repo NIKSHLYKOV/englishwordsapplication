@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import ru.nikshlykov.englishwordsapp.R;
 
@@ -28,7 +29,7 @@ public class DeleteWordDialogFragment extends DialogFragment {
     private boolean[] checkedSubgroups;
 
     // ViewModel для работы с БД.
-    WordDialogsViewModel wordDialogsViewModel;
+    private WordDialogsViewModel wordDialogsViewModel;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -49,7 +50,9 @@ public class DeleteWordDialogFragment extends DialogFragment {
         }
 
         // Создаём ViewModel.
-        wordDialogsViewModel = new WordDialogsViewModel(getActivity().getApplication(), wordId, WordDialogsViewModel.TO_DELETE);
+        wordDialogsViewModel = new ViewModelProvider(getActivity()).get(WordDialogsViewModel.class);
+        wordDialogsViewModel.setWordId(wordId);
+        wordDialogsViewModel.setAvailableSubgroups(WordDialogsViewModel.TO_DELETE);
     }
 
     @NonNull

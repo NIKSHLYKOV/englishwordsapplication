@@ -22,8 +22,7 @@ import ru.nikshlykov.englishwordsapp.ui.study.StudyViewModel;
 
 import android.util.Log;
 import android.view.MenuItem;
-
-import java.util.Random;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity
         implements RepeatResultListener,
@@ -36,9 +35,11 @@ public class MainActivity extends AppCompatActivity
     private BottomNavigationView navigation; // Нижнее меню.
     private LinearLayoutCompat contentLayout; // Layout для программного размещения в нём фрагментов.
 
-    // Объекты для работы с фрагментами.
-    private FragmentManager fragmentManager;
+    // Время последнего нажатия на кнопку "Назад" в данном Activity.
+    private static long lastBackPressedTime;
 
+
+    private Fragment thisModeFragment;
     int contentLayoutId;
 
     // Теги для идентификации фрагментов.
@@ -54,23 +55,24 @@ public class MainActivity extends AppCompatActivity
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             Fragment fragment;
+            FragmentManager fragmentManager = getSupportFragmentManager();
 
             switch (item.getItemId()) {
                 case R.id.activity_main_menu___study:
                     // Пытаемся найти фрагмент и проверяем, создан ли он (на экране).
                     fragment = fragmentManager.findFragmentByTag(TAG_STUDY_FRAGMENT);
-                    // Если фрагмент не создан, тогда меняем тот фрагмент, который на экране, только что созданным.
+                    // Если фрагмент не создан, тогда заменяем тот фрагмент, который на экране, только что созданным.
                     if (fragment == null) {
-                        // Проверяем на выбранные режимы и подгруппы.
-                        if (!studyViewModel.selectedModesExist()) {
-                            displayInfoFragment(InfoFragment.FLAG_MODES_ARE_NOT_CHOSEN);
-                            return true;
-                        }
-                        if (!studyViewModel.studiedSubgroupsExist()) {
+                        if (studyViewModel.studiedSubgroupsExist()) {
+                            if (studyViewModel.selectedModesExist()) {
+                                studyViewModel.loadSelectedModes();
+                                showNextMode();
+                            } else {
+                                displayInfoFragment(InfoFragment.FLAG_MODES_ARE_NOT_CHOSEN);
+                            }
+                        } else {
                             displayInfoFragment(InfoFragment.FLAG_SUBGROUPS_ARE_NOT_CHOSEN);
-                            return true;
                         }
-                        showNextMode();
                     }
                     return true;
                 case R.id.activity_main_menu___groups:
@@ -109,13 +111,12 @@ public class MainActivity extends AppCompatActivity
         contentLayoutId = contentLayout.getId();
         // Присваиваем обработчик нажатия на нижнее меню.
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        // Инициализируем менеджер работы с фрагментами.
-        fragmentManager = getSupportFragmentManager();
+
         // Создаём ViewModel для работы с БД.
         studyViewModel = new ViewModelProvider(this).get(StudyViewModel.class);
 
-        /*studyViewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication()).create(studyViewModel.getClass());
-        new ViewModelProvider(this).get(studyViewModel.getClass());*/
+        studyViewModel.loadSelectedModes();
+
         if (studyViewModel.studiedSubgroupsExist()) {
             if (studyViewModel.selectedModesExist()) {
                 showNextMode();
@@ -125,6 +126,11 @@ public class MainActivity extends AppCompatActivity
         } else {
             displayInfoFragment(InfoFragment.FLAG_SUBGROUPS_ARE_NOT_CHOSEN);
         }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
     }
 
     /**
@@ -146,7 +152,7 @@ public class MainActivity extends AppCompatActivity
             Bundle arguments = new Bundle();
             arguments.putInt(InfoFragment.KEY_INFO_FLAG, flag);
             infoFragment.setArguments(arguments);
-            fragmentManager
+            getSupportFragmentManager()
                     .beginTransaction()
                     .replace(contentLayout.getId(), infoFragment, TAG_STUDY_FRAGMENT)
                     .commit();
@@ -156,6 +162,7 @@ public class MainActivity extends AppCompatActivity
     private void showNextMode() {
         Log.i(LOG_TAG, "showNextMode()");
 
+        // Получаем следующее слово для повтора.
         Word nextWord = studyViewModel.getNextAvailableToRepeatWord();
         if (nextWord != null) {
             Log.i(LOG_TAG,
@@ -179,11 +186,10 @@ public class MainActivity extends AppCompatActivity
                         .replace(contentLayoutId, firstShowModeFragment, TAG_STUDY_FRAGMENT)
                         .commit();
             } else {
-                Random random = new Random();
-                int randomInt = random.nextInt(4);
-                Log.i(LOG_TAG, "random = " + randomInt);
+                long randomModeId = studyViewModel.randomSelectedModeId();
+                Log.i(LOG_TAG, "randomModeId = " + randomModeId);
 
-                Fragment modeFragment = ModeFragmentsFactory.byId(randomInt + 1).createFragment(this);
+                Fragment modeFragment = ModeFragmentsFactory.byId(randomModeId).createFragment(this);
                 modeFragment.setArguments(arguments);
                 getSupportFragmentManager()
                         .beginTransaction()
@@ -209,5 +215,15 @@ public class MainActivity extends AppCompatActivity
     public void result(long wordId, int result) {
         studyViewModel.repeatProcessing(wordId, result);
         showNextMode();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (lastBackPressedTime + 2000 > System.currentTimeMillis())
+            super.onBackPressed();
+        else
+            Toast.makeText(this, "Нажмите ещё раз для выхода!",
+                    Toast.LENGTH_SHORT).show();
+        lastBackPressedTime = System.currentTimeMillis();
     }
 }

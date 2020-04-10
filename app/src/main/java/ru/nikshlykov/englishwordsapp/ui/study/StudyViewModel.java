@@ -5,11 +5,13 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Random;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 
 import ru.nikshlykov.englishwordsapp.db.AppRepository;
+import ru.nikshlykov.englishwordsapp.db.mode.Mode;
 import ru.nikshlykov.englishwordsapp.db.repeat.Repeat;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
 
@@ -21,10 +23,26 @@ public class StudyViewModel extends AndroidViewModel {
 
     private Word[] wordsFromStudiedSubgroups;
 
+    private ArrayList<Long> selectedModesIds;
+
     public StudyViewModel(@NonNull Application application) {
         super(application);
         repository = new AppRepository(application);
         wordsFromStudiedSubgroups = repository.getAllWordsFromStudiedSubgroups();
+    }
+
+    public void loadSelectedModes(){
+        Mode[] selectedModes = repository.getSelectedModes();
+        selectedModesIds = new ArrayList<>(selectedModes.length);
+        for (Mode mode: selectedModes){
+            selectedModesIds.add(mode.id);
+        }
+    }
+
+    public long randomSelectedModeId(){
+        Random random = new Random();
+        int index = random.nextInt(selectedModesIds.size());
+        return selectedModesIds.get(index);
     }
 
     public boolean studiedSubgroupsExist() {

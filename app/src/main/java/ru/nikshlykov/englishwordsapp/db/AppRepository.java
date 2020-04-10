@@ -466,17 +466,6 @@ public class AppRepository {
         return null;
     }
 
-    public Group getGroupById(long id) {
-        GetGroupByIdAsyncTask getGroupByIdAsyncTask = new GetGroupByIdAsyncTask(groupDao);
-        getGroupByIdAsyncTask.execute(id);
-        try {
-            return getGroupByIdAsyncTask.get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
     /**
      * AsyncTasks для работы с группами.
      */
@@ -490,20 +479,6 @@ public class AppRepository {
         @Override
         protected Cursor doInBackground(Void... voids) {
             return groupDao.getAllGroups();
-        }
-    }
-
-    private static class GetGroupByIdAsyncTask extends AsyncTask<Long, Void, Group> {
-        private GroupDao groupDao;
-
-        private GetGroupByIdAsyncTask(GroupDao groupDao) {
-            this.groupDao = groupDao;
-        }
-
-        @Override
-        protected Group doInBackground(Long... longs) {
-            Log.i(LOG_TAG, "id группы в asyncTask = " + longs[0]);
-            return groupDao.getGroupById(longs[0]);
         }
     }
 
@@ -618,17 +593,6 @@ public class AppRepository {
         new UpdateModeAsyncTask(modeDao).execute(modes);
     }
 
-    public List<Mode> getAllModes() {
-        GetAllModesAsyncTask task = new GetAllModesAsyncTask(modeDao);
-        task.execute();
-        try {
-            return task.get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
     public Mode[] getSelectedModes() {
         GetSelectedModesAsyncTask task = new GetSelectedModesAsyncTask(modeDao);
         task.execute();
@@ -638,6 +602,10 @@ public class AppRepository {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public LiveData<List<Mode>> getLiveDataModes(){
+        return modeDao.getLiveDataModes();
     }
 
     /**
@@ -654,19 +622,6 @@ public class AppRepository {
         protected Void doInBackground(List<Mode>... modes) {
             modeDao.update(modes[0]);
             return null;
-        }
-    }
-
-    private static class GetAllModesAsyncTask extends AsyncTask<Void, Void, List<Mode>> {
-        private ModeDao modeDao;
-
-        private GetAllModesAsyncTask(ModeDao modeDao) {
-            this.modeDao = modeDao;
-        }
-
-        @Override
-        protected List<Mode> doInBackground(Void... voids) {
-            return modeDao.getAllModes();
         }
     }
 

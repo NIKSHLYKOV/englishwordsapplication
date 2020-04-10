@@ -50,7 +50,7 @@ public class CollectWordByLettersModeFragment extends Fragment {
         wordViewModel = new ViewModelProvider(getActivity()).get(WordViewModel.class);
         wordViewModel.setLiveDataWord(wordId);
 
-        /*String word = wordViewModel.getWord().word;
+        /*String word = wordViewModel.getWordById().word;
         int lettersCount = word.length();
         ArrayList<Character> letters = new ArrayList<>(lettersCount);
         for (int i = 0; i < lettersCount; i++){

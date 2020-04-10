@@ -51,6 +51,7 @@ public class WordActivity extends AppCompatActivity implements ResetWordProgress
     private Button saveButton;
     private Button ttsButton;
     private Toolbar toolbar;
+    private LinearLayout progressLinearLayout;
 
     // id слова, для которого открылось Activity. Будет равно 0, если слово создаётся.
     private long wordId = 0L;
@@ -99,8 +100,6 @@ public class WordActivity extends AppCompatActivity implements ResetWordProgress
             Log.i(LOG_TAG, "wordId = " + wordId);
             // Если слово уже создано.
             if (wordId != 0) {
-                //wordViewModel.setWord(wordId);
-
                 wordViewModel.setLiveDataWord(wordId);
                 wordViewModel.getLiveDataWord().observe(this, new Observer<Word>() {
                     @Override
@@ -179,6 +178,7 @@ public class WordActivity extends AppCompatActivity implements ResetWordProgress
         ttsButton = findViewById(R.id.activity_word___button___tts);
         partOfSpeechTextView = findViewById(R.id.activity_word___text_view___part_of_speech);
         toolbar = findViewById(R.id.activity_word___toolbar);
+        progressLinearLayout = findViewById(R.id.activity_word___linear_layout___progress_view_background);
     }
 
     /**
@@ -197,7 +197,6 @@ public class WordActivity extends AppCompatActivity implements ResetWordProgress
         }
 
         View learnProgressView = new View(this);
-        LinearLayout layout = findViewById(R.id.activity_word___linear_layout___progress_view_background);
         switch (word.learnProgress) {
             case -1:
                 learnProgressView.setBackgroundResource(R.drawable.shape_progress);
@@ -237,22 +236,22 @@ public class WordActivity extends AppCompatActivity implements ResetWordProgress
                 learnProgressView.setLayoutParams(new LinearLayout.LayoutParams(dpToPx(200), dpToPx(10)));
                 break;
         }
-        if (layout.getChildAt(PROGRESS_VIEW_INDEX) != null) {
-            layout.removeViewAt(PROGRESS_VIEW_INDEX);
+        if (progressLinearLayout.getChildAt(PROGRESS_VIEW_INDEX) != null) {
+            progressLinearLayout.removeViewAt(PROGRESS_VIEW_INDEX);
         }
-        layout.addView(learnProgressView, PROGRESS_VIEW_INDEX);
+        progressLinearLayout.addView(learnProgressView, PROGRESS_VIEW_INDEX);
     }
 
     /**
      * Скрывает некоторые View при создании нового слова.
      */
     private void hideViewsForNewWordCreating() {
-        //learnProgressView.setVisibility(View.GONE);
         TextView progressText = findViewById(R.id.activity_word___text_view___progress);
         progressText.setVisibility(View.GONE);
         ttsButton.setVisibility(View.GONE);
         partOfSpeechTextView.setVisibility(View.GONE);
         toolbar.setVisibility(View.GONE);
+        progressLinearLayout.setVisibility(View.GONE);
     }
 
     /**
