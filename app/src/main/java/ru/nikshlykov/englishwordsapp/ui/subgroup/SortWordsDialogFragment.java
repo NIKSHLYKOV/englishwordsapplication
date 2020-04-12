@@ -39,7 +39,7 @@ public class SortWordsDialogFragment extends DialogFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Здесь получим уже выставленный параметр сортировки.
-        //SettingsViewModel settingsViewModel = new SettingsViewModel(getActivity().getApplication());
+        // SettingsViewModel settingsViewModel = new SettingsViewModel(getActivity().getApplication());
     }
 
     @NonNull

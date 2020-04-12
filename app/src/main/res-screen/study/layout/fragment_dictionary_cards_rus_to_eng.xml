@@ -18,38 +18,38 @@
             android:id="@+id/fragment_dictionary_cards_rus_to_eng___layout___main___text_view___value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="100dp"
             android:text="@string/value"
             android:textColor="@color/colorPrimary"
-            android:textSize="24sp"
-            android:layout_marginTop="100dp"
-            app:layout_constraintStart_toStartOf="parent"
+            android:textSize="30sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
 
         <TextView
             android:id="@+id/fragment_dictionary_cards_rus_to_eng___layout___main___text_view___word"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="100dp"
             android:text="@string/word"
             android:textColor="@color/colorPrimary"
-            android:textSize="24sp"
+            android:textSize="30sp"
             android:visibility="invisible"
-            android:layout_marginTop="100dp"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/fragment_dictionary_cards_rus_to_eng___layout___main___text_view___value"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/fragment_dictionary_cards_rus_to_eng___layout___main___text_view___value" />
 
         <TextView
             android:id="@+id/fragment_dictionary_cards_rus_to_eng___layout___main___text_view___transcription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/transcription"
-            android:textSize="18sp"
+            android:textSize="24sp"
             android:visibility="invisible"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/fragment_dictionary_cards_rus_to_eng___layout___main___text_view___word"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/fragment_dictionary_cards_rus_to_eng___layout___main___text_view___word" />
 
 
         <ImageButton
@@ -58,10 +58,11 @@
             android:layout_width="100dp"
             android:layout_height="70dp"
             android:layout_marginTop="300dp"
+            android:background="@drawable/shape_white_20dp"
             android:src="@drawable/ic_visibility_dark_blue_48dp"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -69,27 +70,29 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:paddingBottom="10dp">
+        android:paddingBottom="20dp">
 
         <Button
             android:id="@+id/fragment_dictionary_cards_rus_to_eng___layout___main___button___do_not_remember"
-            android:background="@drawable/shape_red_20dp"
+            style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="150dp"
             android:layout_height="match_parent"
-            android:layout_gravity="left"
-            android:layout_marginLeft="20dp"
+            android:layout_gravity="start"
+            android:layout_marginStart="20dp"
+            android:background="@drawable/shape_white_red_20dp"
             android:text="@string/do_not_remember"
-            android:textColor="@android:color/white" />
+            android:textColor="@color/colorPrimary" />
 
         <Button
             android:id="@+id/fragment_dictionary_cards_rus_to_eng___layout___main___button___remember"
-            android:background="@drawable/shape_lightgreen_20dp"
+            style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="150dp"
             android:layout_height="match_parent"
-            android:layout_gravity="right"
-            android:layout_marginRight="20dp"
+            android:layout_gravity="end"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/shape_white_green_20dp"
             android:text="@string/remember"
-            android:textColor="@android:color/white" />
+            android:textColor="@color/colorPrimary" />
 
     </FrameLayout>
 

@@ -22,7 +22,7 @@
             android:gravity="center"
             android:text="@string/word"
             android:textColor="@color/colorPrimary"
-            android:textSize="24sp" />
+            android:textSize="30sp" />
 
         <TextView
             android:id="@+id/fragment_first_show_mode___text_view___transcription"
@@ -32,7 +32,7 @@
             android:gravity="center"
             android:text="@string/transcription"
             android:textColor="@color/colorPrimary"
-            android:textSize="18sp" />
+            android:textSize="24sp" />
 
         <TextView
             android:id="@+id/fragment_first_show_mode___text_view___value"
@@ -43,7 +43,7 @@
             android:gravity="center"
             android:text="@string/value"
             android:textColor="@color/colorPrimary"
-            android:textSize="24sp" />
+            android:textSize="30sp" />
 
     </LinearLayout>
 
@@ -55,33 +55,36 @@
 
         <Button
             android:id="@+id/fragment_first_show_mode___button___know"
+            style="@style/BorderlessButton"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="4dp"
             android:layout_weight="1"
-            android:background="@drawable/shape_lightgreen_20dp"
+            android:background="@drawable/shape_white_green_20dp"
             android:text="@string/know"
-            android:textColor="@android:color/white" />
+            android:textColor="@color/colorPrimary" />
 
         <Button
             android:id="@+id/fragment_first_show_mode___button___learn"
+            style="@style/BorderlessButton"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="4dp"
             android:layout_weight="1"
-            android:background="@drawable/shape_yellow_20dp"
+            android:background="@drawable/shape_white_yellow_20dp"
             android:text="@string/to_learn"
-            android:textColor="@android:color/white" />
+            android:textColor="@color/colorPrimary" />
 
         <Button
             android:id="@+id/fragment_first_show_mode___button___skip"
+            style="@style/BorderlessButton"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="4dp"
             android:layout_weight="1"
-            android:background="@drawable/shape_red_20dp"
+            android:background="@drawable/shape_white_red_20dp"
             android:text="@string/to_skip"
-            android:textColor="@android:color/white" />
+            android:textColor="@color/colorPrimary" />
 
     </LinearLayout>
 

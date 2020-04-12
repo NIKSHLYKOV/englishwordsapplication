@@ -31,9 +31,6 @@ public class ResetWordProgressDialogFragment extends DialogFragment {
     // Сообщение о том, что сбрасывание подтверждено.
     public static final String RESET_MESSAGE = "Reset";
 
-    // id нашего слова.
-    private long wordId;
-
     // Интерфейс для взаимодействия с Activity.
     private ReportListener reportListener;
     public interface ReportListener {
@@ -48,17 +45,6 @@ public class ResetWordProgressDialogFragment extends DialogFragment {
         reportListener = (ReportListener) context;
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        // Получаем id слова.
-        try {
-            wordId = getArguments().getLong(EXTRA_WORD_ID);
-        } catch (NullPointerException e) {
-            Log.e(LOG_TAG, e.getMessage());
-        }
-    }
 
     @NonNull
     @Override

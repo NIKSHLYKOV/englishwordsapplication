@@ -41,8 +41,6 @@ public class WordActivity extends AppCompatActivity implements ResetWordProgress
     private static final String DIALOG_LINK_WORD = "LinkWordDialogFragment";
     private static final String DIALOG_DELETE_WORD = "DeleteWordDialogFragment";
 
-    private static final int PROGRESS_VIEW_INDEX = 0;
-
     // View элементы.
     private EditText wordEditText;
     private EditText valueEditText;
@@ -197,6 +195,8 @@ public class WordActivity extends AppCompatActivity implements ResetWordProgress
         }
 
         View learnProgressView = new View(this);
+        // Индекс для вставки или удаления progressView.
+        int progressViewIndex = 0;
         switch (word.learnProgress) {
             case -1:
                 learnProgressView.setBackgroundResource(R.drawable.shape_progress);
@@ -236,10 +236,10 @@ public class WordActivity extends AppCompatActivity implements ResetWordProgress
                 learnProgressView.setLayoutParams(new LinearLayout.LayoutParams(dpToPx(200), dpToPx(10)));
                 break;
         }
-        if (progressLinearLayout.getChildAt(PROGRESS_VIEW_INDEX) != null) {
-            progressLinearLayout.removeViewAt(PROGRESS_VIEW_INDEX);
+        if (progressLinearLayout.getChildAt(progressViewIndex) != null) {
+            progressLinearLayout.removeViewAt(progressViewIndex);
         }
-        progressLinearLayout.addView(learnProgressView, PROGRESS_VIEW_INDEX);
+        progressLinearLayout.addView(learnProgressView, progressViewIndex);
     }
 
     /**

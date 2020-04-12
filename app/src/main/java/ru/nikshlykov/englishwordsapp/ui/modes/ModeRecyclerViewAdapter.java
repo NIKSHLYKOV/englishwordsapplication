@@ -1,6 +1,7 @@
 package ru.nikshlykov.englishwordsapp.ui.modes;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -69,16 +70,21 @@ public class ModeRecyclerViewAdapter extends RecyclerView.Adapter<ModeRecyclerVi
         Drawable drawable = ContextCompat.getDrawable(context, imageResourceId);
         holder.imageView.setImageDrawable(drawable);
         holder.textView.setText(currentMode.name);
-        holder.checkBox.setChecked(currentMode.isSelected == 1);
-        holder.checkBox.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (holder.checkBox.isChecked())
-                    currentMode.isSelected = 1;
-                else
-                    currentMode.isSelected = 0;
-            }
-        });
+        if (currentMode.id == 4 || currentMode.id == 6) {
+            holder.checkBox.setEnabled(false);
+            holder.itemView.setBackgroundColor(Color.DKGRAY);
+        } else {
+            holder.checkBox.setChecked(currentMode.isSelected == 1);
+            holder.checkBox.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (holder.checkBox.isChecked())
+                        currentMode.isSelected = 1;
+                    else
+                        currentMode.isSelected = 0;
+                }
+            });
+        }
     }
 
     public void setModes(List<Mode> modes) {

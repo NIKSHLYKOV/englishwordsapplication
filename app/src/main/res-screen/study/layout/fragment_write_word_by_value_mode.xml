@@ -10,14 +10,14 @@
         android:id="@+id/fragment_write_word_by_value_mode___text_view___value"
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:gravity="center"
         android:layout_marginStart="50dp"
         android:layout_marginTop="100dp"
         android:layout_marginEnd="50dp"
-        android:text="@string/value"
+        android:gravity="center"
         android:maxLines="3"
+        android:text="@string/value"
         android:textColor="@color/colorPrimary"
-        android:textSize="24sp" />
+        android:textSize="30sp" />
 
 
     <LinearLayout

@@ -34,7 +34,7 @@ public class Word {
     public String value; // Значения слова на русском языке.
 
     @NonNull
-    @ColumnInfo(name = "LearnProgress", defaultValue = "0")
+    @ColumnInfo(name = "LearnProgress", defaultValue = "-1")
     public int learnProgress; // Прогресс изучения слова - количество правильных повторов, сделанных пользователем подряд.
 
     @NonNull
