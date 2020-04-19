@@ -2,22 +2,25 @@ package ru.nikshlykov.englishwordsapp.ui.study;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import ru.nikshlykov.englishwordsapp.R;
-import ru.nikshlykov.englishwordsapp.db.repeat.Repeat;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
 import ru.nikshlykov.englishwordsapp.ui.word.WordViewModel;
 
@@ -26,7 +29,10 @@ public class WriteWordByValueModeFragment extends Fragment {
     // Views.
     private TextView valueTextView;
     private EditText userVariantEditText;
-    private ImageButton confirmButton;
+    private ImageButton confirmImageButton;
+    private ImageView resultImageView;
+
+    private Handler handler;
 
     // ViewModel для работы с БД.
     private long wordId;
@@ -50,6 +56,14 @@ public class WriteWordByValueModeFragment extends Fragment {
 
         wordViewModel = new ViewModelProvider(getActivity()).get(WordViewModel.class);
         wordViewModel.setLiveDataWord(wordId);
+
+        handler = new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                repeatResultListener.result(wordId, msg.what);
+            }
+        };
     }
 
     @Nullable
@@ -69,15 +83,28 @@ public class WriteWordByValueModeFragment extends Fragment {
                 if (word != null){
                     valueTextView.setText(word.value);
 
-                    confirmButton.setOnClickListener(new View.OnClickListener() {
+                    confirmImageButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            valueTextView.setVisibility(View.GONE);
+                            confirmImageButton.setVisibility(View.GONE);
+                            userVariantEditText.setVisibility(View.GONE);
+
+                            ConstraintLayout mainLayout = (ConstraintLayout) v.getParent();
+
                             int result = 0;
                             String userVariantOfWord = userVariantEditText.getText().toString();
                             if (userVariantOfWord.equals(word.word)) {
                                 result = 1;
+                                resultImageView.setImageResource(R.drawable.ic_done_white_48dp);
+                                mainLayout.setBackgroundResource(R.color.progress_4);
+                            } else {
+                                resultImageView.setImageResource(R.drawable.ic_clear_white_48dp);
+                                mainLayout.setBackgroundResource(R.color.progress_1);
                             }
-                            repeatResultListener.result(wordId, result);
+                            resultImageView.setVisibility(View.VISIBLE);
+
+                            handler.sendEmptyMessageDelayed(result, 1000);
                         }
                     });
                 }
@@ -88,6 +115,7 @@ public class WriteWordByValueModeFragment extends Fragment {
     private void findViews(@NonNull View v) {
         valueTextView = v.findViewById(R.id.fragment_write_word_by_value_mode___text_view___value);
         userVariantEditText = v.findViewById(R.id.fragment_write_word_by_value_mode___edit_text___user_variant);
-        confirmButton = v.findViewById(R.id.fragment_write_word_by_value_mode___button___confirm);
+        confirmImageButton = v.findViewById(R.id.fragment_write_word_by_value_mode___button___confirm);
+        resultImageView = v.findViewById(R.id.fragment_write_word_by_voice_mode___image_view___result);
     }
 }

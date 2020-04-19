@@ -37,7 +37,7 @@ public class FirstShowModeFragment extends Fragment {
 
     private FirstShowModeReportListener firstShowModeReportListener;
     public interface FirstShowModeReportListener {
-        void firstShowModeResultMessage(long wordId, int result);
+        void firstShowModeResult(long wordId, int result);
     }
 
     @Override
@@ -69,7 +69,7 @@ public class FirstShowModeFragment extends Fragment {
         learnButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                firstShowModeReportListener.firstShowModeResultMessage(wordId, 1);
+                firstShowModeReportListener.firstShowModeResult(wordId, 1);
             }
         });
 
@@ -78,7 +78,7 @@ public class FirstShowModeFragment extends Fragment {
         knowButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                firstShowModeReportListener.firstShowModeResultMessage(wordId, 2);
+                firstShowModeReportListener.firstShowModeResult(wordId, 2);
             }
         });
 
@@ -87,7 +87,7 @@ public class FirstShowModeFragment extends Fragment {
         skipButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                firstShowModeReportListener.firstShowModeResultMessage(wordId, 0);
+                firstShowModeReportListener.firstShowModeResult(wordId, 0);
             }
         });
 

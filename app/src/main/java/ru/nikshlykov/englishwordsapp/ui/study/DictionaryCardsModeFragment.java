@@ -67,7 +67,7 @@ public class DictionaryCardsModeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d("CardModeFragment", "onCreateView");
         View view = null;
-        switch (flag){
+        switch (flag) {
             case FLAG_ENG_TO_RUS:
                 view = inflater.inflate(R.layout.fragment_dictionary_cards_eng_to_rus, null);
                 findViewsEngToRus(view);
@@ -95,7 +95,7 @@ public class DictionaryCardsModeFragment extends Fragment {
         showImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                switch (flag){
+                switch (flag) {
                     case FLAG_ENG_TO_RUS:
                         valueTextView.setVisibility(View.VISIBLE);
                         break;
@@ -117,12 +117,14 @@ public class DictionaryCardsModeFragment extends Fragment {
         wordViewModel.getLiveDataWord().observe(getViewLifecycleOwner(), new Observer<Word>() {
             @Override
             public void onChanged(Word word) {
-                setWordParametersToViews(word);
+                if (word != null) {
+                    setWordParametersToViews(word);
+                }
             }
         });
     }
 
-    private void findViewsEngToRus(View v){
+    private void findViewsEngToRus(View v) {
         wordTextView = v.findViewById(R.id.fragment_dictionary_cards_eng_to_rus___text_view___word);
         valueTextView = v.findViewById(R.id.fragment_dictionary_cards_eng_to_rus___text_view___value);
         transcriptionTextView = v.findViewById(R.id.fragment_dictionary_cards_eng_to_rus___text_view___transcription);
@@ -131,7 +133,7 @@ public class DictionaryCardsModeFragment extends Fragment {
         showImageButton = v.findViewById(R.id.fragment_dictionary_cards_eng_to_rus___image_button___show);
     }
 
-    private void findViewsRusToEng(View v){
+    private void findViewsRusToEng(View v) {
         wordTextView = v.findViewById(R.id.fragment_dictionary_cards_rus_to_eng___layout___main___text_view___word);
         valueTextView = v.findViewById(R.id.fragment_dictionary_cards_rus_to_eng___layout___main___text_view___value);
         transcriptionTextView = v.findViewById(R.id.fragment_dictionary_cards_rus_to_eng___layout___main___text_view___transcription);
@@ -146,8 +148,8 @@ public class DictionaryCardsModeFragment extends Fragment {
         wordTextView.setText(word.word);
     }
 
-    public void setFlag(int flag){
-        if((flag == FLAG_ENG_TO_RUS) || (flag == FLAG_RUS_TO_ENG))
+    public void setFlag(int flag) {
+        if ((flag == FLAG_ENG_TO_RUS) || (flag == FLAG_RUS_TO_ENG))
             this.flag = flag;
     }
 }

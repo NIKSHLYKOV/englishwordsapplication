@@ -20,7 +20,6 @@ import java.util.List;
 public class SubgroupViewModel extends AndroidViewModel {
     private AppRepository repository;
 
-    private Subgroup subgroup;
     private LiveData<Subgroup> liveDataSubgroup;
     private LiveData<List<Word>> words;
 
@@ -29,14 +28,6 @@ public class SubgroupViewModel extends AndroidViewModel {
         repository = new AppRepository(application);
     }
 
-
-    public void setSubgroup(long subgroupId) {
-        subgroup = repository.getSubgroupById(subgroupId);
-    }
-
-    public Subgroup getSubgroup() {
-        return subgroup;
-    }
 
     public void setLiveDataSubgroup(long id) {
         liveDataSubgroup = repository.getLiveDataSubgroupById(id);
@@ -80,6 +71,17 @@ public class SubgroupViewModel extends AndroidViewModel {
                 });
                 break;
         }
+        /*if (liveDataSubgroup.getValue() != null) {
+            final long subgroupId = liveDataSubgroup.getValue().id;
+            switch (param) {
+                case SortWordsDialogFragment.BY_ALPHABET:
+                    words = repository.getWordsFromSubgroupByAlphabet(subgroupId);
+                    break;
+                case SortWordsDialogFragment.BY_PROGRESS:
+                    words = repository.getWordsFromSubgroupByProgress(subgroupId);
+                    break;
+            }
+        }*/
     }
 
 
@@ -87,22 +89,41 @@ public class SubgroupViewModel extends AndroidViewModel {
         repository.update(liveDataSubgroup.getValue());
     }
 
-    public Word getWordById(long id) {
-        return repository.getWordById(id);
+
+
+    public void updateWord(final long wordId, final String word,final String value, final String transcription){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Word editWord = repository.getWordById(wordId);
+                editWord.word = word;
+                editWord.transcription = transcription;
+                editWord.value = value;
+                repository.update(editWord);
+            }
+        }).start();
     }
 
-    public void update(Word word) {
-        repository.update(word);
-    }
 
-    public long insert(Word word) {
+    private long insert(Word word) {
         word.id = repository.getMinWordId() - 1;
         return repository.insert(word);
     }
-
-    public void insert(Link link) {
-        repository.insert(link);
+    public void insertWordToSubgroup(final Word word) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                long newWordId = insert(word);
+                if (liveDataSubgroup.getValue() != null) {
+                    final long subgroupId = liveDataSubgroup.getValue().id;
+                    Link linkWithThisSubgroup = new Link(subgroupId, newWordId);
+                    repository.insert(linkWithThisSubgroup);
+                }
+            }
+        }).start();
     }
+
+
 
     public void deleteLinkWithSubgroup(long wordId) {
         if (liveDataSubgroup.getValue() != null) {

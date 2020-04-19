@@ -38,6 +38,10 @@ public class Subgroup {
     @ColumnInfo(name = "IsStudied")
     public int isStudied; // Флаг изучения слов данной подгруппа (1 - изучается; 0 - не изучается).
 
+    public boolean isCreatedByUser(){
+        return groupId == SubgroupDao.GROUP_FOR_NEW_SUBGROUPS_ID;
+    }
+
     public static class SubgroupsTable {
         // Названия таблицы подгрупп и её колонок
         public static final String TABLE_SUBGROUPS = "Subgroups";

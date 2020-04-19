@@ -76,15 +76,15 @@ public class AppRepository {
         InsertWordAsyncTask insertWordAsyncTask = new InsertWordAsyncTask(wordDao);
         insertWordAsyncTask.execute(word);
 
-        long newWordID = 0L;
+        long newWordId;
 
         try {
-            newWordID = insertWordAsyncTask.get(5, TimeUnit.SECONDS);
+            newWordId = insertWordAsyncTask.get(5, TimeUnit.SECONDS);
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             e.printStackTrace();
             return 0L;
         }
-        return newWordID;
+        return newWordId;
     }
 
     public void update(Word word) {
@@ -114,20 +114,8 @@ public class AppRepository {
         return wordDao.getWordsFromSubgroupByProgress(subgroupId);
     }
 
-    /*public LiveData<List<Word>> getWordsFromSubgroupByAlphabet(long subgroupId) {
+    public LiveData<List<Word>> getWordsFromSubgroupByAlphabet(long subgroupId) {
         return wordDao.getWordsFromSubgroupByAlphabet(subgroupId);
-    }*/
-
-    public Word[] getAllWordsFromStudiedSubgroups() {
-        GetAllWordsFromStudiedSubgroupsByIdAsyncTask task
-                = new GetAllWordsFromStudiedSubgroupsByIdAsyncTask(wordDao);
-        task.execute();
-        try {
-            return task.get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
     public ArrayList<Word> getAvailableToRepeatWords() {
@@ -141,7 +129,6 @@ public class AppRepository {
         }
         return null;
     }
-
 
     /**
      * AsyncTasks для работы со словами.
@@ -219,19 +206,6 @@ public class AppRepository {
         }
     }
 
-    private static class GetAllWordsFromStudiedSubgroupsByIdAsyncTask extends AsyncTask<Void, Void, Word[]> {
-        private WordDao wordDao;
-
-        private GetAllWordsFromStudiedSubgroupsByIdAsyncTask(WordDao wordDao) {
-            this.wordDao = wordDao;
-        }
-
-        @Override
-        protected Word[] doInBackground(Void... voids) {
-            return wordDao.getAllWordsFromStudiedSubgroups();
-        }
-    }
-
     private static class GetAvailableToRepeatWordsAsyncTask extends AsyncTask<Void, Void, ArrayList<Word>> {
         private WordDao wordDao;
 
@@ -252,6 +226,7 @@ public class AppRepository {
         }
     }
 
+
     /**
      * Методы для работы с подгруппами.
      */
@@ -267,16 +242,8 @@ public class AppRepository {
         return lastSubgroupId;
     }
 
-    public long insert(Subgroup subgroup) {
-        InsertSubgroupAsyncTask insertSubgroupAsyncTask = new InsertSubgroupAsyncTask(subgroupDao);
-        insertSubgroupAsyncTask.execute(subgroup);
-        long newSubgroupId = 0L;
-        try {
-            newSubgroupId = insertSubgroupAsyncTask.get(5, TimeUnit.SECONDS);
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            e.printStackTrace();
-        }
-        return newSubgroupId;
+    public void insert(Subgroup subgroup) {
+        new InsertSubgroupAsyncTask(subgroupDao).execute(subgroup);
     }
 
     public void update(Subgroup subgroup) {
@@ -486,16 +453,8 @@ public class AppRepository {
     /**
      * Методы для работы со связями.
      */
-    public long insert(Link link) {
-        InsertLinkAsyncTask insertLinkAsyncTask = new InsertLinkAsyncTask(linkDao);
-        insertLinkAsyncTask.execute(link);
-        long newLinkId = 0L;
-        try {
-            newLinkId = insertLinkAsyncTask.get(5, TimeUnit.SECONDS);
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            e.printStackTrace();
-        }
-        return newLinkId;
+    public void insert(Link link) {
+        new InsertLinkAsyncTask(linkDao).execute(link);
     }
 
     public void delete(Link link) {
@@ -646,15 +605,8 @@ public class AppRepository {
         new UpdateSettingsAsyncTask(settingDao).execute(settings);
     }
 
-    public Setting[] getAllSettings() {
-        GetAllSettingsAsyncTask task = new GetAllSettingsAsyncTask(settingDao);
-        task.execute();
-        try {
-            return task.get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
-        return null;
+    public LiveData<List<Setting>> getAllSettings() {
+        return settingDao.getAllSettings();
     }
 
     /**
@@ -674,50 +626,16 @@ public class AppRepository {
         }
     }
 
-    private static class GetAllSettingsAsyncTask extends AsyncTask<Void, Void, Setting[]> {
-        private SettingDao settingDao;
-
-        private GetAllSettingsAsyncTask(SettingDao settingDao) {
-            this.settingDao = settingDao;
-        }
-
-        @Override
-        protected Setting[] doInBackground(Void... voids) {
-            return settingDao.getAllSettings();
-        }
-    }
 
     /**
      * Методы для работы с повторами.
      */
-    public long insert(Repeat repeat) {
-        InsertRepeatAsyncTask insertWordAsyncTask = new InsertRepeatAsyncTask(repeatDao);
-        insertWordAsyncTask.execute(repeat);
-
-        long newRepeatId = 0L;
-
-        try {
-            newRepeatId = insertWordAsyncTask.get(5, TimeUnit.SECONDS);
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            e.printStackTrace();
-            return 0L;
-        }
-        return newRepeatId;
+    public void insert(Repeat repeat) {
+        new InsertRepeatAsyncTask(repeatDao).execute(repeat);
     }
 
-    public int delete(Repeat repeat) {
-        DeleteRepeatAsyncTask insertWordAsyncTask = new DeleteRepeatAsyncTask(repeatDao);
-        insertWordAsyncTask.execute(repeat);
-
-        int deletedRepeatsCount = 0;
-
-        try {
-            deletedRepeatsCount = insertWordAsyncTask.get(5, TimeUnit.SECONDS);
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            e.printStackTrace();
-            return deletedRepeatsCount;
-        }
-        return deletedRepeatsCount;
+    public void delete(Repeat repeat) {
+        new DeleteRepeatAsyncTask(repeatDao).execute(repeat);
     }
 
     public Repeat getLastRepeatByWord(long wordId) {
@@ -801,4 +719,3 @@ public class AppRepository {
         }
     }
 }
-

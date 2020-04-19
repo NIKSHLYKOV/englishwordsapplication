@@ -73,13 +73,8 @@ public class SubgroupActivity extends AppCompatActivity implements SortWordsDial
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_subgroup);
 
-        // Получаем Extras из Intent'а и из него id подгруппы.
-        Bundle arguments = getIntent().getExtras();
-        if (arguments == null)
-            finish();
-        subgroupId = arguments.getLong(EXTRA_SUBGROUP_ID);
-
-        //subgroupViewModel.setSubgroup(subgroupId);
+        // Получаем id подгруппы из Intent.
+        getSubgroupId();
 
         // Находим View элементы из разметки.
         findViews();
@@ -90,102 +85,37 @@ public class SubgroupActivity extends AppCompatActivity implements SortWordsDial
         // Устанавливаем наш toolbar.
         setSupportActionBar(toolbar);
 
-        // Находим иконки, изображаемые при свайпе.
-        deleteIcon = ContextCompat.getDrawable(this, R.drawable.ic_delete_white_24dp);
-        linkIcon = ContextCompat.getDrawable(this, R.drawable.ic_link_white_24dp);
-
-
         subgroupViewModel.setLiveDataSubgroup(subgroupId);
         subgroupViewModel.getLiveDataSubgroup().observe(this, new Observer<Subgroup>() {
             @Override
             public void onChanged(Subgroup subgroup) {
                 if (subgroup != null) {
-                    Log.i(LOG_TAG, "LiveDataSubgroup onChanged()" +
-                            "\nid = " + subgroup.id +
-                            "\nname = " + subgroup.name +
-                            "\ngroupId = " + subgroup.groupId +
-                            "\nisStudied = " + subgroup.isStudied);
-
+                    Log.i(LOG_TAG, "subgroup onChanged()");
 
                     getSupportActionBar().setTitle(subgroup.name);
 
+                    initCreateWordFAB(subgroup);
 
-                    // Проверяем, что подгруппа создана пользователем.
-                    if (subgroup.groupId == SubgroupDao.GROUP_FOR_NEW_SUBGROUPS_ID) {
-                        // Присваиваем обработчик кнопке для создания нового слова.
-                        createWordFloatingActionButton.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Intent createNewWordIntent = new Intent(getApplicationContext(), WordActivity.class);
-                                createNewWordIntent.putExtra(EXTRA_SUBGROUP_ID, subgroupId);
-                                startActivityForResult(createNewWordIntent, REQUEST_CODE_CREATE_NEW_WORD);
-                            }
-                        });
-                    } else {
-                        // Скрываем fab для создания нового слова.
-                        createWordFloatingActionButton.setClickable(false);
-                        createWordFloatingActionButton.setVisibility(View.GONE);
-                    }
+                    initLearnSubgroupCheckBox(subgroup);
 
-
-                    // Присваиваем чекбоксу изучения значение, находящееся в БД.
-                    learnSubgroupCheckBox.setChecked(subgroup.isStudied == 1);
-                    // Присваиваем обработчик нажатия на чекбокс изучения подгруппы.
-                    learnSubgroupCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                        @Override
-                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                            // Меняем данные по id подгруппы в БД.
-                            subgroupViewModel.setIsStudied(isChecked);
-
-                            // Обновляем поле изучения подгруппы в БД.
-                            subgroupViewModel.update();
-                        }
-                    });
-
-
-                    // Добавляем swipe для слов.
-                    MySimpleCallback callback;
-                    if (subgroup.groupId == SubgroupDao.GROUP_FOR_NEW_SUBGROUPS_ID) {
-                        callback = new MySimpleCallback(0, ItemTouchHelper.LEFT
-                                | ItemTouchHelper.RIGHT);
-                    } else {
-                        callback = new MySimpleCallback(0, ItemTouchHelper.RIGHT);
-                    }
-                    new ItemTouchHelper(callback).attachToRecyclerView(recyclerView);
+                    // Создаём вещи для свайпа слов.
+                    initSwipeIcons(subgroup);
+                    new ItemTouchHelper(createMySimpleCallbackBySubgroup(subgroup))
+                            .attachToRecyclerView(recyclerView);
                 }
             }
         });
 
-
-        // Создаём вспомогательные вещи для RecyclerView и соединяем их с ним.
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(SubgroupActivity.this);
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(SubgroupActivity.this, DividerItemDecoration.VERTICAL);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.addItemDecoration(dividerItemDecoration);
-
-        // Создаём adapter для RecyclerView.
-        adapter = new WordsRecyclerViewAdapter(SubgroupActivity.this);
-
-        // Присваиваем обработчик нажатия на элемент в RecyclerView (слово).
-        adapter.setOnEntryClickListener(new WordsRecyclerViewAdapter.OnEntryClickListener() {
-            @Override
-            public void onEntryClick(View view, int position) {
-                final Word currentWord = WordsRecyclerViewAdapter.getWords().get(position);
-                Intent editExistingWordIntent = new Intent(SubgroupActivity.this, WordActivity.class);
-                editExistingWordIntent.putExtra(WordActivity.EXTRA_WORD_ID, currentWord.id);
-                startActivityForResult(editExistingWordIntent, REQUEST_CODE_EDIT_EXISTING_WORD);
-            }
-        });
-
-        // Соединяем RecyclerView с адаптером для него.
+        // Создаём Recycler и адаптер для него.
+        initRecyclerView();
+        initRecyclerViewAdapter();
         recyclerView.setAdapter(adapter);
 
         // Закидываем данные в адаптер, подписывая его на изменения в LiveData.
         subgroupViewModel.getWords().observe(this, new Observer<List<Word>>() {
             @Override
             public void onChanged(List<Word> words) {
-                Log.i(LOG_TAG, "onChanged()");
-
+                Log.i(LOG_TAG, "words onChanged()");
                 if (words != null) {
                     // Если слов нет, то скрываем CheckBox изучения подгруппы.
                     if (words.isEmpty()) {
@@ -202,13 +132,11 @@ public class SubgroupActivity extends AppCompatActivity implements SortWordsDial
         });
     }
 
-    private void findViews() {
-        createWordFloatingActionButton = findViewById(R.id.activity_subgroup___floating_action_button___new_word);
-        learnSubgroupCheckBox = findViewById(R.id.activity_subgroup___check_box___study_subgroup);
-        toolbar = findViewById(R.id.activity_subgroup___toolbar);
-        recyclerView = findViewById(R.id.activity_subgroup___recycler_view___words);
+    @Override
+    protected void onStop() {
+        super.onStop();
+        subgroupViewModel.update();
     }
-
 
     /**
      * Метод обрабатывает результат работы WordActivity, которое может создавать новое слово
@@ -231,30 +159,18 @@ public class SubgroupActivity extends AppCompatActivity implements SortWordsDial
             String value = data.getStringExtra(WordActivity.EXTRA_VALUE);
 
             if (requestCode == REQUEST_CODE_CREATE_NEW_WORD) {
-                Word newWord = new Word(word, transcription, value);
-                long newWordId = subgroupViewModel.insert(newWord);
-
-                Link linkWithThisSubgroup = new Link(subgroupId, newWordId);
-                subgroupViewModel.insert(linkWithThisSubgroup);
-
-                Toast.makeText(this, "id нового слова: " +
-                                newWordId,
-                        Toast.LENGTH_LONG).show();
+                final Word newWord = new Word(word, transcription, value);
+                subgroupViewModel.insertWordToSubgroup(newWord);
             }
 
             if (requestCode == REQUEST_CODE_EDIT_EXISTING_WORD) {
                 long wordId = data.getLongExtra(WordActivity.EXTRA_WORD_ID, 0);
                 if (wordId != 0) {
-                    Word editWord = subgroupViewModel.getWordById(wordId);
-                    editWord.word = word;
-                    editWord.transcription = transcription;
-                    editWord.value = value;
-                    subgroupViewModel.update(editWord);
+                    subgroupViewModel.updateWord(wordId, word, value, transcription);
                 }
             }
         }
     }
-
 
     /**
      * Методы по работе с Toolbar.
@@ -265,7 +181,6 @@ public class SubgroupActivity extends AppCompatActivity implements SortWordsDial
         getMenuInflater().inflate(R.menu.activity_subgroup_toolbar_menu, menu);
         return true;
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         FragmentManager manager = getSupportFragmentManager();
@@ -294,15 +209,99 @@ public class SubgroupActivity extends AppCompatActivity implements SortWordsDial
                 return super.onOptionsItemSelected(item);
         }
     }
-
-
     @Override
     public void sort(int param) {
         subgroupViewModel.sortWords(param);
         recyclerView.getAdapter().notifyDataSetChanged();
     }
 
+    private void getSubgroupId() {
+        // Получаем Extras из Intent'а и из него id подгруппы.
+        Bundle arguments = getIntent().getExtras();
+        if (arguments == null)
+            finish();
+        subgroupId = arguments.getLong(EXTRA_SUBGROUP_ID);
+    }
 
+    private void findViews() {
+        createWordFloatingActionButton = findViewById(R.id.activity_subgroup___floating_action_button___new_word);
+        learnSubgroupCheckBox = findViewById(R.id.activity_subgroup___check_box___study_subgroup);
+        toolbar = findViewById(R.id.activity_subgroup___toolbar);
+        recyclerView = findViewById(R.id.activity_subgroup___recycler_view___words);
+    }
+
+    private void initLearnSubgroupCheckBox(Subgroup subgroup) {
+        // Присваиваем чекбоксу изучения значение, находящееся в БД.
+        learnSubgroupCheckBox.setChecked(subgroup.isStudied == 1);
+        // Присваиваем обработчик нажатия на чекбокс изучения подгруппы.
+        learnSubgroupCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // Меняем данные по id подгруппы в БД.
+                subgroupViewModel.setIsStudied(isChecked);
+            }
+        });
+    }
+
+    private void initCreateWordFAB(Subgroup subgroup) {
+        // Проверяем, что подгруппа создана пользователем.
+        if (subgroup.isCreatedByUser()) {
+            // Присваиваем обработчик кнопке для создания нового слова.
+            createWordFloatingActionButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent createNewWordIntent = new Intent(getApplicationContext(),
+                            WordActivity.class);
+                    createNewWordIntent.putExtra(EXTRA_SUBGROUP_ID, subgroupId);
+                    startActivityForResult(createNewWordIntent, REQUEST_CODE_CREATE_NEW_WORD);
+                }
+            });
+        } else {
+            // Скрываем fab для создания нового слова.
+            createWordFloatingActionButton.setClickable(false);
+            createWordFloatingActionButton.setVisibility(View.GONE);
+        }
+    }
+
+    public void initRecyclerView(){
+        // Создаём вспомогательные вещи для RecyclerView и соединяем их с ним.
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(SubgroupActivity.this);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(SubgroupActivity.this, DividerItemDecoration.VERTICAL);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.addItemDecoration(dividerItemDecoration);
+    }
+    public void initRecyclerViewAdapter(){
+        // Создаём adapter для RecyclerView.
+        adapter = new WordsRecyclerViewAdapter(SubgroupActivity.this);
+
+        // Присваиваем обработчик нажатия на элемент в RecyclerView (слово).
+        adapter.setOnEntryClickListener(new WordsRecyclerViewAdapter.OnEntryClickListener() {
+            @Override
+            public void onEntryClick(View view, int position) {
+                final Word currentWord = adapter.getWords().get(position);
+                Intent editExistingWordIntent = new Intent(SubgroupActivity.this,
+                        WordActivity.class);
+                editExistingWordIntent.putExtra(WordActivity.EXTRA_WORD_ID, currentWord.id);
+                startActivityForResult(editExistingWordIntent, REQUEST_CODE_EDIT_EXISTING_WORD);
+            }
+        });
+    }
+
+    private void initSwipeIcons(Subgroup subgroup) {
+        // Находим иконки, изображаемые при свайпе.
+        linkIcon = ContextCompat.getDrawable(this, R.drawable.ic_link_white_24dp);
+        if (subgroup.isCreatedByUser()) {
+            deleteIcon = ContextCompat.getDrawable(this, R.drawable.ic_delete_white_24dp);
+        }
+    }
+    public MySimpleCallback createMySimpleCallbackBySubgroup(Subgroup subgroup){
+        if (subgroup.isCreatedByUser()) {
+            return new MySimpleCallback(0, ItemTouchHelper.LEFT
+                    | ItemTouchHelper.RIGHT);
+        } else {
+            return new MySimpleCallback(0, ItemTouchHelper.RIGHT);
+        }
+    }
     private class MySimpleCallback extends ItemTouchHelper.SimpleCallback {
 
         public MySimpleCallback(int dragDirs, int swipeDirs) {

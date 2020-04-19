@@ -119,6 +119,7 @@ public class MainActivity extends AppCompatActivity
 
         if (studyViewModel.studiedSubgroupsExist()) {
             if (studyViewModel.selectedModesExist()) {
+                studyViewModel.loadSelectedModes();
                 showNextMode();
             } else {
                 displayInfoFragment(InfoFragment.FLAG_MODES_ARE_NOT_CHOSEN);
@@ -138,7 +139,7 @@ public class MainActivity extends AppCompatActivity
      */
     private void findViews() {
         contentLayout = findViewById(R.id.activity_main___linear_layout___content_layout);
-        navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        navigation = findViewById(R.id.navigation);
     }
 
     /**
@@ -204,8 +205,8 @@ public class MainActivity extends AppCompatActivity
 
 
     @Override
-    public void firstShowModeResultMessage(long wordId, int result) {
-        Log.i(LOG_TAG, "firstShowModeResultMessage()");
+    public void firstShowModeResult(long wordId, int result) {
+        Log.i(LOG_TAG, "firstShowModeResult()");
         Log.i(LOG_TAG, "result = " + result);
         studyViewModel.firstShowProcessing(wordId, result);
         showNextMode();

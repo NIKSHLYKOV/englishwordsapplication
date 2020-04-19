@@ -1,8 +1,11 @@
 package ru.nikshlykov.englishwordsapp.db.setting;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Query;
 import androidx.room.Update;
+
+import java.util.List;
 
 @Dao
 public interface SettingDao {
@@ -15,5 +18,5 @@ public interface SettingDao {
 
     // Получаем все настройки.
     @Query("SELECT * FROM Settings")
-    Setting[] getAllSettings();
+    LiveData<List<Setting>> getAllSettings();
 }

@@ -2,6 +2,7 @@ package ru.nikshlykov.englishwordsapp.db.word;
 
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -32,8 +33,8 @@ public interface WordDao {
     @Query("SELECT Words.* FROM Words, Links WHERE Words._id = Links.WordId and Links.SubgroupId = :subgroupId ORDER BY Words.LearnProgress DESC")
     LiveData<List<Word>> getWordsFromSubgroupByProgress(long subgroupId);
 
-    /*@Query("SELECT Words.* FROM Words, Links WHERE Words._id = Links.WordId and Links.SubgroupId = :subgroupId ORDER BY Words.Word")
-    LiveData<List<Word>> getWordsFromSubgroupByAlphabet(long subgroupId);*/
+    @Query("SELECT Words.* FROM Words, Links WHERE Words._id = Links.WordId and Links.SubgroupId = :subgroupId ORDER BY Words.Word")
+    LiveData<List<Word>> getWordsFromSubgroupByAlphabet(long subgroupId);
 
     @Query("SELECT * FROM Words ORDER BY _id LIMIT 1")
     Word getWordWithMinId();

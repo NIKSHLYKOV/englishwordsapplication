@@ -30,7 +30,7 @@ public class WordsRecyclerViewAdapter
     private Context context;
 
     // Слова подгруппы.
-    private static List<Word> words = new ArrayList<Word>();
+    private List<Word> words = new ArrayList<Word>();
 
     // TextToSpeech, который будет воспроизводить слова.
     private TextToSpeech textToSpeech;
@@ -170,7 +170,7 @@ public class WordsRecyclerViewAdapter
         notifyDataSetChanged();
     }
 
-    public static List<Word> getWords() {
+    public List<Word> getWords() {
         return words;
     }
 

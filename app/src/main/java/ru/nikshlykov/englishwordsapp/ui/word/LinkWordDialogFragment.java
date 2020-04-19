@@ -31,12 +31,6 @@ public class LinkWordDialogFragment extends DialogFragment {
     private WordDialogsViewModel wordDialogsViewModel;
 
     @Override
-    public void onAttach(@NonNull Context context) {
-        Log.d(LOG_TAG, "onAttach");
-        super.onAttach(context);
-    }
-
-    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         Log.d(LOG_TAG, "onCreate");
         super.onCreate(savedInstanceState);

@@ -1,11 +1,14 @@
 package ru.nikshlykov.englishwordsapp.ui.study;
 
 import android.app.Application;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
+import java.util.logging.LogRecord;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -21,25 +24,22 @@ public class StudyViewModel extends AndroidViewModel {
 
     private AppRepository repository;
 
-    private Word[] wordsFromStudiedSubgroups;
-
     private ArrayList<Long> selectedModesIds;
 
     public StudyViewModel(@NonNull Application application) {
         super(application);
         repository = new AppRepository(application);
-        wordsFromStudiedSubgroups = repository.getAllWordsFromStudiedSubgroups();
     }
 
-    public void loadSelectedModes(){
+    public void loadSelectedModes() {
         Mode[] selectedModes = repository.getSelectedModes();
         selectedModesIds = new ArrayList<>(selectedModes.length);
-        for (Mode mode: selectedModes){
+        for (Mode mode : selectedModes) {
             selectedModesIds.add(mode.id);
         }
     }
 
-    public long randomSelectedModeId(){
+    public long randomSelectedModeId() {
         Random random = new Random();
         int index = random.nextInt(selectedModesIds.size());
         return selectedModesIds.get(index);
@@ -68,7 +68,7 @@ public class StudyViewModel extends AndroidViewModel {
     }
 
 
-    public void repeatProcessing(long wordId, int result) {
+    public void repeatProcessing(final long wordId, final int result) {
         // Находим порядковый номер данного повтора.
         int newRepeatSequenceNumber = 0;
         // Получаем последний повтор по данному слову.
@@ -91,7 +91,7 @@ public class StudyViewModel extends AndroidViewModel {
         }
     }
 
-    public void firstShowProcessing(long wordId, int result) {
+    public void firstShowProcessing(final long wordId, final int result) {
         switch (result) {
             case 0:
                 // Увеличиваем столбец приоритетности - слово с меньшей вероятностью будет появляться.
@@ -113,6 +113,7 @@ public class StudyViewModel extends AndroidViewModel {
                 break;
         }
     }
+
 
     private void insertRepeatAndUpdateWord(long wordId, int sequenceNumber, int result) {
         Log.i(LOG_TAG, "insertRepeatAndUpdateWord()");
@@ -140,13 +141,9 @@ public class StudyViewModel extends AndroidViewModel {
         }
         Log.i(LOG_TAG,
                 "word = " + word.word +
-                "; learnProgress = " + word.learnProgress +
+                        "; learnProgress = " + word.learnProgress +
                         "; lastRepetitionDate = " + word.lastRepetitionDate);
         // Обновляем слово.
         repository.update(word);
-    }
-
-    public Word getWordById(long id) {
-        return repository.getWordById(id);
     }
 }
