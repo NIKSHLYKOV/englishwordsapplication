@@ -1,14 +1,9 @@
 package ru.nikshlykov.englishwordsapp.ui.word;
 
 import android.app.Dialog;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,9 +13,6 @@ import androidx.fragment.app.DialogFragment;
 import ru.nikshlykov.englishwordsapp.R;
 
 public class ResetWordProgressDialogFragment extends DialogFragment {
-
-    // Контекст.
-    private Context context;
 
     // Тег для логирования.
     private static final String LOG_TAG = "ResetWordProgressDF";
@@ -32,17 +24,16 @@ public class ResetWordProgressDialogFragment extends DialogFragment {
     public static final String RESET_MESSAGE = "Reset";
 
     // Интерфейс для взаимодействия с Activity.
-    private ReportListener reportListener;
-    public interface ReportListener {
-        void reportMessage(String message);
+    private ResetProgressListener resetProgressListener;
+    public interface ResetProgressListener {
+        void resetMessage(String message);
     }
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        this.context = context;
         // Присваиваем слушатель.
-        reportListener = (ReportListener) context;
+        resetProgressListener = (ResetProgressListener) context;
     }
 
 
@@ -56,7 +47,7 @@ public class ResetWordProgressDialogFragment extends DialogFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // Отправляем Activity сообщение о том, что сбрасывание подтверждено.
-                        reportListener.reportMessage(RESET_MESSAGE);
+                        resetProgressListener.resetMessage(RESET_MESSAGE);
                     }
                 })
                 .setNegativeButton(R.string.no, null)

@@ -1,7 +1,6 @@
 package ru.nikshlykov.englishwordsapp.ui.word;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
@@ -65,7 +64,7 @@ public class DeleteWordDialogFragment extends DialogFragment {
             // Возврщаем диалог о том, что нет доступных подгрупп.
             return new AlertDialog.Builder(getActivity())
                     .setTitle(R.string.dialog___delete_word___title)
-                    .setMessage(R.string.dialog___delete_word___error_links_do_not_exist)
+                    .setMessage(R.string.dialog___delete_word___error_message)
                     .setPositiveButton(R.string.ok, null)
                     .create();
         }

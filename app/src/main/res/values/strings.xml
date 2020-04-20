@@ -26,6 +26,7 @@
     <string name="remember">Помню</string>
     <string name="do_not_remember">Не помню</string>
     <string name="word_deleted">Слово удалено</string>
+    <string name="error_word_saving">Необходимо указать слово и его значение!</string>
 
     <!-- Статистика -->
     <string name="statistics">Статистика</string>
@@ -51,7 +52,7 @@
     <string name="dialog___link_word___positive_button">Связать</string>
 
     <string name="dialog___delete_word___title">Удаление слова</string>
-    <string name="dialog___delete_word___error_links_do_not_exist">Вы можете удалять слова только из своих групп (созданными вами)! На данный момент группы, связанные с данным словом отсутствуют!</string>
+    <string name="dialog___delete_word___error_message">Вы можете удалять слова только из своих групп (созданными вами)! На данный момент группы, связанные с данным словом отсутствуют!</string>
     <string name="dialog___delete_word___positive_button">Удалить</string>
 
 
@@ -64,6 +65,7 @@
     <string name="to_cancel">Отменить</string>
     <string name="ok">ОК</string>
     <string name="title_activity_settings">Settings</string>
+    <string name="error_happened">Произошла ошибка!</string>
     <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </string>
 
     <!-- Preference Titles -->

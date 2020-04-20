@@ -25,7 +25,7 @@ import androidx.lifecycle.ViewModelProvider;
 import ru.nikshlykov.englishwordsapp.R;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
 
-public class WordActivity extends AppCompatActivity implements ResetWordProgressDialogFragment.ReportListener {
+public class WordActivity extends AppCompatActivity implements ResetWordProgressDialogFragment.ResetProgressListener {
 
     // Тег для логирования.
     private static final String LOG_TAG = "WordActivity";
@@ -57,7 +57,7 @@ public class WordActivity extends AppCompatActivity implements ResetWordProgress
     // ViewModel для работы с БД.
     private WordViewModel wordViewModel;
 
-    // Для синтезатора речи.
+    // Синтезатор речи.
     private TextToSpeech TTS;
     private static final String TTS_ERROR = "Ошибка воспроизведения!";
 
@@ -71,10 +71,42 @@ public class WordActivity extends AppCompatActivity implements ResetWordProgress
         // Создаём ViewModel для работы с БД.
         wordViewModel = new ViewModelProvider(this).get(WordViewModel.class);
 
+        initToolbar();
+
+        initTTS();
+
+        getWordIdAndPrepareInterface();
+
+        initSaveButtonClick();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        TTS.shutdown();
+    }
+
+    /**
+     * Находит View элементы в разметке.
+     */
+    private void findViews() {
+        wordEditText = findViewById(R.id.activity_word___edit_text___word);
+        valueEditText = findViewById(R.id.activity_word___edit_text___value);
+        transcriptionEditText = findViewById(R.id.activity_word___edit_text___transcription);
+        saveButton = findViewById(R.id.activity_word___button___save_word);
+        ttsButton = findViewById(R.id.activity_word___button___tts);
+        partOfSpeechTextView = findViewById(R.id.activity_word___text_view___part_of_speech);
+        toolbar = findViewById(R.id.activity_word___toolbar);
+        progressLinearLayout = findViewById(R.id.activity_word___linear_layout___progress_view_background);
+    }
+
+    private void initToolbar() {
         // Устанавливаем тулбар.
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("");
+    }
 
+    private void initTTS() {
         // Создаём TTS
         TTS = new TextToSpeech(WordActivity.this, new TextToSpeech.OnInitListener() {
             @Override
@@ -89,7 +121,13 @@ public class WordActivity extends AppCompatActivity implements ResetWordProgress
                 }
             }
         });
+    }
 
+    /**
+     * Получает id слова из Extras и, в зависимости от него, либо скрывает некоторые элементы,
+     * чтобы создать новое слово, либо устанавливает параметры уже существующего слова в наши View.
+     */
+    private void getWordIdAndPrepareInterface() {
         // Получаем Extras из Intent, проверяем их наличие и присваиваем переменным значения при наличии значений.
         Bundle arguments = getIntent().getExtras();
         if (arguments != null) {
@@ -104,6 +142,14 @@ public class WordActivity extends AppCompatActivity implements ResetWordProgress
                     public void onChanged(Word word) {
                         if (word != null) {
                             setWordToViews(word);
+
+                            // Присваиваем обработчик нажатия на кнопку воспроизведения слова.
+                            ttsButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    TTS.speak(wordEditText.getText().toString(), TextToSpeech.QUEUE_ADD, null, "somethingID");
+                                }
+                            });
                         }
                     }
                 });
@@ -114,21 +160,24 @@ public class WordActivity extends AppCompatActivity implements ResetWordProgress
                 hideViewsForNewWordCreating();
             }
         } else {
-            // Выводим сообщение об ошибке и закрываем Activity, т.к. в него обязательно должно что-то передаваться.
-            Toast.makeText(this, "Произошла ошибка", Toast.LENGTH_LONG).show();
-            Log.d(LOG_TAG, "arguments have not been transferred");
-            finish();
+            errorNullExtrasProcessing();
         }
+    }
 
-        // Присваиваем обработчик нажатия на кнопку воспроизведения слова.
-        ttsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TTS.speak(wordEditText.getText().toString(), TextToSpeech.QUEUE_ADD, null, "somethingID");
-            }
-        });
+    /**
+     * Выводит сообщение об ошибке и закрывает activity.
+     */
+    private void errorNullExtrasProcessing() {
+        // Выводим сообщение об ошибке и закрываем Activity, т.к. в него обязательно должно что-то передаваться.
+        Toast.makeText(this, R.string.error_happened, Toast.LENGTH_LONG).show();
+        Log.d(LOG_TAG, "arguments have not been transferred");
+        finish();
+    }
 
-
+    /**
+     * Присваивает обработчик нажатия на кнопку сохранения слова.
+     */
+    private void initSaveButtonClick() {
         // Присваиваем обработчик нажатия на кнопку сохранения слова.
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -153,30 +202,10 @@ public class WordActivity extends AppCompatActivity implements ResetWordProgress
                 }
                 // Выводим Toast о том, что они должны быть заполнены.
                 else {
-                    Toast.makeText(WordActivity.this, "Необходимо указать слово и его значения", Toast.LENGTH_LONG).show();
+                    Toast.makeText(WordActivity.this, R.string.error_word_saving, Toast.LENGTH_LONG).show();
                 }
             }
         });
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        TTS.shutdown();
-    }
-
-    /**
-     * Находит View элементы в разметке.
-     */
-    private void findViews() {
-        wordEditText = findViewById(R.id.activity_word___edit_text___word);
-        valueEditText = findViewById(R.id.activity_word___edit_text___value);
-        transcriptionEditText = findViewById(R.id.activity_word___edit_text___transcription);
-        saveButton = findViewById(R.id.activity_word___button___save_word);
-        ttsButton = findViewById(R.id.activity_word___button___tts);
-        partOfSpeechTextView = findViewById(R.id.activity_word___text_view___part_of_speech);
-        toolbar = findViewById(R.id.activity_word___toolbar);
-        progressLinearLayout = findViewById(R.id.activity_word___linear_layout___progress_view_background);
     }
 
     /**
@@ -282,13 +311,16 @@ public class WordActivity extends AppCompatActivity implements ResetWordProgress
                 arguments.putLong(LinkWordDialogFragment.EXTRA_WORD_ID, wordId);
                 linkWordDialogFragment.setArguments(arguments);
                 linkWordDialogFragment.show(manager, DIALOG_LINK_WORD);
+                /*LinkOrDeleteWordDialogFragment linkDialog = new LinkOrDeleteWordDialogFragment();
+                arguments.putLong(LinkOrDeleteWordDialogFragment.EXTRA_WORD_ID, wordId);
+                arguments.putInt(LinkOrDeleteWordDialogFragment.EXTRA_FLAG, LinkOrDeleteWordDialogFragment.TO_LINK);
+                linkDialog.setArguments(arguments);
+                linkDialog.show(manager, DIALOG_LINK_WORD);*/
                 return true;
             // Сбрасывание прогресса слова
             case R.id.activity_word___action___resetwordprogress:
                 Log.d(LOG_TAG, "Reset word progress");
                 ResetWordProgressDialogFragment resetWordProgressDialogFragment = new ResetWordProgressDialogFragment();
-                arguments.putLong(ResetWordProgressDialogFragment.EXTRA_WORD_ID, wordId);
-                resetWordProgressDialogFragment.setArguments(arguments);
                 resetWordProgressDialogFragment.show(manager, DIALOG_RESET_WORD_PROGRESS);
                 return true;
             // Удаление слова из подгруппы / из всех подгрупп.
@@ -298,6 +330,11 @@ public class WordActivity extends AppCompatActivity implements ResetWordProgress
                 arguments.putLong(DeleteWordDialogFragment.EXTRA_WORD_ID, wordId);
                 deleteWordDialogFragment.setArguments(arguments);
                 deleteWordDialogFragment.show(manager, DIALOG_DELETE_WORD);
+                /*LinkOrDeleteWordDialogFragment deleteDialog = new LinkOrDeleteWordDialogFragment();
+                arguments.putLong(LinkOrDeleteWordDialogFragment.EXTRA_WORD_ID, wordId);
+                arguments.putInt(LinkOrDeleteWordDialogFragment.EXTRA_FLAG, LinkOrDeleteWordDialogFragment.TO_DELETE);
+                deleteDialog.setArguments(arguments);
+                deleteDialog.show(manager, DIALOG_DELETE_WORD);*/
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -311,12 +348,13 @@ public class WordActivity extends AppCompatActivity implements ResetWordProgress
      * @param message представляет из себя сообщение.
      */
     @Override
-    public void reportMessage(String message) {
+    public void resetMessage(String message) {
         if (message.equals(ResetWordProgressDialogFragment.RESET_MESSAGE)) {
             wordViewModel.resetProgress();
         }
     }
 
+    // ПОСМОТРЕТЬ, КАК МОЖНО ОТ ЭТОГО ИЗБАВИТЬСЯ
     public int dpToPx(int dp) {
         float density = this.getResources().getDisplayMetrics().density;
         return Math.round((float) dp * density);

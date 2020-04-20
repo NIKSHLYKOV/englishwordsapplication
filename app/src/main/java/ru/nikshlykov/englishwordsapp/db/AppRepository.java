@@ -8,6 +8,7 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -217,8 +218,9 @@ public class AppRepository {
         protected ArrayList<Word> doInBackground(Void... voids) {
             Word[] wordsFromStudiedSubgroups = wordDao.getAllWordsFromStudiedSubgroups();
             ArrayList<Word> availableToRepeatWords = new ArrayList<>();
+            Date currentDate = new Date();
             for (Word word : wordsFromStudiedSubgroups) {
-                if(word.isAvailableToRepeat()){
+                if(word.isAvailableToRepeat(currentDate)){
                     availableToRepeatWords.add(word);
                 }
             }

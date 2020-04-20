@@ -52,7 +52,7 @@ public class Word {
     @ColumnInfo(name = "Priority", defaultValue = "0")
     public int priority; // Приоритет слова. Если слово пропускается, то значение увеличивается.
 
-    public static class WordsTable {
+    /*public static class WordsTable {
         // Названия таблицы слов и её колонок
         public static final String TABLE_NAME = "Words";
         public static final String COLUMN_ID = "_id";
@@ -64,10 +64,9 @@ public class Word {
         public static final String COLUMN_PARTOFSPEECH = "PartOfSpeech";
         public static final String COLUMN_LASTREPETITIONDATE = "LastRepetitionDate";
         public static final String COLUMN_EXAMPLES = "Examples";
-    }
+    }*/
 
-    public boolean isAvailableToRepeat() {
-        Date currentDate = new Date();
+    public boolean isAvailableToRepeat(Date currentDate) {
         switch (learnProgress) {
             case -1:
                 return true;

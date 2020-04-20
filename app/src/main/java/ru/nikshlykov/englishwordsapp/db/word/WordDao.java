@@ -30,16 +30,26 @@ public interface WordDao {
     @Query("SELECT * FROM Words WHERE _id = :wordId")
     LiveData<Word> getLiveDataWordById(long wordId);
 
-    @Query("SELECT Words.* FROM Words, Links WHERE Words._id = Links.WordId and Links.SubgroupId = :subgroupId ORDER BY Words.LearnProgress DESC")
+    @Query("SELECT Words.* FROM Words, Links " +
+            "WHERE Words._id = Links.WordId and Links.SubgroupId = :subgroupId " +
+            "ORDER BY Words.LearnProgress DESC")
     LiveData<List<Word>> getWordsFromSubgroupByProgress(long subgroupId);
 
-    @Query("SELECT Words.* FROM Words, Links WHERE Words._id = Links.WordId and Links.SubgroupId = :subgroupId ORDER BY Words.Word")
+    @Query("SELECT Words.* FROM Words, Links " +
+            "WHERE Words._id = Links.WordId and Links.SubgroupId = :subgroupId " +
+            "ORDER BY Words.Word")
     LiveData<List<Word>> getWordsFromSubgroupByAlphabet(long subgroupId);
 
     @Query("SELECT * FROM Words ORDER BY _id LIMIT 1")
     Word getWordWithMinId();
 
-    @Query("SELECT DISTINCT Words.* FROM Words, Links, Subgroups WHERE Words._id = Links.WordId AND Subgroups._id = Links.SubgroupId AND Subgroups.IsStudied = 1 ORDER BY Words.Priority")
+    @Query("SELECT DISTINCT Words.* FROM Words, Links, Subgroups " +
+            "WHERE Words._id = Links.WordId AND Subgroups._id = Links.SubgroupId " +
+            "AND Subgroups.IsStudied = 1 ORDER BY Words.LearnProgress DESC, Words.Priority")
     Word[] getAllWordsFromStudiedSubgroups();
-}
 
+    @Query("SELECT DISTINCT Words.* FROM Words, Links, Subgroups " +
+            "WHERE Words._id = Links.WordId AND Subgroups._id = Links.SubgroupId " +
+            "AND Subgroups.IsStudied = 1 ORDER BY Words.LearnProgress DESC, Words.Priority")
+    LiveData<List<Word>> getAllLiveDataWordsFromStudiedSubgroups();
+}

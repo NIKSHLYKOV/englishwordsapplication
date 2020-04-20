@@ -21,7 +21,11 @@ android {
             res.srcDirs = ['src/main/res',
                            'src/main/res-main',
                            'src/main/res-screen/modes',
-                           'src/main/res-screen/subgroup', 'src/main/res-screen/study', 'src/main/res-screen/groups', 'src/main/res-screen/word', 'src/main/res-screen/settings']
+                           'src/main/res-screen/subgroup',
+                           'src/main/res-screen/study',
+                           'src/main/res-screen/groups',
+                           'src/main/res-screen/word',
+                           'src/main/res-screen/settings']
         }
     }
 }
