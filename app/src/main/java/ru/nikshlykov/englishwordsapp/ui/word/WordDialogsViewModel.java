@@ -1,6 +1,7 @@
 package ru.nikshlykov.englishwordsapp.ui.word;
 
 import android.app.Application;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -67,6 +68,9 @@ public class WordDialogsViewModel extends AndroidViewModel {
                         availableSubgroups.add(repository.getSubgroupById(availableSubgroupId));
                     }
                 }
+                else{
+                    availableSubgroups = null;
+                }
             }
         }
     }
@@ -77,6 +81,7 @@ public class WordDialogsViewModel extends AndroidViewModel {
             String[] availableSubgroupsNames = new String[availableSubgroupsCount];
             for (int i = 0; i < availableSubgroupsCount; i++) {
                 availableSubgroupsNames[i] = availableSubgroups.get(i).name;
+                Log.i("WordDialogsViewModel", "Доступная группа " + i + ": " + availableSubgroupsNames[i]);
             }
             return availableSubgroupsNames;
         }
