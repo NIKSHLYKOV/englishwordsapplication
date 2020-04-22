@@ -84,14 +84,20 @@ public class SubgroupViewModel extends AndroidViewModel {
         }*/
     }
 
+    public void resetWordsProgress() {
+        Subgroup subgroup = liveDataSubgroup.getValue();
+        // Прописать обновление у всех слова данной подгруппы.
+        if (subgroup != null) {
+            repository.resetWordsProgress(subgroup.id);
+        }
+    }
 
     public void update() {
         repository.update(liveDataSubgroup.getValue());
     }
 
 
-
-    public void updateWord(final long wordId, final String word,final String value, final String transcription){
+    public void updateWord(final long wordId, final String word, final String value, final String transcription) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -109,6 +115,7 @@ public class SubgroupViewModel extends AndroidViewModel {
         word.id = repository.getMinWordId() - 1;
         return repository.insert(word);
     }
+
     public void insertWordToSubgroup(final Word word) {
         new Thread(new Runnable() {
             @Override
@@ -122,7 +129,6 @@ public class SubgroupViewModel extends AndroidViewModel {
             }
         }).start();
     }
-
 
 
     public void deleteLinkWithSubgroup(long wordId) {

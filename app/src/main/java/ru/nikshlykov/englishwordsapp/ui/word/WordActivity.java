@@ -25,7 +25,8 @@ import androidx.lifecycle.ViewModelProvider;
 import ru.nikshlykov.englishwordsapp.R;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
 
-public class WordActivity extends AppCompatActivity implements ResetWordProgressDialogFragment.ResetProgressListener {
+public class WordActivity extends AppCompatActivity
+        implements ResetProgressDialogFragment.ResetProgressListener {
 
     // Тег для логирования.
     private static final String LOG_TAG = "WordActivity";
@@ -128,7 +129,6 @@ public class WordActivity extends AppCompatActivity implements ResetWordProgress
      * чтобы создать новое слово, либо устанавливает параметры уже существующего слова в наши View.
      */
     private void getWordIdAndPrepareInterface() {
-        // Получаем Extras из Intent, проверяем их наличие и присваиваем переменным значения при наличии значений.
         Bundle arguments = getIntent().getExtras();
         if (arguments != null) {
             // Получаем id слова, которое было выбрано.
@@ -147,7 +147,8 @@ public class WordActivity extends AppCompatActivity implements ResetWordProgress
                             ttsButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    TTS.speak(wordEditText.getText().toString(), TextToSpeech.QUEUE_ADD, null, "somethingID");
+                                    TTS.speak(wordEditText.getText().toString(),
+                                            TextToSpeech.QUEUE_ADD, null, "1");
                                 }
                             });
                         }
@@ -168,8 +169,9 @@ public class WordActivity extends AppCompatActivity implements ResetWordProgress
      * Выводит сообщение об ошибке и закрывает activity.
      */
     private void errorNullExtrasProcessing() {
-        // Выводим сообщение об ошибке и закрываем Activity, т.к. в него обязательно должно что-то передаваться.
-        Toast.makeText(this, R.string.error_happened, Toast.LENGTH_LONG).show();
+        // Выводим сообщение об ошибке и закрываем Activity, т.к. в него
+        // обязательно должно что-то передаваться.
+        Toast.makeText(this, R.string.sorry_error_happened, Toast.LENGTH_LONG).show();
         Log.d(LOG_TAG, "arguments have not been transferred");
         finish();
     }
@@ -202,7 +204,8 @@ public class WordActivity extends AppCompatActivity implements ResetWordProgress
                 }
                 // Выводим Toast о том, что они должны быть заполнены.
                 else {
-                    Toast.makeText(WordActivity.this, R.string.error_word_saving, Toast.LENGTH_LONG).show();
+                    Toast.makeText(WordActivity.this,
+                            R.string.error_word_saving, Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -307,34 +310,34 @@ public class WordActivity extends AppCompatActivity implements ResetWordProgress
             // Связывание слова с другой подгруппой.
             case R.id.activity_word___action___linkword:
                 Log.d(LOG_TAG, "Link word");
-                LinkWordDialogFragment linkWordDialogFragment = new LinkWordDialogFragment();
-                arguments.putLong(LinkWordDialogFragment.EXTRA_WORD_ID, wordId);
-                linkWordDialogFragment.setArguments(arguments);
-                linkWordDialogFragment.show(manager, DIALOG_LINK_WORD);
-                /*LinkOrDeleteWordDialogFragment linkDialog = new LinkOrDeleteWordDialogFragment();
+                WordDialogsViewModel wordDialogsViewModel = new ViewModelProvider(this)
+                        .get(WordDialogsViewModel.class);
+
+                LinkOrDeleteWordDialogFragment linkDialog = new LinkOrDeleteWordDialogFragment();
                 arguments.putLong(LinkOrDeleteWordDialogFragment.EXTRA_WORD_ID, wordId);
-                arguments.putInt(LinkOrDeleteWordDialogFragment.EXTRA_FLAG, LinkOrDeleteWordDialogFragment.TO_LINK);
+                arguments.putInt(LinkOrDeleteWordDialogFragment.EXTRA_FLAG,
+                        LinkOrDeleteWordDialogFragment.TO_LINK);
                 linkDialog.setArguments(arguments);
-                linkDialog.show(manager, DIALOG_LINK_WORD);*/
+                linkDialog.show(manager, DIALOG_LINK_WORD);
                 return true;
             // Сбрасывание прогресса слова
             case R.id.activity_word___action___resetwordprogress:
                 Log.d(LOG_TAG, "Reset word progress");
-                ResetWordProgressDialogFragment resetWordProgressDialogFragment = new ResetWordProgressDialogFragment();
-                resetWordProgressDialogFragment.show(manager, DIALOG_RESET_WORD_PROGRESS);
+                ResetProgressDialogFragment resetProgressDialogFragment =
+                        new ResetProgressDialogFragment();
+                arguments.putInt(ResetProgressDialogFragment.EXTRA_FLAG, ResetProgressDialogFragment.FOR_ONE_WORD);
+                resetProgressDialogFragment.setArguments(arguments);
+                resetProgressDialogFragment.show(manager, DIALOG_RESET_WORD_PROGRESS);
                 return true;
             // Удаление слова из подгруппы / из всех подгрупп.
             case R.id.delete_word:
                 Log.d(LOG_TAG, "Delete word");
-                DeleteWordDialogFragment deleteWordDialogFragment = new DeleteWordDialogFragment();
-                arguments.putLong(DeleteWordDialogFragment.EXTRA_WORD_ID, wordId);
-                deleteWordDialogFragment.setArguments(arguments);
-                deleteWordDialogFragment.show(manager, DIALOG_DELETE_WORD);
-                /*LinkOrDeleteWordDialogFragment deleteDialog = new LinkOrDeleteWordDialogFragment();
+                LinkOrDeleteWordDialogFragment deleteDialog = new LinkOrDeleteWordDialogFragment();
                 arguments.putLong(LinkOrDeleteWordDialogFragment.EXTRA_WORD_ID, wordId);
-                arguments.putInt(LinkOrDeleteWordDialogFragment.EXTRA_FLAG, LinkOrDeleteWordDialogFragment.TO_DELETE);
+                arguments.putInt(LinkOrDeleteWordDialogFragment.EXTRA_FLAG,
+                        LinkOrDeleteWordDialogFragment.TO_DELETE);
                 deleteDialog.setArguments(arguments);
-                deleteDialog.show(manager, DIALOG_DELETE_WORD);*/
+                deleteDialog.show(manager, DIALOG_DELETE_WORD);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -349,7 +352,7 @@ public class WordActivity extends AppCompatActivity implements ResetWordProgress
      */
     @Override
     public void resetMessage(String message) {
-        if (message.equals(ResetWordProgressDialogFragment.RESET_MESSAGE)) {
+        if (message.equals(ResetProgressDialogFragment.RESET_MESSAGE)) {
             wordViewModel.resetProgress();
         }
     }

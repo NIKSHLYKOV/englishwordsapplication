@@ -55,8 +55,10 @@
     <string name="dialog___delete_word___error_message">Вы можете удалять слова только из своих групп (созданными вами)! На данный момент группы, связанные с данным словом отсутствуют!</string>
     <string name="dialog___delete_word___positive_button">Удалить</string>
 
-
     <string name="dialog___sort_words___title">Сортировать слова</string>
+
+    <string name="dialog___reset_words_progress___title">Сбросить прогресс</string>
+    <string name="dialog___reset_words_progress___message">Вы действительно хотите сбросить прогресс по всем словам в группе?</string>
 
 
     <string name="no">Нет</string>
@@ -65,7 +67,7 @@
     <string name="to_cancel">Отменить</string>
     <string name="ok">ОК</string>
     <string name="title_activity_settings">Settings</string>
-    <string name="error_happened">Произошла ошибка!</string>
+    <string name="sorry_error_happened">Извините, произошла ошибка!</string>
     <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </string>
 
     <!-- Preference Titles -->

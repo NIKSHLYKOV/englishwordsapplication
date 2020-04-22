@@ -131,6 +131,19 @@ public class AppRepository {
         return null;
     }
 
+    public void resetWordsProgress(final long subgroupId){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<Word> words = wordDao.getWordsFromSubgroup(subgroupId);
+                for (Word word: words){
+                    word.learnProgress = -1;
+                }
+                wordDao.update(words);
+            }
+        }).start();
+    }
+
     /**
      * AsyncTasks для работы со словами.
      */

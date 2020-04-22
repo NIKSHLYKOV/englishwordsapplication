@@ -33,14 +33,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import ru.nikshlykov.englishwordsapp.R;
-import ru.nikshlykov.englishwordsapp.db.link.Link;
 import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup;
-import ru.nikshlykov.englishwordsapp.db.subgroup.SubgroupDao;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
-import ru.nikshlykov.englishwordsapp.ui.word.LinkWordDialogFragment;
+import ru.nikshlykov.englishwordsapp.ui.word.LinkOrDeleteWordDialogFragment;
+import ru.nikshlykov.englishwordsapp.ui.word.ResetProgressDialogFragment;
 import ru.nikshlykov.englishwordsapp.ui.word.WordActivity;
 
-public class SubgroupActivity extends AppCompatActivity implements SortWordsDialogFragment.SortWordsListener {
+public class SubgroupActivity extends AppCompatActivity
+        implements SortWordsDialogFragment.SortWordsListener,
+        ResetProgressDialogFragment.ResetProgressListener {
 
     public static final String EXTRA_SUBGROUP_ID = "SubgroupId";
     private static final int REQUEST_CODE_EDIT_EXISTING_WORD = 1;
@@ -62,8 +63,8 @@ public class SubgroupActivity extends AppCompatActivity implements SortWordsDial
     private WordsRecyclerViewAdapter adapter;
 
     // Иконки для свайпа слова в recyclerView.
-    Drawable deleteIcon;
-    Drawable linkIcon;
+    private Drawable deleteIcon;
+    private Drawable linkIcon;
 
     private long subgroupId;
     private SubgroupViewModel subgroupViewModel;
@@ -177,10 +178,10 @@ public class SubgroupActivity extends AppCompatActivity implements SortWordsDial
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        //super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.activity_subgroup_toolbar_menu, menu);
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         FragmentManager manager = getSupportFragmentManager();
@@ -198,8 +199,13 @@ public class SubgroupActivity extends AppCompatActivity implements SortWordsDial
             // Сбрасывание прогресса слов данной подгруппы.
             case R.id.activity_subgroup___action___reset_words_progress:
                 Log.d(LOG_TAG, "Reset words progress");
-                /*ResetWordProgressDialogFragment resetWordProgressDialogFragment = new ResetWordProgressDialogFragment();
-                resetWordProgressDialogFragment.show(manager, DIALOG_RESET_WORDS_PROGRESS);*/
+                ResetProgressDialogFragment resetProgressDialogFragment =
+                        new ResetProgressDialogFragment();
+                Bundle arguments = new Bundle();
+                arguments.putInt(ResetProgressDialogFragment.EXTRA_FLAG,
+                        ResetProgressDialogFragment.FOR_SUBGROUP);
+                resetProgressDialogFragment.setArguments(arguments);
+                resetProgressDialogFragment.show(manager, DIALOG_RESET_WORDS_PROGRESS);
                 return true;
             // Удаление подгруппы.
             case R.id.activity_subgroup___action___delete_subgroup:
@@ -209,6 +215,7 @@ public class SubgroupActivity extends AppCompatActivity implements SortWordsDial
                 return super.onOptionsItemSelected(item);
         }
     }
+
     @Override
     public void sort(int param) {
         subgroupViewModel.sortWords(param);
@@ -263,14 +270,15 @@ public class SubgroupActivity extends AppCompatActivity implements SortWordsDial
         }
     }
 
-    public void initRecyclerView(){
+    private void initRecyclerView() {
         // Создаём вспомогательные вещи для RecyclerView и соединяем их с ним.
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(SubgroupActivity.this);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(SubgroupActivity.this, DividerItemDecoration.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addItemDecoration(dividerItemDecoration);
     }
-    public void initRecyclerViewAdapter(){
+
+    private void initRecyclerViewAdapter() {
         // Создаём adapter для RecyclerView.
         adapter = new WordsRecyclerViewAdapter(SubgroupActivity.this);
 
@@ -290,11 +298,25 @@ public class SubgroupActivity extends AppCompatActivity implements SortWordsDial
     private void initSwipeIcons(Subgroup subgroup) {
         // Находим иконки, изображаемые при свайпе.
         linkIcon = ContextCompat.getDrawable(this, R.drawable.ic_link_white_24dp);
-        if (subgroup.isCreatedByUser()) {
-            deleteIcon = ContextCompat.getDrawable(this, R.drawable.ic_delete_white_24dp);
+        deleteIcon = ContextCompat.getDrawable(this, R.drawable.ic_delete_white_24dp);
+
+    }
+
+
+    /**
+     * Принимает сообщение от ResetWordProgressDialogFragment.
+     *
+     * @param message представляет из себя сообщение.
+     */
+    @Override
+    public void resetMessage(String message) {
+        if (message.equals(ResetProgressDialogFragment.RESET_MESSAGE)) {
+            subgroupViewModel.resetWordsProgress();
         }
     }
-    public MySimpleCallback createMySimpleCallbackBySubgroup(Subgroup subgroup){
+
+
+    public MySimpleCallback createMySimpleCallbackBySubgroup(Subgroup subgroup) {
         if (subgroup.isCreatedByUser()) {
             return new MySimpleCallback(0, ItemTouchHelper.LEFT
                     | ItemTouchHelper.RIGHT);
@@ -302,6 +324,7 @@ public class SubgroupActivity extends AppCompatActivity implements SortWordsDial
             return new MySimpleCallback(0, ItemTouchHelper.RIGHT);
         }
     }
+
     private class MySimpleCallback extends ItemTouchHelper.SimpleCallback {
 
         public MySimpleCallback(int dragDirs, int swipeDirs) {
@@ -328,11 +351,12 @@ public class SubgroupActivity extends AppCompatActivity implements SortWordsDial
                             }).show();
                     break;
                 case ItemTouchHelper.RIGHT:
-                    LinkWordDialogFragment linkWordDialogFragment = new LinkWordDialogFragment();
+                    LinkOrDeleteWordDialogFragment deleteDialog = new LinkOrDeleteWordDialogFragment();
                     Bundle arguments = new Bundle();
-                    arguments.putLong(LinkWordDialogFragment.EXTRA_WORD_ID, wordId);
-                    linkWordDialogFragment.setArguments(arguments);
-                    linkWordDialogFragment.show(getSupportFragmentManager(), DIALOG_LINK_WORD);
+                    arguments.putLong(LinkOrDeleteWordDialogFragment.EXTRA_WORD_ID, wordId);
+                    arguments.putInt(LinkOrDeleteWordDialogFragment.EXTRA_FLAG, LinkOrDeleteWordDialogFragment.TO_LINK);
+                    deleteDialog.setArguments(arguments);
+                    deleteDialog.show(getSupportFragmentManager(), DIALOG_LINK_WORD);
                     adapter.notifyDataSetChanged();
                     break;
             }
