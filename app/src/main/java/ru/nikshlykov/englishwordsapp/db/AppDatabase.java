@@ -51,21 +51,4 @@ public abstract class AppDatabase extends RoomDatabase {
         }
         return instance;
     }
-
-    /*private static RoomDatabase.Callback roomCallback = new RoomDatabase.Callback(){
-        @Override
-        public void onCreate(@NonNull SupportSQLiteDatabase db) {
-            super.onCreate(db);
-        }
-    };
-
-    private static class PopulateDbAsyncTask extends AsyncTask<Void, Void, Void>{
-        private WordDao wordDao;
-
-        private PopulateDbAsyncTask(AppDatabase db){
-            wordDao = db.wordDao();
-        }
-
-
-    }*/
 }

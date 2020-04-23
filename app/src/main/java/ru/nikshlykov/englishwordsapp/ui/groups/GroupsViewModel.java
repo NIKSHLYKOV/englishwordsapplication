@@ -5,6 +5,8 @@ import android.database.Cursor;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
+
 import ru.nikshlykov.englishwordsapp.db.AppRepository;
 import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup;
 import ru.nikshlykov.englishwordsapp.db.subgroup.SubgroupDao;
@@ -26,6 +28,10 @@ public class GroupsViewModel extends AndroidViewModel {
 
     public Cursor getSubgroupsFromGroup(long groupId){
         return repository.getSubgroupsFromGroup(groupId);
+    }
+
+    public void getSubgroup(long subgroupId, AppRepository.OnSubgroupLoadedListener listener){
+        repository.getSubgroup(subgroupId, listener);
     }
 
     public void insertSubgroup(String newSubgroupName){

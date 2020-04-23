@@ -34,25 +34,32 @@
 
         <EditText
             android:id="@+id/fragment_write_word_by_voice_mode___edit_text___user_variant"
+
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+
             android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
             android:layout_marginTop="350dp"
+
             android:backgroundTint="@color/colorPrimary"
             android:ems="10"
             android:hint="@string/word"
             android:inputType="textPersonName"
-            app:layout_constraintEnd_toStartOf="@+id/fragment_write_word_by_voice_mode___image_button___confirm"
-            app:layout_constraintHorizontal_bias="0.0"
+            android:textColor="@color/colorPrimary"
+
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintEnd_toStartOf="@id/fragment_write_word_by_voice_mode___image_button___confirm" />
 
         <ImageButton
             android:id="@+id/fragment_write_word_by_voice_mode___image_button___confirm"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/BorderlessButton"
+            android:layout_width="60dp"
+            android:layout_height="40dp"
             android:layout_marginEnd="8dp"
             android:contentDescription="confirm_button"
+            android:background="@drawable/shape_white_15dp"
             android:src="@drawable/ic_arrow_forward_dark_blue_24dp"
             app:layout_constraintBottom_toBottomOf="@+id/fragment_write_word_by_voice_mode___edit_text___user_variant"
             app:layout_constraintEnd_toEndOf="parent"

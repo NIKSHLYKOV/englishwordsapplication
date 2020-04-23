@@ -44,8 +44,9 @@ public class SubgroupActivity extends AppCompatActivity
         ResetProgressDialogFragment.ResetProgressListener,
         DeleteSubgroupDialogFragment.DeleteSubgroupListener {
 
-    // Ключ для получения id подгруппы.
+    // Ключи для получения аргументов.
     public static final String EXTRA_SUBGROUP_ID = "SubgroupId";
+    public static final String EXTRA_IS_CREATED_BY_USER = "IsCreatedByUser";
 
     // Возможные ответные коды из WordActivity.
     private static final int REQUEST_CODE_EDIT_EXISTING_WORD = 1;
@@ -74,8 +75,13 @@ public class SubgroupActivity extends AppCompatActivity
 
     // id подгруппы.
     private long subgroupId;
+    private boolean subgroupIsCreatedByUser;
     private boolean deleteFlag;
     private SubgroupViewModel subgroupViewModel;
+
+    private MenuItem sortWords;
+    private MenuItem resetWordsProgress;
+    private MenuItem deleteSubgroup;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -83,7 +89,7 @@ public class SubgroupActivity extends AppCompatActivity
         setContentView(R.layout.activity_subgroup);
 
         // Получаем id подгруппы из Intent.
-        getSubgroupId();
+        getBundleArguments();
 
         // Находим View элементы из разметки.
         findViews();
@@ -190,7 +196,14 @@ public class SubgroupActivity extends AppCompatActivity
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        Log.d(LOG_TAG, "onCreateOptionsMenu()");
         getMenuInflater().inflate(R.menu.activity_subgroup_toolbar_menu, menu);
+        sortWords = menu.findItem(R.id.activity_subgroup___action___sort);
+        resetWordsProgress = menu.findItem(R.id.activity_subgroup___action___reset_words_progress);
+        deleteSubgroup = menu.findItem(R.id.activity_subgroup___action___delete_subgroup);
+        if (!subgroupIsCreatedByUser) {
+            deleteSubgroup.setVisible(false);
+        }
         return true;
     }
 
@@ -233,12 +246,19 @@ public class SubgroupActivity extends AppCompatActivity
         recyclerView.getAdapter().notifyDataSetChanged();
     }
 
-    private void getSubgroupId() {
-        // Получаем Extras из Intent'а и из него id подгруппы.
+    /**
+     * Получает из Extras id подгруппы и флаг того, создана ли она пользователем.
+     */
+    private void getBundleArguments() {
         Bundle arguments = getIntent().getExtras();
         if (arguments == null)
             finish();
-        subgroupId = arguments.getLong(EXTRA_SUBGROUP_ID);
+        try {
+            subgroupId = arguments.getLong(EXTRA_SUBGROUP_ID);
+            subgroupIsCreatedByUser = arguments.getBoolean(EXTRA_IS_CREATED_BY_USER);
+        } catch (NullPointerException ex) {
+            finish();
+        }
     }
 
     private void findViews() {

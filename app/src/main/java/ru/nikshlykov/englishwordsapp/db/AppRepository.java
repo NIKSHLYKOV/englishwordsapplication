@@ -7,6 +7,7 @@ import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -107,7 +108,7 @@ public class AppRepository {
         return null;
     }
 
-    public LiveData<Word> getLiveDataWordById(long wordId){
+    public LiveData<Word> getLiveDataWordById(long wordId) {
         return wordDao.getLiveDataWordById(wordId);
     }
 
@@ -131,12 +132,12 @@ public class AppRepository {
         return null;
     }
 
-    public void resetWordsProgress(final long subgroupId){
+    public void resetWordsProgress(final long subgroupId) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 List<Word> words = wordDao.getWordsFromSubgroup(subgroupId);
-                for (Word word: words){
+                for (Word word : words) {
                     word.learnProgress = -1;
                 }
                 wordDao.update(words);
@@ -233,7 +234,7 @@ public class AppRepository {
             ArrayList<Word> availableToRepeatWords = new ArrayList<>();
             Date currentDate = new Date();
             for (Word word : wordsFromStudiedSubgroups) {
-                if(word.isAvailableToRepeat(currentDate)){
+                if (word.isAvailableToRepeat(currentDate)) {
                     availableToRepeatWords.add(word);
                 }
             }
@@ -280,7 +281,12 @@ public class AppRepository {
         return null;
     }
 
-    public LiveData<Subgroup> getLiveDataSubgroupById(long subgroupId){
+    public void getSubgroup(long subgroupId, OnSubgroupLoadedListener listener){
+        GetSubgroupAsyncTask task = new GetSubgroupAsyncTask(subgroupDao, listener);
+        task.execute(subgroupId);
+    }
+
+    public LiveData<Subgroup> getLiveDataSubgroupById(long subgroupId) {
         return subgroupDao.getLiveDataSubgroupById(subgroupId);
     }
 
@@ -390,6 +396,34 @@ public class AppRepository {
         protected Subgroup doInBackground(Long... longs) {
             Log.i(LOG_TAG, "id подгруппы в asyncTask = " + longs[0]);
             return subgroupDao.getSubgroupById(longs[0]);
+        }
+    }
+
+    public interface OnSubgroupLoadedListener{
+        void onLoaded(Subgroup subgroup);
+    }
+    private static class GetSubgroupAsyncTask extends AsyncTask<Long, Void, Subgroup> {
+        private SubgroupDao subgroupDao;
+        private WeakReference<OnSubgroupLoadedListener> listener;
+
+        private GetSubgroupAsyncTask(SubgroupDao subgroupDao,
+                                                   OnSubgroupLoadedListener listener){
+            this.subgroupDao = subgroupDao;
+            this.listener = new WeakReference<>(listener);
+        }
+
+        @Override
+        protected Subgroup doInBackground(Long... longs) {
+            return subgroupDao.getSubgroupById(longs[0]);
+        }
+
+        @Override
+        protected void onPostExecute(Subgroup subgroup) {
+            super.onPostExecute(subgroup);
+            OnSubgroupLoadedListener listener = this.listener.get();
+            if (listener != null){
+                listener.onLoaded(subgroup);
+            }
         }
     }
 
@@ -578,7 +612,7 @@ public class AppRepository {
         return null;
     }
 
-    public LiveData<List<Mode>> getLiveDataModes(){
+    public LiveData<List<Mode>> getLiveDataModes() {
         return modeDao.getLiveDataModes();
     }
 

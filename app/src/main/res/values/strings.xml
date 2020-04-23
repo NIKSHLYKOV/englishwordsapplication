@@ -39,7 +39,7 @@
     <string name="title_profile">Профиль</string>
     <string name="modes">Режимы</string>
 
-    <string name="action___delete_word___title">Удалить</string>
+    <string name="action___delete_word___title">Удалить группу</string>
     <string name="action___reset_word_progress___title">Сбросить прогресс</string>
     <string name="action___link_word___title">Связать слово</string>
     <string name="action___sort___title">Отсортировать</string>

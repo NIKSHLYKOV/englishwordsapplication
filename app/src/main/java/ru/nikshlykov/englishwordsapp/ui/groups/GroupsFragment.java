@@ -16,9 +16,11 @@ import android.widget.SimpleCursorTreeAdapter;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import ru.nikshlykov.englishwordsapp.R;
+import ru.nikshlykov.englishwordsapp.db.AppRepository;
 import ru.nikshlykov.englishwordsapp.db.group.Group;
 import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup;
 import ru.nikshlykov.englishwordsapp.ui.subgroup.AddSubgroupActivity;
@@ -27,6 +29,8 @@ import ru.nikshlykov.englishwordsapp.ui.subgroup.SubgroupActivity;
 import static android.app.Activity.RESULT_OK;
 
 public class GroupsFragment extends Fragment {
+
+    private String LOG_TAG = "GroupsFragment";
 
     private static final int REQUEST_CODE_CREATE_SUBGROUP = 1;
 
@@ -40,7 +44,9 @@ public class GroupsFragment extends Fragment {
     // Контекст, передаваемый при прикреплении фрагмента.
     private Context context;
 
-    private String LOG_TAG = "GroupsFragment";
+    private Intent intent;
+
+    private AppRepository.OnSubgroupLoadedListener listener;
 
     @Override
     public void onAttach(Context context) {
@@ -49,10 +55,16 @@ public class GroupsFragment extends Fragment {
         Log.d(LOG_TAG, "onAttach");
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        initListener();
+    }
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_groups, null);
 
         findViews(view);
@@ -60,10 +72,11 @@ public class GroupsFragment extends Fragment {
         // Присваиваем ему обработчик.
         expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
-            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-                Intent intent = new Intent(context, SubgroupActivity.class);
+            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition,
+                                        int childPosition, long id) {
+                intent = new Intent(context, SubgroupActivity.class);
                 intent.putExtra(SubgroupActivity.EXTRA_SUBGROUP_ID, id);
-                startActivity(intent);
+                groupsViewModel.getSubgroup(id, listener);
                 return false;
             }
         });
@@ -102,6 +115,13 @@ public class GroupsFragment extends Fragment {
         expandableListView.setAdapter(adapter);
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        intent = null;
+    }
+
+
     private void findViews(View view) {
         expandableListView = view.findViewById(R.id.fragment_groups___expandable_list_view);
         newSubgroupButton = view.findViewById(R.id.fragment_groups___button___new_subgroup);
@@ -119,7 +139,8 @@ public class GroupsFragment extends Fragment {
 
         protected Cursor getChildrenCursor(Cursor groupCursor) {
             // Получаем id родителя (группы).
-            long groupId = groupCursor.getLong(groupCursor.getColumnIndex(Group.GroupsTable.TABLE_GROUPS_COLUMN_ID));
+            long groupId = groupCursor.getLong(groupCursor
+                    .getColumnIndex(Group.GroupsTable.TABLE_GROUPS_COLUMN_ID));
             // получаем курсор по элементам-детям (подгруппам) для конкретного родителя (группы).
             return groupsViewModel.getSubgroupsFromGroup(groupId);
         }
@@ -133,5 +154,16 @@ public class GroupsFragment extends Fragment {
             String newSubgroupName = data.getStringExtra(AddSubgroupActivity.EXTRA_NEW_SUBGROUP_NAME);
             groupsViewModel.insertSubgroup(newSubgroupName);
         }
+    }
+
+    private void initListener() {
+        listener = new AppRepository.OnSubgroupLoadedListener() {
+            @Override
+            public void onLoaded(Subgroup subgroup) {
+                intent.putExtra(SubgroupActivity.EXTRA_IS_CREATED_BY_USER,
+                        subgroup.isCreatedByUser());
+                startActivity(intent);
+            }
+        };
     }
 }

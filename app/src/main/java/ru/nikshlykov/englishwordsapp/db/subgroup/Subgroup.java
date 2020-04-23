@@ -42,6 +42,10 @@ public class Subgroup {
         return groupId == SubgroupDao.GROUP_FOR_NEW_SUBGROUPS_ID;
     }
 
+    public static boolean isCreatedByUser(long groupId){
+        return groupId == SubgroupDao.GROUP_FOR_NEW_SUBGROUPS_ID;
+    }
+
     public static class SubgroupsTable {
         // Названия таблицы подгрупп и её колонок
         public static final String TABLE_SUBGROUPS = "Subgroups";

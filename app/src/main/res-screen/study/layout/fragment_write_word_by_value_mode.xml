@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@android:color/white">
+    android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -19,7 +18,7 @@
             android:layout_marginEnd="50dp"
             android:gravity="center"
             android:maxLines="3"
-            android:text="@string/value"
+            tools:text="@string/value"
             android:textColor="@color/colorPrimary"
             android:textSize="30sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -60,13 +59,14 @@
 
         <ImageButton
             android:id="@+id/fragment_write_word_by_value_mode___button___confirm"
-            style="@style/Widget.AppCompat.ImageButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/BorderlessButton"
+            android:layout_width="60dp"
+            android:layout_height="40dp"
 
             android:layout_marginEnd="8dp"
 
             app:srcCompat="@drawable/ic_arrow_forward_dark_blue_24dp"
+            android:background="@drawable/shape_white_15dp"
 
             app:layout_constraintTop_toTopOf="@id/fragment_write_word_by_value_mode___edit_text___user_variant"
             app:layout_constraintBottom_toBottomOf="@id/fragment_write_word_by_value_mode___edit_text___user_variant"
