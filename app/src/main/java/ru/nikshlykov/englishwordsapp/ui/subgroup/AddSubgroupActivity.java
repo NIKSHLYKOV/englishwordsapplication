@@ -25,11 +25,12 @@ public class AddSubgroupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_subgroup);
 
-        // Находим editText, в котором будет прописываться название новой группы.
-        groupName = findViewById(R.id.activity_new_subgroup___edit_text___group_name);
+        findViews();
 
-        // Находим кнопку сохранения и присваиваем ей обработчик.
-        creatingButton = findViewById(R.id.activity_new_subgroup___button___save_new_group);
+        initCreatingButton();
+    }
+
+    private void initCreatingButton() {
         creatingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -43,9 +44,15 @@ public class AddSubgroupActivity extends AppCompatActivity {
                 }
                 // Выводим Toast о том, что поле названия не должно быть пустым.
                 else {
-                    Toast.makeText(getApplicationContext(), "Необходимо указать название создаваемой группы", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), R.string.error_new_subgroup_empty_name,
+                            Toast.LENGTH_LONG).show();
                 }
             }
         });
+    }
+
+    private void findViews(){
+        groupName = findViewById(R.id.activity_new_subgroup___edit_text___group_name);
+        creatingButton = findViewById(R.id.activity_new_subgroup___button___save_new_group);
     }
 }

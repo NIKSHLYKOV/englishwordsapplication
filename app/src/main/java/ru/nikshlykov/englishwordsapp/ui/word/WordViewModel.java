@@ -30,19 +30,13 @@ public class WordViewModel extends AndroidViewModel {
     }
 
     public void resetProgress() {
-        if (liveDataWord.getValue() != null) {
-            // удалить все предыдущие повторы по слову, если необходимо.
+        Word word = liveDataWord.getValue();
+        if (word != null) {
+            /* удалить все предыдущие повторы по слову,
+            если будет необходимо.*/
 
-            Date currentDate = new Date();
-            // Создаём повтор и вставляем его в БД.
-            Repeat newRepeat = new Repeat(liveDataWord.getValue().id, 0, currentDate.getTime(), 1);
-            newRepeat.setId(repository.getLastRepeatId() + 1);
-            repository.insert(newRepeat);
-
-            liveDataWord.getValue().learnProgress = 0;
-            liveDataWord.getValue().lastRepetitionDate = currentDate.getTime();
-
-            repository.update(liveDataWord.getValue());
+            word.learnProgress = -1;
+            repository.update(word);
         }
     }
 

@@ -92,7 +92,11 @@ public class SubgroupViewModel extends AndroidViewModel {
         }
     }
 
-    public void update() {
+    public void deleteSubgroup(){
+        repository.delete(liveDataSubgroup.getValue());
+    }
+
+    public void updateSubgroup() {
         repository.update(liveDataSubgroup.getValue());
     }
 

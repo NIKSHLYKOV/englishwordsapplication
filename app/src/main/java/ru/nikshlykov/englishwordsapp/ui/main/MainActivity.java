@@ -218,6 +218,10 @@ public class MainActivity extends AppCompatActivity
         showNextMode();
     }
 
+    /**
+     * Обрабатывает нажатие кнопки назад и информирует о том, что
+     * необходимо нажать её два раза для выхода из приложения.
+     */
     @Override
     public void onBackPressed() {
         if (lastBackPressedTime + 2000 > System.currentTimeMillis())

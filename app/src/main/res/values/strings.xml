@@ -10,6 +10,7 @@
     <string name="create_group">Создать группу</string>
     <string name="to_learn">Изучать</string>
     <string name="error_subgroup_is_empty">"На данный момент ваша группа пуста! Добавьте в неё слова из других групп или создайте свои."</string>
+    <string name="error_new_subgroup_empty_name">Необходимо указать название создаваемой группы!</string>
 
     <!-- Слова -->
     <string name="word">Слово</string>
@@ -59,6 +60,9 @@
 
     <string name="dialog___reset_words_progress___title">Сбросить прогресс</string>
     <string name="dialog___reset_words_progress___message">Вы действительно хотите сбросить прогресс по всем словам в группе?</string>
+
+    <string name="dialog___delete_subgroup___title">Удаление группы</string>
+    <string name="dialog___delete_subgroup___message">Вы действительно хотите удалить текущую группу?</string>
 
 
     <string name="no">Нет</string>

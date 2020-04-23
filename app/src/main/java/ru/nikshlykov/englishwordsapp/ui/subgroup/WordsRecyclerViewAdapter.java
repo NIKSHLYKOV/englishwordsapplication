@@ -27,10 +27,8 @@ import ru.nikshlykov.englishwordsapp.db.word.Word;
 public class WordsRecyclerViewAdapter
         extends RecyclerView.Adapter<WordsRecyclerViewAdapter.WordsViewHolder> {
 
-    private Context context;
-
     // Слова подгруппы.
-    private List<Word> words = new ArrayList<Word>();
+    private List<Word> words = new ArrayList<>();
 
     // TextToSpeech, который будет воспроизводить слова.
     private TextToSpeech textToSpeech;
@@ -48,7 +46,6 @@ public class WordsRecyclerViewAdapter
 
     public WordsRecyclerViewAdapter(final Context context) {
 
-        this.context = context;
         // Создаём TTS
         textToSpeech = new TextToSpeech(context, new TextToSpeech.OnInitListener() {
             @Override

@@ -41,14 +41,20 @@ import ru.nikshlykov.englishwordsapp.ui.word.WordActivity;
 
 public class SubgroupActivity extends AppCompatActivity
         implements SortWordsDialogFragment.SortWordsListener,
-        ResetProgressDialogFragment.ResetProgressListener {
+        ResetProgressDialogFragment.ResetProgressListener,
+        DeleteSubgroupDialogFragment.DeleteSubgroupListener {
 
+    // Ключ для получения id подгруппы.
     public static final String EXTRA_SUBGROUP_ID = "SubgroupId";
+
+    // Возможные ответные коды из WordActivity.
     private static final int REQUEST_CODE_EDIT_EXISTING_WORD = 1;
     private static final int REQUEST_CODE_CREATE_NEW_WORD = 2;
 
+    // Тег для логирования.
     private static final String LOG_TAG = "SubgroupActivity";
 
+    // Теги для диалоговых фрагментов.
     private static final String DIALOG_SORT_WORDS = "SortWordsDialogFragment";
     private static final String DIALOG_RESET_WORDS_PROGRESS = "ResetWordsProgressDialogFragment";
     private static final String DIALOG_DELETE_SUBGROUP = "DeleteSubgroupDialogFragment";
@@ -66,7 +72,9 @@ public class SubgroupActivity extends AppCompatActivity
     private Drawable deleteIcon;
     private Drawable linkIcon;
 
+    // id подгруппы.
     private long subgroupId;
+    private boolean deleteFlag;
     private SubgroupViewModel subgroupViewModel;
 
     @Override
@@ -100,7 +108,7 @@ public class SubgroupActivity extends AppCompatActivity
                     initLearnSubgroupCheckBox(subgroup);
 
                     // Создаём вещи для свайпа слов.
-                    initSwipeIcons(subgroup);
+                    initSwipeIcons();
                     new ItemTouchHelper(createMySimpleCallbackBySubgroup(subgroup))
                             .attachToRecyclerView(recyclerView);
                 }
@@ -118,16 +126,18 @@ public class SubgroupActivity extends AppCompatActivity
             public void onChanged(List<Word> words) {
                 Log.i(LOG_TAG, "words onChanged()");
                 if (words != null) {
-                    // Если слов нет, то скрываем CheckBox изучения подгруппы.
-                    if (words.isEmpty()) {
-                        learnSubgroupCheckBox.setVisibility(View.GONE);
-                        Toast.makeText(SubgroupActivity.this,
-                                R.string.error_subgroup_is_empty, Toast.LENGTH_LONG)
-                                .show(); // Пуста может быть только подгруппа созданная пользователем.
-                    } else {
-                        learnSubgroupCheckBox.setVisibility(View.VISIBLE);
+                    if (!deleteFlag) {
+                        // Если слов нет, то скрываем CheckBox изучения подгруппы.
+                        if (words.isEmpty()) {
+                            learnSubgroupCheckBox.setVisibility(View.GONE);
+                            Toast.makeText(SubgroupActivity.this,
+                                    R.string.error_subgroup_is_empty, Toast.LENGTH_LONG)
+                                    .show(); // Пуста может быть только подгруппа созданная пользователем.
+                        } else {
+                            learnSubgroupCheckBox.setVisibility(View.VISIBLE);
+                        }
+                        adapter.setWords(words);
                     }
-                    adapter.setWords(words);
                 }
             }
         });
@@ -136,7 +146,9 @@ public class SubgroupActivity extends AppCompatActivity
     @Override
     protected void onStop() {
         super.onStop();
-        subgroupViewModel.update();
+        if (!deleteFlag) {
+            subgroupViewModel.updateSubgroup();
+        }
     }
 
     /**
@@ -186,9 +198,6 @@ public class SubgroupActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         FragmentManager manager = getSupportFragmentManager();
 
-        // Адаптировать под группу
-        // !!!!!!!!!!!!!!!!!!!!!!!!!!
-
         switch (item.getItemId()) {
             // Сортировка слов по алфавиту или сложности.
             case R.id.activity_subgroup___action___sort:
@@ -210,6 +219,8 @@ public class SubgroupActivity extends AppCompatActivity
             // Удаление подгруппы.
             case R.id.activity_subgroup___action___delete_subgroup:
                 Log.d(LOG_TAG, "Delete subgroup");
+                DeleteSubgroupDialogFragment deleteSubgroupDialogFragment = new DeleteSubgroupDialogFragment();
+                deleteSubgroupDialogFragment.show(manager, DIALOG_DELETE_SUBGROUP);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -295,11 +306,10 @@ public class SubgroupActivity extends AppCompatActivity
         });
     }
 
-    private void initSwipeIcons(Subgroup subgroup) {
+    private void initSwipeIcons() {
         // Находим иконки, изображаемые при свайпе.
         linkIcon = ContextCompat.getDrawable(this, R.drawable.ic_link_white_24dp);
         deleteIcon = ContextCompat.getDrawable(this, R.drawable.ic_delete_white_24dp);
-
     }
 
 
@@ -315,6 +325,24 @@ public class SubgroupActivity extends AppCompatActivity
         }
     }
 
+    @Override
+    public void deleteMessage(String message) {
+        if (message.equals(DeleteSubgroupDialogFragment.DELETE_MESSAGE)) {
+            Subgroup currentSubgroup = subgroupViewModel.getLiveDataSubgroup().getValue();
+            if (currentSubgroup != null) {
+                if (currentSubgroup.isCreatedByUser()) {
+                    subgroupViewModel.deleteSubgroup();
+                    deleteFlag = true;
+                    finish();
+                    // Тут ещё необходимо удалить все линки с данной подгруппой.
+                    // Тут ещё необходимо удалить все линки с данной подгруппой.
+                    // Тут ещё необходимо удалить все линки с данной подгруппой.
+                    // Тут ещё необходимо удалить все линки с данной подгруппой.
+                    // Тут ещё необходимо удалить все линки с данной подгруппой.
+                }
+            }
+        }
+    }
 
     public MySimpleCallback createMySimpleCallbackBySubgroup(Subgroup subgroup) {
         if (subgroup.isCreatedByUser()) {
