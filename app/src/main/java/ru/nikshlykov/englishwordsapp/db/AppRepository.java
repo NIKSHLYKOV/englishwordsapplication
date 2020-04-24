@@ -112,6 +112,12 @@ public class AppRepository {
         return wordDao.getLiveDataWordById(wordId);
     }
 
+
+    public void getWord(long wordId, OnWordLoadedListener listener){
+        GetWordAsyncTask task = new GetWordAsyncTask(wordDao, listener);
+        task.execute(wordId);
+    }
+
     public LiveData<List<Word>> getWordsFromSubgroupByProgress(long subgroupId) {
         return wordDao.getWordsFromSubgroupByProgress(subgroupId);
     }
@@ -218,6 +224,34 @@ public class AppRepository {
         protected Word doInBackground(Long... longs) {
             Log.i(LOG_TAG, "id слова в asyncTask = " + longs[0]);
             return wordDao.getWordById(longs[0]);
+        }
+    }
+
+    public interface OnWordLoadedListener{
+        void onLoaded(Word word);
+    }
+    private static class GetWordAsyncTask extends AsyncTask<Long, Void, Word>{
+        private WordDao wordDao;
+        private WeakReference<OnWordLoadedListener> listener;
+
+        private GetWordAsyncTask(WordDao wordDao,
+                                     OnWordLoadedListener listener){
+            this.wordDao = wordDao;
+            this.listener = new WeakReference<>(listener);
+        }
+
+        @Override
+        protected Word doInBackground(Long... longs) {
+            return wordDao.getWordById(longs[0]);
+        }
+
+        @Override
+        protected void onPostExecute(Word word) {
+            super.onPostExecute(word);
+            OnWordLoadedListener listener = this.listener.get();
+            if (listener != null){
+                listener.onLoaded(word);
+            }
         }
     }
 

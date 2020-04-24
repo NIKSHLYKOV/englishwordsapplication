@@ -83,31 +83,35 @@ public class WriteWordByValueModeFragment extends Fragment {
                 if (word != null){
                     valueTextView.setText(word.value);
 
-                    confirmImageButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            valueTextView.setVisibility(View.GONE);
-                            confirmImageButton.setVisibility(View.GONE);
-                            userVariantEditText.setVisibility(View.GONE);
-
-                            ConstraintLayout mainLayout = (ConstraintLayout) v.getParent();
-
-                            int result = 0;
-                            String userVariantOfWord = userVariantEditText.getText().toString();
-                            if (userVariantOfWord.equals(word.word)) {
-                                result = 1;
-                                resultImageView.setImageResource(R.drawable.ic_done_white_48dp);
-                                mainLayout.setBackgroundResource(R.color.progress_4);
-                            } else {
-                                resultImageView.setImageResource(R.drawable.ic_clear_white_48dp);
-                                mainLayout.setBackgroundResource(R.color.progress_1);
-                            }
-                            resultImageView.setVisibility(View.VISIBLE);
-
-                            handler.sendEmptyMessageDelayed(result, 1000);
-                        }
-                    });
+                    initConfirmImageButton(word);
                 }
+            }
+        });
+    }
+
+    private void initConfirmImageButton(final Word word) {
+        confirmImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                valueTextView.setVisibility(View.GONE);
+                confirmImageButton.setVisibility(View.GONE);
+                userVariantEditText.setVisibility(View.GONE);
+
+                ConstraintLayout mainLayout = (ConstraintLayout) v.getParent();
+
+                int result = 0;
+                String userVariantOfWord = userVariantEditText.getText().toString();
+                if (userVariantOfWord.equals(word.word)) {
+                    result = 1;
+                    resultImageView.setImageResource(R.drawable.ic_done_white_48dp);
+                    mainLayout.setBackgroundResource(R.color.progress_4);
+                } else {
+                    resultImageView.setImageResource(R.drawable.ic_clear_white_48dp);
+                    mainLayout.setBackgroundResource(R.color.progress_1);
+                }
+                resultImageView.setVisibility(View.VISIBLE);
+
+                handler.sendEmptyMessageDelayed(result, 1000);
             }
         });
     }

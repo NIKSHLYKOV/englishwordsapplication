@@ -51,4 +51,8 @@ public class WordViewModel extends AndroidViewModel {
     public long insert(Word word) {
         return repository.insert(word);
     }
+
+    public void getWord(long wordId, AppRepository.OnWordLoadedListener listener){
+        repository.getWord(wordId, listener);
+    }
 }

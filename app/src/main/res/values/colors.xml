@@ -18,6 +18,7 @@
     <color name="progress_0">#721121</color>
     <color name="progress_not_started">#626C66</color>
 
+    <color name="light_gray">#D3D3D3</color>
 
 
 </resources>

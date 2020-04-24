@@ -70,7 +70,7 @@ public class ModeRecyclerViewAdapter extends RecyclerView.Adapter<ModeRecyclerVi
         Drawable drawable = ContextCompat.getDrawable(context, imageResourceId);
         holder.imageView.setImageDrawable(drawable);
         holder.textView.setText(currentMode.name);
-        if (currentMode.id == 4 || currentMode.id == 6) {
+        if (currentMode.id == 6) {
             holder.checkBox.setEnabled(false);
             holder.itemView.setBackgroundColor(Color.DKGRAY);
         } else {
