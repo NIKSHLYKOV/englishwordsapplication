@@ -179,6 +179,7 @@ public class SubgroupViewModel extends AndroidViewModel
     public void insert(Word word){
         Log.i(LOG_TAG, "insert():\n" +
                 "word = " + word.word + "; value = " + word.value);
+        word.learnProgress = -1;
         repository.insert(word, this);
     }
 
@@ -202,7 +203,7 @@ public class SubgroupViewModel extends AndroidViewModel
     public void deleteLinkWithSubgroup(long wordId) {
         Subgroup subgroup = liveDataSubgroup.getValue();
         if (subgroup != null) {
-            Link link = repository.getLink(wordId, subgroup.id);
+            Link link = new Link(subgroup.id, wordId);
             repository.delete(link);
         }
     }

@@ -22,6 +22,7 @@ public class WordViewModel extends AndroidViewModel
 
     private LiveData<Word> liveDataWord;
 
+    // Список подгрупп для добавления или удаления связи с ними.
     private MutableLiveData<ArrayList<Subgroup>> availableSubgroupsTo;
 
     public WordViewModel(@NonNull Application application) {
@@ -37,6 +38,9 @@ public class WordViewModel extends AndroidViewModel
         return liveDataWord;
     }
 
+    /**
+     * Сбрасывает прогресс по слову.
+     */
     public void resetProgress() {
         Word word = liveDataWord.getValue();
         if (word != null) {
