@@ -70,21 +70,17 @@ public class ModeRecyclerViewAdapter extends RecyclerView.Adapter<ModeRecyclerVi
         Drawable drawable = ContextCompat.getDrawable(context, imageResourceId);
         holder.imageView.setImageDrawable(drawable);
         holder.textView.setText(currentMode.name);
-        if (currentMode.id == 6) {
-            holder.checkBox.setEnabled(false);
-            holder.itemView.setBackgroundColor(Color.DKGRAY);
-        } else {
-            holder.checkBox.setChecked(currentMode.isSelected == 1);
-            holder.checkBox.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (holder.checkBox.isChecked())
-                        currentMode.isSelected = 1;
-                    else
-                        currentMode.isSelected = 0;
-                }
-            });
-        }
+        holder.checkBox.setChecked(currentMode.isSelected == 1);
+        holder.checkBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (holder.checkBox.isChecked())
+                    currentMode.isSelected = 1;
+                else
+                    currentMode.isSelected = 0;
+            }
+        });
+
     }
 
     public void setModes(List<Mode> modes) {

@@ -42,8 +42,6 @@ public class ModesActivity extends AppCompatActivity {
                 }
             }
         });
-
-
     }
 
     @Override

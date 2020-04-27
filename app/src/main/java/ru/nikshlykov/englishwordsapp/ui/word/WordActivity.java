@@ -61,6 +61,7 @@ public class WordActivity extends AppCompatActivity
 
     // ViewModel для работы с БД.
     private WordViewModel wordViewModel;
+
     // Observer отвечающий за обработку подгруженных подгрупп для связывания или удаления.
     public Observer<ArrayList<Subgroup>> availableSubgroupsObserver;
     // Флаг, который будет передаваться observer'ом в LinkOrDeleteDialogFragment.
@@ -111,12 +112,18 @@ public class WordActivity extends AppCompatActivity
         progressLinearLayout = findViewById(R.id.activity_word___linear_layout___progress_view_background);
     }
 
+    /**
+     * Устанавливает toolbar и его title.
+     */
     private void initToolbar() {
         // Устанавливаем тулбар.
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("");
     }
 
+    /**
+     * Инициализирует TTS.
+     */
     private void initTTS() {
         // Создаём TTS
         TTS = new TextToSpeech(WordActivity.this, new TextToSpeech.OnInitListener() {
