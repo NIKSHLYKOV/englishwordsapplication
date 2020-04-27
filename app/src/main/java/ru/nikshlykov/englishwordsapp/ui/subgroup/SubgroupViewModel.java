@@ -7,17 +7,21 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
 import ru.nikshlykov.englishwordsapp.db.AppRepository;
 import ru.nikshlykov.englishwordsapp.db.link.Link;
 import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
+import ru.nikshlykov.englishwordsapp.ui.word.LinkOrDeleteWordDialogFragment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SubgroupViewModel extends AndroidViewModel
-    implements AppRepository.OnWordInsertedListener {
+    implements AppRepository.OnWordInsertedListener,
+        AppRepository.OnSubgroupsLoadedListener {
     private static final String LOG_TAG = "SubgroupViewModel";
     private AppRepository repository;
 
@@ -31,6 +35,8 @@ public class SubgroupViewModel extends AndroidViewModel
     // Observer, который сетит список слов в words.
     private Observer<List<Word>> observer;
 
+    private MutableLiveData<ArrayList<Subgroup>> availableSubgroupToLink;
+
     public SubgroupViewModel(@NonNull Application application) {
         super(application);
         repository = new AppRepository(application);
@@ -41,6 +47,7 @@ public class SubgroupViewModel extends AndroidViewModel
                 SubgroupViewModel.this.words.setValue(words);
             }
         };
+        availableSubgroupToLink = new MutableLiveData<>();
     }
 
     /**
@@ -64,8 +71,6 @@ public class SubgroupViewModel extends AndroidViewModel
                 break;
         }
     }
-
-
 
     /**
      * Методы для работы с подгруппой.
@@ -215,5 +220,24 @@ public class SubgroupViewModel extends AndroidViewModel
             + "link.wordId = " + link.getWordId());
             repository.insert(link);
         }
+    }
+
+
+    public MutableLiveData<ArrayList<Subgroup>> getAvailableSubgroupsToLink(long wordId) {
+        if (availableSubgroupToLink.getValue() == null){
+            Log.d(LOG_TAG, "availableSubgroupsTo value = null");
+            repository.getAvailableSubgroupTo(wordId, LinkOrDeleteWordDialogFragment.TO_LINK, this);
+        }
+        return availableSubgroupToLink;
+    }
+    public void clearAvailableSubgroupsToAndRemoveObserver(Observer<ArrayList<Subgroup>> observer){
+        Log.d(LOG_TAG, "clearAvailableSubgroupsTo()");
+        availableSubgroupToLink.setValue(null);
+        availableSubgroupToLink.removeObserver(observer);
+    }
+    @Override
+    public void onLoaded(ArrayList<Subgroup> subgroups) {
+        Log.d(LOG_TAG, "onLoaded()");
+        availableSubgroupToLink.setValue(subgroups);
     }
 }

@@ -9,14 +9,15 @@ import androidx.lifecycle.LiveData;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import ru.nikshlykov.englishwordsapp.db.example.ExampleDao;
-import ru.nikshlykov.englishwordsapp.db.group.Group;
 import ru.nikshlykov.englishwordsapp.db.group.GroupDao;
 import ru.nikshlykov.englishwordsapp.db.link.Link;
 import ru.nikshlykov.englishwordsapp.db.link.LinkDao;
@@ -30,6 +31,9 @@ import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup;
 import ru.nikshlykov.englishwordsapp.db.subgroup.SubgroupDao;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
 import ru.nikshlykov.englishwordsapp.db.word.WordDao;
+
+import static ru.nikshlykov.englishwordsapp.ui.word.LinkOrDeleteWordDialogFragment.TO_DELETE;
+import static ru.nikshlykov.englishwordsapp.ui.word.LinkOrDeleteWordDialogFragment.TO_LINK;
 
 public class AppRepository {
 
@@ -63,7 +67,7 @@ public class AppRepository {
      * Методы для работы со словами.
      */
 
-    public void insert(Word word, OnWordInsertedListener listener){
+    public void insert(Word word, OnWordInsertedListener listener) {
         NewInsertWordAsyncTask task = new NewInsertWordAsyncTask(wordDao, listener);
         task.execute(word);
     }
@@ -91,7 +95,7 @@ public class AppRepository {
         return wordDao.getLiveDataWordById(wordId);
     }
 
-    public void getWord(long wordId, OnWordLoadedListener listener){
+    public void getWord(long wordId, OnWordLoadedListener listener) {
         GetWordAsyncTask task = new GetWordAsyncTask(wordDao, listener);
         task.execute(wordId);
     }
@@ -133,15 +137,16 @@ public class AppRepository {
      * AsyncTasks для работы со словами.
      */
 
-    public interface OnWordInsertedListener{
+    public interface OnWordInsertedListener {
         void onInserted(long wordId);
     }
-    private static class NewInsertWordAsyncTask extends AsyncTask<Word, Void, Long>{
+
+    private static class NewInsertWordAsyncTask extends AsyncTask<Word, Void, Long> {
         private WordDao wordDao;
         private WeakReference<OnWordInsertedListener> listener;
 
         private NewInsertWordAsyncTask(WordDao wordDao,
-                                 OnWordInsertedListener listener){
+                                       OnWordInsertedListener listener) {
             this.wordDao = wordDao;
             this.listener = new WeakReference<>(listener);
         }
@@ -156,7 +161,7 @@ public class AppRepository {
         protected void onPostExecute(Long wordId) {
             super.onPostExecute(wordId);
             OnWordInsertedListener listener = this.listener.get();
-            if (listener != null){
+            if (listener != null) {
                 listener.onInserted(wordId);
             }
         }
@@ -204,15 +209,16 @@ public class AppRepository {
         }
     }
 
-    public interface OnWordLoadedListener{
+    public interface OnWordLoadedListener {
         void onLoaded(Word word);
     }
-    private static class GetWordAsyncTask extends AsyncTask<Long, Void, Word>{
+
+    private static class GetWordAsyncTask extends AsyncTask<Long, Void, Word> {
         private WordDao wordDao;
         private WeakReference<OnWordLoadedListener> listener;
 
         private GetWordAsyncTask(WordDao wordDao,
-                                     OnWordLoadedListener listener){
+                                 OnWordLoadedListener listener) {
             this.wordDao = wordDao;
             this.listener = new WeakReference<>(listener);
         }
@@ -226,7 +232,7 @@ public class AppRepository {
         protected void onPostExecute(Word word) {
             super.onPostExecute(word);
             OnWordLoadedListener listener = this.listener.get();
-            if (listener != null){
+            if (listener != null) {
                 listener.onLoaded(word);
             }
         }
@@ -292,7 +298,7 @@ public class AppRepository {
         return null;
     }
 
-    public void getSubgroup(long subgroupId, OnSubgroupLoadedListener listener){
+    public void getSubgroup(long subgroupId, OnSubgroupLoadedListener listener) {
         GetSubgroupAsyncTask task = new GetSubgroupAsyncTask(subgroupDao, listener);
         task.execute(subgroupId);
     }
@@ -332,6 +338,13 @@ public class AppRepository {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public void getAvailableSubgroupTo(long wordId, int flagTo, OnSubgroupsLoadedListener listener) {
+        Log.d(LOG_TAG, "getAvailableSubgroupsTo()");
+        GetAvailableSubgroupsToAsyncTask task = new GetAvailableSubgroupsToAsyncTask(subgroupDao,
+                linkDao, flagTo, listener);
+        task.execute(wordId);
     }
 
     /**
@@ -410,7 +423,7 @@ public class AppRepository {
         }
     }
 
-    public interface OnSubgroupLoadedListener{
+    public interface OnSubgroupLoadedListener {
         void onLoaded(Subgroup subgroup);
     }
     private static class GetSubgroupAsyncTask extends AsyncTask<Long, Void, Subgroup> {
@@ -418,7 +431,7 @@ public class AppRepository {
         private WeakReference<OnSubgroupLoadedListener> listener;
 
         private GetSubgroupAsyncTask(SubgroupDao subgroupDao,
-                                                   OnSubgroupLoadedListener listener){
+                                     OnSubgroupLoadedListener listener) {
             this.subgroupDao = subgroupDao;
             this.listener = new WeakReference<>(listener);
         }
@@ -432,7 +445,7 @@ public class AppRepository {
         protected void onPostExecute(Subgroup subgroup) {
             super.onPostExecute(subgroup);
             OnSubgroupLoadedListener listener = this.listener.get();
-            if (listener != null){
+            if (listener != null) {
                 listener.onLoaded(subgroup);
             }
         }
@@ -478,6 +491,89 @@ public class AppRepository {
         }
     }
 
+    public interface OnSubgroupsLoadedListener {
+        void onLoaded(ArrayList<Subgroup> subgroups);
+    }
+    private static class GetAvailableSubgroupsToAsyncTask extends AsyncTask<Long, Void, ArrayList<Subgroup>> {
+        private SubgroupDao subgroupDao;
+        private LinkDao linkDao;
+        private WeakReference<OnSubgroupsLoadedListener> listener;
+        private int flagTo;
+
+        private GetAvailableSubgroupsToAsyncTask(SubgroupDao subgroupDao, LinkDao linkDao,
+                                                 int flagTo, OnSubgroupsLoadedListener listener) {
+            this.subgroupDao = subgroupDao;
+            this.linkDao = linkDao;
+            this.flagTo = flagTo;
+            this.listener = new WeakReference<>(listener);
+        }
+
+        @Override
+        protected ArrayList<Subgroup> doInBackground(Long... longs) {
+            // Получаем подгруппы, созданные пользователем и проверяем, что они вообще есть.
+            Subgroup[] createdByUserSubgroups = subgroupDao.getCreatedByUserSubgroups();
+            if (createdByUserSubgroups.length != 0) {
+                // Получаем все связи нашего слова и проверяем, что они вообще есть.
+                // На данный момент они точно будут, но если мы будем делать что-то типа словаря,
+                // в котором слово не обязательно залинковано с подгруппой, то эта проверка потребуется.
+                Link[] linksWithWord = linkDao.getLinksByWordId(longs[0]);
+                if (linksWithWord.length != 0) {
+
+                    // Делаем коллекцию из id связанных с нашим словом подгрупп и заполняем её.
+                    HashSet<Long> linkedWithWordSubgroupsIds = new HashSet<>(linksWithWord.length);
+                    for (Link link : linksWithWord) {
+                        linkedWithWordSubgroupsIds.add(link.getSubgroupId());
+                    }
+
+                    // Делаем коллекцию доступных подгрупп и заполняем её пока созданными группами.
+                    HashSet<Long> availableSubgroupsIds = new HashSet<>(createdByUserSubgroups.length);
+                    for (Subgroup subgroup : createdByUserSubgroups) {
+                        availableSubgroupsIds.add(subgroup.id);
+                    }
+
+                    if (flagTo == TO_LINK) {
+                        // Удаляем из коллекции те id подгрупп, с которыми уже связано слово.
+                        availableSubgroupsIds.removeAll(linkedWithWordSubgroupsIds);
+                    } else if (flagTo == TO_DELETE) {
+                        // Оставляем в коллекции те id подгрупп, с которыми уже связано слово.
+                        availableSubgroupsIds.retainAll(linkedWithWordSubgroupsIds);
+                    }
+
+                    // Теперь коллекция действительно содержит id доступных подгрупп.
+
+
+                    ArrayList<Subgroup> availableSubgroups;
+                    // Проверяем, что коллекция не пустая
+                    if (availableSubgroupsIds.size() != 0) {
+                        // Заполняем список доступных подгрупп.
+                        availableSubgroups = new ArrayList<>(availableSubgroupsIds.size());
+                        for (Long availableSubgroupId : availableSubgroupsIds) {
+                            availableSubgroups.add(subgroupDao.getSubgroupById(availableSubgroupId));
+                        }
+                    } else {
+                        availableSubgroups = new ArrayList<>();
+                    }
+
+                    return availableSubgroups;
+                } else {
+                    return new ArrayList<>(Arrays.asList(createdByUserSubgroups));
+                }
+            } else {
+                return new ArrayList<>();
+            }
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Subgroup> subgroup) {
+            super.onPostExecute(subgroup);
+            OnSubgroupsLoadedListener listener = this.listener.get();
+            if (listener != null) {
+                listener.onLoaded(subgroup);
+            }
+        }
+
+
+    }
 
     /**
      * Методы для работы с группами.

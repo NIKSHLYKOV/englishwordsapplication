@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Locale;
 
 import androidx.annotation.Nullable;
@@ -23,7 +24,10 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import ru.nikshlykov.englishwordsapp.R;
+import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
+
+import static ru.nikshlykov.englishwordsapp.ui.word.LinkOrDeleteWordDialogFragment.TO_DELETE;
 
 public class WordActivity extends AppCompatActivity
         implements ResetProgressDialogFragment.ResetProgressListener {
@@ -57,6 +61,10 @@ public class WordActivity extends AppCompatActivity
 
     // ViewModel для работы с БД.
     private WordViewModel wordViewModel;
+    // Observer отвечающий за обработку подгруженных подгрупп для связывания или удаления.
+    public Observer<ArrayList<Subgroup>> availableSubgroupsObserver;
+    // Флаг, который будет передаваться observer'ом в LinkOrDeleteDialogFragment.
+    private int linkOrDeleteFlag;
 
     // Синтезатор речи.
     private TextToSpeech TTS;
@@ -79,6 +87,8 @@ public class WordActivity extends AppCompatActivity
         getWordIdAndPrepareInterface();
 
         initSaveButtonClick();
+
+        initAvailableSubgroupsObserver();
     }
 
     @Override
@@ -212,6 +222,51 @@ public class WordActivity extends AppCompatActivity
     }
 
     /**
+     * Инициализирует availableSubgroupsObserver.
+     */
+    private void initAvailableSubgroupsObserver(){
+        availableSubgroupsObserver = new Observer<ArrayList<Subgroup>>() {
+            @Override
+            public void onChanged(ArrayList<Subgroup> subgroups) {
+                Log.d(LOG_TAG, "availableSubgroups onChanged()");
+                if (subgroups != null){
+                    Log.d(LOG_TAG, "availableSubgroups onChanged() value != null");
+                    LinkOrDeleteWordDialogFragment linkOrDeleteWordDialogFragment =
+                            new LinkOrDeleteWordDialogFragment();
+                    Bundle arguments = new Bundle();
+
+                    arguments.putLong(LinkOrDeleteWordDialogFragment.EXTRA_WORD_ID,
+                            wordId);
+
+                    arguments.putInt(LinkOrDeleteWordDialogFragment.EXTRA_FLAG,
+                            linkOrDeleteFlag);
+
+                    long[] subgroupsIds = new long[subgroups.size()];
+                    String[] subgroupsNames = new String[subgroups.size()];
+                    for (int i = 0; i < subgroups.size(); i++){
+                        Subgroup subgroup = subgroups.get(i);
+                        subgroupsNames[i] = subgroup.name;
+                        subgroupsIds[i] = subgroup.id;
+                    }
+                    arguments.putStringArray(LinkOrDeleteWordDialogFragment.EXTRA_AVAILABLE_SUBGROUPS_NAMES,
+                            subgroupsNames);
+                    arguments.putLongArray(LinkOrDeleteWordDialogFragment.EXTRA_AVAILABLE_SUBGROUPS_IDS,
+                            subgroupsIds);
+
+                    linkOrDeleteWordDialogFragment.setArguments(arguments);
+
+                    linkOrDeleteWordDialogFragment.show(getSupportFragmentManager(), "some tag");
+
+                    wordViewModel.clearAvailableSubgroupsToAndRemoveObserver(availableSubgroupsObserver);
+                }
+                else{
+                    Log.d(LOG_TAG, "availableSubgroups onChanged() value = null");
+                }
+            }
+        };
+    }
+
+    /**
      * Устанавливаем параметры слова (слово, транскрипция, перевод, часть речи, прогресс в разные View.
      */
     private void setWordToViews(Word word) {
@@ -301,25 +356,21 @@ public class WordActivity extends AppCompatActivity
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        FragmentManager manager = getSupportFragmentManager();
+        final FragmentManager manager = getSupportFragmentManager();
 
         // Bundle для передачи id слова в диалоговый фрагмент, который вызовется.
-        Bundle arguments = new Bundle();
-
+        final Bundle arguments = new Bundle();
         switch (item.getItemId()) {
+
             // Связывание слова с другой подгруппой.
             case R.id.activity_word___action___linkword:
                 Log.d(LOG_TAG, "Link word");
-                WordDialogsViewModel wordDialogsViewModel = new ViewModelProvider(this)
-                        .get(WordDialogsViewModel.class);
-
-                LinkOrDeleteWordDialogFragment linkDialog = new LinkOrDeleteWordDialogFragment();
-                arguments.putLong(LinkOrDeleteWordDialogFragment.EXTRA_WORD_ID, wordId);
-                arguments.putInt(LinkOrDeleteWordDialogFragment.EXTRA_FLAG,
-                        LinkOrDeleteWordDialogFragment.TO_LINK);
-                linkDialog.setArguments(arguments);
-                linkDialog.show(manager, DIALOG_LINK_WORD);
+                linkOrDeleteFlag = LinkOrDeleteWordDialogFragment.TO_LINK;
+                // Подписываемся на изменение доступных для связывания подгрупп.
+                wordViewModel.getAvailableSubgroupsTo(linkOrDeleteFlag).observe(this,
+                        availableSubgroupsObserver);
                 return true;
+
             // Сбрасывание прогресса слова
             case R.id.activity_word___action___resetwordprogress:
                 Log.d(LOG_TAG, "Reset word progress");
@@ -329,16 +380,16 @@ public class WordActivity extends AppCompatActivity
                 resetProgressDialogFragment.setArguments(arguments);
                 resetProgressDialogFragment.show(manager, DIALOG_RESET_WORD_PROGRESS);
                 return true;
+
             // Удаление слова из подгруппы / из всех подгрупп.
             case R.id.delete_word:
                 Log.d(LOG_TAG, "Delete word");
-                LinkOrDeleteWordDialogFragment deleteDialog = new LinkOrDeleteWordDialogFragment();
-                arguments.putLong(LinkOrDeleteWordDialogFragment.EXTRA_WORD_ID, wordId);
-                arguments.putInt(LinkOrDeleteWordDialogFragment.EXTRA_FLAG,
-                        LinkOrDeleteWordDialogFragment.TO_DELETE);
-                deleteDialog.setArguments(arguments);
-                deleteDialog.show(manager, DIALOG_DELETE_WORD);
+                linkOrDeleteFlag = TO_DELETE;
+                // Подписываемся на изменение доступных для связывания подгрупп.
+                wordViewModel.getAvailableSubgroupsTo(linkOrDeleteFlag).observe(this,
+                        availableSubgroupsObserver);
                 return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }

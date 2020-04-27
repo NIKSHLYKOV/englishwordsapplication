@@ -1,22 +1,33 @@
 package ru.nikshlykov.englishwordsapp.ui.word;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
+
+import java.util.ArrayList;
 
 import ru.nikshlykov.englishwordsapp.db.AppRepository;
+import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
 
-public class WordViewModel extends AndroidViewModel {
+public class WordViewModel extends AndroidViewModel
+        implements AppRepository.OnSubgroupsLoadedListener {
+    private static final String LOG_TAG = "WordViewModel";
     private AppRepository repository;
 
     private LiveData<Word> liveDataWord;
 
+    private MutableLiveData<ArrayList<Subgroup>> availableSubgroupsTo;
+
     public WordViewModel(@NonNull Application application) {
         super(application);
         repository = new AppRepository(application);
+        availableSubgroupsTo = new MutableLiveData<>();
     }
 
     public void setLiveDataWord(long wordId) {
@@ -37,15 +48,25 @@ public class WordViewModel extends AndroidViewModel {
         }
     }
 
-    public void update() {
-        repository.update(liveDataWord.getValue());
+
+
+    public MutableLiveData<ArrayList<Subgroup>> getAvailableSubgroupsTo(int flag) {
+        if (availableSubgroupsTo.getValue() == null){
+            Log.d(LOG_TAG, "availableSubgroupsTo value = null");
+            repository.getAvailableSubgroupTo(liveDataWord.getValue().id, flag, this);
+        }
+        return availableSubgroupsTo;
     }
 
-    public void delete() {
-        repository.delete(liveDataWord.getValue());
+    public void clearAvailableSubgroupsToAndRemoveObserver(Observer<ArrayList<Subgroup>> observer){
+        Log.d(LOG_TAG, "clearAvailableSubgroupsTo()");
+        availableSubgroupsTo.setValue(null);
+        availableSubgroupsTo.removeObserver(observer);
     }
 
-    public void getWord(long wordId, AppRepository.OnWordLoadedListener listener){
-        repository.getWord(wordId, listener);
+    @Override
+    public void onLoaded(ArrayList<Subgroup> subgroups) {
+        Log.d(LOG_TAG, "onLoaded()");
+        availableSubgroupsTo.setValue(subgroups);
     }
 }

@@ -10,16 +10,22 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
+
+import java.util.ArrayList;
+
 import ru.nikshlykov.englishwordsapp.R;
+import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup;
 
 public class LinkOrDeleteWordDialogFragment extends DialogFragment {
 
     // Тег для логирования.
-    private static final String LOG_TAG = "LinkOrDeleteWordDF";
+    private static final String LOG_TAG = "NewLinkOrDeleteWordDF";
 
     // Ключи для получения аргументов.
     public static final String EXTRA_FLAG = "Flag";
     public static final String EXTRA_WORD_ID = "WordId";
+    public static final String EXTRA_AVAILABLE_SUBGROUPS_NAMES = "AvailableSubgroupsNames";
+    public static final String EXTRA_AVAILABLE_SUBGROUPS_IDS = "AvailableSubgroupsIds";
 
     // Флаг, который отвечает за подбираемые подгруппы.
     private int flag;
@@ -30,6 +36,8 @@ public class LinkOrDeleteWordDialogFragment extends DialogFragment {
     // id слова, для которого вызывается диалог.
     private long wordId;
 
+    private String[] availableSubgroupsNames;
+    private long[] availableSubgroupsIds;
     // Массив значений чекбоксов подгрупп.
     private boolean[] checkedSubgroups;
 
@@ -46,14 +54,6 @@ public class LinkOrDeleteWordDialogFragment extends DialogFragment {
         // Создаём ViewModel.
         wordDialogsViewModel = new ViewModelProvider(getActivity()).get(WordDialogsViewModel.class);
         wordDialogsViewModel.setWordId(wordId);
-        switch (flag) {
-            case TO_LINK:
-                wordDialogsViewModel.setAvailableSubgroups(WordDialogsViewModel.TO_LINK);
-                break;
-            case TO_DELETE:
-                wordDialogsViewModel.setAvailableSubgroups(WordDialogsViewModel.TO_DELETE);
-                break;
-        }
     }
 
     @NonNull
@@ -61,10 +61,12 @@ public class LinkOrDeleteWordDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         Log.d(LOG_TAG, "onCreateDialog");
         // Получаем названия доступных подгрупп.
-        String[] availableSubgroupsNames = wordDialogsViewModel.getAvailableSubgroupsNames();
         int availableSubgroupsCount = 0;
-        if (availableSubgroupsNames != null)
+        if (availableSubgroupsNames != null) {
+            Log.d(LOG_TAG, "availableSubgroupsNames != null");
             availableSubgroupsCount = availableSubgroupsNames.length;
+        }
+        Log.d(LOG_TAG, "availableSubgroupsCount = " + availableSubgroupsCount);
 
         // Выводим dialog в зависимости от того, есть доступные подгруппы или их нет.
         if (availableSubgroupsCount != 0) {
@@ -79,7 +81,14 @@ public class LinkOrDeleteWordDialogFragment extends DialogFragment {
         // Получаем id слова.
         try {
             wordId = arguments.getLong(EXTRA_WORD_ID);
+            Log.d(LOG_TAG, "wordId: " + wordId);
             flag = arguments.getInt(EXTRA_FLAG);
+            Log.d(LOG_TAG, "Flag: " + flag);
+            availableSubgroupsNames = arguments.getStringArray(EXTRA_AVAILABLE_SUBGROUPS_NAMES);
+            availableSubgroupsIds = arguments.getLongArray(EXTRA_AVAILABLE_SUBGROUPS_IDS);
+            for (int i = 0; i < availableSubgroupsNames.length; i++){
+                Log.d(LOG_TAG, "Subgroup " + i + ": id=" + availableSubgroupsIds[i] + "; name=" + availableSubgroupsNames[i]);
+            }
         } catch (NullPointerException e) {
             Log.e(LOG_TAG, e.getMessage());
         }
@@ -90,7 +99,7 @@ public class LinkOrDeleteWordDialogFragment extends DialogFragment {
         checkedSubgroups = new boolean[availableSubgroupsCount];
         switch (flag) {
             case TO_LINK:
-                // Возвращаем диалог с подгруппами, доступными для удаления из них слова.
+                // Возвращаем диалог с подгруппами, доступными для связывания с ними.
                 return new AlertDialog.Builder(getActivity())
                         .setTitle(R.string.dialog___link_word___title)
                         .setMultiChoiceItems(availableSubgroupsNames, null, new DialogInterface.OnMultiChoiceClickListener() {
@@ -103,10 +112,10 @@ public class LinkOrDeleteWordDialogFragment extends DialogFragment {
                         .setPositiveButton(R.string.dialog___link_word___positive_button, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                // Удаляем связь между подгруппой и словом, если чекбокс выставлен.
+                                // Добавляем связь между подгруппой и словом, если чекбокс выставлен.
                                 for (int i = 0; i < checkedSubgroups.length; i++) {
                                     if (checkedSubgroups[i]) {
-                                        wordDialogsViewModel.insertLink(wordDialogsViewModel.getAvailableSubgroupId(i));
+                                        wordDialogsViewModel.insertLink(availableSubgroupsIds[i]);
                                     }
                                 }
                             }
@@ -130,7 +139,7 @@ public class LinkOrDeleteWordDialogFragment extends DialogFragment {
                                 // Удаляем связь между подгруппой и словом, если чекбокс выставлен.
                                 for (int i = 0; i < checkedSubgroups.length; i++) {
                                     if (checkedSubgroups[i]) {
-                                        wordDialogsViewModel.deleteLink(wordDialogsViewModel.getAvailableSubgroupId(i));
+                                        wordDialogsViewModel.deleteLink(availableSubgroupsIds[i]);
                                     }
                                 }
                             }

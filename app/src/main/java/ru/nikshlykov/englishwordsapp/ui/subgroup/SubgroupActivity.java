@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -82,6 +83,8 @@ public class SubgroupActivity extends AppCompatActivity
     private boolean subgroupIsCreatedByUser;
     private boolean deleteFlag;
     private SubgroupViewModel subgroupViewModel;
+
+    private Observer<ArrayList<Subgroup>> availableSubgroupsObserver;
 
     private int sortParam;
 
@@ -305,6 +308,48 @@ public class SubgroupActivity extends AppCompatActivity
         recyclerView = findViewById(R.id.activity_subgroup___recycler_view___words);
     }
 
+    private void setAvailableSubgroupsObserver(final long wordId){
+        availableSubgroupsObserver = new Observer<ArrayList<Subgroup>>() {
+            @Override
+            public void onChanged(ArrayList<Subgroup> subgroups) {
+                Log.d(LOG_TAG, "availableSubgroups onChanged()");
+                if (subgroups != null){
+                    Log.d(LOG_TAG, "availableSubgroups onChanged() value != null");
+                    LinkOrDeleteWordDialogFragment linkOrDeleteWordDialogFragment =
+                            new LinkOrDeleteWordDialogFragment();
+                    Bundle arguments = new Bundle();
+
+                    arguments.putLong(LinkOrDeleteWordDialogFragment.EXTRA_WORD_ID,
+                            wordId);
+
+                    arguments.putInt(LinkOrDeleteWordDialogFragment.EXTRA_FLAG,
+                            LinkOrDeleteWordDialogFragment.TO_LINK);
+
+                    long[] subgroupsIds = new long[subgroups.size()];
+                    String[] subgroupsNames = new String[subgroups.size()];
+                    for (int i = 0; i < subgroups.size(); i++){
+                        Subgroup subgroup = subgroups.get(i);
+                        subgroupsNames[i] = subgroup.name;
+                        subgroupsIds[i] = subgroup.id;
+                    }
+                    arguments.putStringArray(LinkOrDeleteWordDialogFragment.EXTRA_AVAILABLE_SUBGROUPS_NAMES,
+                            subgroupsNames);
+                    arguments.putLongArray(LinkOrDeleteWordDialogFragment.EXTRA_AVAILABLE_SUBGROUPS_IDS,
+                            subgroupsIds);
+
+                    linkOrDeleteWordDialogFragment.setArguments(arguments);
+
+                    linkOrDeleteWordDialogFragment.show(getSupportFragmentManager(), "some tag");
+
+                    subgroupViewModel.clearAvailableSubgroupsToAndRemoveObserver(availableSubgroupsObserver);
+                }
+                else{
+                    Log.d(LOG_TAG, "availableSubgroups onChanged() value = null");
+                }
+            }
+        };
+    }
+
     private void initLearnSubgroupCheckBox(Subgroup subgroup) {
         // Присваиваем чекбоксу изучения значение, находящееся в БД.
         learnSubgroupCheckBox.setChecked(subgroup.isStudied == 1);
@@ -436,12 +481,18 @@ public class SubgroupActivity extends AppCompatActivity
                             }).show();
                     break;
                 case ItemTouchHelper.RIGHT:
-                    LinkOrDeleteWordDialogFragment deleteDialog = new LinkOrDeleteWordDialogFragment();
+
+                    /*LinkOrDeleteWordDialogFragment deleteDialog = new LinkOrDeleteWordDialogFragment();
                     Bundle arguments = new Bundle();
                     arguments.putLong(LinkOrDeleteWordDialogFragment.EXTRA_WORD_ID, wordId);
                     arguments.putInt(LinkOrDeleteWordDialogFragment.EXTRA_FLAG, LinkOrDeleteWordDialogFragment.TO_LINK);
                     deleteDialog.setArguments(arguments);
-                    deleteDialog.show(getSupportFragmentManager(), DIALOG_LINK_WORD);
+                    deleteDialog.show(getSupportFragmentManager(), DIALOG_LINK_WORD);*/
+
+                    setAvailableSubgroupsObserver(wordId);
+                    subgroupViewModel.getAvailableSubgroupsToLink(wordId).observe(
+                            SubgroupActivity.this, availableSubgroupsObserver);
+
                     adapter.notifyDataSetChanged();
                     break;
             }
