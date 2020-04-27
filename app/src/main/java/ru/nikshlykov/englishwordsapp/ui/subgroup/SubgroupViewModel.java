@@ -6,38 +6,95 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
+import androidx.lifecycle.Observer;
 
 import ru.nikshlykov.englishwordsapp.db.AppRepository;
 import ru.nikshlykov.englishwordsapp.db.link.Link;
 import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
-public class SubgroupViewModel extends AndroidViewModel {
+public class SubgroupViewModel extends AndroidViewModel
+    implements AppRepository.OnWordInsertedListener {
+    private static final String LOG_TAG = "SubgroupViewModel";
     private AppRepository repository;
 
     private LiveData<Subgroup> liveDataSubgroup;
-    private LiveData<List<Word>> words;
+
+    // Список слов для Activity.
+    private MediatorLiveData<List<Word>> words;
+    // Источники данных для words.
+    private LiveData<List<Word>> wordsByAlphabet;
+    private LiveData<List<Word>> wordsByProgress;
+    // Observer, который сетит список слов в words.
+    private Observer<List<Word>> observer;
 
     public SubgroupViewModel(@NonNull Application application) {
         super(application);
         repository = new AppRepository(application);
+        words = new MediatorLiveData<>();
+        observer = new Observer<List<Word>>() {
+            @Override
+            public void onChanged(List<Word> words) {
+                SubgroupViewModel.this.words.setValue(words);
+            }
+        };
     }
 
-
-    public void setLiveDataSubgroup(long id) {
+    /**
+     * Проводит базовую инициализацию.
+     *
+     * @param id        подгруппы, который необходим для подгрузки её самой и залинкованных с ней.
+     * @param sortParam параметр сортировки.
+     */
+    public void setLiveDataSubgroup(long id, int sortParam) {
+        // Подгружаем подгруппу и возможные списки слов для words.
         liveDataSubgroup = repository.getLiveDataSubgroupById(id);
-        words = repository.getWordsFromSubgroupByProgress(id);
+        wordsByAlphabet = repository.getWordsFromSubgroupByAlphabet(id);
+        wordsByProgress = repository.getWordsFromSubgroupByProgress(id);
+        // Устанавниваем начальный источник для words в зависимости от параметра сортировки.
+        switch (sortParam) {
+            case SortWordsDialogFragment.BY_ALPHABET:
+                words.addSource(wordsByAlphabet, observer);
+                break;
+            default:
+                words.addSource(wordsByProgress, observer);
+                break;
+        }
     }
+
+
+
+    /**
+     * Методы для работы с подгруппой.
+     */
 
     public LiveData<Subgroup> getLiveDataSubgroup() {
         return liveDataSubgroup;
     }
 
+    /**
+     * Удаляет подгруппу.
+     */
+    public void deleteSubgroup() {
+        repository.delete(liveDataSubgroup.getValue());
+    }
+
+    /**
+     * Обновляет поле подгруппы в БД.
+     * Обновление необходимо только для параметра изучения (IsStudied).
+     */
+    public void updateSubgroup() {
+        repository.update(liveDataSubgroup.getValue());
+    }
+
+    /**
+     * Устанавливает параметр изучения для подгруппы.
+     *
+     * @param isStudied значение параметра isChecked чекбокса.
+     */
     public void setIsStudied(boolean isStudied) {
         if (liveDataSubgroup.getValue() != null) {
             if (isStudied) {
@@ -48,42 +105,37 @@ public class SubgroupViewModel extends AndroidViewModel {
         }
     }
 
-    public LiveData<List<Word>> getWords() {
+
+
+    /**
+     * Методы для работы со словами, залинкованными с подгруппой.
+     */
+
+    public MediatorLiveData<List<Word>> getWords() {
         return words;
     }
 
-    public void sortWords(int param) {
-        switch (param) {
+    /**
+     * Меняет источник данных для words, создавая эффект сортировки.
+     *
+     * @param sortParam параметр сортировки.
+     */
+    public void sortWords(int sortParam) {
+        switch (sortParam) {
             case SortWordsDialogFragment.BY_ALPHABET:
-                Collections.sort(words.getValue(), new Comparator<Word>() {
-                    @Override
-                    public int compare(Word o1, Word o2) {
-                        return o1.word.compareTo(o2.word);
-                    }
-                });
+                words.removeSource(wordsByProgress);
+                words.addSource(wordsByAlphabet, observer);
                 break;
             case SortWordsDialogFragment.BY_PROGRESS:
-                Collections.sort(words.getValue(), new Comparator<Word>() {
-                    @Override
-                    public int compare(Word o1, Word o2) {
-                        return o2.learnProgress - o1.learnProgress;
-                    }
-                });
+                words.removeSource(wordsByAlphabet);
+                words.addSource(wordsByProgress, observer);
                 break;
         }
-        /*if (liveDataSubgroup.getValue() != null) {
-            final long subgroupId = liveDataSubgroup.getValue().id;
-            switch (param) {
-                case SortWordsDialogFragment.BY_ALPHABET:
-                    words = repository.getWordsFromSubgroupByAlphabet(subgroupId);
-                    break;
-                case SortWordsDialogFragment.BY_PROGRESS:
-                    words = repository.getWordsFromSubgroupByProgress(subgroupId);
-                    break;
-            }
-        }*/
     }
 
+    /**
+     * Сбрасывает прогресс по всем словам, залинкованным с данной подгруппой.
+     */
     public void resetWordsProgress() {
         Subgroup subgroup = liveDataSubgroup.getValue();
         // Прописать обновление у всех слова данной подгруппы.
@@ -92,16 +144,15 @@ public class SubgroupViewModel extends AndroidViewModel {
         }
     }
 
-    public void deleteSubgroup(){
-        repository.delete(liveDataSubgroup.getValue());
-    }
-
-    public void updateSubgroup() {
-        repository.update(liveDataSubgroup.getValue());
-    }
-
-
-    public void updateWord(final long wordId, final String word, final String value, final String transcription) {
+    /**
+     * Обновляет существующее слово.
+     * @param wordId id слова.
+     * @param word само слово.
+     * @param value значение слова.
+     * @param transcription транскрипция слова.
+     */
+    public void updateWord(final long wordId, final String word, final String value,
+                           final String transcription) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -115,36 +166,53 @@ public class SubgroupViewModel extends AndroidViewModel {
     }
 
 
-    private long insert(Word word) {
-        word.id = repository.getMinWordId() - 1;
-        return repository.insert(word);
+    /**
+     * Добавляет новое слово в БД и закидывает SubgroupViewModel в виде слушателя
+     * для последующего приёма id добавленного слова.
+     * @param word слово, которое необходимо добавить.
+     */
+    public void insert(Word word){
+        Log.i(LOG_TAG, "insert():\n" +
+                "word = " + word.word + "; value = " + word.value);
+        repository.insert(word, this);
     }
 
-    public void insertWordToSubgroup(final Word word) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                long newWordId = insert(word);
-                if (liveDataSubgroup.getValue() != null) {
-                    final long subgroupId = liveDataSubgroup.getValue().id;
-                    Link linkWithThisSubgroup = new Link(subgroupId, newWordId);
-                    repository.insert(linkWithThisSubgroup);
-                }
-            }
-        }).start();
+    /**
+     * Добавляет связь добавленого слова с текущей подгруппой.
+     * @param wordId id добавленного слова.
+     */
+    @Override
+    public void onInserted(long wordId) {
+        Log.i(LOG_TAG, "onInserted():\nwordId = " + wordId);
+        Subgroup subgroup = liveDataSubgroup.getValue();
+        if (subgroup != null) {
+            repository.insert(new Link(subgroup.id, wordId));
+        }
     }
 
-
+    /**
+     * Удаляет связь между текущей подгруппой и словом.
+     * @param wordId id слова.
+     */
     public void deleteLinkWithSubgroup(long wordId) {
-        if (liveDataSubgroup.getValue() != null) {
-            Link link = repository.getLink(wordId, liveDataSubgroup.getValue().id);
+        Subgroup subgroup = liveDataSubgroup.getValue();
+        if (subgroup != null) {
+            Link link = repository.getLink(wordId, subgroup.id);
             repository.delete(link);
         }
     }
 
+    /**
+     * Добавляет связь между текущей подгруппой и словом, которое из него удалилось.
+     * @param wordId id слова.
+     */
     public void insertLinkWithSubgroup(long wordId) {
-        if (liveDataSubgroup.getValue() != null) {
-            Link link = new Link(liveDataSubgroup.getValue().id, wordId);
+        Log.i("SubgroupViewModel", "insertLinkWithSubgroup()");
+        Subgroup subgroup = liveDataSubgroup.getValue();
+        if (subgroup != null) {
+            Link link = new Link(subgroup.id, wordId);
+            Log.i("SubgroupViewModel", "link.subgroupId = " + link.getSubgroupId() + ".\n"
+            + "link.wordId = " + link.getWordId());
             repository.insert(link);
         }
     }

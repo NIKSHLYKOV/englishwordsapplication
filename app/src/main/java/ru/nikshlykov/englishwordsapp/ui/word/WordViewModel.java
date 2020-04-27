@@ -6,10 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import java.util.Date;
-
 import ru.nikshlykov.englishwordsapp.db.AppRepository;
-import ru.nikshlykov.englishwordsapp.db.repeat.Repeat;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
 
 public class WordViewModel extends AndroidViewModel {
@@ -46,10 +43,6 @@ public class WordViewModel extends AndroidViewModel {
 
     public void delete() {
         repository.delete(liveDataWord.getValue());
-    }
-
-    public long insert(Word word) {
-        return repository.insert(word);
     }
 
     public void getWord(long wordId, AppRepository.OnWordLoadedListener listener){

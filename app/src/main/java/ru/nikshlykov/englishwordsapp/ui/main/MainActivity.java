@@ -31,6 +31,8 @@ public class MainActivity extends AppCompatActivity
     // Тег для логирования.
     private static final String LOG_TAG = "MainActivity";
 
+    public static final String PREFERENCE_FILE_NAME = "preferences";
+
     // View элементы.
     private BottomNavigationView navigation; // Нижнее меню.
     private LinearLayoutCompat contentLayout; // Layout для программного размещения в нём фрагментов.

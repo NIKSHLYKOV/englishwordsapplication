@@ -62,31 +62,10 @@ public class AppRepository {
     /**
      * Методы для работы со словами.
      */
-    public long getMinWordId() {
-        GetMinWordIdAsyncTask task = new GetMinWordIdAsyncTask(wordDao);
-        task.execute();
-        long minWordId = 0L;
-        try {
-            minWordId = task.get(5, TimeUnit.SECONDS);
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            e.printStackTrace();
-        }
-        return minWordId;
-    }
 
-    public long insert(Word word) {
-        InsertWordAsyncTask insertWordAsyncTask = new InsertWordAsyncTask(wordDao);
-        insertWordAsyncTask.execute(word);
-
-        long newWordId;
-
-        try {
-            newWordId = insertWordAsyncTask.get(5, TimeUnit.SECONDS);
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            e.printStackTrace();
-            return 0L;
-        }
-        return newWordId;
+    public void insert(Word word, OnWordInsertedListener listener){
+        NewInsertWordAsyncTask task = new NewInsertWordAsyncTask(wordDao, listener);
+        task.execute(word);
     }
 
     public void update(Word word) {
@@ -111,7 +90,6 @@ public class AppRepository {
     public LiveData<Word> getLiveDataWordById(long wordId) {
         return wordDao.getLiveDataWordById(wordId);
     }
-
 
     public void getWord(long wordId, OnWordLoadedListener listener){
         GetWordAsyncTask task = new GetWordAsyncTask(wordDao, listener);
@@ -154,34 +132,33 @@ public class AppRepository {
     /**
      * AsyncTasks для работы со словами.
      */
-    private static class GetMinWordIdAsyncTask extends AsyncTask<Void, Void, Long> {
-        private WordDao wordDao;
 
-        private GetMinWordIdAsyncTask(WordDao wordDao) {
-            this.wordDao = wordDao;
-        }
-
-        @Override
-        protected Long doInBackground(Void... voids) {
-            return wordDao.getWordWithMinId().id;
-        }
+    public interface OnWordInsertedListener{
+        void onInserted(long wordId);
     }
-
-    private static class InsertWordAsyncTask extends AsyncTask<Word, Void, Long> {
+    private static class NewInsertWordAsyncTask extends AsyncTask<Word, Void, Long>{
         private WordDao wordDao;
+        private WeakReference<OnWordInsertedListener> listener;
 
-        private InsertWordAsyncTask(WordDao wordDao) {
+        private NewInsertWordAsyncTask(WordDao wordDao,
+                                 OnWordInsertedListener listener){
             this.wordDao = wordDao;
+            this.listener = new WeakReference<>(listener);
         }
 
         @Override
         protected Long doInBackground(Word... words) {
+            words[0].id = wordDao.getWordWithMinId().id - 1;
             return wordDao.insert(words[0]);
         }
 
         @Override
-        protected void onPostExecute(Long aLong) {
-            super.onPostExecute(aLong);
+        protected void onPostExecute(Long wordId) {
+            super.onPostExecute(wordId);
+            OnWordInsertedListener listener = this.listener.get();
+            if (listener != null){
+                listener.onInserted(wordId);
+            }
         }
     }
 
@@ -537,6 +514,8 @@ public class AppRepository {
      * Методы для работы со связями.
      */
     public void insert(Link link) {
+        Log.i(LOG_TAG, "insert(link):\n" +
+                "subgroupId = " + link.getSubgroupId() + "; wordId = " + link.getWordId());
         new InsertLinkAsyncTask(linkDao).execute(link);
     }
 
@@ -579,11 +558,6 @@ public class AppRepository {
         @Override
         protected Long doInBackground(Link... links) {
             return linkDao.insert(links[0]);
-        }
-
-        @Override
-        protected void onPostExecute(Long aLong) {
-            super.onPostExecute(aLong);
         }
     }
 

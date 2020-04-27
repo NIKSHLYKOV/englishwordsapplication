@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,13 +20,17 @@ import ru.nikshlykov.englishwordsapp.ui.settings.SettingsViewModel;
 
 public class SortWordsDialogFragment extends DialogFragment {
 
+    // Параметр сортировки.
+    private int sortParam;
+    // Возможные значения параметра сортировки.
     public static final int BY_PROGRESS = 0;
     public static final int BY_ALPHABET = 1;
-    private String[] sortParams = {"По прогрессу", "По алфавиту"};
-    private int sortParam;
+    // Ключ для получения флага.
+    public static final String EXTRA_SORT_PARAM = "SortParam";
 
+    // Интерфейс для общения с активити.
     public interface SortWordsListener{
-        public void sort(int param);
+        public void sort(int sortParam);
     }
     private SortWordsListener sortWordsListener;
 
@@ -38,17 +43,20 @@ public class SortWordsDialogFragment extends DialogFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Здесь получим уже выставленный параметр сортировки.
-        // SettingsViewModel settingsViewModel = new SettingsViewModel(getActivity().getApplication());
+
+        // Получаем текущий параметр сортировки, переданный из Activity.
+        sortParam = getArguments().getInt(EXTRA_SORT_PARAM);
     }
 
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        // НЕ ЗАБЫТЬ ПОМЕНЯТЬ default value В SETSINGLECHOICEITEMS.
+        // Массив значений сортировки для диалога.
+        String[] sortParams = {"По прогрессу", "По алфавиту"};
+
         return new AlertDialog.Builder(getActivity())
                 .setTitle(R.string.dialog___sort_words___title)
-                .setSingleChoiceItems(sortParams, -1, new DialogInterface.OnClickListener() {
+                .setSingleChoiceItems(sortParams, sortParam, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         sortParam = which;
@@ -62,11 +70,5 @@ public class SortWordsDialogFragment extends DialogFragment {
                 })
                 .setNegativeButton(R.string.cancel, null)
                 .create();
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
     }
 }

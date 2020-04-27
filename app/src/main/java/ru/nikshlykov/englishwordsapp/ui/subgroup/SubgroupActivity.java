@@ -1,6 +1,7 @@
 package ru.nikshlykov.englishwordsapp.ui.subgroup;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -35,6 +36,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import ru.nikshlykov.englishwordsapp.R;
 import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
+import ru.nikshlykov.englishwordsapp.ui.main.MainActivity;
 import ru.nikshlykov.englishwordsapp.ui.word.LinkOrDeleteWordDialogFragment;
 import ru.nikshlykov.englishwordsapp.ui.word.ResetProgressDialogFragment;
 import ru.nikshlykov.englishwordsapp.ui.word.WordActivity;
@@ -47,6 +49,9 @@ public class SubgroupActivity extends AppCompatActivity
     // Ключи для получения аргументов.
     public static final String EXTRA_SUBGROUP_ID = "SubgroupId";
     public static final String EXTRA_IS_CREATED_BY_USER = "IsCreatedByUser";
+
+    // Ключ для получения параметра сортировки слов.
+    public static final String PREFERENCE_SORT_WORDS_IN_SUBGROUP = "SortWordsInSubgroup";
 
     // Возможные ответные коды из WordActivity.
     private static final int REQUEST_CODE_EDIT_EXISTING_WORD = 1;
@@ -73,15 +78,12 @@ public class SubgroupActivity extends AppCompatActivity
     private Drawable deleteIcon;
     private Drawable linkIcon;
 
-    // id подгруппы.
     private long subgroupId;
     private boolean subgroupIsCreatedByUser;
     private boolean deleteFlag;
     private SubgroupViewModel subgroupViewModel;
 
-    private MenuItem sortWords;
-    private MenuItem resetWordsProgress;
-    private MenuItem deleteSubgroup;
+    private int sortParam;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -94,13 +96,15 @@ public class SubgroupActivity extends AppCompatActivity
         // Находим View элементы из разметки.
         findViews();
 
-        // Создаём для Activity ViewModel.
-        subgroupViewModel = new ViewModelProvider(this).get(SubgroupViewModel.class);
-
         // Устанавливаем наш toolbar.
         setSupportActionBar(toolbar);
 
-        subgroupViewModel.setLiveDataSubgroup(subgroupId);
+        sortParam = getSortParam();
+
+        // Создаём для Activity ViewModel.
+        subgroupViewModel = new ViewModelProvider(this).get(SubgroupViewModel.class);
+
+        subgroupViewModel.setLiveDataSubgroup(subgroupId, sortParam);
         subgroupViewModel.getLiveDataSubgroup().observe(this, new Observer<Subgroup>() {
             @Override
             public void onChanged(Subgroup subgroup) {
@@ -154,6 +158,7 @@ public class SubgroupActivity extends AppCompatActivity
         super.onStop();
         if (!deleteFlag) {
             subgroupViewModel.updateSubgroup();
+            saveSortParam(sortParam);
         }
     }
 
@@ -161,8 +166,8 @@ public class SubgroupActivity extends AppCompatActivity
      * Метод обрабатывает результат работы WordActivity, которое может создавать новое слово
      * или редактировать уже существующее.
      *
-     * @param requestCode
-     * @param resultCode
+     * @param requestCode код запроса.
+     * @param resultCode код ответа.
      * @param data        содержит данные о слове. В любом случае там будут непустые слово (Word) и
      *                    значения (Value), а также транскрипция (Transcription), которая может быть пустой.
      *                    Дополнительно параметр может содержать id слова (WordId), если мы изменили
@@ -179,7 +184,7 @@ public class SubgroupActivity extends AppCompatActivity
 
             if (requestCode == REQUEST_CODE_CREATE_NEW_WORD) {
                 final Word newWord = new Word(word, transcription, value);
-                subgroupViewModel.insertWordToSubgroup(newWord);
+                subgroupViewModel.insert(newWord);
             }
 
             if (requestCode == REQUEST_CODE_EDIT_EXISTING_WORD) {
@@ -198,15 +203,12 @@ public class SubgroupActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         Log.d(LOG_TAG, "onCreateOptionsMenu()");
         getMenuInflater().inflate(R.menu.activity_subgroup_toolbar_menu, menu);
-        sortWords = menu.findItem(R.id.activity_subgroup___action___sort);
-        resetWordsProgress = menu.findItem(R.id.activity_subgroup___action___reset_words_progress);
-        deleteSubgroup = menu.findItem(R.id.activity_subgroup___action___delete_subgroup);
+        MenuItem deleteSubgroup = menu.findItem(R.id.activity_subgroup___action___delete_subgroup);
         if (!subgroupIsCreatedByUser) {
             deleteSubgroup.setVisible(false);
         }
         return true;
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         FragmentManager manager = getSupportFragmentManager();
@@ -216,6 +218,9 @@ public class SubgroupActivity extends AppCompatActivity
             case R.id.activity_subgroup___action___sort:
                 Log.d(LOG_TAG, "sort words");
                 SortWordsDialogFragment sortWordsDialogFragment = new SortWordsDialogFragment();
+                Bundle sortWordsDialogArguments = new Bundle();
+                sortWordsDialogArguments.putInt(SortWordsDialogFragment.EXTRA_SORT_PARAM, sortParam);
+                sortWordsDialogFragment.setArguments(sortWordsDialogArguments);
                 sortWordsDialogFragment.show(manager, DIALOG_SORT_WORDS);
                 return true;
             // Сбрасывание прогресса слов данной подгруппы.
@@ -223,10 +228,10 @@ public class SubgroupActivity extends AppCompatActivity
                 Log.d(LOG_TAG, "Reset words progress");
                 ResetProgressDialogFragment resetProgressDialogFragment =
                         new ResetProgressDialogFragment();
-                Bundle arguments = new Bundle();
-                arguments.putInt(ResetProgressDialogFragment.EXTRA_FLAG,
+                Bundle resetProgressDialogArguments = new Bundle();
+                resetProgressDialogArguments.putInt(ResetProgressDialogFragment.EXTRA_FLAG,
                         ResetProgressDialogFragment.FOR_SUBGROUP);
-                resetProgressDialogFragment.setArguments(arguments);
+                resetProgressDialogFragment.setArguments(resetProgressDialogArguments);
                 resetProgressDialogFragment.show(manager, DIALOG_RESET_WORDS_PROGRESS);
                 return true;
             // Удаление подгруппы.
@@ -240,11 +245,43 @@ public class SubgroupActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * Обрабатывает результат работы SortWordsDialogFragment.
+     * @param sortParam параметр сортировки, полученный из фрагмента.
+     */
     @Override
-    public void sort(int param) {
-        subgroupViewModel.sortWords(param);
-        recyclerView.getAdapter().notifyDataSetChanged();
+    public void sort(int sortParam) {
+        // Проверяем, изменился ли вообще параметр, чтобы не делать лишней работы.
+        if (this.sortParam != sortParam) {
+            // Устанавливаем новый параметр сортировки.
+            this.sortParam = sortParam;
+            // Сообщаем модели о том, что необходимо отсортировать слова.
+            subgroupViewModel.sortWords(sortParam);
+        }
     }
+
+    /**
+     * Достаёт параметр сортировки слов в подгруппе.
+     * @return параметр сортировки.
+     */
+    private int getSortParam() {
+        SharedPreferences sharedPreferences =
+                getSharedPreferences(MainActivity.PREFERENCE_FILE_NAME, MODE_PRIVATE);
+        return sharedPreferences.getInt(PREFERENCE_SORT_WORDS_IN_SUBGROUP,
+                SortWordsDialogFragment.BY_PROGRESS);
+    }
+
+    /**
+     * Сохраняет параметр сортировки слов в подгруппе.
+     * @param sortParam последний выставленный параметр сортировки.
+     */
+    private void saveSortParam(int sortParam){
+        SharedPreferences.Editor editor =
+                getSharedPreferences(MainActivity.PREFERENCE_FILE_NAME, MODE_PRIVATE).edit();
+        editor.putInt(PREFERENCE_SORT_WORDS_IN_SUBGROUP, sortParam);
+        editor.apply();
+    }
+
 
     /**
      * Получает из Extras id подгруппы и флаг того, создана ли она пользователем.

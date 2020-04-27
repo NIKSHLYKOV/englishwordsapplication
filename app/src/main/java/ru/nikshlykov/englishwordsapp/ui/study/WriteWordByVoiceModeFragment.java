@@ -10,6 +10,7 @@ import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -37,10 +38,11 @@ public class WriteWordByVoiceModeFragment extends Fragment {
     // Слушатель результата повтора.
     private RepeatResultListener repeatResultListener;
 
+    // Синтезатор речи.
     private TextToSpeech textToSpeech;
     private static final String TTS_ERROR = "Ошибка воспроизведения!";
 
-    // Views.
+    // Views элементы.
     private ImageButton voiceImageButton;
     private EditText userVariantEditText;
     private ImageButton confirmImageButton;
@@ -111,45 +113,62 @@ public class WriteWordByVoiceModeFragment extends Fragment {
                     voiceImageButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            textToSpeech.speak(word.word, TextToSpeech.QUEUE_FLUSH, null, "somethingID");
+                            textToSpeech.speak(word.word, TextToSpeech.QUEUE_FLUSH, null, "Id");
                         }
                     });
 
-                    confirmImageButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            voiceImageButton.setVisibility(View.GONE);
-                            confirmImageButton.setVisibility(View.GONE);
-                            userVariantEditText.setVisibility(View.GONE);
-
-                            ConstraintLayout mainLayout = (ConstraintLayout) v.getParent();
-
-                            int result = 0;
-                            String userVariantOfWord = userVariantEditText.getText().toString();
-                            if (userVariantOfWord.equals(word.word)) {
-                                result = 1;
-                                resultImageView.setImageResource(R.drawable.ic_done_white_48dp);
-                                mainLayout.setBackgroundResource(R.color.progress_4);
-                            } else {
-                                resultImageView.setImageResource(R.drawable.ic_clear_white_48dp);
-                                mainLayout.setBackgroundResource(R.color.progress_1);
-                            }
-                            resultImageView.setVisibility(View.VISIBLE);
-
-                            handler.sendEmptyMessageDelayed(result, 1000);
-                        }
-                    });
+                    initConfirmImageButton(word);
                 }
             }
         });
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        //textToSpeech.speak(wordViewModel.getLiveDataWord().getValue().word, TextToSpeech.QUEUE_FLUSH, null, "somethingID");
+    /**
+     * Устанавливает обработчик нажатия кнопке подтверждения.
+     * @param word слово.
+     */
+    private void initConfirmImageButton(final Word word) {
+        confirmImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Скрываем клавиатуру.
+                InputMethodManager imm = (InputMethodManager) getActivity()
+                        .getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(v.getWindowToken(),
+                        InputMethodManager.HIDE_NOT_ALWAYS);
+
+                // Скрываем View, ненужные для показа результата.
+                voiceImageButton.setVisibility(View.GONE);
+                confirmImageButton.setVisibility(View.GONE);
+                userVariantEditText.setVisibility(View.GONE);
+
+                // Находим полноэкранный layout для того, чтобы установить ему фон.
+                ConstraintLayout fullscreenLayout = (ConstraintLayout) v.getParent();
+
+                // Высчитываем результат.
+                // В зависимости от него показываем определённый фон с иконкой.
+                int result = 0;
+                String userVariantOfWord = userVariantEditText.getText().toString();
+                if (userVariantOfWord.equals(word.word)) {
+                    result = 1;
+                    resultImageView.setImageResource(R.drawable.ic_done_white_48dp);
+                    fullscreenLayout.setBackgroundResource(R.color.progress_4);
+                } else {
+                    resultImageView.setImageResource(R.drawable.ic_clear_white_48dp);
+                    fullscreenLayout.setBackgroundResource(R.color.progress_1);
+                }
+                resultImageView.setVisibility(View.VISIBLE);
+
+                // Отправляем handler'у отложенное сообщение, чтобы фон сначала повисел.
+                handler.sendEmptyMessageDelayed(result, 1000);
+            }
+        });
     }
 
+    /**
+     * Находит View элементы в разметке.
+     * @param v корневая View.
+     */
     private void findViews(View v) {
         voiceImageButton = v.findViewById(R.id.fragment_write_word_by_voice_mode___image_button___voice);
         userVariantEditText = v.findViewById(R.id.fragment_write_word_by_voice_mode___edit_text___user_variant);
