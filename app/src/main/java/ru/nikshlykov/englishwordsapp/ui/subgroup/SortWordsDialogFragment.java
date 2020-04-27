@@ -15,8 +15,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
 import ru.nikshlykov.englishwordsapp.R;
-import ru.nikshlykov.englishwordsapp.db.setting.Setting;
-import ru.nikshlykov.englishwordsapp.ui.settings.SettingsViewModel;
 
 public class SortWordsDialogFragment extends DialogFragment {
 
