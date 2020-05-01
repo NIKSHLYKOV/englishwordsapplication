@@ -95,6 +95,17 @@ public class SubgroupViewModel extends AndroidViewModel
         repository.update(liveDataSubgroup.getValue());
     }
 
+    public void updateSubgroupName(final String newSubgroupName){
+        final Subgroup subgroup = liveDataSubgroup.getValue();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                subgroup.name = newSubgroupName;
+                repository.update(subgroup);
+            }
+        }).start();
+    }
+
     /**
      * Устанавливает параметр изучения для подгруппы.
      *

@@ -10,20 +10,26 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import ru.nikshlykov.englishwordsapp.db.AppRepository;
+import ru.nikshlykov.englishwordsapp.db.example.Example;
 import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
 
 public class WordViewModel extends AndroidViewModel
         implements AppRepository.OnSubgroupsLoadedListener {
+
     private static final String LOG_TAG = "WordViewModel";
+
     private AppRepository repository;
 
     private LiveData<Word> liveDataWord;
 
     // Список подгрупп для добавления или удаления связи с ними.
     private MutableLiveData<ArrayList<Subgroup>> availableSubgroupsTo;
+
+    private LiveData<List<Example>> examples;
 
     public WordViewModel(@NonNull Application application) {
         super(application);
@@ -33,6 +39,7 @@ public class WordViewModel extends AndroidViewModel
 
     public void setLiveDataWord(long wordId) {
         liveDataWord = repository.getLiveDataWordById(wordId);
+        examples = repository.getExamplesByWordId(wordId);
     }
     public LiveData<Word> getLiveDataWord() {
         return liveDataWord;
@@ -72,5 +79,10 @@ public class WordViewModel extends AndroidViewModel
     public void onLoaded(ArrayList<Subgroup> subgroups) {
         Log.d(LOG_TAG, "onLoaded()");
         availableSubgroupsTo.setValue(subgroups);
+    }
+
+
+    public LiveData<List<Example>> getExamples() {
+        return examples;
     }
 }

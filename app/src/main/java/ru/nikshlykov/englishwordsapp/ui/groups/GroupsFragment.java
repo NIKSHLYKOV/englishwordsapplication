@@ -16,14 +16,13 @@ import android.widget.SimpleCursorTreeAdapter;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import ru.nikshlykov.englishwordsapp.R;
 import ru.nikshlykov.englishwordsapp.db.AppRepository;
 import ru.nikshlykov.englishwordsapp.db.group.Group;
 import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup;
-import ru.nikshlykov.englishwordsapp.ui.subgroup.AddSubgroupActivity;
+import ru.nikshlykov.englishwordsapp.ui.subgroup.AddOrEditSubgroupActivity;
 import ru.nikshlykov.englishwordsapp.ui.subgroup.SubgroupActivity;
 
 import static android.app.Activity.RESULT_OK;
@@ -83,7 +82,7 @@ public class GroupsFragment extends Fragment {
         newSubgroupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, AddSubgroupActivity.class);
+                Intent intent = new Intent(context, AddOrEditSubgroupActivity.class);
                 startActivityForResult(intent, REQUEST_CODE_CREATE_SUBGROUP);
             }
         });
@@ -151,7 +150,7 @@ public class GroupsFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == REQUEST_CODE_CREATE_SUBGROUP && resultCode == RESULT_OK) {
-            String newSubgroupName = data.getStringExtra(AddSubgroupActivity.EXTRA_NEW_SUBGROUP_NAME);
+            String newSubgroupName = data.getStringExtra(AddOrEditSubgroupActivity.EXTRA_SUBGROUP_NAME);
             groupsViewModel.insertSubgroup(newSubgroupName);
         }
     }

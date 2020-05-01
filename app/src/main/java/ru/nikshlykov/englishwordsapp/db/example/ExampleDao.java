@@ -1,5 +1,6 @@
 package ru.nikshlykov.englishwordsapp.db.example;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -33,4 +34,7 @@ public interface ExampleDao {
 
     @Query("SELECT * FROM Examples WHERE WordID = :wordId")
     Example[] getExamplesByWordId(long wordId);
+
+    @Query("SELECT * FROM Examples WHERE WordID = :wordId")
+    LiveData<List<Example>> getLiveDataExamplesByWordId(long wordId);
 }

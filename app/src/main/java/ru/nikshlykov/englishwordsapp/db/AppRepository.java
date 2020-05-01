@@ -17,6 +17,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import ru.nikshlykov.englishwordsapp.db.example.Example;
 import ru.nikshlykov.englishwordsapp.db.example.ExampleDao;
 import ru.nikshlykov.englishwordsapp.db.group.GroupDao;
 import ru.nikshlykov.englishwordsapp.db.link.Link;
@@ -755,4 +756,14 @@ public class AppRepository {
                 return 0L;
         }
     }
+
+
+    /**
+     * Методы для работы с примерами.
+     */
+
+    public LiveData<List<Example>> getExamplesByWordId(long wordId){
+        return exampleDao.getLiveDataExamplesByWordId(wordId);
+    }
+
 }

@@ -17,7 +17,7 @@ public class ChooseFromFourVariantsModeFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_choose_from_four_variants_mode, null);
+        return inflater.inflate(R.layout.fragment_choose_from_four_mode, null);
     }
 
 

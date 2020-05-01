@@ -1,17 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/activity_word___frame_layout___main_layout"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
     android:orientation="vertical"
-    tools:context=".ui.word.WordActivity">
+    android:background="white">
+
+    <Button
+        android:id="@+id/activity_word___button___save_word"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="8dp"
+        android:background="@drawable/shape_darkblue_20dp"
+        android:text="@string/save_word"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/activity_word___button___save_word"
         android:orientation="vertical">
 
         <androidx.appcompat.widget.Toolbar
@@ -28,8 +42,8 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:gravity="center"
                 android:layout_gravity="center|start"
+                android:gravity="center"
                 android:orientation="horizontal"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp">
@@ -41,7 +55,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
                     android:text="@string/progress"
-                    android:textColor="@color/colorPrimary"/>
+                    android:textColor="@color/colorPrimary" />
 
                 <LinearLayout
                     android:id="@+id/activity_word___linear_layout___progress_view_background"
@@ -49,14 +63,8 @@
                     android:layout_height="12dp"
                     android:layout_marginTop="2dp"
                     android:background="@drawable/shape_background_progress"
-                    android:padding="1dp">
-
-                    <!--<View
-                        android:id="@+id/activity_word___progress_bar___learn_progress"
-                        android:layout_width="100dp"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/shape_progress_3" />-->
-                </LinearLayout>
+                    android:orientation="horizontal"
+                    android:padding="1dp"/>
 
             </LinearLayout>
 
@@ -64,9 +72,9 @@
                 android:id="@+id/activity_word___button___tts"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
+                android:layout_gravity="center|end"
                 android:layout_marginTop="4dp"
                 android:layout_marginEnd="8dp"
-                android:layout_gravity="center|end"
                 android:background="@drawable/ic_play_circle_outline_dark_blue_36dp" />
         </FrameLayout>
 
@@ -95,7 +103,6 @@
                 android:paddingStart="3dp"
                 android:paddingEnd="3dp"
                 android:text="@string/word"
-                android:textColor="@color/colorPrimary"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.527"
                 app:layout_constraintStart_toStartOf="parent"
@@ -112,6 +119,7 @@
                 android:inputType="textPersonName"
                 android:textColor="@color/colorPrimary"
                 android:textSize="18sp"
+                tools:text="apple"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/activity_word___text_view___word" />
@@ -126,7 +134,6 @@
                 android:paddingStart="3dp"
                 android:paddingEnd="3dp"
                 android:text="@string/transcription"
-                android:textColor="@color/colorPrimary"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/activity_word___edit_text___word" />
@@ -155,7 +162,6 @@
                 android:paddingStart="3dp"
                 android:paddingEnd="3dp"
                 android:text="@string/value"
-                android:textColor="@color/colorPrimary"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/activity_word___edit_text___transcription" />
@@ -170,26 +176,28 @@
                 android:ems="10"
                 android:inputType="textPersonName"
                 android:textColor="@color/colorPrimary"
+                tools:text="яблоко"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/activity_word___text_view___value" />
 
         </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:text="Примеры"
+            android:textSize="18sp" />
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+        </androidx.recyclerview.widget.RecyclerView>
     </LinearLayout>
 
-    <Button
-        android:id="@+id/activity_word___button___save_word"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:background="@drawable/shape_darkblue_20dp"
-        android:text="@string/save_word"
-        android:textColor="@android:color/white"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-</FrameLayout>
+
+</RelativeLayout>

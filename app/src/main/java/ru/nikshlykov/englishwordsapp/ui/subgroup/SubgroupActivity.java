@@ -57,6 +57,7 @@ public class SubgroupActivity extends AppCompatActivity
     // Возможные ответные коды из WordActivity.
     private static final int REQUEST_CODE_EDIT_EXISTING_WORD = 1;
     private static final int REQUEST_CODE_CREATE_NEW_WORD = 2;
+    private static final int REQUEST_CODE_EDIT_SUBGROUP = 3;
 
     // Тег для логирования.
     private static final String LOG_TAG = "SubgroupActivity";
@@ -185,16 +186,26 @@ public class SubgroupActivity extends AppCompatActivity
             String transcription = data.getStringExtra(WordActivity.EXTRA_TRANSCRIPTION);
             String value = data.getStringExtra(WordActivity.EXTRA_VALUE);
 
-            if (requestCode == REQUEST_CODE_CREATE_NEW_WORD) {
-                final Word newWord = new Word(word, transcription, value);
-                subgroupViewModel.insert(newWord);
-            }
+            switch (requestCode){
+                // Создание нового слова.
+                case REQUEST_CODE_CREATE_NEW_WORD:
+                    final Word newWord = new Word(word, transcription, value);
+                    subgroupViewModel.insert(newWord);
+                    break;
 
-            if (requestCode == REQUEST_CODE_EDIT_EXISTING_WORD) {
-                long wordId = data.getLongExtra(WordActivity.EXTRA_WORD_ID, 0);
-                if (wordId != 0) {
-                    subgroupViewModel.updateWord(wordId, word, value, transcription);
-                }
+                // Редактирование существующего слова.
+                case REQUEST_CODE_EDIT_EXISTING_WORD:
+                    long wordId = data.getLongExtra(WordActivity.EXTRA_WORD_ID, 0);
+                    if (wordId != 0) {
+                        subgroupViewModel.updateWord(wordId, word, value, transcription);
+                    }
+                    break;
+
+                // Редактирование существующего слова.
+                case REQUEST_CODE_EDIT_SUBGROUP:
+                    String newSubgroupName = data.getStringExtra(AddOrEditSubgroupActivity.EXTRA_SUBGROUP_NAME);
+                    subgroupViewModel.updateSubgroupName(newSubgroupName);
+                    break;
             }
         }
     }
@@ -206,9 +217,11 @@ public class SubgroupActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         Log.d(LOG_TAG, "onCreateOptionsMenu()");
         getMenuInflater().inflate(R.menu.activity_subgroup_toolbar_menu, menu);
-        MenuItem deleteSubgroup = menu.findItem(R.id.activity_subgroup___action___delete_subgroup);
+        MenuItem deleteSubgroupItem = menu.findItem(R.id.activity_subgroup___action___delete_subgroup);
+        MenuItem editSubgroupItem = menu.findItem(R.id.activity_subgroup___action___edit_subgroup);
         if (!subgroupIsCreatedByUser) {
-            deleteSubgroup.setVisible(false);
+            deleteSubgroupItem.setVisible(false);
+            editSubgroupItem.setVisible(false);
         }
         return true;
     }
@@ -226,6 +239,16 @@ public class SubgroupActivity extends AppCompatActivity
                 sortWordsDialogFragment.setArguments(sortWordsDialogArguments);
                 sortWordsDialogFragment.show(manager, DIALOG_SORT_WORDS);
                 return true;
+
+            // Редактирование подгруппы.
+            case R.id.activity_subgroup___action___edit_subgroup:
+                Log.d(LOG_TAG, "edit subgroup");
+                Intent intent = new Intent(this, AddOrEditSubgroupActivity.class);
+                intent.putExtra(AddOrEditSubgroupActivity.EXTRA_SUBGROUP_NAME, subgroupViewModel
+                        .getLiveDataSubgroup().getValue().name);
+                startActivityForResult(intent, REQUEST_CODE_EDIT_SUBGROUP);
+                return true;
+
             // Сбрасывание прогресса слов данной подгруппы.
             case R.id.activity_subgroup___action___reset_words_progress:
                 Log.d(LOG_TAG, "Reset words progress");
@@ -237,12 +260,14 @@ public class SubgroupActivity extends AppCompatActivity
                 resetProgressDialogFragment.setArguments(resetProgressDialogArguments);
                 resetProgressDialogFragment.show(manager, DIALOG_RESET_WORDS_PROGRESS);
                 return true;
+
             // Удаление подгруппы.
             case R.id.activity_subgroup___action___delete_subgroup:
                 Log.d(LOG_TAG, "Delete subgroup");
                 DeleteSubgroupDialogFragment deleteSubgroupDialogFragment = new DeleteSubgroupDialogFragment();
                 deleteSubgroupDialogFragment.show(manager, DIALOG_DELETE_SUBGROUP);
                 return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
