@@ -190,7 +190,6 @@ public class SubgroupViewModel extends AndroidViewModel
     public void insert(Word word){
         Log.i(LOG_TAG, "insert():\n" +
                 "word = " + word.word + "; value = " + word.value);
-        word.learnProgress = -1;
         repository.insert(word, this);
     }
 

@@ -19,6 +19,7 @@ import java.util.concurrent.TimeoutException;
 
 import ru.nikshlykov.englishwordsapp.db.example.Example;
 import ru.nikshlykov.englishwordsapp.db.example.ExampleDao;
+import ru.nikshlykov.englishwordsapp.db.group.Group;
 import ru.nikshlykov.englishwordsapp.db.group.GroupDao;
 import ru.nikshlykov.englishwordsapp.db.link.Link;
 import ru.nikshlykov.englishwordsapp.db.link.LinkDao;
@@ -26,12 +27,12 @@ import ru.nikshlykov.englishwordsapp.db.mode.Mode;
 import ru.nikshlykov.englishwordsapp.db.mode.ModeDao;
 import ru.nikshlykov.englishwordsapp.db.repeat.Repeat;
 import ru.nikshlykov.englishwordsapp.db.repeat.RepeatDao;
-import ru.nikshlykov.englishwordsapp.db.setting.Setting;
 import ru.nikshlykov.englishwordsapp.db.setting.SettingDao;
 import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup;
 import ru.nikshlykov.englishwordsapp.db.subgroup.SubgroupDao;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
 import ru.nikshlykov.englishwordsapp.db.word.WordDao;
+import ru.nikshlykov.englishwordsapp.ui.groups.GroupItem;
 
 import static ru.nikshlykov.englishwordsapp.ui.word.LinkOrDeleteWordDialogFragment.TO_DELETE;
 import static ru.nikshlykov.englishwordsapp.ui.word.LinkOrDeleteWordDialogFragment.TO_LINK;
@@ -157,6 +158,7 @@ public class AppRepository {
         @Override
         protected Long doInBackground(Word... words) {
             words[0].id = wordDao.getWordWithMinId().id - 1;
+            words[0].learnProgress = -1;
             return wordDao.insert(words[0]);
         }
 
@@ -432,7 +434,7 @@ public class AppRepository {
         @Override
         protected Cursor doInBackground(Long... longs) {
             Log.i(LOG_TAG, "id подгруппы в asyncTask = " + longs[0]);
-            return subgroupDao.getSubgroupsFromGroup(longs[0]);
+            return subgroupDao.getAllSubgroupsFromGroup(longs[0]);
         }
     }
 
@@ -549,6 +551,11 @@ public class AppRepository {
         return null;
     }
 
+    public void getGroupItems(OnGroupItemsLoadedListener listener){
+        GetGroupItemsAsyncTask task = new GetGroupItemsAsyncTask(groupDao, subgroupDao, listener);
+        task.execute();
+    }
+
     /**
      * AsyncTasks для работы с группами.
      */
@@ -563,6 +570,48 @@ public class AppRepository {
         protected Cursor doInBackground(Void... voids) {
             return groupDao.getAllGroups();
         }
+    }
+
+    public interface OnGroupItemsLoadedListener {
+        void onLoaded(ArrayList<GroupItem> groupItems);
+    }
+    private static class GetGroupItemsAsyncTask extends AsyncTask<Void, Void, ArrayList<GroupItem>> {
+        private SubgroupDao subgroupDao;
+        private GroupDao groupDao;
+        private WeakReference<OnGroupItemsLoadedListener> listener;
+        private int flagTo;
+
+        private GetGroupItemsAsyncTask(GroupDao groupDao, SubgroupDao subgroupDao,
+                                       OnGroupItemsLoadedListener listener) {
+            this.groupDao = groupDao;
+            this.subgroupDao = subgroupDao;
+            this.listener = new WeakReference<>(listener);
+        }
+
+        @Override
+        protected ArrayList<GroupItem> doInBackground(Void... voids) {
+            List<Group> groups = groupDao.getGroups();
+            ArrayList<GroupItem> groupItems = new ArrayList<>(groups.size());
+            for (Group group: groups){
+                List<Subgroup> subgroupsList = subgroupDao.getSubgroupsFromGroup(group.id);
+                ArrayList<Subgroup> subgroups = new ArrayList<>(subgroupsList.size());
+                subgroups.addAll(subgroupsList);
+                GroupItem groupItem = new GroupItem(group, subgroups);
+                groupItems.add(groupItem);
+            }
+            return groupItems;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<GroupItem> subgroup) {
+            super.onPostExecute(subgroup);
+            OnGroupItemsLoadedListener listener = this.listener.get();
+            if (listener != null) {
+                listener.onLoaded(subgroup);
+            }
+        }
+
+
     }
 
 
@@ -762,8 +811,37 @@ public class AppRepository {
      * Методы для работы с примерами.
      */
 
-    public LiveData<List<Example>> getExamplesByWordId(long wordId){
-        return exampleDao.getLiveDataExamplesByWordId(wordId);
+
+    public void getExamplesByWordId(long wordId, OnExamplesLoadedListener listener){
+        new GetExamplesAsyncTask(exampleDao, listener).execute(wordId);
+    }
+
+    public interface OnExamplesLoadedListener {
+        void onLoaded(List<Example> examples);
+    }
+
+    private static class GetExamplesAsyncTask extends AsyncTask<Long, Void, List<Example>> {
+        private ExampleDao exampleDao;
+        private WeakReference<OnExamplesLoadedListener> listener;
+
+        private GetExamplesAsyncTask(ExampleDao exampleDao, OnExamplesLoadedListener listener) {
+            this.exampleDao = exampleDao;
+            this.listener = new WeakReference<>(listener);
+        }
+
+        @Override
+        protected List<Example> doInBackground(Long... longs) {
+                    return exampleDao.getExamplesByWordId(longs[0]);
+        }
+
+        @Override
+        protected void onPostExecute(List<Example> subgroup) {
+            super.onPostExecute(subgroup);
+            OnExamplesLoadedListener listener = this.listener.get();
+            if (listener != null) {
+                listener.onLoaded(subgroup);
+            }
+        }
     }
 
 }

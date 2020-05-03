@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import androidx.annotation.Nullable;
@@ -22,15 +23,22 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import ru.nikshlykov.englishwordsapp.R;
+import ru.nikshlykov.englishwordsapp.db.AppRepository;
+import ru.nikshlykov.englishwordsapp.db.example.Example;
 import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
+import ru.nikshlykov.englishwordsapp.ui.subgroup.SubgroupActivity;
 
 import static ru.nikshlykov.englishwordsapp.ui.word.LinkOrDeleteWordDialogFragment.TO_DELETE;
 
 public class WordActivity extends AppCompatActivity
-        implements ResetProgressDialogFragment.ResetProgressListener {
+        implements ResetProgressDialogFragment.ResetProgressListener,
+        AppRepository.OnExamplesLoadedListener {
 
     // Тег для логирования.
     private static final String LOG_TAG = "WordActivity";
@@ -55,6 +63,10 @@ public class WordActivity extends AppCompatActivity
     private Button ttsButton;
     private Toolbar toolbar;
     private LinearLayout progressLinearLayout;
+    private RecyclerView examplesRecyclerView;
+    private Button addExampleButton;
+
+    private ExamplesRecyclerViewAdapter examplesRecyclerViewAdapter;
 
     // id слова, для которого открылось Activity. Будет равно 0, если слово создаётся.
     private long wordId = 0L;
@@ -110,6 +122,8 @@ public class WordActivity extends AppCompatActivity
         partOfSpeechTextView = findViewById(R.id.activity_word___text_view___part_of_speech);
         toolbar = findViewById(R.id.activity_word___toolbar);
         progressLinearLayout = findViewById(R.id.activity_word___linear_layout___progress_view_background);
+        examplesRecyclerView = findViewById(R.id.activity_word___recycler_view___examples);
+        addExampleButton = findViewById(R.id.activity_word___button___add_example);
     }
 
     /**
@@ -153,10 +167,26 @@ public class WordActivity extends AppCompatActivity
             Log.i(LOG_TAG, "wordId = " + wordId);
             // Если слово уже создано.
             if (wordId != 0) {
+                RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(
+                        WordActivity.this);
+                examplesRecyclerView.setLayoutManager(layoutManager);
+                examplesRecyclerViewAdapter = new ExamplesRecyclerViewAdapter(WordActivity.this);
+                examplesRecyclerView.setAdapter(examplesRecyclerViewAdapter);
+
+                addExampleButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        examplesRecyclerViewAdapter.addExample();
+                        examplesRecyclerView.smoothScrollToPosition(examplesRecyclerViewAdapter
+                                .getItemCount() - 1);
+                    }
+                });
+
                 wordViewModel.setLiveDataWord(wordId);
                 wordViewModel.getLiveDataWord().observe(this, new Observer<Word>() {
                     @Override
                     public void onChanged(Word word) {
+                        Log.d(LOG_TAG, "word onChanged()");
                         if (word != null) {
                             setWordToViews(word);
 
@@ -168,6 +198,8 @@ public class WordActivity extends AppCompatActivity
                                             TextToSpeech.QUEUE_ADD, null, "1");
                                 }
                             });
+
+                            wordViewModel.getExamples(WordActivity.this);
                         }
                     }
                 });
@@ -208,15 +240,19 @@ public class WordActivity extends AppCompatActivity
 
                 // Проверяем, что поля слова и перевода не пустые
                 if (!word.isEmpty() && !value.isEmpty()) {
-                    // Считываем данные из EditText'ов и отправляем их обратно в SubgroupActivity.
-                    // Там уже ViewModel обновит данные.
-                    Intent wordData = new Intent();
-                    wordData.putExtra(EXTRA_WORD_ID, wordId);
-                    wordData.putExtra(EXTRA_WORD, word);
-                    wordData.putExtra(EXTRA_TRANSCRIPTION, transcription);
-                    wordData.putExtra(EXTRA_VALUE, value);
-                    setResult(RESULT_OK, wordData);
-                    // Закрываем Activity.
+                    if (wordId != 0) {
+                        wordViewModel.update(wordId, word, transcription, value);
+                    } else {
+                        // Считываем данные из EditText'ов и отправляем их обратно в SubgroupActivity.
+                        // Там уже ViewModel обновит данные.
+                        Intent wordData = new Intent();
+                        wordData.putExtra(EXTRA_WORD_ID, wordId);
+                        wordData.putExtra(EXTRA_WORD, word);
+                        wordData.putExtra(EXTRA_TRANSCRIPTION, transcription);
+                        wordData.putExtra(EXTRA_VALUE, value);
+                        setResult(RESULT_OK, wordData);
+                        // Закрываем Activity.
+                    }
                     finish();
                 }
                 // Выводим Toast о том, что они должны быть заполнены.
@@ -231,12 +267,12 @@ public class WordActivity extends AppCompatActivity
     /**
      * Инициализирует availableSubgroupsObserver.
      */
-    private void initAvailableSubgroupsObserver(){
+    private void initAvailableSubgroupsObserver() {
         availableSubgroupsObserver = new Observer<ArrayList<Subgroup>>() {
             @Override
             public void onChanged(ArrayList<Subgroup> subgroups) {
                 Log.d(LOG_TAG, "availableSubgroups onChanged()");
-                if (subgroups != null){
+                if (subgroups != null) {
                     Log.d(LOG_TAG, "availableSubgroups onChanged() value != null");
                     LinkOrDeleteWordDialogFragment linkOrDeleteWordDialogFragment =
                             new LinkOrDeleteWordDialogFragment();
@@ -250,7 +286,7 @@ public class WordActivity extends AppCompatActivity
 
                     long[] subgroupsIds = new long[subgroups.size()];
                     String[] subgroupsNames = new String[subgroups.size()];
-                    for (int i = 0; i < subgroups.size(); i++){
+                    for (int i = 0; i < subgroups.size(); i++) {
                         Subgroup subgroup = subgroups.get(i);
                         subgroupsNames[i] = subgroup.name;
                         subgroupsIds[i] = subgroup.id;
@@ -265,8 +301,7 @@ public class WordActivity extends AppCompatActivity
                     linkOrDeleteWordDialogFragment.show(getSupportFragmentManager(), "some tag");
 
                     wordViewModel.clearAvailableSubgroupsToAndRemoveObserver(availableSubgroupsObserver);
-                }
-                else{
+                } else {
                     Log.d(LOG_TAG, "availableSubgroups onChanged() value = null");
                 }
             }
@@ -340,12 +375,16 @@ public class WordActivity extends AppCompatActivity
      * Скрывает некоторые View при создании нового слова.
      */
     private void hideViewsForNewWordCreating() {
-        TextView progressText = findViewById(R.id.activity_word___text_view___progress);
-        progressText.setVisibility(View.GONE);
+        TextView progressTextView = findViewById(R.id.activity_word___text_view___progress);
+        progressTextView.setVisibility(View.GONE);
         ttsButton.setVisibility(View.GONE);
         partOfSpeechTextView.setVisibility(View.GONE);
         toolbar.setVisibility(View.GONE);
         progressLinearLayout.setVisibility(View.GONE);
+        TextView examplesTextView = findViewById(R.id.activity_word___text_view___examples);
+        examplesTextView.setVisibility(View.GONE);
+        examplesRecyclerView.setVisibility(View.GONE);
+        addExampleButton.setVisibility(View.GONE);
     }
 
     /**
@@ -419,5 +458,10 @@ public class WordActivity extends AppCompatActivity
     public int dpToPx(int dp) {
         float density = this.getResources().getDisplayMetrics().density;
         return Math.round((float) dp * density);
+    }
+
+    @Override
+    public void onLoaded(List<Example> examples) {
+        examplesRecyclerViewAdapter.setExamples(examples);
     }
 }

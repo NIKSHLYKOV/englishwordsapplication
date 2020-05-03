@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/activity_word___frame_layout___main_layout"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_word___frame_layout___main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="white">
+    android:fitsSystemWindows="true">
 
     <Button
         android:id="@+id/activity_word___button___save_word"
@@ -64,7 +64,7 @@
                     android:layout_marginTop="2dp"
                     android:background="@drawable/shape_background_progress"
                     android:orientation="horizontal"
-                    android:padding="1dp"/>
+                    android:padding="1dp" />
 
             </LinearLayout>
 
@@ -114,15 +114,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
-                android:backgroundTint="@color/colorPrimary"
                 android:ems="10"
                 android:inputType="textPersonName"
                 android:textColor="@color/colorPrimary"
                 android:textSize="18sp"
-                tools:text="apple"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/activity_word___text_view___word" />
+                app:layout_constraintTop_toBottomOf="@+id/activity_word___text_view___word"
+                tools:text="understand - understood - understood" />
 
             <TextView
                 android:id="@+id/activity_word___text_view___transcription"
@@ -144,7 +143,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
-                android:backgroundTint="@color/colorPrimary"
                 android:ems="10"
                 android:inputType="textPersonName"
                 android:textColor="@color/colorPrimary"
@@ -172,32 +170,52 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
-                android:backgroundTint="@color/colorPrimary"
                 android:ems="10"
                 android:inputType="textPersonName"
                 android:textColor="@color/colorPrimary"
-                tools:text="яблоко"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/activity_word___text_view___value" />
+                app:layout_constraintTop_toBottomOf="@+id/activity_word___text_view___value"
+                tools:text="яблоко" />
 
         </LinearLayout>
 
-        <TextView
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="8dp"
-            android:text="Примеры"
-            android:textSize="18sp" />
+            android:orientation="horizontal"
+            android:layout_margin="8dp"
+            android:layout_gravity="center">
 
+            <TextView
+                android:id="@+id/activity_word___text_view___examples"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/examples"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/activity_word___button___add_example"
+                style="@style/BorderlessButton"
+                android:layout_width="120dp"
+                android:layout_height="40dp"
+                android:background="@drawable/shape_white_yellow_20dp"
+                android:drawableEnd="@drawable/ic_add_dark_blue_24dp"
+                android:paddingEnd="8dp"
+                android:paddingStart="8dp"
+                android:text="@string/to_add"
+                android:textColor="@color/colorPrimary" />
+
+        </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/activity_word___recycler_view___examples"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1">
 
         </androidx.recyclerview.widget.RecyclerView>
     </LinearLayout>
-
-
 </RelativeLayout>

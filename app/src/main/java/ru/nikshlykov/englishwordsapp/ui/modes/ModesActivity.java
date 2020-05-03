@@ -18,7 +18,7 @@ public class ModesActivity extends AppCompatActivity {
     // ViewModel для работы с БД.
     ModesViewModel modesViewModel;
 
-    ModeRecyclerViewAdapter adapter;
+    ModesRecyclerViewAdapter adapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -29,7 +29,7 @@ public class ModesActivity extends AppCompatActivity {
         RecyclerView modesRecyclerView = findViewById(R.id.activity_modes___RecyclerView);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         modesRecyclerView.setLayoutManager(layoutManager);
-        adapter = new ModeRecyclerViewAdapter(this);
+        adapter = new ModesRecyclerViewAdapter(this);
         modesRecyclerView.setAdapter(adapter);
 
         // Инициализируем ViewModel для работы с БД.

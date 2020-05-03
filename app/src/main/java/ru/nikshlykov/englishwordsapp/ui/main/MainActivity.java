@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider;
 import ru.nikshlykov.englishwordsapp.R;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
 import ru.nikshlykov.englishwordsapp.ui.groups.GroupsFragment;
+import ru.nikshlykov.englishwordsapp.ui.groups.NewGroupFragment;
 import ru.nikshlykov.englishwordsapp.ui.study.FirstShowModeFragment;
 import ru.nikshlykov.englishwordsapp.ui.study.ModeFragmentsFactory;
 import ru.nikshlykov.englishwordsapp.ui.study.RepeatResultListener;
@@ -84,7 +85,7 @@ public class MainActivity extends AppCompatActivity
                     if (fragment == null) {
                         fragmentManager
                                 .beginTransaction()
-                                .replace(contentLayoutId, new GroupsFragment(), TAG_GROUPS_FRAGMENT)
+                                .replace(contentLayoutId, new NewGroupFragment(), TAG_GROUPS_FRAGMENT)
                                 .commit();
                     }
                     return true;

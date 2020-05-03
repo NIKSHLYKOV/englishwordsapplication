@@ -41,6 +41,7 @@
 
     <string name="title_profile">Профиль</string>
     <string name="modes">Режимы</string>
+    <string name="examples">Примеры</string>
 
     <string name="action___delete_word___title">Удалить слово</string>
     <string name="action___link_word___title">Связать слово</string>
@@ -75,6 +76,7 @@
     <string name="yes">Да</string>
     <string name="cancel">Отмена</string>
     <string name="to_cancel">Отменить</string>
+    <string name="to_add">Добавить</string>
     <string name="to_save">Сохранить</string>
     <string name="ok">ОК</string>
     <string name="title_activity_settings">Settings</string>

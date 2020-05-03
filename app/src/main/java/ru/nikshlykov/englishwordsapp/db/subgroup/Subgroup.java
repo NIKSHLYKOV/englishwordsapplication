@@ -38,6 +38,10 @@ public class Subgroup {
     @ColumnInfo(name = "IsStudied")
     public int isStudied; // Флаг изучения слов данной подгруппа (1 - изучается; 0 - не изучается).
 
+    @NonNull
+    @ColumnInfo(name = "ImageResourceId")
+    public String imageResourceId; // id картинки (скрин режима) для вывода в Activity режимов.
+
     public boolean isCreatedByUser(){
         return groupId == SubgroupDao.GROUP_FOR_NEW_SUBGROUPS_ID;
     }

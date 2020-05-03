@@ -10,6 +10,8 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
+import java.util.List;
+
 @Dao
 public interface SubgroupDao {
 
@@ -31,7 +33,10 @@ public interface SubgroupDao {
     LiveData<Subgroup> getLiveDataSubgroupById(long id);
 
     @Query("SELECT * FROM Subgroups WHERE groupId = :groupId")
-    Cursor getSubgroupsFromGroup(long groupId);
+    Cursor getAllSubgroupsFromGroup(long groupId);
+
+    @Query("SELECT * FROM Subgroups WHERE groupId = :groupId")
+    List<Subgroup> getSubgroupsFromGroup(long groupId);
 
     @Query("SELECT * FROM Subgroups WHERE IsStudied = 1")
     Subgroup[] getStudiedSubgroups();

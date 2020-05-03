@@ -29,8 +29,6 @@ public class WordViewModel extends AndroidViewModel
     // Список подгрупп для добавления или удаления связи с ними.
     private MutableLiveData<ArrayList<Subgroup>> availableSubgroupsTo;
 
-    private LiveData<List<Example>> examples;
-
     public WordViewModel(@NonNull Application application) {
         super(application);
         repository = new AppRepository(application);
@@ -39,10 +37,23 @@ public class WordViewModel extends AndroidViewModel
 
     public void setLiveDataWord(long wordId) {
         liveDataWord = repository.getLiveDataWordById(wordId);
-        examples = repository.getExamplesByWordId(wordId);
     }
     public LiveData<Word> getLiveDataWord() {
         return liveDataWord;
+    }
+
+    public void update(final long wordId, final String word, final String transcription,
+                       final String value) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Word editWord = repository.getWordById(wordId);
+                editWord.word = word;
+                editWord.transcription = transcription;
+                editWord.value = value;
+                repository.update(editWord);
+            }
+        }).start();
     }
 
     /**
@@ -82,7 +93,10 @@ public class WordViewModel extends AndroidViewModel
     }
 
 
-    public LiveData<List<Example>> getExamples() {
-        return examples;
+    public void getExamples(AppRepository.OnExamplesLoadedListener listener){
+        Word word = liveDataWord.getValue();
+        if (word != null){
+            repository.getExamplesByWordId(word.id, listener);
+        }
     }
 }

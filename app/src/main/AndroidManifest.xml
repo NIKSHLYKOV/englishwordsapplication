@@ -34,6 +34,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.word.WordActivity"
+            android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.modes.ModesActivity"

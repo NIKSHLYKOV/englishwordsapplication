@@ -33,8 +33,5 @@ public interface ExampleDao {
     int deleteMultiple(List<Example> examples);
 
     @Query("SELECT * FROM Examples WHERE WordID = :wordId")
-    Example[] getExamplesByWordId(long wordId);
-
-    @Query("SELECT * FROM Examples WHERE WordID = :wordId")
-    LiveData<List<Example>> getLiveDataExamplesByWordId(long wordId);
+    List<Example> getExamplesByWordId(long wordId);
 }

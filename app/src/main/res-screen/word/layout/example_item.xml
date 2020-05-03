@@ -3,17 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/word_in_subgroup_item___card_view"
+    android:layout_margin="8dp"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="8dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout_word_in_subgroup"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
-        android:padding="8dp"
-        android:layout_margin="8dp"
-        android:background="@drawable/shape_white_yellow_20dp">
+        android:padding="8dp">
 
         <EditText
             android:id="@+id/example_item___edit_text___in_english"
