@@ -1,47 +1,76 @@
 package ru.nikshlykov.englishwordsapp.ui.groups;
 
 import android.app.Application;
-import android.database.Cursor;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
 
 import ru.nikshlykov.englishwordsapp.db.AppRepository;
+import ru.nikshlykov.englishwordsapp.db.group.Group;
 import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup;
 import ru.nikshlykov.englishwordsapp.db.subgroup.SubgroupDao;
 
-public class GroupsViewModel extends AndroidViewModel {
+public class GroupsViewModel extends AndroidViewModel implements
+        AppRepository.OnGroupItemsLoadedListener,
+        AppRepository.OnMinSubgroupIdLoadedListener,
+        AppRepository.OnSubgroupInsertedListener{
+
     private AppRepository repository;
 
-    private Cursor groups;
+    private MutableLiveData <ArrayList<GroupItem>> mutableLiveDataGroupItems;
+
+    private String newSubgroupName;
 
     public GroupsViewModel(@NonNull Application application) {
         super(application);
         repository = new AppRepository(application);
-        groups = repository.getAllGroups();
+
+        mutableLiveDataGroupItems = new MutableLiveData<>();
+
+        repository.getGroupItems(this);
     }
 
-    public Cursor getGroups(){
-        return groups;
+    public MutableLiveData<ArrayList<GroupItem>> getMutableLiveDataGroupItems() {
+        return mutableLiveDataGroupItems;
     }
 
-    public Cursor getSubgroupsFromGroup(long groupId){
-        return repository.getSubgroupsFromGroup(groupId);
+    public void insertSubgroup(String newSubgroupName) {
+        this.newSubgroupName = newSubgroupName;
+        repository.getMinSubgroupId(this);
     }
 
-    public void getSubgroup(long subgroupId, AppRepository.OnSubgroupLoadedListener listener){
-        repository.getSubgroup(subgroupId, listener);
+    public void updateSubgroup(Subgroup subgroup) {
+        repository.update(subgroup);
     }
 
-    public void insertSubgroup(String newSubgroupName){
-        long newSubgroupId = repository.getLastSubgroupId() + 1;
+    @Override
+    public void onGroupItemsLoaded(ArrayList<GroupItem> groupItems) {
+        mutableLiveDataGroupItems.postValue(groupItems);
+    }
+
+    @Override
+    public void onMinSubgroupIdLoaded(Long minSubgroupId) {
+        long newSubgroupId = minSubgroupId - 1;
         Subgroup newSubgroup = new Subgroup();
         newSubgroup.name = newSubgroupName;
         newSubgroup.groupId = SubgroupDao.GROUP_FOR_NEW_SUBGROUPS_ID;
         newSubgroup.isStudied = 0;
         newSubgroup.id = newSubgroupId;
-        repository.insert(newSubgroup);
+        newSubgroup.imageResourceId = "subgroup_chemistry.jpg";
+        repository.insert(newSubgroup, this);
+    }
+
+    @Override
+    public void onSubgroupInserted(long subgroupId) {
+        repository.getGroupItems(this);
     }
 }
-

@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="100dp"
             tools:text="@string/value"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@android:color/black"
             android:textSize="30sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="100dp"
             android:text="@string/word"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@android:color/black"
             android:textSize="30sp"
             android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="parent"
@@ -58,7 +58,7 @@
             android:layout_width="100dp"
             android:layout_height="70dp"
             android:layout_marginTop="300dp"
-            android:background="@drawable/shape_white_20dp"
+            android:background="@drawable/shape_white_color_primary_20dp"
             android:src="@drawable/ic_visibility_dark_blue_48dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -66,7 +66,7 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <FrameLayout
+    <RelativeLayout
         android:id="@+id/frame_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -75,27 +75,23 @@
 
         <Button
             android:id="@+id/fragment_dictionary_cards_rus_to_eng___layout___main___button___do_not_remember"
-            style="@style/BorderlessButton"
+            style="@style/Widget.MaterialComponents.Button"
             android:layout_width="150dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="start"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
             android:layout_marginStart="20dp"
-            android:background="@drawable/shape_white_red_20dp"
-            android:text="@string/do_not_remember"
-            android:textColor="@color/colorPrimary" />
+            android:text="@string/do_not_remember"/>
 
         <Button
             android:id="@+id/fragment_dictionary_cards_rus_to_eng___layout___main___button___remember"
-            style="@style/BorderlessButton"
+            style="@style/Widget.MaterialComponents.Button"
             android:layout_width="150dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="end"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
             android:layout_marginEnd="20dp"
-            android:background="@drawable/shape_white_green_20dp"
-            android:text="@string/remember"
-            android:textColor="@color/colorPrimary" />
+            android:text="@string/remember" />
 
-    </FrameLayout>
+    </RelativeLayout>
 
 
 </RelativeLayout>

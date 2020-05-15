@@ -19,6 +19,7 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             tools:text="Название группы"
             android:textSize="18sp"
             android:textColor="@android:color/black"
@@ -26,15 +27,17 @@
 
         <Button
             android:id="@+id/group_item___button___more"
-            android:layout_width="wrap_content"
+            android:layout_width="64dp"
             android:layout_height="wrap_content"
-            android:text="ещё"/>
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:text="ещё"
+            android:visibility="invisible"/>
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/group_item___recycler_view___subgroups"
         android:layout_width="match_parent"
-        android:layout_height="160dp"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:scrollbars="none"
         android:layout_marginTop="8dp"/>

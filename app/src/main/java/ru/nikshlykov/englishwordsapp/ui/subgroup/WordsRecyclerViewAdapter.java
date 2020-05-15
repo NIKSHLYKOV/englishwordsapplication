@@ -21,6 +21,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
+import ru.nikshlykov.englishwordsapp.MyApplication;
 import ru.nikshlykov.englishwordsapp.R;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
 
@@ -45,21 +46,8 @@ public class WordsRecyclerViewAdapter
 
 
     public WordsRecyclerViewAdapter(final Context context) {
-
         // Создаём TTS
-        textToSpeech = new TextToSpeech(context, new TextToSpeech.OnInitListener() {
-            @Override
-            public void onInit(int status) {
-                if (status == TextToSpeech.SUCCESS) {
-                    // Установка языка, высоты и скорости речи.
-                    textToSpeech.setLanguage(Locale.US);
-                    textToSpeech.setPitch(1.3f);
-                    textToSpeech.setSpeechRate(0.7f);
-                } else if (status == TextToSpeech.ERROR) {
-                    Toast.makeText(context, TTS_ERROR, Toast.LENGTH_LONG).show();
-                }
-            }
-        });
+        textToSpeech = ((MyApplication)context.getApplicationContext()).getTextToSpeech();
     }
 
     @Override

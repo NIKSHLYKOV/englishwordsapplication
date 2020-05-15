@@ -35,7 +35,7 @@
             android:layout_weight="1"
             android:layout_margin="8dp"
             style="@style/BorderlessButton"
-            android:background="@drawable/shape_white_20dp"
+            android:background="@drawable/shape_white_color_primary_20dp"
             tools:text="understand - understood - understood" />
 
         <Button
@@ -45,7 +45,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:layout_margin="8dp"
-            android:background="@drawable/shape_white_20dp"
+            android:background="@drawable/shape_white_color_primary_20dp"
             tools:text="increase" />
     </LinearLayout>
 
@@ -65,7 +65,7 @@
             android:layout_weight="1"
             android:layout_margin="8dp"
             style="@style/BorderlessButton"
-            android:background="@drawable/shape_white_20dp"
+            android:background="@drawable/shape_white_color_primary_20dp"
             tools:text="see - saw - seen" />
 
         <Button
@@ -75,7 +75,7 @@
             android:layout_weight="1"
             android:layout_margin="8dp"
             style="@style/BorderlessButton"
-            android:background="@drawable/shape_white_20dp"
+            android:background="@drawable/shape_white_color_primary_20dp"
             tools:text="application" />
     </LinearLayout>
 

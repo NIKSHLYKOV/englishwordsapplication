@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#000530</color>
-    <color name="colorPrimaryDark">#050831</color>
-    <!--<color name="colorAccent">#37003C</color>-->
-    <color name="colorAccent">#FCD366</color>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FFD54F</color>
 
     <color name="dark_blue">#000530</color>
     <color name="yellow">#FCD366</color>
+
+    <color name="swipe_add_link_word">#C6FF00</color>
+    <color name="swipe_delete_link_word">#FF3D00</color>
 
     <color name="progress_7">#5BC0EB</color>
     <color name="progress_6">#ADF5FF</color>

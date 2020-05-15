@@ -16,14 +16,20 @@ import java.util.ArrayList;
 
 import ru.nikshlykov.englishwordsapp.R;
 import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup;
+import ru.nikshlykov.englishwordsapp.ui.groups.SubgroupsRecyclerViewAdapter.OnSubgroupClickListener;
 
 public class GroupItemsRecyclerViewAdapter extends RecyclerView.Adapter<GroupItemsRecyclerViewAdapter.GroupsViewHolder> {
 
     private ArrayList<GroupItem> groupItems;
     private Context context;
+    private OnSubgroupClickListener onSubgroupClickListener;
+    private SubgroupsRecyclerViewAdapter.OnSubgroupCheckedListener onSubgroupCheckedListener;
 
-    public GroupItemsRecyclerViewAdapter(Context context) {
+    public GroupItemsRecyclerViewAdapter(Context context, OnSubgroupClickListener onSubgroupClickListener,
+                                         SubgroupsRecyclerViewAdapter.OnSubgroupCheckedListener onSubgroupCheckedListener) {
         this.context = context;
+        this.onSubgroupClickListener = onSubgroupClickListener;
+        this.onSubgroupCheckedListener = onSubgroupCheckedListener;
     }
 
     @NonNull
@@ -41,7 +47,8 @@ public class GroupItemsRecyclerViewAdapter extends RecyclerView.Adapter<GroupIte
         holder.groupNameTextView.setText(groupName);
 
         SubgroupsRecyclerViewAdapter subgroupsRecyclerViewAdapter =
-                new SubgroupsRecyclerViewAdapter(context, subgroups);
+                new SubgroupsRecyclerViewAdapter(context, subgroups, onSubgroupClickListener,
+                        onSubgroupCheckedListener);
 
         //holder.recycler_view_list.setHasFixedSize(true);
         holder.subgroupsRecyclerView.setLayoutManager(new LinearLayoutManager(context,
@@ -78,6 +85,8 @@ public class GroupItemsRecyclerViewAdapter extends RecyclerView.Adapter<GroupIte
     }
 
     public void setGroupItems(ArrayList<GroupItem> groupItems) {
+        // TODO: Сделать DiffUtils для того, чтобы переписовывались только те, которые реально изменились.
+        //  Очень поможет при добавлении новой подгруппы.
         this.groupItems = groupItems;
         notifyDataSetChanged();
     }

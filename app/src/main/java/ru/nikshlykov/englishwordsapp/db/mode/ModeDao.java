@@ -13,12 +13,11 @@ public interface ModeDao {
     @Update
     int update(List<Mode> modes);
 
-    // Получаем все режимы.
-    @Query("SELECT * FROM Modes")
-    List<Mode> getAllModes();
+    /*@Query("SELECT * FROM Modes WHERE IsSelected = 1")
+    Mode[] getSelectedModes();*/
 
     @Query("SELECT * FROM Modes WHERE IsSelected = 1")
-    Mode[] getSelectedModes();
+    List<Mode> newGetSelectedModes();
 
     @Query("SELECT * FROM Modes")
     LiveData<List<Mode>> getLiveDataModes();

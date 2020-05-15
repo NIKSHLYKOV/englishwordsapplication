@@ -81,14 +81,14 @@ public class DictionaryCardsModeFragment extends Fragment {
         doNotRememberButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                repeatResultListener.result(wordId, 0);
+                repeatResultListener.repeatResult(wordId, 0);
             }
         });
 
         rememberButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                repeatResultListener.result(wordId, 1);
+                repeatResultListener.repeatResult(wordId, 1);
             }
         });
 

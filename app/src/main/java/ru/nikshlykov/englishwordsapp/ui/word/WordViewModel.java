@@ -51,7 +51,7 @@ public class WordViewModel extends AndroidViewModel
                 editWord.word = word;
                 editWord.transcription = transcription;
                 editWord.value = value;
-                repository.update(editWord);
+                repository.update(editWord, null);
             }
         }).start();
     }
@@ -66,7 +66,7 @@ public class WordViewModel extends AndroidViewModel
             если будет необходимо.*/
 
             word.learnProgress = -1;
-            repository.update(word);
+            repository.update(word, null);
         }
     }
 

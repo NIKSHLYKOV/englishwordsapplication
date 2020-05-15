@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="8dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -19,7 +20,7 @@
             android:gravity="center"
             android:maxLines="3"
             tools:text="@string/value"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@android:color/black"
             android:textSize="30sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -37,39 +38,35 @@
             app:layout_constraintTop_toTopOf="parent" />
 
 
-        <EditText
-            android:id="@+id/fragment_write_word_by_value_mode___edit_text___user_variant"
-
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/fragment_write_word_by_value_mode___text_input_layout___user_variant"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginTop="350dp"
-
-            android:backgroundTint="@color/colorPrimary"
-            android:ems="10"
             android:hint="@string/word"
-            android:inputType="textPersonName"
-            android:textColor="@color/colorPrimary"
-
-            app:layout_constraintTop_toTopOf="parent"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/fragment_write_word_by_value_mode___button___confirm"/>
+            app:layout_constraintEnd_toStartOf="@id/fragment_write_word_by_value_mode___button___confirm"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="350dp"
+            android:layout_marginEnd="8dp">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/fragment_write_word_by_value_mode___text_input_edit_text___user_variant"
+                android:inputType="textPersonName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
         <ImageButton
             android:id="@+id/fragment_write_word_by_value_mode___button___confirm"
-            style="@style/BorderlessButton"
-            android:layout_width="60dp"
-            android:layout_height="40dp"
-
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="56dp"
+            android:layout_height="0dp"
             android:layout_marginEnd="8dp"
 
             app:srcCompat="@drawable/ic_arrow_forward_dark_blue_24dp"
-            android:background="@drawable/shape_white_15dp"
 
-            app:layout_constraintTop_toTopOf="@id/fragment_write_word_by_value_mode___edit_text___user_variant"
-            app:layout_constraintBottom_toBottomOf="@id/fragment_write_word_by_value_mode___edit_text___user_variant"
+            app:layout_constraintTop_toTopOf="@id/fragment_write_word_by_value_mode___text_input_layout___user_variant"
+            app:layout_constraintBottom_toBottomOf="@id/fragment_write_word_by_value_mode___text_input_layout___user_variant"
             app:layout_constraintEnd_toEndOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,10 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.textfield.TextInputEditText;
 
 import ru.nikshlykov.englishwordsapp.R;
 
@@ -18,13 +19,13 @@ public class AddOrEditSubgroupActivity extends AppCompatActivity {
 
     // View элементы.
     Button confirmButton;
-    EditText subgroupNameEditText;
+    TextInputEditText subgroupNameEditText;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_subgroup);
+        setContentView(R.layout.activity_add_or_edit_subgroup);
 
         findViews();
 
@@ -62,7 +63,7 @@ public class AddOrEditSubgroupActivity extends AppCompatActivity {
     }
 
     private void findViews(){
-        subgroupNameEditText = findViewById(R.id.activity_new_subgroup___edit_text___group_name);
-        confirmButton = findViewById(R.id.activity_new_subgroup___button___save_new_group);
+        subgroupNameEditText = findViewById(R.id.activity_add_or_edit_subgroup___text_input_edit_text___subgroup_name);
+        confirmButton = findViewById(R.id.activity_add_or_edit_subgroup___button___save_new_group);
     }
 }

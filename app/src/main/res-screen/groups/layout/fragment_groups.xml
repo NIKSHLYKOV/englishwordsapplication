@@ -1,29 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
 
-    <RelativeLayout
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/fragment_groups___button___new_subgroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        app:layout_anchor="@id/fragment_groups___recycler_view___groups_and_subgroups"
+        app:layout_anchorGravity="bottom|center_horizontal"
+
+        style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton"
+
+        android:text="@string/create_group" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/fragment_groups___recycler_view___groups_and_subgroups"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <Button
-            android:id="@+id/fragment_groups___button___new_subgroup"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:layout_margin="8dp"
-
-            style="@style/Widget.AppCompat.Button.Borderless"
-            android:background="@drawable/shape_yellow_20dp"
-
-            android:text="@string/create_group" />
-    </RelativeLayout>
-
-    <ExpandableListView
-        android:id="@+id/fragment_groups___expandable_list_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:textFilterEnabled="false" />
-</LinearLayout>
+        android:layout_height="match_parent"/>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

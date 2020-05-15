@@ -9,25 +9,27 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout_word_in_subgroup"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="8dp">
-
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp">
 
         <View
             android:id="@+id/word_in_subgroup_item___view___progress"
             android:layout_width="6dp"
             android:layout_height="0dp"
-            android:layout_marginTop="4dp"
             android:background="@drawable/shape_progress"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+        <!-- TODO: сделать diffutils для списка слов, чтобы не перерисовывалось, и транскрипция не сдвигалась-->
 
         <LinearLayout
             android:id="@+id/word_in_subgroup_item___layout___all_without_voice_button"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -35,31 +37,38 @@
             app:layout_constraintStart_toEndOf="@id/word_in_subgroup_item___view___progress"
             app:layout_constraintTop_toTopOf="parent">
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/word_in_subgroup_item___text_view___word"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
+                    android:maxWidth="250dp"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/colorPrimary"
+                    android:textColor="@android:color/black"
                     android:textSize="18sp"
                     tools:text="@string/word"
-                    android:textStyle="bold"/>
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
 
                 <TextView
                     android:id="@+id/word_in_subgroup_item___text_view___transcription"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:gravity="center"
-                    android:textSize="14sp"
-                    tools:text="@string/transcription" />
+                    android:gravity="start"
+                    android:textSize="10sp"
+                    tools:text="@string/transcription"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/word_in_subgroup_item___text_view___word"/>
 
 
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
                 android:id="@+id/word_in_subgroup_item___text_view___value"

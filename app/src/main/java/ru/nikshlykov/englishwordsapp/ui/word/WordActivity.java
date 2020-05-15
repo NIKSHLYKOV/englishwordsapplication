@@ -8,14 +8,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,16 +21,17 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.textfield.TextInputEditText;
+
+import ru.nikshlykov.englishwordsapp.MyApplication;
 import ru.nikshlykov.englishwordsapp.R;
 import ru.nikshlykov.englishwordsapp.db.AppRepository;
 import ru.nikshlykov.englishwordsapp.db.example.Example;
 import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
-import ru.nikshlykov.englishwordsapp.ui.subgroup.SubgroupActivity;
 
 import static ru.nikshlykov.englishwordsapp.ui.word.LinkOrDeleteWordDialogFragment.TO_DELETE;
 
@@ -55,9 +54,9 @@ public class WordActivity extends AppCompatActivity
     private static final String DIALOG_DELETE_WORD = "DeleteWordDialogFragment";
 
     // View элементы.
-    private EditText wordEditText;
-    private EditText valueEditText;
-    private EditText transcriptionEditText;
+    private TextInputEditText wordTextInputEditText;
+    private TextInputEditText valueTextInputEditText;
+    private TextInputEditText transcriptionTextInputEditText;
     private TextView partOfSpeechTextView;
     private Button saveButton;
     private Button ttsButton;
@@ -80,7 +79,7 @@ public class WordActivity extends AppCompatActivity
     private int linkOrDeleteFlag;
 
     // Синтезатор речи.
-    private TextToSpeech TTS;
+    private TextToSpeech textToSpeech;
     private static final String TTS_ERROR = "Ошибка воспроизведения!";
 
     @Override
@@ -95,7 +94,7 @@ public class WordActivity extends AppCompatActivity
 
         initToolbar();
 
-        initTTS();
+        textToSpeech = ((MyApplication)getApplicationContext()).getTextToSpeech();
 
         getWordIdAndPrepareInterface();
 
@@ -107,16 +106,16 @@ public class WordActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        TTS.shutdown();
+        textToSpeech.shutdown();
     }
 
     /**
      * Находит View элементы в разметке.
      */
     private void findViews() {
-        wordEditText = findViewById(R.id.activity_word___edit_text___word);
-        valueEditText = findViewById(R.id.activity_word___edit_text___value);
-        transcriptionEditText = findViewById(R.id.activity_word___edit_text___transcription);
+        wordTextInputEditText = findViewById(R.id.activity_word___text_input_edit_text___word);
+        valueTextInputEditText = findViewById(R.id.activity_word___text_input_edit_text___value);
+        transcriptionTextInputEditText = findViewById(R.id.activity_word___text_input_edit_text___transcription);
         saveButton = findViewById(R.id.activity_word___button___save_word);
         ttsButton = findViewById(R.id.activity_word___button___tts);
         partOfSpeechTextView = findViewById(R.id.activity_word___text_view___part_of_speech);
@@ -133,26 +132,6 @@ public class WordActivity extends AppCompatActivity
         // Устанавливаем тулбар.
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("");
-    }
-
-    /**
-     * Инициализирует TTS.
-     */
-    private void initTTS() {
-        // Создаём TTS
-        TTS = new TextToSpeech(WordActivity.this, new TextToSpeech.OnInitListener() {
-            @Override
-            public void onInit(int status) {
-                if (status == TextToSpeech.SUCCESS) {
-                    // Установка языка, высоты и скорости речи.
-                    TTS.setLanguage(Locale.US);
-                    TTS.setPitch(1.3f);
-                    TTS.setSpeechRate(0.7f);
-                } else if (status == TextToSpeech.ERROR) {
-                    Toast.makeText(WordActivity.this, TTS_ERROR, Toast.LENGTH_LONG).show();
-                }
-            }
-        });
     }
 
     /**
@@ -194,7 +173,7 @@ public class WordActivity extends AppCompatActivity
                             ttsButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    TTS.speak(wordEditText.getText().toString(),
+                                    textToSpeech.speak(wordTextInputEditText.getText().toString(),
                                             TextToSpeech.QUEUE_ADD, null, "1");
                                 }
                             });
@@ -234,9 +213,9 @@ public class WordActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 // Получаем строки из EditText'ов.
-                String word = wordEditText.getText().toString();
-                String value = valueEditText.getText().toString();
-                String transcription = transcriptionEditText.getText().toString();
+                String word = wordTextInputEditText.getText().toString();
+                String value = valueTextInputEditText.getText().toString();
+                String transcription = transcriptionTextInputEditText.getText().toString();
 
                 // Проверяем, что поля слова и перевода не пустые
                 if (!word.isEmpty() && !value.isEmpty()) {
@@ -313,9 +292,9 @@ public class WordActivity extends AppCompatActivity
      */
     private void setWordToViews(Word word) {
         // Устанавливаем параметры слова в EditText'ы.
-        wordEditText.setText(word.word);
-        valueEditText.setText(word.value);
-        transcriptionEditText.setText(word.transcription);
+        wordTextInputEditText.setText(word.word);
+        valueTextInputEditText.setText(word.value);
+        transcriptionTextInputEditText.setText(word.transcription);
         if (word.partOfSpeech != null) {
             // Устанавливаем часть речи.
             partOfSpeechTextView.setText(word.partOfSpeech);
@@ -385,6 +364,10 @@ public class WordActivity extends AppCompatActivity
         examplesTextView.setVisibility(View.GONE);
         examplesRecyclerView.setVisibility(View.GONE);
         addExampleButton.setVisibility(View.GONE);
+
+        findViewById(R.id.activity_word___text_input_layout___word).setEnabled(true);
+        findViewById(R.id.activity_word___text_input_layout___transcription).setEnabled(true);
+        findViewById(R.id.activity_word___text_input_layout___value).setEnabled(true);
     }
 
     /**

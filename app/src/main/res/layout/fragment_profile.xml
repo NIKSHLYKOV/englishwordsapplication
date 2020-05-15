@@ -28,12 +28,11 @@
         <Button
             android:id="@+id/fragment_profile___button___modes"
             android:layout_width="0dp"
-            android:layout_height="100dp"
+            android:layout_height="112dp"
             android:layout_margin="8dp"
 
             android:layout_weight="1"
 
-            android:background="@drawable/shape_lightgreen_20dp"
             android:drawableTop="@drawable/ic_library_books_black_48dp"
             android:gravity="center|bottom"
 
@@ -47,12 +46,11 @@
         <Button
             android:id="@+id/fragment_profile___button___statistics"
             android:layout_width="0dp"
-            android:layout_height="100dp"
+            android:layout_height="112dp"
             android:layout_margin="8dp"
 
             android:layout_weight="1"
 
-            android:background="@drawable/shape_yellow_20dp"
             android:drawableTop="@drawable/ic_pie_chart_blue_24dp"
             android:gravity="center|bottom"
 

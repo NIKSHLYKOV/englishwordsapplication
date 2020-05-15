@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SubgroupViewModel extends AndroidViewModel
-    implements AppRepository.OnWordInsertedListener,
+        implements AppRepository.OnWordInsertedListener,
         AppRepository.OnSubgroupsLoadedListener {
     private static final String LOG_TAG = "SubgroupViewModel";
     private AppRepository repository;
@@ -84,7 +84,9 @@ public class SubgroupViewModel extends AndroidViewModel
      * Удаляет подгруппу.
      */
     public void deleteSubgroup() {
-        repository.delete(liveDataSubgroup.getValue());
+        Subgroup subgroup = liveDataSubgroup.getValue();
+        if (subgroup != null)
+            repository.delete(subgroup);
     }
 
     /**
@@ -95,15 +97,12 @@ public class SubgroupViewModel extends AndroidViewModel
         repository.update(liveDataSubgroup.getValue());
     }
 
-    public void updateSubgroupName(final String newSubgroupName){
+    public void updateSubgroupName(final String newSubgroupName) {
         final Subgroup subgroup = liveDataSubgroup.getValue();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                subgroup.name = newSubgroupName;
-                repository.update(subgroup);
-            }
-        }).start();
+        if (subgroup != null) {
+            subgroup.name = newSubgroupName;
+            repository.update(subgroup);
+        }
     }
 
     /**
@@ -120,7 +119,6 @@ public class SubgroupViewModel extends AndroidViewModel
             }
         }
     }
-
 
 
     /**
@@ -162,9 +160,10 @@ public class SubgroupViewModel extends AndroidViewModel
 
     /**
      * Обновляет существующее слово.
-     * @param wordId id слова.
-     * @param word само слово.
-     * @param value значение слова.
+     *
+     * @param wordId        id слова.
+     * @param word          само слово.
+     * @param value         значение слова.
      * @param transcription транскрипция слова.
      */
     public void updateWord(final long wordId, final String word, final String value,
@@ -176,7 +175,7 @@ public class SubgroupViewModel extends AndroidViewModel
                 editWord.word = word;
                 editWord.transcription = transcription;
                 editWord.value = value;
-                repository.update(editWord);
+                repository.update(editWord, null);
             }
         }).start();
     }
@@ -185,9 +184,10 @@ public class SubgroupViewModel extends AndroidViewModel
     /**
      * Добавляет новое слово в БД и закидывает SubgroupViewModel в виде слушателя
      * для последующего приёма id добавленного слова.
+     *
      * @param word слово, которое необходимо добавить.
      */
-    public void insert(Word word){
+    public void insert(Word word) {
         Log.i(LOG_TAG, "insert():\n" +
                 "word = " + word.word + "; value = " + word.value);
         repository.insert(word, this);
@@ -195,6 +195,7 @@ public class SubgroupViewModel extends AndroidViewModel
 
     /**
      * Добавляет связь добавленого слова с текущей подгруппой.
+     *
      * @param wordId id добавленного слова.
      */
     @Override
@@ -208,6 +209,7 @@ public class SubgroupViewModel extends AndroidViewModel
 
     /**
      * Удаляет связь между текущей подгруппой и словом.
+     *
      * @param wordId id слова.
      */
     public void deleteLinkWithSubgroup(long wordId) {
@@ -220,6 +222,7 @@ public class SubgroupViewModel extends AndroidViewModel
 
     /**
      * Добавляет связь между текущей подгруппой и словом, которое из него удалилось.
+     *
      * @param wordId id слова.
      */
     public void insertLinkWithSubgroup(long wordId) {
@@ -228,24 +231,26 @@ public class SubgroupViewModel extends AndroidViewModel
         if (subgroup != null) {
             Link link = new Link(subgroup.id, wordId);
             Log.i("SubgroupViewModel", "link.subgroupId = " + link.getSubgroupId() + ".\n"
-            + "link.wordId = " + link.getWordId());
+                    + "link.wordId = " + link.getWordId());
             repository.insert(link);
         }
     }
 
 
     public MutableLiveData<ArrayList<Subgroup>> getAvailableSubgroupsToLink(long wordId) {
-        if (availableSubgroupToLink.getValue() == null){
+        if (availableSubgroupToLink.getValue() == null) {
             Log.d(LOG_TAG, "availableSubgroupsTo value = null");
             repository.getAvailableSubgroupTo(wordId, LinkOrDeleteWordDialogFragment.TO_LINK, this);
         }
         return availableSubgroupToLink;
     }
-    public void clearAvailableSubgroupsToAndRemoveObserver(Observer<ArrayList<Subgroup>> observer){
+
+    public void clearAvailableSubgroupsToAndRemoveObserver(Observer<ArrayList<Subgroup>> observer) {
         Log.d(LOG_TAG, "clearAvailableSubgroupsTo()");
         availableSubgroupToLink.setValue(null);
         availableSubgroupToLink.removeObserver(observer);
     }
+
     @Override
     public void onLoaded(ArrayList<Subgroup> subgroups) {
         Log.d(LOG_TAG, "onLoaded()");

@@ -17,7 +17,7 @@
             android:layout_marginTop="100dp"
             android:layout_marginEnd="8dp"
             tools:text="@string/value"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@android:color/black"
             android:textSize="30sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -40,7 +40,7 @@
             android:layout_marginTop="280dp"
             android:layout_marginEnd="8dp"
             android:gravity="center"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@android:color/black"
             android:textSize="30sp"
             app:layout_constraintEnd_toStartOf="@+id/fragment_collect_word_by_letters_mode___image_button___remove_letter"
             app:layout_constraintStart_toStartOf="@+id/fragment_mode4___scroll_view___letters_"
@@ -53,8 +53,8 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginEnd="2dp"
-            android:background="@drawable/shape_white_20dp"
-            android:src="@drawable/ic_backspace_dark_blue_24dp"
+            android:background="@drawable/shape_white_color_primary_20dp"
+            android:src="@drawable/ic_backspace_color_primary_24dp"
             app:layout_constraintBottom_toBottomOf="@+id/fragment_collect_word_by_letters_mode___text_view___user_variant"
             app:layout_constraintEnd_toEndOf="@+id/fragment_mode4___scroll_view___letters_"
             app:layout_constraintTop_toTopOf="@+id/fragment_collect_word_by_letters_mode___text_view___user_variant" />
@@ -77,7 +77,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:columnCount="6"
-                app:rowCount="10" />
+                app:rowCount="10"/>
         </ScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </RelativeLayout>

@@ -1,7 +1,6 @@
 package ru.nikshlykov.englishwordsapp.db;
 
 import android.app.Application;
-import android.database.Cursor;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -14,8 +13,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import ru.nikshlykov.englishwordsapp.db.example.Example;
 import ru.nikshlykov.englishwordsapp.db.example.ExampleDao;
@@ -38,6 +35,11 @@ import static ru.nikshlykov.englishwordsapp.ui.word.LinkOrDeleteWordDialogFragme
 import static ru.nikshlykov.englishwordsapp.ui.word.LinkOrDeleteWordDialogFragment.TO_LINK;
 
 public class AppRepository {
+
+    public static final String PATH_TO_SUBGROUP_IMAGES =
+            "https://raw.githubusercontent.com/NIKSHLYKOV/englishwordsappimages/master/";
+    public static final String PATH_TO_HIGH_SUBGROUP_IMAGES =
+            "https://raw.githubusercontent.com/NIKSHLYKOV/englishwordsappimages/master/high_images/";
 
     private static final String LOG_TAG = "AppRepository";
     private AppDatabase database;
@@ -64,18 +66,16 @@ public class AppRepository {
         wordDao = database.wordDao();
     }
 
-
     /**
      * Методы для работы со словами.
      */
-
     public void insert(Word word, OnWordInsertedListener listener) {
         NewInsertWordAsyncTask task = new NewInsertWordAsyncTask(wordDao, listener);
         task.execute(word);
     }
 
-    public void update(Word word) {
-        new UpdateWordAsyncTask(wordDao).execute(word);
+    public void update(Word word, OnWordUpdatedListener listener) {
+        new UpdateWordAsyncTask(wordDao, listener).execute(word);
     }
 
     public void delete(Word word) {
@@ -103,6 +103,11 @@ public class AppRepository {
         task.execute(wordId);
     }
 
+    public LiveData<List<Word>> getWordsFromStudiedSubgroups(){
+        Log.i(LOG_TAG, "getWordsFromStudiedSubgroups");
+        return wordDao.getAllLiveDataWordsFromStudiedSubgroups();
+    }
+
     public LiveData<List<Word>> getWordsFromSubgroupByProgress(long subgroupId) {
         return wordDao.getWordsFromSubgroupByProgress(subgroupId);
     }
@@ -111,17 +116,10 @@ public class AppRepository {
         return wordDao.getWordsFromSubgroupByAlphabet(subgroupId);
     }
 
-    // РАЗОБРАТЬСЯ С ИСПОЛЬЗОВАНИЕМ В STUDYVIEWMODEL. ЗАМЕНИТЬ НА LIVEDATA.
-    public ArrayList<Word> getAvailableToRepeatWords() {
-        GetAvailableToRepeatWordsAsyncTask task
-                = new GetAvailableToRepeatWordsAsyncTask(wordDao);
+    public void getAvailableToRepeatWord(OnAvailableToRepeatWordLoadedListener listener) {
+        GetAvailableToRepeatWordAsyncTask task
+                = new GetAvailableToRepeatWordAsyncTask(wordDao, listener);
         task.execute();
-        try {
-            return task.get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
     public void resetWordsProgress(final long subgroupId) {
@@ -140,7 +138,6 @@ public class AppRepository {
     /**
      * AsyncTasks для работы со словами.
      */
-
     public interface OnWordInsertedListener {
         void onInserted(long wordId);
     }
@@ -172,17 +169,30 @@ public class AppRepository {
         }
     }
 
-    private static class UpdateWordAsyncTask extends AsyncTask<Word, Void, Void> {
+    public interface OnWordUpdatedListener{
+        void onWordUpdated(int isUpdated);
+    }
+    private static class UpdateWordAsyncTask extends AsyncTask<Word, Void, Integer> {
         private WordDao wordDao;
+        private WeakReference<OnWordUpdatedListener> listener;
 
-        private UpdateWordAsyncTask(WordDao wordDao) {
+        private UpdateWordAsyncTask(WordDao wordDao, OnWordUpdatedListener listener) {
             this.wordDao = wordDao;
+            this.listener = new WeakReference<>(listener);
         }
 
         @Override
-        protected Void doInBackground(Word... words) {
-            wordDao.update(words[0]);
-            return null;
+        protected Integer doInBackground(Word... words) {
+            return wordDao.update(words[0]);
+        }
+
+        @Override
+        protected void onPostExecute(Integer integer) {
+            super.onPostExecute(integer);
+            OnWordUpdatedListener listener = this.listener.get();
+            if (listener != null){
+                listener.onWordUpdated(integer);
+            }
         }
     }
 
@@ -217,7 +227,6 @@ public class AppRepository {
     public interface OnWordLoadedListener {
         void onLoaded(Word word);
     }
-
     private static class GetWordAsyncTask extends AsyncTask<Long, Void, Word> {
         private WordDao wordDao;
         private WeakReference<OnWordLoadedListener> listener;
@@ -243,24 +252,37 @@ public class AppRepository {
         }
     }
 
-    private static class GetAvailableToRepeatWordsAsyncTask extends AsyncTask<Void, Void, ArrayList<Word>> {
+    public interface OnAvailableToRepeatWordLoadedListener {
+        void onAvailableToRepeatWordLoaded(Word word);
+    }
+    private static class GetAvailableToRepeatWordAsyncTask extends AsyncTask<Void, Void, Word> {
         private WordDao wordDao;
+        private WeakReference<OnAvailableToRepeatWordLoadedListener> listener;
 
-        private GetAvailableToRepeatWordsAsyncTask(WordDao wordDao) {
+        private GetAvailableToRepeatWordAsyncTask(WordDao wordDao, OnAvailableToRepeatWordLoadedListener listener) {
             this.wordDao = wordDao;
+            this.listener = new WeakReference<>(listener);
         }
 
         @Override
-        protected ArrayList<Word> doInBackground(Void... voids) {
+        protected Word doInBackground(Void... voids) {
             Word[] wordsFromStudiedSubgroups = wordDao.getAllWordsFromStudiedSubgroups();
-            ArrayList<Word> availableToRepeatWords = new ArrayList<>();
             Date currentDate = new Date();
             for (Word word : wordsFromStudiedSubgroups) {
                 if (word.isAvailableToRepeat(currentDate)) {
-                    availableToRepeatWords.add(word);
+                    return word;
                 }
             }
-            return availableToRepeatWords;
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Word word) {
+            super.onPostExecute(word);
+            OnAvailableToRepeatWordLoadedListener listener = this.listener.get();
+            if (listener != null){
+                listener.onAvailableToRepeatWordLoaded(word);
+            }
         }
     }
 
@@ -268,22 +290,13 @@ public class AppRepository {
     /**
      * Методы для работы с подгруппами.
      */
-
-    // РАЗОБРАТЬСЯ С ИСПОЛЬЗОВАНИЕМ В GROUPSFRAGMENT. ПОМЕНЯТЬ НА LISTENER.
-    public long getLastSubgroupId() {
-        GetLastSubgroupIdAsyncTask task = new GetLastSubgroupIdAsyncTask(subgroupDao);
+    public void getMinSubgroupId(OnMinSubgroupIdLoadedListener listener) {
+        GetMinSubgroupIdAsyncTask task = new GetMinSubgroupIdAsyncTask(subgroupDao, listener);
         task.execute();
-        long lastSubgroupId = 0L;
-        try {
-            lastSubgroupId = task.get(5, TimeUnit.SECONDS);
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            e.printStackTrace();
-        }
-        return lastSubgroupId;
     }
 
-    public void insert(Subgroup subgroup) {
-        new InsertSubgroupAsyncTask(subgroupDao).execute(subgroup);
+    public void insert(Subgroup subgroup, OnSubgroupInsertedListener listener) {
+        new InsertSubgroupAsyncTask(subgroupDao, listener).execute(subgroup);
     }
 
     public void update(Subgroup subgroup) {
@@ -294,37 +307,8 @@ public class AppRepository {
         new DeleteSubgroupAsyncTask(subgroupDao).execute(subgroup);
     }
 
-    public void getSubgroup(long subgroupId, OnSubgroupLoadedListener listener) {
-        GetSubgroupAsyncTask task = new GetSubgroupAsyncTask(subgroupDao, listener);
-        task.execute(subgroupId);
-    }
-
     public LiveData<Subgroup> getLiveDataSubgroupById(long subgroupId) {
         return subgroupDao.getLiveDataSubgroupById(subgroupId);
-    }
-
-    // УЙДЁТ, КОГДА ИЗБАВИМСЯ ОТ EXPANDABLELISTVIEW.
-    public Cursor getSubgroupsFromGroup(long groupId) {
-        GetSubgroupsFromGroupAsyncTask task = new GetSubgroupsFromGroupAsyncTask(subgroupDao);
-        task.execute(groupId);
-        try {
-            return task.get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    // РАЗОБРАТЬСЯ С ИСПОЛЬЗОВАНИЕМ В STUDYVIEWMODEL. ЗАМЕНИТЬ НА LIVEDATA.
-    public Subgroup[] getStudiedSubgroups() {
-        GetStudiedSubgroupsAsyncTask task = new GetStudiedSubgroupsAsyncTask(subgroupDao);
-        task.execute();
-        try {
-            return task.get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
     public void getAvailableSubgroupTo(long wordId, int flagTo, OnSubgroupsLoadedListener listener) {
@@ -337,24 +321,43 @@ public class AppRepository {
     /**
      * AsyncTasks для работы с подгруппами.
      */
-    private static class GetLastSubgroupIdAsyncTask extends AsyncTask<Void, Void, Long> {
+    public interface OnMinSubgroupIdLoadedListener {
+        void onMinSubgroupIdLoaded(Long minSubgroupId);
+    }
+    private static class GetMinSubgroupIdAsyncTask extends AsyncTask<Void, Void, Long> {
         private SubgroupDao subgroupDao;
+        private WeakReference<OnMinSubgroupIdLoadedListener> listener;
 
-        private GetLastSubgroupIdAsyncTask(SubgroupDao subgroupDao) {
+        private GetMinSubgroupIdAsyncTask(SubgroupDao subgroupDao, OnMinSubgroupIdLoadedListener listener) {
             this.subgroupDao = subgroupDao;
+            this.listener = new WeakReference<>(listener);
         }
 
         @Override
         protected Long doInBackground(Void... voids) {
-            return subgroupDao.getSubgroupWithMaxId().id;
+            return subgroupDao.getSubgroupWithMinId().id;
+        }
+
+        @Override
+        protected void onPostExecute(Long aLong) {
+            super.onPostExecute(aLong);
+            OnMinSubgroupIdLoadedListener listener = this.listener.get();
+            if (listener != null) {
+                listener.onMinSubgroupIdLoaded(aLong);
+            }
         }
     }
 
+    public interface OnSubgroupInsertedListener{
+        void onSubgroupInserted(long subgroupId);
+    }
     private static class InsertSubgroupAsyncTask extends AsyncTask<Subgroup, Void, Long> {
         private SubgroupDao subgroupDao;
+        private WeakReference<OnSubgroupInsertedListener> listener;
 
-        private InsertSubgroupAsyncTask(SubgroupDao subgroupDao) {
+        private InsertSubgroupAsyncTask(SubgroupDao subgroupDao, OnSubgroupInsertedListener listener) {
             this.subgroupDao = subgroupDao;
+            this.listener = new WeakReference<>(listener);
         }
 
         @Override
@@ -365,6 +368,10 @@ public class AppRepository {
         @Override
         protected void onPostExecute(Long aLong) {
             super.onPostExecute(aLong);
+            OnSubgroupInsertedListener listener = this.listener.get();
+            if (listener != null){
+                listener.onSubgroupInserted(aLong);
+            }
         }
     }
 
@@ -393,61 +400,6 @@ public class AppRepository {
         protected Void doInBackground(Subgroup... subgroups) {
             subgroupDao.delete(subgroups[0]);
             return null;
-        }
-    }
-
-    public interface OnSubgroupLoadedListener {
-        void onLoaded(Subgroup subgroup);
-    }
-    private static class GetSubgroupAsyncTask extends AsyncTask<Long, Void, Subgroup> {
-        private SubgroupDao subgroupDao;
-        private WeakReference<OnSubgroupLoadedListener> listener;
-
-        private GetSubgroupAsyncTask(SubgroupDao subgroupDao,
-                                     OnSubgroupLoadedListener listener) {
-            this.subgroupDao = subgroupDao;
-            this.listener = new WeakReference<>(listener);
-        }
-
-        @Override
-        protected Subgroup doInBackground(Long... longs) {
-            return subgroupDao.getSubgroupById(longs[0]);
-        }
-
-        @Override
-        protected void onPostExecute(Subgroup subgroup) {
-            super.onPostExecute(subgroup);
-            OnSubgroupLoadedListener listener = this.listener.get();
-            if (listener != null) {
-                listener.onLoaded(subgroup);
-            }
-        }
-    }
-
-    private static class GetSubgroupsFromGroupAsyncTask extends AsyncTask<Long, Void, Cursor> {
-        private SubgroupDao subgroupDao;
-
-        private GetSubgroupsFromGroupAsyncTask(SubgroupDao subgroupDao) {
-            this.subgroupDao = subgroupDao;
-        }
-
-        @Override
-        protected Cursor doInBackground(Long... longs) {
-            Log.i(LOG_TAG, "id подгруппы в asyncTask = " + longs[0]);
-            return subgroupDao.getAllSubgroupsFromGroup(longs[0]);
-        }
-    }
-
-    private static class GetStudiedSubgroupsAsyncTask extends AsyncTask<Void, Void, Subgroup[]> {
-        private SubgroupDao subgroupDao;
-
-        private GetStudiedSubgroupsAsyncTask(SubgroupDao subgroupDao) {
-            this.subgroupDao = subgroupDao;
-        }
-
-        @Override
-        protected Subgroup[] doInBackground(Void... longs) {
-            return subgroupDao.getStudiedSubgroups();
         }
     }
 
@@ -531,26 +483,12 @@ public class AppRepository {
                 listener.onLoaded(subgroup);
             }
         }
-
-
     }
+
 
     /**
      * Методы для работы с группами.
      */
-
-    // УЙДЁТ, КОГДА ИЗБАВИМСЯ ОТ EXPANDABLELISTVIEW.
-    public Cursor getAllGroups() {
-        GetAllGroupsAsyncTask getAllGroupsAsyncTask = new GetAllGroupsAsyncTask(groupDao);
-        getAllGroupsAsyncTask.execute();
-        try {
-            return getAllGroupsAsyncTask.get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
     public void getGroupItems(OnGroupItemsLoadedListener listener){
         GetGroupItemsAsyncTask task = new GetGroupItemsAsyncTask(groupDao, subgroupDao, listener);
         task.execute();
@@ -559,27 +497,13 @@ public class AppRepository {
     /**
      * AsyncTasks для работы с группами.
      */
-    private static class GetAllGroupsAsyncTask extends AsyncTask<Void, Void, Cursor> {
-        private GroupDao groupDao;
-
-        private GetAllGroupsAsyncTask(GroupDao groupDao) {
-            this.groupDao = groupDao;
-        }
-
-        @Override
-        protected Cursor doInBackground(Void... voids) {
-            return groupDao.getAllGroups();
-        }
-    }
-
     public interface OnGroupItemsLoadedListener {
-        void onLoaded(ArrayList<GroupItem> groupItems);
+        void onGroupItemsLoaded(ArrayList<GroupItem> groupItems);
     }
     private static class GetGroupItemsAsyncTask extends AsyncTask<Void, Void, ArrayList<GroupItem>> {
         private SubgroupDao subgroupDao;
         private GroupDao groupDao;
         private WeakReference<OnGroupItemsLoadedListener> listener;
-        private int flagTo;
 
         private GetGroupItemsAsyncTask(GroupDao groupDao, SubgroupDao subgroupDao,
                                        OnGroupItemsLoadedListener listener) {
@@ -596,8 +520,10 @@ public class AppRepository {
                 List<Subgroup> subgroupsList = subgroupDao.getSubgroupsFromGroup(group.id);
                 ArrayList<Subgroup> subgroups = new ArrayList<>(subgroupsList.size());
                 subgroups.addAll(subgroupsList);
-                GroupItem groupItem = new GroupItem(group, subgroups);
-                groupItems.add(groupItem);
+                if (subgroups.size() != 0) {
+                    GroupItem groupItem = new GroupItem(group, subgroups);
+                    groupItems.add(groupItem);
+                }
             }
             return groupItems;
         }
@@ -607,7 +533,7 @@ public class AppRepository {
             super.onPostExecute(subgroup);
             OnGroupItemsLoadedListener listener = this.listener.get();
             if (listener != null) {
-                listener.onLoaded(subgroup);
+                listener.onGroupItemsLoaded(subgroup);
             }
         }
 
@@ -666,15 +592,9 @@ public class AppRepository {
         new UpdateModeAsyncTask(modeDao).execute(modes);
     }
 
-    public Mode[] getSelectedModes() {
-        GetSelectedModesAsyncTask task = new GetSelectedModesAsyncTask(modeDao);
+    public void newGetSelectedModes(OnSelectedModesLoadedListener listener){
+        NewGetSelectedModesAsyncTask task = new NewGetSelectedModesAsyncTask(modeDao, listener);
         task.execute();
-        try {
-            return task.get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
     public LiveData<List<Mode>> getLiveDataModes() {
@@ -698,16 +618,30 @@ public class AppRepository {
         }
     }
 
-    private static class GetSelectedModesAsyncTask extends AsyncTask<Void, Void, Mode[]> {
+    public interface OnSelectedModesLoadedListener{
+        void onSelectedModesLoaded(List<Mode> selectedModes);
+    }
+    private static class NewGetSelectedModesAsyncTask extends AsyncTask<Void, Void, List<Mode>> {
         private ModeDao modeDao;
+        private WeakReference<OnSelectedModesLoadedListener> listener;
 
-        private GetSelectedModesAsyncTask(ModeDao modeDao) {
+        private NewGetSelectedModesAsyncTask(ModeDao modeDao, OnSelectedModesLoadedListener listener) {
             this.modeDao = modeDao;
+            this.listener = new WeakReference<>(listener);
         }
 
         @Override
-        protected Mode[] doInBackground(Void... voids) {
-            return modeDao.getSelectedModes();
+        protected List<Mode> doInBackground(Void... voids) {
+            return modeDao.newGetSelectedModes();
+        }
+
+        @Override
+        protected void onPostExecute(List<Mode> modes) {
+            super.onPostExecute(modes);
+            OnSelectedModesLoadedListener listener = this.listener.get();
+            if (listener != null){
+                listener.onSelectedModesLoaded(modes);
+            }
         }
     }
 
@@ -735,17 +669,6 @@ public class AppRepository {
         return null;
     }
 
-    // РАЗОБРАТЬСЯ С ИСПОЛЬЗОВАНИЕМ В STUDYVIEWMODEL.
-    public long getLastRepeatId() {
-        GetLastRepeatIdAsyncTask task = new GetLastRepeatIdAsyncTask(repeatDao);
-        task.execute();
-        try {
-            return task.get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
-        return 0L;
-    }
 
     /**
      * AsyncTasks для работы с повторами.
@@ -759,6 +682,14 @@ public class AppRepository {
 
         @Override
         protected Long doInBackground(Repeat... repeats) {
+            Repeat repeatToInsert = repeats[0];
+            Repeat lastRepeat = repeatDao.getRepeatWithMaxId();
+            long idForNewRepeat;
+            if (lastRepeat != null)
+                idForNewRepeat = lastRepeat.getId() + 1;
+            else
+                idForNewRepeat = 0L;
+            repeatToInsert.setId(idForNewRepeat);
             return repeatDao.insert(repeats[0]);
         }
     }
@@ -789,29 +720,10 @@ public class AppRepository {
         }
     }
 
-    private static class GetLastRepeatIdAsyncTask extends AsyncTask<Void, Void, Long> {
-        private RepeatDao repeatDao;
-
-        private GetLastRepeatIdAsyncTask(RepeatDao repeatDao) {
-            this.repeatDao = repeatDao;
-        }
-
-        @Override
-        protected Long doInBackground(Void... voids) {
-            Repeat lastRepeat = repeatDao.getRepeatWithMaxId();
-            if (lastRepeat != null)
-                return lastRepeat.getId();
-            else
-                return 0L;
-        }
-    }
-
 
     /**
      * Методы для работы с примерами.
      */
-
-
     public void getExamplesByWordId(long wordId, OnExamplesLoadedListener listener){
         new GetExamplesAsyncTask(exampleDao, listener).execute(wordId);
     }
@@ -819,7 +731,6 @@ public class AppRepository {
     public interface OnExamplesLoadedListener {
         void onLoaded(List<Example> examples);
     }
-
     private static class GetExamplesAsyncTask extends AsyncTask<Long, Void, List<Example>> {
         private ExampleDao exampleDao;
         private WeakReference<OnExamplesLoadedListener> listener;
@@ -843,5 +754,4 @@ public class AppRepository {
             }
         }
     }
-
 }

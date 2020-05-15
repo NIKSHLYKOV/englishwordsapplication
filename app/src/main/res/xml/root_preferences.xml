@@ -14,24 +14,46 @@
   ~ limitations under the License.
   -->
 
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory app:title="Обучение">
-
         <Preference
             app:key="new_words_max_count_for_day"
             app:title="Макс. количество новых слов в день"
             app:summary="Позволяет ограничить количество новых слов в день, чтобы не отнимать много времени."/>
+    </PreferenceCategory>
 
+    <PreferenceCategory android:title="Уведомления">
+        <SwitchPreferenceCompat
+            app:key="@string/preference_key___use_notifications"
+            android:title="Присылать уведомления"/>
+        <Preference
+            app:dependency="@string/preference_key___use_notifications"
+            app:key="@string/preference_key___notification_time"
+            android:title="Время уведомления"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="Произношение робота">
+        <SeekBarPreference
+            app:key="@string/preference_key___tts_pitch"
+            app:title="Тембр голоса"
+            app:min="5"
+            android:max="25"
+            app:defaultValue="10"/>
+        <SeekBarPreference
+            app:key="@string/preference_key___tts_speech_rate"
+            android:title="Скорость голоса"
+            app:min="1"
+            app:defaultValue="10"
+            android:max="25"/>
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/messages_header">
-
         <EditTextPreference
             app:key="signature"
             app:title="@string/signature_title"
             app:useSimpleSummaryProvider="true" />
-
         <ListPreference
             app:defaultValue="reply"
             app:entries="@array/reply_entries"
@@ -39,22 +61,6 @@
             app:key="reply"
             app:title="@string/reply_title"
             app:useSimpleSummaryProvider="true" />
-
-    </PreferenceCategory>
-
-    <PreferenceCategory app:title="@string/sync_header">
-
-        <SwitchPreferenceCompat
-            app:key="sync"
-            app:title="@string/sync_title" />
-
-        <SwitchPreferenceCompat
-            app:dependency="sync"
-            app:key="attachment"
-            app:summaryOff="@string/attachment_summary_off"
-            app:summaryOn="@string/attachment_summary_on"
-            app:title="@string/attachment_title" />
-
     </PreferenceCategory>
 
 </PreferenceScreen>

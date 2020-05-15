@@ -1,12 +1,10 @@
 package ru.nikshlykov.englishwordsapp.ui.study;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.speech.tts.TextToSpeech;
-import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,19 +12,15 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import java.util.Locale;
-import java.util.concurrent.TimeUnit;
-
+import ru.nikshlykov.englishwordsapp.MyApplication;
 import ru.nikshlykov.englishwordsapp.R;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
 import ru.nikshlykov.englishwordsapp.ui.word.WordViewModel;
@@ -72,25 +66,13 @@ public class WriteWordByVoiceModeFragment extends Fragment {
         wordViewModel.setLiveDataWord(wordId);
 
 
-        textToSpeech = new TextToSpeech(context, new TextToSpeech.OnInitListener() {
-            @Override
-            public void onInit(int status) {
-                if (status == TextToSpeech.SUCCESS) {
-                    // Установка языка, высоты и скорости речи.
-                    textToSpeech.setLanguage(Locale.US);
-                    textToSpeech.setPitch(1.3f);
-                    textToSpeech.setSpeechRate(0.7f);
-                } else if (status == TextToSpeech.ERROR) {
-                    Toast.makeText(context, TTS_ERROR, Toast.LENGTH_LONG).show();
-                }
-            }
-        });
+        textToSpeech = ((MyApplication)getActivity().getApplicationContext()).getTextToSpeech();
 
         handler = new Handler(){
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
-                repeatResultListener.result(wordId, msg.what);
+                repeatResultListener.repeatResult(wordId, msg.what);
             }
         };
     }

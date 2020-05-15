@@ -8,10 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
@@ -22,6 +20,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.material.textfield.TextInputEditText;
+
 import ru.nikshlykov.englishwordsapp.R;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
 import ru.nikshlykov.englishwordsapp.ui.word.WordViewModel;
@@ -30,7 +30,7 @@ public class WriteWordByValueModeFragment extends Fragment {
 
     // View элементы.
     private TextView valueTextView;
-    private EditText userVariantEditText;
+    private TextInputEditText userVariantTextInputEditText;
     private ImageButton confirmImageButton;
     private ImageView resultImageView;
 
@@ -63,7 +63,7 @@ public class WriteWordByValueModeFragment extends Fragment {
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
-                repeatResultListener.result(wordId, msg.what);
+                repeatResultListener.repeatResult(wordId, msg.what);
             }
         };
     }
@@ -108,7 +108,7 @@ public class WriteWordByValueModeFragment extends Fragment {
                 // Скрываем View, ненужные для показа результата.
                 valueTextView.setVisibility(View.GONE);
                 confirmImageButton.setVisibility(View.GONE);
-                userVariantEditText.setVisibility(View.GONE);
+                userVariantTextInputEditText.setVisibility(View.GONE);
 
                 // Находим полноэкранный layout для того, чтобы установить ему фон.
                 ConstraintLayout fullscreenLayout = (ConstraintLayout) v.getParent();
@@ -116,7 +116,7 @@ public class WriteWordByValueModeFragment extends Fragment {
                 // Высчитываем результат.
                 // В зависимости от него показываем определённый фон с иконкой.
                 int result = 0;
-                String userVariantOfWord = userVariantEditText.getText().toString();
+                String userVariantOfWord = userVariantTextInputEditText.getText().toString();
                 if (userVariantOfWord.equals(word.word)) {
                     result = 1;
                     resultImageView.setImageResource(R.drawable.ic_done_white_48dp);
@@ -139,7 +139,7 @@ public class WriteWordByValueModeFragment extends Fragment {
      */
     private void findViews(@NonNull View v) {
         valueTextView = v.findViewById(R.id.fragment_write_word_by_value_mode___text_view___value);
-        userVariantEditText = v.findViewById(R.id.fragment_write_word_by_value_mode___edit_text___user_variant);
+        userVariantTextInputEditText = v.findViewById(R.id.fragment_write_word_by_value_mode___text_input_edit_text___user_variant);
         confirmImageButton = v.findViewById(R.id.fragment_write_word_by_value_mode___button___confirm);
         resultImageView = v.findViewById(R.id.fragment_write_word_by_voice_mode___image_view___result);
     }

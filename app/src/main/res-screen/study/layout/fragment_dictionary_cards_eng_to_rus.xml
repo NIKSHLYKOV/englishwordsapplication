@@ -20,7 +20,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="100dp"
             android:gravity="center"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@android:color/black"
             android:textSize="30sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -44,7 +44,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="100dp"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@android:color/black"
             android:textSize="30sp"
             android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="parent"
@@ -58,7 +58,7 @@
             android:layout_width="100dp"
             android:layout_height="70dp"
             android:layout_marginTop="300dp"
-            android:background="@drawable/shape_white_20dp"
+            android:background="@drawable/shape_white_color_primary_20dp"
             android:src="@drawable/ic_visibility_dark_blue_48dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -77,23 +77,19 @@
 
         <Button
             android:id="@+id/fragment_dictionary_cards_eng_to_rus___button___do_not_remember"
-            style="@style/BorderlessButton"
+            style="@style/Widget.MaterialComponents.Button"
             android:layout_width="150dp"
             android:layout_height="match_parent"
             android:layout_gravity="left"
-            android:background="@drawable/shape_white_red_20dp"
-            android:text="@string/do_not_remember"
-            android:textColor="@color/colorPrimary" />
+            android:text="@string/do_not_remember" />
 
         <Button
             android:id="@+id/fragment_dictionary_cards_eng_to_rus___button___remember"
-            style="@style/BorderlessButton"
+            style="@style/Widget.MaterialComponents.Button"
             android:layout_width="150dp"
             android:layout_height="match_parent"
             android:layout_gravity="right"
-            android:background="@drawable/shape_white_green_20dp"
-            android:text="@string/remember"
-            android:textColor="@color/colorPrimary" />
+            android:text="@string/remember"/>
 
     </FrameLayout>
 

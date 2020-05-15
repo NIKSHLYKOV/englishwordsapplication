@@ -11,10 +11,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -34,7 +35,9 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import ru.nikshlykov.englishwordsapp.MyApplication;
 import ru.nikshlykov.englishwordsapp.R;
+import ru.nikshlykov.englishwordsapp.db.AppRepository;
 import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
 import ru.nikshlykov.englishwordsapp.ui.main.MainActivity;
@@ -70,7 +73,7 @@ public class SubgroupActivity extends AppCompatActivity
 
     // View элементы.
     private FloatingActionButton createWordFloatingActionButton;
-    private CheckBox learnSubgroupCheckBox;
+    //private CheckBox learnSubgroupCheckBox;
     private Toolbar toolbar;
 
     private RecyclerView recyclerView;
@@ -115,11 +118,15 @@ public class SubgroupActivity extends AppCompatActivity
                 if (subgroup != null) {
                     Log.i(LOG_TAG, "subgroup onChanged()");
 
-                    getSupportActionBar().setTitle(subgroup.name);
+                    CollapsingToolbarLayout toolbarLayout = findViewById(
+                            R.id.activity_subgroup___collapsing_toolbar_layout);
+                    toolbarLayout.setTitle(subgroup.name);
+                    toolbarLayout.setCollapsedTitleTextAppearance(R.style.CollapsingToolbarCollapseTitle);
+                    toolbarLayout.setExpandedTitleTextAppearance(R.style.CollapsingToolbarExpandedTitle);
+
+                    setSubgroupImage(subgroup.imageResourceId);
 
                     initCreateWordFAB(subgroup);
-
-                    initLearnSubgroupCheckBox(subgroup);
 
                     // Создаём вещи для свайпа слов.
                     initSwipeIcons();
@@ -143,18 +150,26 @@ public class SubgroupActivity extends AppCompatActivity
                     if (!deleteFlag) {
                         // Если слов нет, то скрываем CheckBox изучения подгруппы.
                         if (words.isEmpty()) {
-                            learnSubgroupCheckBox.setVisibility(View.GONE);
+                            //learnSubgroupCheckBox.setVisibility(View.GONE);
                             Toast.makeText(SubgroupActivity.this,
                                     R.string.error_subgroup_is_empty, Toast.LENGTH_LONG)
                                     .show(); // Пуста может быть только подгруппа созданная пользователем.
                         } else {
-                            learnSubgroupCheckBox.setVisibility(View.VISIBLE);
+                            //learnSubgroupCheckBox.setVisibility(View.VISIBLE);
                         }
                         adapter.setWords(words);
                     }
                 }
             }
         });
+    }
+
+    private void setSubgroupImage(String imageResourceId) {
+        Glide.with(this)
+                .load(AppRepository.PATH_TO_HIGH_SUBGROUP_IMAGES + imageResourceId)
+                .placeholder(R.drawable.shape_load_picture)
+                .error(Glide.with(this).load(AppRepository.PATH_TO_SUBGROUP_IMAGES + imageResourceId))
+                .into((ImageView)findViewById(R.id.activity_subgroup___image_view___subgroup_image));
     }
 
     @Override
@@ -294,7 +309,7 @@ public class SubgroupActivity extends AppCompatActivity
      */
     private int getSortParam() {
         SharedPreferences sharedPreferences =
-                getSharedPreferences(MainActivity.PREFERENCE_FILE_NAME, MODE_PRIVATE);
+                getSharedPreferences(MyApplication.PREFERENCE_FILE_NAME, MODE_PRIVATE);
         return sharedPreferences.getInt(PREFERENCE_SORT_WORDS_IN_SUBGROUP,
                 SortWordsDialogFragment.BY_PROGRESS);
     }
@@ -305,7 +320,7 @@ public class SubgroupActivity extends AppCompatActivity
      */
     private void saveSortParam(int sortParam){
         SharedPreferences.Editor editor =
-                getSharedPreferences(MainActivity.PREFERENCE_FILE_NAME, MODE_PRIVATE).edit();
+                getSharedPreferences(MyApplication.PREFERENCE_FILE_NAME, MODE_PRIVATE).edit();
         editor.putInt(PREFERENCE_SORT_WORDS_IN_SUBGROUP, sortParam);
         editor.apply();
     }
@@ -328,7 +343,6 @@ public class SubgroupActivity extends AppCompatActivity
 
     private void findViews() {
         createWordFloatingActionButton = findViewById(R.id.activity_subgroup___floating_action_button___new_word);
-        learnSubgroupCheckBox = findViewById(R.id.activity_subgroup___check_box___study_subgroup);
         toolbar = findViewById(R.id.activity_subgroup___toolbar);
         recyclerView = findViewById(R.id.activity_subgroup___recycler_view___words);
     }
@@ -373,19 +387,6 @@ public class SubgroupActivity extends AppCompatActivity
                 }
             }
         };
-    }
-
-    private void initLearnSubgroupCheckBox(Subgroup subgroup) {
-        // Присваиваем чекбоксу изучения значение, находящееся в БД.
-        learnSubgroupCheckBox.setChecked(subgroup.isStudied == 1);
-        // Присваиваем обработчик нажатия на чекбокс изучения подгруппы.
-        learnSubgroupCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                // Меняем данные по id подгруппы в БД.
-                subgroupViewModel.setIsStudied(isChecked);
-            }
-        });
     }
 
     private void initCreateWordFAB(Subgroup subgroup) {
@@ -506,14 +507,6 @@ public class SubgroupActivity extends AppCompatActivity
                             }).show();
                     break;
                 case ItemTouchHelper.RIGHT:
-
-                    /*LinkOrDeleteWordDialogFragment deleteDialog = new LinkOrDeleteWordDialogFragment();
-                    Bundle arguments = new Bundle();
-                    arguments.putLong(LinkOrDeleteWordDialogFragment.EXTRA_WORD_ID, wordId);
-                    arguments.putInt(LinkOrDeleteWordDialogFragment.EXTRA_FLAG, LinkOrDeleteWordDialogFragment.TO_LINK);
-                    deleteDialog.setArguments(arguments);
-                    deleteDialog.show(getSupportFragmentManager(), DIALOG_LINK_WORD);*/
-
                     setAvailableSubgroupsObserver(wordId);
                     subgroupViewModel.getAvailableSubgroupsToLink(wordId).observe(
                             SubgroupActivity.this, availableSubgroupsObserver);
@@ -535,15 +528,18 @@ public class SubgroupActivity extends AppCompatActivity
             int linkIconMargin = (itemView.getHeight() - linkIcon.getIntrinsicHeight()) / 2;
 
             if (dX > 0) {
-                // НЕОБХОДИМО ПРОПИСАТЬ ВЫЗОВ ДИАЛОГА ДЛЯ ЛИНКОВКИ СЛОВА.
-                swipeBackground.setColor(Color.parseColor("#7FB069"));
+                swipeBackground.setColor(ContextCompat.getColor(SubgroupActivity.this,
+                        R.color.swipe_add_link_word));
+                swipeBackground.setColor(
+                        Color.parseColor("#C6FF00"));
                 swipeBackground.setBounds(
                         itemView.getLeft(),
                         itemView.getTop(),
                         (int) dX,
                         itemView.getBottom());
             } else {
-                swipeBackground.setColor(Color.parseColor("#CC444B"));
+                swipeBackground.setColor(ContextCompat.getColor(SubgroupActivity.this,
+                        R.color.swipe_delete_link_word));
                 swipeBackground.setBounds(
                         itemView.getRight() + (int) dX,
                         itemView.getTop(),

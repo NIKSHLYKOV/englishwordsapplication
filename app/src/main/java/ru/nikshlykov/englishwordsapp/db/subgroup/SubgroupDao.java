@@ -15,7 +15,7 @@ import java.util.List;
 @Dao
 public interface SubgroupDao {
 
-    public static final long GROUP_FOR_NEW_SUBGROUPS_ID = -1L;
+    long GROUP_FOR_NEW_SUBGROUPS_ID = -1L;
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     long insert(Subgroup subgroup);
@@ -31,18 +31,18 @@ public interface SubgroupDao {
 
     @Query("SELECT * FROM Subgroups WHERE _id = :id")
     LiveData<Subgroup> getLiveDataSubgroupById(long id);
-
-    @Query("SELECT * FROM Subgroups WHERE groupId = :groupId")
-    Cursor getAllSubgroupsFromGroup(long groupId);
+/*
+    @Query("SELECT * FROM Subgroups")
+    LiveData<List<Subgroup>> getAllSubgroups();*/
 
     @Query("SELECT * FROM Subgroups WHERE groupId = :groupId")
     List<Subgroup> getSubgroupsFromGroup(long groupId);
 
-    @Query("SELECT * FROM Subgroups WHERE IsStudied = 1")
-    Subgroup[] getStudiedSubgroups();
+    /*@Query("SELECT * FROM Subgroups WHERE IsStudied = 1")
+    Subgroup[] getStudiedSubgroups();*/
 
-    @Query("SELECT * FROM Subgroups ORDER BY _id DESC LIMIT 1")
-    Subgroup getSubgroupWithMaxId();
+    @Query("SELECT * FROM Subgroups ORDER BY _id LIMIT 1")
+    Subgroup getSubgroupWithMinId();
 
     @Query("SELECT * FROM Subgroups WHERE groupId = " + GROUP_FOR_NEW_SUBGROUPS_ID)
     Subgroup[] getCreatedByUserSubgroups();

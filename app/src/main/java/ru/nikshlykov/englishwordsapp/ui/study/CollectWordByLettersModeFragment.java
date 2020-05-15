@@ -76,7 +76,7 @@ public class CollectWordByLettersModeFragment extends Fragment {
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
-                repeatResultListener.result(wordId, msg.what);
+                repeatResultListener.repeatResult(wordId, msg.what);
             }
         };
     }
@@ -115,7 +115,6 @@ public class CollectWordByLettersModeFragment extends Fragment {
                         Button button = initCharButton(word, shuffleLetters.get(i));
                         lettersGridLayout.addView(button);
                     }
-
                 }
             }
         });
@@ -154,9 +153,10 @@ public class CollectWordByLettersModeFragment extends Fragment {
      */
     private Button initCharButton(final Word word, Character letter) {
         final int lettersCount = word.word.length();
+
         Button button = new Button(new ContextThemeWrapper(context,
-                R.style.BorderlessButton), null, 0);
-        button.setBackgroundResource(R.drawable.shape_white_15dp);
+               R.style.BorderlessButton), null, 0);
+        button.setBackgroundResource(R.drawable.shape_white_color_primary_15dp);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 dpToPx(50), dpToPx(50));
         layoutParams.setMargins(dpToPx(2), dpToPx(2),dpToPx(2),dpToPx(2));

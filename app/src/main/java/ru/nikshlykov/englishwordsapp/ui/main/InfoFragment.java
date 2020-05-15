@@ -20,9 +20,8 @@ public class InfoFragment extends Fragment {
     public static final String KEY_INFO_FLAG = "InfoFlag";
 
     // Флаги.
-    public static final int FLAG_SUBGROUPS_ARE_NOT_CHOSEN = 1;
-    public static final int FLAG_MODES_ARE_NOT_CHOSEN = 2;
-    public static final int FLAG_AVAILABLE_WORDS_ARE_NOT_EXISTING = 3;
+    public static final int FLAG_MODES_ARE_NOT_CHOSEN = 1;
+    public static final int FLAG_AVAILABLE_WORDS_ARE_NOT_EXISTING = 2;
 
     // Флаг, получаемый из Activity.
     private int flag;
@@ -53,11 +52,8 @@ public class InfoFragment extends Fragment {
             case FLAG_MODES_ARE_NOT_CHOSEN:
                 text = "Для того, чтобы изучать слова, необходимо выбрать режимы изучения. Сделать это вы можете перейдя во вкладку \"Режимы\"";
                 break;
-            case FLAG_SUBGROUPS_ARE_NOT_CHOSEN:
-                text = "Для того, чтобы изучать слова, необходимо выбрать группы слов. Сделать это вы можете перейдя во вкладку \"Группы\"";
-                break;
             case FLAG_AVAILABLE_WORDS_ARE_NOT_EXISTING:
-                text = "Доступных слов на данный момент нет! Приходите попозже.";
+                text = "Нет доступных слов на данный момент! Выбери группы, если ты ещё этого не делал или если ты выучил все слова из выбранных групп.";
                 break;
         }
         // Устанавливаем текст в TextView.
