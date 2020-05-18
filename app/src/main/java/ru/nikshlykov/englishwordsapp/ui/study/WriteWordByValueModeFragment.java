@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
@@ -20,7 +21,9 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import ru.nikshlykov.englishwordsapp.R;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
@@ -31,7 +34,8 @@ public class WriteWordByValueModeFragment extends Fragment {
     // View элементы.
     private TextView valueTextView;
     private TextInputEditText userVariantTextInputEditText;
-    private ImageButton confirmImageButton;
+    private TextInputLayout userVariantTextInputLayout;
+    private MaterialButton confirmImageButton;
     private ImageView resultImageView;
 
     private Handler handler;
@@ -108,10 +112,9 @@ public class WriteWordByValueModeFragment extends Fragment {
                 // Скрываем View, ненужные для показа результата.
                 valueTextView.setVisibility(View.GONE);
                 confirmImageButton.setVisibility(View.GONE);
-                userVariantTextInputEditText.setVisibility(View.GONE);
-
-                // Находим полноэкранный layout для того, чтобы установить ему фон.
-                ConstraintLayout fullscreenLayout = (ConstraintLayout) v.getParent();
+                userVariantTextInputLayout.setVisibility(View.GONE);
+                // Находим корневой layout для того, чтобы установить ему фон.
+                RelativeLayout rootLayout = (RelativeLayout) v.getParent().getParent();
 
                 // Высчитываем результат.
                 // В зависимости от него показываем определённый фон с иконкой.
@@ -120,10 +123,10 @@ public class WriteWordByValueModeFragment extends Fragment {
                 if (userVariantOfWord.equals(word.word)) {
                     result = 1;
                     resultImageView.setImageResource(R.drawable.ic_done_white_48dp);
-                    fullscreenLayout.setBackgroundResource(R.color.progress_4);
+                    rootLayout.setBackgroundResource(R.color.progress_4);
                 } else {
                     resultImageView.setImageResource(R.drawable.ic_clear_white_48dp);
-                    fullscreenLayout.setBackgroundResource(R.color.progress_1);
+                    rootLayout.setBackgroundResource(R.color.progress_1);
                 }
                 resultImageView.setVisibility(View.VISIBLE);
 
@@ -140,7 +143,8 @@ public class WriteWordByValueModeFragment extends Fragment {
     private void findViews(@NonNull View v) {
         valueTextView = v.findViewById(R.id.fragment_write_word_by_value_mode___text_view___value);
         userVariantTextInputEditText = v.findViewById(R.id.fragment_write_word_by_value_mode___text_input_edit_text___user_variant);
+        userVariantTextInputLayout = v.findViewById(R.id.fragment_write_word_by_value_mode___text_input_layout___user_variant);
         confirmImageButton = v.findViewById(R.id.fragment_write_word_by_value_mode___button___confirm);
-        resultImageView = v.findViewById(R.id.fragment_write_word_by_voice_mode___image_view___result);
+        resultImageView = v.findViewById(R.id.fragment_write_word_by_value_mode___image_view___result);
     }
 }

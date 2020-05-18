@@ -54,33 +54,33 @@
 
         <Button
             android:id="@+id/fragment_first_show_mode___button___know"
-            style="@style/Widget.MaterialComponents.Button"
+            style="@style/MaterialButtonWithoutAllCaps"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_margin="4dp"
             android:layout_weight="1"
             android:text="@string/know"
-            android:textSize="10sp"/>
+            android:textSize="12sp"/>
 
         <Button
             android:id="@+id/fragment_first_show_mode___button___learn"
-            style="@style/Widget.MaterialComponents.Button"
+            style="@style/MaterialButtonWithoutAllCaps"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_margin="4dp"
             android:layout_weight="1"
             android:text="@string/to_learn"
-            android:textSize="10sp"/>
+            android:textSize="12sp"/>
 
         <Button
             android:id="@+id/fragment_first_show_mode___button___skip"
-            style="@style/Widget.MaterialComponents.Button"
+            style="@style/MaterialButtonWithoutAllCaps"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_margin="4dp"
             android:layout_weight="1"
             android:text="@string/to_skip"
-            android:textSize="10sp"/>
+            android:textSize="12sp"/>
 
     </LinearLayout>
 

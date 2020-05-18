@@ -31,6 +31,8 @@
     <string name="do_not_remember">Не помню</string>
     <string name="word_deleted">Слово удалено</string>
     <string name="error_word_saving">Необходимо указать слово и его значение!</string>
+    <string name="by_progress">По прогрессу</string>
+    <string name="by_alphabet">По алфавиту</string>
 
     <!-- Статистика -->
     <string name="statistics">Статистика</string>
@@ -91,10 +93,10 @@
     <string name="signature_title">Your signature</string>
     <string name="reply_title">Default reply action</string>
 
-    <!-- Sync Preferences -->
-    <string name="sync_title">Sync email periodically</string>
+    <!-- Preferences Keys -->
     <string name="preference_key___use_notifications">PreferenceKeyUseNotification</string>
     <string name="preference_key___notification_time">PreferenceKeyNotificationTime</string>
     <string name="preference_key___tts_pitch">PreferenceKeyTtsPitch</string>
     <string name="preference_key___tts_speech_rate">PreferenceKeyTtsSpeechRate</string>
+    <string name="preference_key___sort_words_in_subgroups">PreferenceKeySortWordsInSubgroups</string>
 </resources>

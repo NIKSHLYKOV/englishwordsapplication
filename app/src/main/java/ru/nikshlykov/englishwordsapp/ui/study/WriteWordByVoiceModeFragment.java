@@ -9,16 +9,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import ru.nikshlykov.englishwordsapp.MyApplication;
 import ru.nikshlykov.englishwordsapp.R;
@@ -38,7 +40,8 @@ public class WriteWordByVoiceModeFragment extends Fragment {
 
     // Views элементы.
     private ImageButton voiceImageButton;
-    private EditText userVariantEditText;
+    private TextInputEditText userVariantTextInputEditText;
+    private TextInputLayout userVariantTextInputLayout;
     private ImageButton confirmImageButton;
     private ImageView resultImageView;
 
@@ -122,22 +125,22 @@ public class WriteWordByVoiceModeFragment extends Fragment {
                 // Скрываем View, ненужные для показа результата.
                 voiceImageButton.setVisibility(View.GONE);
                 confirmImageButton.setVisibility(View.GONE);
-                userVariantEditText.setVisibility(View.GONE);
+                userVariantTextInputLayout.setVisibility(View.GONE);
 
-                // Находим полноэкранный layout для того, чтобы установить ему фон.
-                ConstraintLayout fullscreenLayout = (ConstraintLayout) v.getParent();
+                // Находим корневой layout для того, чтобы установить ему фон.
+                RelativeLayout rootLayout = (RelativeLayout) v.getParent().getParent();
 
                 // Высчитываем результат.
                 // В зависимости от него показываем определённый фон с иконкой.
                 int result = 0;
-                String userVariantOfWord = userVariantEditText.getText().toString();
+                String userVariantOfWord = userVariantTextInputEditText.getText().toString();
                 if (userVariantOfWord.equals(word.word)) {
                     result = 1;
                     resultImageView.setImageResource(R.drawable.ic_done_white_48dp);
-                    fullscreenLayout.setBackgroundResource(R.color.progress_4);
+                    rootLayout.setBackgroundResource(R.color.progress_4);
                 } else {
                     resultImageView.setImageResource(R.drawable.ic_clear_white_48dp);
-                    fullscreenLayout.setBackgroundResource(R.color.progress_1);
+                    rootLayout.setBackgroundResource(R.color.progress_1);
                 }
                 resultImageView.setVisibility(View.VISIBLE);
 
@@ -153,7 +156,8 @@ public class WriteWordByVoiceModeFragment extends Fragment {
      */
     private void findViews(View v) {
         voiceImageButton = v.findViewById(R.id.fragment_write_word_by_voice_mode___image_button___voice);
-        userVariantEditText = v.findViewById(R.id.fragment_write_word_by_voice_mode___edit_text___user_variant);
+        userVariantTextInputEditText = v.findViewById(R.id.fragment_write_word_by_voice_mode___text_input_edit_text___user_variant);
+        userVariantTextInputLayout = v.findViewById(R.id.fragment_write_word_by_voice_mode___text_input_layout___user_variant);
         confirmImageButton = v.findViewById(R.id.fragment_write_word_by_voice_mode___image_button___confirm);
         resultImageView = v.findViewById(R.id.fragment_write_word_by_voice_mode___image_view___result);
     }

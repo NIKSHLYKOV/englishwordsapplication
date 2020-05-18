@@ -77,19 +77,21 @@
 
         <Button
             android:id="@+id/fragment_dictionary_cards_eng_to_rus___button___do_not_remember"
-            style="@style/Widget.MaterialComponents.Button"
+            style="@style/MaterialButtonWithoutAllCaps"
             android:layout_width="150dp"
             android:layout_height="match_parent"
             android:layout_gravity="left"
-            android:text="@string/do_not_remember" />
+            android:text="@string/do_not_remember"
+            android:textSize="12sp"/>
 
         <Button
             android:id="@+id/fragment_dictionary_cards_eng_to_rus___button___remember"
-            style="@style/Widget.MaterialComponents.Button"
+            style="@style/MaterialButtonWithoutAllCaps"
             android:layout_width="150dp"
             android:layout_height="match_parent"
             android:layout_gravity="right"
-            android:text="@string/remember"/>
+            android:text="@string/remember"
+            android:textSize="12sp"/>
 
     </FrameLayout>
 
