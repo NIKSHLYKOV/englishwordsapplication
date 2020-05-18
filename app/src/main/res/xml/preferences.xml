@@ -1,0 +1,78 @@
+<!--
+  ~ Copyright 2018 The app Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory app:title="Обучение">
+        <Preference
+            android:key="new_words_max_count_for_day"
+            android:title="Макс. количество новых слов в день"
+            android:summary="Позволяет ограничить количество новых слов в день, чтобы не отнимать много времени."
+            android:defaultValue="10"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Уведомления">
+        <SwitchPreference
+            android:key="@string/preference_key___use_notifications"
+            android:title="Присылать уведомления"
+            android:defaultValue="false"/>
+        <Preference
+            android:dependency="@string/preference_key___use_notifications"
+            android:key="@string/preference_key___notification_time"
+            android:title="Время уведомления"
+            android:defaultValue="0"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="Произношение робота">
+        <SeekBarPreference
+            android:key="@string/preference_key___tts_pitch"
+            android:title="Тембр голоса"
+            app:min="5"
+            android:max="25"
+            android:defaultValue="10"/>
+        <SeekBarPreference
+            android:key="@string/preference_key___tts_speech_rate"
+            android:title="Скорость голоса"
+            app:min="1"
+            android:defaultValue="10"
+            android:max="25"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Интерфейс">
+        <ListPreference
+            android:key="@string/preference_key___sort_words_in_subgroups"
+            android:title="Сортировка слов в группах"
+            android:defaultValue="По алфавиту"
+            android:entries="@array/sort_words_in_subgroup_entries"
+            android:entryValues="@array/sort_words_in_subgroup_values"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/messages_header">
+        <EditTextPreference
+            android:key="signature"
+            android:title="@string/signature_title"
+            android:defaultValue="0"
+            app:useSimpleSummaryProvider="true" />
+        <ListPreference
+            android:key="reply"
+            android:defaultValue="reply"
+            android:title="@string/reply_title"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+
+</PreferenceScreen>
