@@ -72,6 +72,7 @@ public class SubgroupActivity extends AppCompatActivity
     private static final String DIALOG_RESET_WORDS_PROGRESS = "ResetWordsProgressDialogFragment";
     private static final String DIALOG_DELETE_SUBGROUP = "DeleteSubgroupDialogFragment";
     private static final String DIALOG_LINK_WORD = "LinkWordDialogFragment";
+    public static final String EXTRA_DELETE_SUBGROUP = "DeleteSubgroup";
 
     // View элементы.
     private FloatingActionButton createWordFloatingActionButton;
@@ -463,12 +464,12 @@ public class SubgroupActivity extends AppCompatActivity
                 if (currentSubgroup.isCreatedByUser()) {
                     subgroupViewModel.deleteSubgroup();
                     deleteFlag = true;
+
+                    Intent wordData = new Intent();
+                    wordData.putExtra(EXTRA_DELETE_SUBGROUP, true);
+                    setResult(RESULT_OK, wordData);
+
                     finish();
-                    // Тут ещё необходимо удалить все линки с данной подгруппой.
-                    // Тут ещё необходимо удалить все линки с данной подгруппой.
-                    // Тут ещё необходимо удалить все линки с данной подгруппой.
-                    // Тут ещё необходимо удалить все линки с данной подгруппой.
-                    // Тут ещё необходимо удалить все линки с данной подгруппой.
                 }
             }
         }

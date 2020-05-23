@@ -18,6 +18,7 @@ import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -151,8 +152,10 @@ public class WordsRecyclerViewAdapter
 
 
     public void setWords(List<Word> words) {
+        WordItemDiffUtilCallback diffUtilCallback = new WordItemDiffUtilCallback(this.words, words);
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffUtilCallback);
         this.words = words;
-        notifyDataSetChanged();
+        diffResult.dispatchUpdatesTo(this);
     }
 
     public List<Word> getWords() {
@@ -161,5 +164,35 @@ public class WordsRecyclerViewAdapter
 
     public Word getWordAt(int position) {
         return words.get(position);
+    }
+
+    class WordItemDiffUtilCallback extends DiffUtil.Callback{
+        private List<Word> oldWords;
+        private List<Word> newWords;
+
+        WordItemDiffUtilCallback(List<Word> oldWords, List<Word> newWords){
+            this.oldWords = oldWords;
+            this.newWords = newWords;
+        }
+
+        @Override
+        public int getOldListSize() {
+            return oldWords.size();
+        }
+
+        @Override
+        public int getNewListSize() {
+            return newWords.size();
+        }
+
+        @Override
+        public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+            return oldWords.get(oldItemPosition).id == newWords.get(newItemPosition).id;
+        }
+
+        @Override
+        public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+            return oldWords.get(oldItemPosition).equals(newWords.get(newItemPosition));
+        }
     }
 }

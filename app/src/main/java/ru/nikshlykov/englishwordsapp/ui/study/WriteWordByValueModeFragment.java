@@ -114,12 +114,13 @@ public class WriteWordByValueModeFragment extends Fragment {
                 confirmImageButton.setVisibility(View.GONE);
                 userVariantTextInputLayout.setVisibility(View.GONE);
                 // Находим корневой layout для того, чтобы установить ему фон.
-                RelativeLayout rootLayout = (RelativeLayout) v.getParent().getParent();
+                RelativeLayout rootLayout = (RelativeLayout) v.getParent().getParent().getParent();
 
                 // Высчитываем результат.
                 // В зависимости от него показываем определённый фон с иконкой.
                 int result = 0;
-                String userVariantOfWord = userVariantTextInputEditText.getText().toString();
+                String userVariantOfWord = userVariantTextInputEditText.getText().toString()
+                        .toLowerCase().trim();
                 if (userVariantOfWord.equals(word.word)) {
                     result = 1;
                     resultImageView.setImageResource(R.drawable.ic_done_white_48dp);

@@ -18,11 +18,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory app:title="Обучение">
-        <Preference
+        <ru.nikshlykov.englishwordsapp.ui.settings.NewWordsCountPreference
             android:key="new_words_max_count_for_day"
             android:title="Макс. количество новых слов в день"
             android:summary="Позволяет ограничить количество новых слов в день, чтобы не отнимать много времени."
-            android:defaultValue="10"/>
+            android:defaultValue="5"
+            style="@style/AppPreference.DialogPreference"/>
     </PreferenceCategory>
 
     <PreferenceCategory android:title="Уведомления">

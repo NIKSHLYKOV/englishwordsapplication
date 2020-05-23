@@ -1,10 +1,13 @@
 package ru.nikshlykov.englishwordsapp.ui.groups;
 
+import androidx.annotation.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import ru.nikshlykov.englishwordsapp.db.group.Group;
 import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup;
+import ru.nikshlykov.englishwordsapp.db.word.Word;
 
 public class GroupItem {
     private Group group;
@@ -29,5 +32,33 @@ public class GroupItem {
 
     public ArrayList<Subgroup> getSubgroups() {
         return subgroups;
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (obj == null || this.getClass() != obj.getClass()) {
+            return false;
+        }
+
+        GroupItem comparedGroupItem = (GroupItem) obj;
+        if (group.equals(comparedGroupItem.getGroup())) {
+            ArrayList<Subgroup> comparedSubgroups = comparedGroupItem.getSubgroups();
+            if (subgroups.size() == comparedSubgroups.size()) {
+                for (int i = 0; i < subgroups.size(); i++){
+                    if (!subgroups.get(i).equals(comparedSubgroups.get(i))){
+                        return false;
+                    }
+                }
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
 }

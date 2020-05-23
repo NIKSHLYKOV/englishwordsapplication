@@ -4,78 +4,70 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="8dp"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    android:padding="8dp">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <TextView
             android:id="@+id/fragment_write_word_by_value_mode___text_view___value"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:layout_marginStart="50dp"
-            android:layout_marginTop="100dp"
-            android:layout_marginEnd="50dp"
+            android:layout_height="match_parent"
+            android:layout_above="@id/fragment_write_word_by_value_mode___linear_layout___user_variant_with_button"
+            android:layout_alignParentTop="true"
+
+            android:layout_marginStart="48dp"
+            android:layout_marginEnd="48dp"
+
             android:gravity="center"
-            android:maxLines="3"
-            tools:text="@string/value"
             android:textColor="@android:color/black"
             android:textSize="30sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            tools:text="@string/value" />
 
 
         <ImageView
             android:id="@+id/fragment_write_word_by_value_mode___image_view___result"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_centerInParent="true"
+            android:visibility="invisible" />
 
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/fragment_write_word_by_value_mode___text_input_layout___user_variant"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:id="@+id/fragment_write_word_by_value_mode___linear_layout___user_variant_with_button"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/word"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/fragment_write_word_by_value_mode___button___confirm"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="350dp"
-            android:layout_marginEnd="8dp">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/fragment_write_word_by_value_mode___text_input_edit_text___user_variant"
-                android:inputType="textPersonName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-        </com.google.android.material.textfield.TextInputLayout>
+            android:layout_centerInParent="true"
+            android:orientation="horizontal">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/fragment_write_word_by_value_mode___button___confirm"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="56dp"
-            android:layout_height="0dp"
-            android:layout_marginEnd="8dp"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/fragment_write_word_by_value_mode___text_input_layout___user_variant"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="4dp"
+                android:layout_weight="1"
+                android:hint="@string/word">
 
-            android:insetLeft="0dp"
-            android:insetTop="0dp"
-            android:insetRight="0dp"
-            android:insetBottom="0dp"
-            app:iconGravity="textStart"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/fragment_write_word_by_value_mode___text_input_edit_text___user_variant"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            app:iconPadding="0dp"
-            app:icon="@drawable/ic_arrow_forward_dark_blue_24dp"
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/fragment_write_word_by_value_mode___button___confirm"
+                style="@style/MaterialButtonIconOnly"
+                android:layout_width="56dp"
+                android:layout_height="match_parent"
+                android:layout_marginTop="0dp"
+                android:padding="0dp"
 
-            app:layout_constraintTop_toTopOf="@id/fragment_write_word_by_value_mode___text_input_layout___user_variant"
-            app:layout_constraintBottom_toBottomOf="@id/fragment_write_word_by_value_mode___text_input_layout___user_variant"
-            app:layout_constraintEnd_toEndOf="parent"/>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                app:icon="@drawable/ic_arrow_forward_white_24dp" />
+        </LinearLayout>
+    </RelativeLayout>
 </RelativeLayout>

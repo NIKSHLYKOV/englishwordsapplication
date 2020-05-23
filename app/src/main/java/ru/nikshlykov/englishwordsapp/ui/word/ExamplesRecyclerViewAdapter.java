@@ -25,18 +25,10 @@ public class ExamplesRecyclerViewAdapter
     // Слова подгруппы.
     private List<Example> examples = new ArrayList<>();
 
-    /*// TextToSpeech, который будет воспроизводить примеры.
+    // TextToSpeech, который будет воспроизводить примеры.
     private TextToSpeech textToSpeech;
-    private static final String TTS_ERROR = "Ошибка воспроизведения!";*/
 
-    /*// Интерфейс для реагирования на нажатие элемента RecyclerView.
-    public interface OnEntryClickListener {
-        void onEntryClick(View view, int position);
-    }
-    private OnEntryClickListener mOnEntryClickListener;
-    public void setOnEntryClickListener(OnEntryClickListener onEntryClickListener) {
-        mOnEntryClickListener = onEntryClickListener;
-    }*/
+
 
 
     public ExamplesRecyclerViewAdapter(final Context context) {

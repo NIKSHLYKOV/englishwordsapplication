@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import ru.nikshlykov.englishwordsapp.MyApplication;
 import ru.nikshlykov.englishwordsapp.R;
 import ru.nikshlykov.englishwordsapp.db.AppRepository;
 import ru.nikshlykov.englishwordsapp.db.mode.Mode;
@@ -126,6 +127,12 @@ public class MainActivity extends AppCompatActivity
         studyViewModel = new ViewModelProvider(this).get(StudyViewModel.class);
 
         studyViewModel.getSelectedModes(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ((MyApplication) getApplicationContext()).getTextToSpeech().shutdown();
     }
 
     /**

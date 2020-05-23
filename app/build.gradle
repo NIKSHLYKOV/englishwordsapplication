@@ -57,4 +57,9 @@ dependencies {
     implementation 'androidx.gridlayout:gridlayout:1.0.0'
 
     implementation 'com.github.bumptech.glide:glide:4.9.0'
+
+
+    def work_version = "2.3.4"
+
+    implementation "androidx.work:work-runtime:$work_version"
 }

@@ -9,10 +9,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import ru.nikshlykov.englishwordsapp.R;
 import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup;
@@ -85,9 +87,49 @@ public class GroupItemsRecyclerViewAdapter extends RecyclerView.Adapter<GroupIte
     }
 
     public void setGroupItems(ArrayList<GroupItem> groupItems) {
-        // TODO: Сделать DiffUtils для того, чтобы переписовывались только те, которые реально изменились.
-        //  Очень поможет при добавлении новой подгруппы.
-        this.groupItems = groupItems;
-        notifyDataSetChanged();
+        if (this.groupItems != null) {
+            GroupItemDiffUtilCallback diffUtilCallback = new GroupItemDiffUtilCallback(this.groupItems, groupItems);
+            DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffUtilCallback);
+            this.groupItems = groupItems;
+            diffResult.dispatchUpdatesTo(this);
+        } else {
+            this.groupItems = groupItems;
+            notifyDataSetChanged();
+        }
+    }
+
+    public GroupItem getGroupItemAt(int position) {
+        return groupItems.get(position);
+    }
+
+    class GroupItemDiffUtilCallback extends DiffUtil.Callback {
+        private ArrayList<GroupItem> oldGroupItems;
+        private ArrayList<GroupItem> newGroupItems;
+
+        GroupItemDiffUtilCallback(ArrayList<GroupItem> oldGroupItems, ArrayList<GroupItem> newGroupItems) {
+            this.oldGroupItems = oldGroupItems;
+            this.newGroupItems = newGroupItems;
+        }
+
+        @Override
+        public int getOldListSize() {
+            return oldGroupItems.size();
+        }
+
+        @Override
+        public int getNewListSize() {
+            return newGroupItems.size();
+        }
+
+        @Override
+        public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+            return oldGroupItems.get(oldItemPosition).getGroup().id
+                    == newGroupItems.get(newItemPosition).getGroup().id;
+        }
+
+        @Override
+        public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+            return oldGroupItems.get(oldItemPosition).equals(newGroupItems.get(newItemPosition));
+        }
     }
 }

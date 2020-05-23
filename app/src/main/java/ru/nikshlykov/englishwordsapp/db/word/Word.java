@@ -2,6 +2,7 @@ package ru.nikshlykov.englishwordsapp.db.word;
 
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -38,11 +39,11 @@ public class Word {
     public int learnProgress; // Прогресс изучения слова - количество правильных повторов, сделанных пользователем подряд.
 
     @NonNull
-    @ColumnInfo(name = "IsLearned", defaultValue = "0")
-    public int isLearned; // Переменная, показывающая выучено ли слово.
+    @ColumnInfo(name = "IsCreatedByUser", defaultValue = "0")
+    public int createdByUser; // Переменная, показывающая выучено ли слово.
 
     @ColumnInfo(name = "PartOfSpeech")
-    public String partOfSpeech; // Часть/Части речи слова???????????????????????????????????????????
+    public String partOfSpeech; // Часть/Части речи слова???????????????
 
     @NonNull
     @ColumnInfo(name = "LastRepetitionDate", defaultValue = "0")
@@ -51,6 +52,52 @@ public class Word {
     @NonNull
     @ColumnInfo(name = "Priority", defaultValue = "0")
     public int priority; // Приоритет слова. Если слово пропускается, то значение увеличивается.
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+
+        Word comparedWord = (Word) obj;
+        // Здесь мы проверяем всё, что не может быть null.
+        boolean flag = id == comparedWord.id &&
+                word.equals(comparedWord.word) &&
+                value.equals(comparedWord.value) &&
+                learnProgress == comparedWord.learnProgress &&
+                createdByUser == comparedWord.createdByUser &&
+                lastRepetitionDate == comparedWord.lastRepetitionDate &&
+                priority == comparedWord.priority;
+
+        if (flag) {
+            // Если всё предыдущее сошлось, то уже можем проверить транскрипцию и
+            // часть речи, которые могут быть null.
+
+            // Проверяем транскрипцию.
+            if (transcription != null) {
+                if (!transcription.equals(comparedWord.transcription)) {
+                    return false;
+                }
+            } else {
+                if (comparedWord.transcription != null) {
+                    return false;
+                }
+            }
+
+            // Проверяем часть речи.
+            if (partOfSpeech != null) {
+                return partOfSpeech.equals(comparedWord.partOfSpeech);
+            } else {
+                return comparedWord.partOfSpeech == null;
+            }
+        }
+        return false;
+    }
+
 
     /*public static class WordsTable {
         // Названия таблицы слов и её колонок

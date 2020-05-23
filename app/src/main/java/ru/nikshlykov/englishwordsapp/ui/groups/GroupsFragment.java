@@ -32,6 +32,7 @@ public class GroupsFragment extends Fragment
     private String LOG_TAG = "GroupsFragment";
 
     private static final int REQUEST_CODE_CREATE_SUBGROUP = 1;
+    private static final int REQUEST_DELETE_SUBGROUP = 2;
 
     // ViewModel для взаимодействия с БД.
     private GroupsViewModel groupsViewModel;
@@ -45,12 +46,24 @@ public class GroupsFragment extends Fragment
     // Контекст, передаваемый при прикреплении фрагмента.
     private Context context;
 
+    private boolean subgroupCreatingFlag;
+
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         this.context = context;
         Log.d(LOG_TAG, "onAttach");
+    }
+
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.i(LOG_TAG, "onCreate()");
+        groupsViewModel = new ViewModelProvider(getActivity()).get(GroupsViewModel.class);
+        groupItemsRecyclerViewAdapter = new GroupItemsRecyclerViewAdapter(context,
+                this, this);
     }
 
     @Nullable
@@ -74,25 +87,36 @@ public class GroupsFragment extends Fragment
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-
-        //TODO: Возможно, это стоит куда-то перенести. Посмотреть подробнее жизненный цикл фрагмента.
-        groupsViewModel = new ViewModelProvider(getActivity()).get(GroupsViewModel.class);
-        groupItemsRecyclerViewAdapter = new GroupItemsRecyclerViewAdapter(context,
-                this, this);
-
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        Log.i(LOG_TAG, "onViewCreated()");
+        super.onViewCreated(view, savedInstanceState);
+        groupsViewModel.getMutableLiveDataGroupItems().observe(getViewLifecycleOwner(),
+                new Observer<ArrayList<GroupItem>>() {
+                    @Override
+                    public void onChanged(ArrayList<GroupItem> groupItems) {
+                        groupItemsRecyclerViewAdapter.setGroupItems(groupItems);
+                        if (subgroupCreatingFlag){
+                            while (true){
+                                if (groupItemsRecyclerViewAdapter
+                                        .getGroupItemAt(0).getGroup().id == -1){
+                                    groupItemsRecyclerView.smoothScrollToPosition(0);
+                                    subgroupCreatingFlag = false;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                });
         groupItemsRecyclerView.setLayoutManager(new LinearLayoutManager(context,
                 RecyclerView.VERTICAL, false));
         groupItemsRecyclerView.setAdapter(groupItemsRecyclerViewAdapter);
+    }
 
-        groupsViewModel.getMutableLiveDataGroupItems().observe(getViewLifecycleOwner(),
-                new Observer<ArrayList<GroupItem>>() {
-            @Override
-            public void onChanged(ArrayList<GroupItem> groupItems) {
-                groupItemsRecyclerViewAdapter.setGroupItems(groupItems);
-            }
-        });
+    @Override
+    public void onStart() {
+        super.onStart();
+        //groupsViewModel.loadGroupItems();
+        Log.i(LOG_TAG, "onStart()");
     }
 
     private void findViews(View view) {
@@ -103,19 +127,25 @@ public class GroupsFragment extends Fragment
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == REQUEST_CODE_CREATE_SUBGROUP) {
+                String newSubgroupName = data.getStringExtra(AddOrEditSubgroupActivity.EXTRA_SUBGROUP_NAME);
+                groupsViewModel.insertSubgroup(newSubgroupName);
+                subgroupCreatingFlag = true;
+            }
 
-        if (requestCode == REQUEST_CODE_CREATE_SUBGROUP && resultCode == RESULT_OK) {
-            String newSubgroupName = data.getStringExtra(AddOrEditSubgroupActivity.EXTRA_SUBGROUP_NAME);
-            groupsViewModel.insertSubgroup(newSubgroupName);
+            if (requestCode == REQUEST_DELETE_SUBGROUP) {
+                groupsViewModel.loadGroupItems();
+            }
         }
     }
 
     @Override
     public void onSubgroupClick(View view, long subgroupId, boolean isCreatedByUser) {
-        Intent intent = new Intent(context, SubgroupActivity.class);;
+        Intent intent = new Intent(context, SubgroupActivity.class);
         intent.putExtra(SubgroupActivity.EXTRA_SUBGROUP_ID, subgroupId);
         intent.putExtra(SubgroupActivity.EXTRA_IS_CREATED_BY_USER, isCreatedByUser);
-        startActivity(intent);
+        startActivityForResult(intent, REQUEST_DELETE_SUBGROUP);
     }
 
     @Override

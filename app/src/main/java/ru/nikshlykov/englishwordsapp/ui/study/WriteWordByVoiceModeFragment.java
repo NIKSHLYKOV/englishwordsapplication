@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -42,7 +43,7 @@ public class WriteWordByVoiceModeFragment extends Fragment {
     private ImageButton voiceImageButton;
     private TextInputEditText userVariantTextInputEditText;
     private TextInputLayout userVariantTextInputLayout;
-    private ImageButton confirmImageButton;
+    private MaterialButton confirmMaterialButton;
     private ImageView resultImageView;
 
     // ViewModel для работы с БД.
@@ -113,7 +114,7 @@ public class WriteWordByVoiceModeFragment extends Fragment {
      * @param word слово.
      */
     private void initConfirmImageButton(final Word word) {
-        confirmImageButton.setOnClickListener(new View.OnClickListener() {
+        confirmMaterialButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Скрываем клавиатуру.
@@ -124,16 +125,17 @@ public class WriteWordByVoiceModeFragment extends Fragment {
 
                 // Скрываем View, ненужные для показа результата.
                 voiceImageButton.setVisibility(View.GONE);
-                confirmImageButton.setVisibility(View.GONE);
+                confirmMaterialButton.setVisibility(View.GONE);
                 userVariantTextInputLayout.setVisibility(View.GONE);
 
                 // Находим корневой layout для того, чтобы установить ему фон.
-                RelativeLayout rootLayout = (RelativeLayout) v.getParent().getParent();
+                RelativeLayout rootLayout = (RelativeLayout) v.getParent().getParent().getParent();
 
                 // Высчитываем результат.
                 // В зависимости от него показываем определённый фон с иконкой.
                 int result = 0;
-                String userVariantOfWord = userVariantTextInputEditText.getText().toString();
+                String userVariantOfWord = userVariantTextInputEditText.getText().toString()
+                        .toLowerCase().trim();
                 if (userVariantOfWord.equals(word.word)) {
                     result = 1;
                     resultImageView.setImageResource(R.drawable.ic_done_white_48dp);
@@ -158,7 +160,7 @@ public class WriteWordByVoiceModeFragment extends Fragment {
         voiceImageButton = v.findViewById(R.id.fragment_write_word_by_voice_mode___image_button___voice);
         userVariantTextInputEditText = v.findViewById(R.id.fragment_write_word_by_voice_mode___text_input_edit_text___user_variant);
         userVariantTextInputLayout = v.findViewById(R.id.fragment_write_word_by_voice_mode___text_input_layout___user_variant);
-        confirmImageButton = v.findViewById(R.id.fragment_write_word_by_voice_mode___image_button___confirm);
+        confirmMaterialButton = v.findViewById(R.id.fragment_write_word_by_voice_mode___material_button___confirm);
         resultImageView = v.findViewById(R.id.fragment_write_word_by_voice_mode___image_view___result);
     }
 }

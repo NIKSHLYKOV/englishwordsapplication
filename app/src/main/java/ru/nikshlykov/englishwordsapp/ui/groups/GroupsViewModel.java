@@ -73,4 +73,8 @@ public class GroupsViewModel extends AndroidViewModel implements
     public void onSubgroupInserted(long subgroupId) {
         repository.getGroupItems(this);
     }
+
+    public void loadGroupItems() {
+        repository.getGroupItems(this);
+    }
 }

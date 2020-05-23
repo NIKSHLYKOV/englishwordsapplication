@@ -21,7 +21,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.textfield.TextInputEditText;
@@ -38,6 +37,9 @@ import static ru.nikshlykov.englishwordsapp.ui.word.LinkOrDeleteWordDialogFragme
 public class WordActivity extends AppCompatActivity
         implements ResetProgressDialogFragment.ResetProgressListener,
         AppRepository.OnExamplesLoadedListener {
+
+    // TODO Убрать кнопку сохранения для слов, созданных нами.
+    //  Убрать пока примеры.
 
     // Тег для логирования.
     private static final String LOG_TAG = "WordActivity";
@@ -62,12 +64,13 @@ public class WordActivity extends AppCompatActivity
     private Button ttsButton;
     private Toolbar toolbar;
     private LinearLayout progressLinearLayout;
-    private RecyclerView examplesRecyclerView;
-    private Button addExampleButton;
 
+    private Button addExampleButton;
+    private RecyclerView examplesRecyclerView;
     private ExamplesRecyclerViewAdapter examplesRecyclerViewAdapter;
 
-    // id слова, для которого открылось Activity. Будет равно 0, если слово создаётся.
+    // id слова, для которого открылось Activity.
+    // Будет равно 0, если открыто для создания нового слова.
     private long wordId = 0L;
 
     // ViewModel для работы с БД.
@@ -80,7 +83,6 @@ public class WordActivity extends AppCompatActivity
 
     // Синтезатор речи.
     private TextToSpeech textToSpeech;
-    private static final String TTS_ERROR = "Ошибка воспроизведения!";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -94,7 +96,7 @@ public class WordActivity extends AppCompatActivity
 
         initToolbar();
 
-        textToSpeech = ((MyApplication)getApplicationContext()).getTextToSpeech();
+        textToSpeech = ((MyApplication) getApplicationContext()).getTextToSpeech();
 
         getWordIdAndPrepareInterface();
 
@@ -103,11 +105,6 @@ public class WordActivity extends AppCompatActivity
         initAvailableSubgroupsObserver();
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        textToSpeech.shutdown();
-    }
 
     /**
      * Находит View элементы в разметке.
@@ -134,6 +131,7 @@ public class WordActivity extends AppCompatActivity
         getSupportActionBar().setTitle("");
     }
 
+
     /**
      * Получает id слова из Extras и, в зависимости от него, либо скрывает некоторые элементы,
      * чтобы создать новое слово, либо устанавливает параметры уже существующего слова в наши View.
@@ -146,20 +144,20 @@ public class WordActivity extends AppCompatActivity
             Log.i(LOG_TAG, "wordId = " + wordId);
             // Если слово уже создано.
             if (wordId != 0) {
-                RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(
+
+                /*RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(
                         WordActivity.this);
                 examplesRecyclerView.setLayoutManager(layoutManager);
                 examplesRecyclerViewAdapter = new ExamplesRecyclerViewAdapter(WordActivity.this);
-                examplesRecyclerView.setAdapter(examplesRecyclerViewAdapter);
-
-                addExampleButton.setOnClickListener(new View.OnClickListener() {
+                examplesRecyclerView.setAdapter(examplesRecyclerViewAdapter);*/
+                /*addExampleButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         examplesRecyclerViewAdapter.addExample();
                         examplesRecyclerView.smoothScrollToPosition(examplesRecyclerViewAdapter
                                 .getItemCount() - 1);
                     }
-                });
+                });*/
 
                 wordViewModel.setLiveDataWord(wordId);
                 wordViewModel.getLiveDataWord().observe(this, new Observer<Word>() {
@@ -178,7 +176,7 @@ public class WordActivity extends AppCompatActivity
                                 }
                             });
 
-                            wordViewModel.getExamples(WordActivity.this);
+                            /*wordViewModel.getExamples(WordActivity.this);*/
                         }
                     }
                 });
@@ -186,7 +184,7 @@ public class WordActivity extends AppCompatActivity
             // Если пользователь создаёт новое слово.
             else {
                 // Скрываем элементы.
-                hideViewsForNewWordCreating();
+                prepareInterfaceForNewWordCreating();
             }
         } else {
             errorNullExtrasProcessing();
@@ -219,19 +217,21 @@ public class WordActivity extends AppCompatActivity
 
                 // Проверяем, что поля слова и перевода не пустые
                 if (!word.isEmpty() && !value.isEmpty()) {
-                    if (wordId != 0) {
+                    /*if (wordId != 0) {
                         wordViewModel.update(wordId, word, transcription, value);
-                    } else {
-                        // Считываем данные из EditText'ов и отправляем их обратно в SubgroupActivity.
-                        // Там уже ViewModel обновит данные.
-                        Intent wordData = new Intent();
-                        wordData.putExtra(EXTRA_WORD_ID, wordId);
-                        wordData.putExtra(EXTRA_WORD, word);
-                        wordData.putExtra(EXTRA_TRANSCRIPTION, transcription);
-                        wordData.putExtra(EXTRA_VALUE, value);
-                        setResult(RESULT_OK, wordData);
-                        // Закрываем Activity.
-                    }
+                    } else {*/
+
+                    // Считываем данные из EditText'ов и отправляем их обратно в SubgroupActivity.
+                    Intent wordData = new Intent();
+                    wordData.putExtra(EXTRA_WORD_ID, wordId);
+                    wordData.putExtra(EXTRA_WORD, word);
+                    wordData.putExtra(EXTRA_TRANSCRIPTION, transcription);
+                    wordData.putExtra(EXTRA_VALUE, value);
+                    setResult(RESULT_OK, wordData);
+
+                    /*}*/
+
+                    // Закрываем Activity.
                     finish();
                 }
                 // Выводим Toast о том, что они должны быть заполнены.
@@ -291,6 +291,10 @@ public class WordActivity extends AppCompatActivity
      * Устанавливаем параметры слова (слово, транскрипция, перевод, часть речи, прогресс в разные View.
      */
     private void setWordToViews(Word word) {
+        if (word.createdByUser == 1){
+            saveButton.setVisibility(View.VISIBLE);
+        }
+
         // Устанавливаем параметры слова в EditText'ы.
         wordTextInputEditText.setText(word.word);
         valueTextInputEditText.setText(word.value);
@@ -353,7 +357,7 @@ public class WordActivity extends AppCompatActivity
     /**
      * Скрывает некоторые View при создании нового слова.
      */
-    private void hideViewsForNewWordCreating() {
+    private void prepareInterfaceForNewWordCreating() {
         TextView progressTextView = findViewById(R.id.activity_word___text_view___progress);
         progressTextView.setVisibility(View.GONE);
         ttsButton.setVisibility(View.GONE);
@@ -368,7 +372,10 @@ public class WordActivity extends AppCompatActivity
         findViewById(R.id.activity_word___text_input_layout___word).setEnabled(true);
         findViewById(R.id.activity_word___text_input_layout___transcription).setEnabled(true);
         findViewById(R.id.activity_word___text_input_layout___value).setEnabled(true);
+
+        saveButton.setVisibility(View.VISIBLE);
     }
+
 
     /**
      * Создаёт меню для тулбара.
@@ -425,6 +432,7 @@ public class WordActivity extends AppCompatActivity
 
     }
 
+
     /**
      * Принимает сообщение от ResetWordProgressDialogFragment.
      *
@@ -437,11 +445,13 @@ public class WordActivity extends AppCompatActivity
         }
     }
 
+
     // ПОСМОТРЕТЬ, КАК МОЖНО ОТ ЭТОГО ИЗБАВИТЬСЯ
     public int dpToPx(int dp) {
         float density = this.getResources().getDisplayMetrics().density;
         return Math.round((float) dp * density);
     }
+
 
     @Override
     public void onLoaded(List<Example> examples) {

@@ -1,16 +1,38 @@
 package ru.nikshlykov.englishwordsapp;
 
 import android.app.Application;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.SharedPreferences;
 import androidx.preference.PreferenceManager;
+import androidx.work.Configuration;
+import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.ExistingWorkPolicy;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
+
+import android.os.Build;
 import android.speech.tts.TextToSpeech;
 import android.widget.Toast;
 
 import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
-public class MyApplication extends Application {
+import ru.nikshlykov.englishwordsapp.notifications.NotificationWorker;
+import ru.nikshlykov.englishwordsapp.notifications.NotificationWorker2;
+
+public class MyApplication extends Application
+        implements Configuration.Provider {
+
+    @Override
+    public Configuration getWorkManagerConfiguration() {
+        return (new Configuration.Builder())
+                .setMinimumLoggingLevel(android.util.Log.INFO)
+                .build();
+    }
 
     public static final String PREFERENCE_FILE_NAME = "my_preferences";
 
@@ -30,9 +52,44 @@ public class MyApplication extends Application {
         // Инициализируем TTS.
         initTTS();
 
+        createNotificationChannel();
+
+
+        // Чтобы отменить работу
+        //WorkManager.getInstance(getApplicationContext()).cancelWorkById(notificationWorkRequest.getId());
+
         databaseExecutorService = Executors.newFixedThreadPool(3);
+
+        setNotificationPeriodicWorker(10);
     }
 
+
+    public void setNotificationPeriodicWorker(long delay){
+        PeriodicWorkRequest notificationWorkRequest = new PeriodicWorkRequest.Builder(
+                NotificationWorker.class, 1, TimeUnit.DAYS)
+                .setInitialDelay(delay, TimeUnit.SECONDS)
+                .addTag("NotificationWork")
+                .build();
+
+        WorkManager.getInstance(getApplicationContext()).enqueueUniquePeriodicWork(
+                "NotificationWork1", ExistingPeriodicWorkPolicy.REPLACE, notificationWorkRequest);
+    }
+
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+            String id = getString(R.string.notification_channel___remember_to_study___id);
+            CharSequence name = getString(R.string.notification_channel___remember_to_study___name);
+            String description = getString(R.string.notification_channel___remember_to_study___description);
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+
+            NotificationChannel channel = new NotificationChannel(id, name, importance);
+            channel.setDescription(description);
+
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
 
     // Методы, связанные с роботом TTS.
     /**

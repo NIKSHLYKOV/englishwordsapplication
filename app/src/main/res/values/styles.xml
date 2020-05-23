@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
@@ -21,6 +21,18 @@
 
     <style name="MaterialButtonWithoutAllCaps" parent="Widget.MaterialComponents.Button">
         <item name="textAllCaps">false</item>
+    </style>
+
+    <style name="MaterialButtonIconOnly" parent="Widget.MaterialComponents.Button">
+        <item name="android:inset">0dp</item>
+        <item name="iconPadding">0dp</item>
+        <item name="iconGravity">textStart</item>
+    </style>
+
+    <style name="MaterialTextButtonIconOnly" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:inset">0dp</item>
+        <item name="iconPadding">0dp</item>
+        <item name="iconGravity">textStart</item>
     </style>
 
     <style name="Widget.App.Button.OutlinedButton.IconOnly" parent="Widget.MaterialComponents.Button.OutlinedButton">
@@ -46,8 +58,20 @@
         <item name="android:textColor">@android:color/white</item>
     </style>
 
-
     <style name="BorderlessButton" parent="Widget.AppCompat.Button.Borderless">
         <item name="android:textAllCaps">false</item>
     </style>
+
+
+    <!-- Style for an Preference Entry -->
+    <style name="AppPreference">
+        <item name="android:layout" tools:ignore="PrivateResource">@layout/preference_material</item>
+    </style>
+
+    <!-- Style for a DialogPreference Entry -->
+    <style name="AppPreference.DialogPreference">
+        <item name="positiveButtonText">@android:string/ok</item>
+        <item name="negativeButtonText">@android:string/cancel</item>
+    </style>
+
 </resources>

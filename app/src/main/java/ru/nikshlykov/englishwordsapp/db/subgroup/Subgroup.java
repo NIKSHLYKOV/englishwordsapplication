@@ -1,6 +1,7 @@
 package ru.nikshlykov.englishwordsapp.db.subgroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
@@ -40,7 +41,7 @@ public class Subgroup {
 
     @NonNull
     @ColumnInfo(name = "ImageResourceId")
-    public String imageResourceId; // id картинки (скрин режима) для вывода в Activity режимов.
+    public String imageResourceId; // id картинки для вывода в GroupsFragment.
 
     public boolean isCreatedByUser(){
         return groupId == SubgroupDao.GROUP_FOR_NEW_SUBGROUPS_ID;
@@ -53,5 +54,23 @@ public class Subgroup {
         public static final String TABLE_SUBGROUPS_COLUMN_SUBGROUPNAME = "SubgroupName";
         public static final String TABLE_SUBGROUPS_COLUMN_PARENTGROUPID = "groupId";
         public static final String TABLE_SUBGROUPS_COLUMN_ISSTUDIED = "IsStudied";
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+
+        Subgroup comparedSubgroup = (Subgroup) obj;
+        return id == comparedSubgroup.id &&
+                name.equals(comparedSubgroup.name) &&
+                groupId == comparedSubgroup.groupId &&
+                isStudied == comparedSubgroup.isStudied &&
+                imageResourceId.equals(comparedSubgroup.imageResourceId);
     }
 }
