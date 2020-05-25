@@ -1,11 +1,8 @@
-package ru.nikshlykov.englishwordsapp.ui.settings;
+package ru.nikshlykov.englishwordsapp.ui.settings.newwordscount;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.NumberPicker;
-import android.widget.TimePicker;
 
 import androidx.preference.DialogPreference;
 import androidx.preference.PreferenceDialogFragmentCompat;

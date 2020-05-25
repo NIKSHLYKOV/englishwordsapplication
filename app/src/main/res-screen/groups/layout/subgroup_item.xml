@@ -33,18 +33,20 @@
             tools:text="Название подгруппы" />
 
         <RelativeLayout
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:id="@+id/subgroup_item___relative_layout___for_to_learn_button"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:padding="5dp">
+            android:padding="8dp">
 
             <ToggleButton
                 android:id="@+id/subgroup_item___toggle_button___to_learn"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+
+                android:layout_centerInParent="true"
 
                 android:background="@drawable/background_brain_icon"
 

@@ -16,6 +16,8 @@ import ru.nikshlykov.englishwordsapp.R;
 
 public class InfoFragment extends Fragment {
 
+    // TODO сделать кнопку на режимы
+
     // Ключ для передачи флага фрагменту.
     public static final String KEY_INFO_FLAG = "InfoFlag";
 

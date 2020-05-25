@@ -1,4 +1,4 @@
-package ru.nikshlykov.englishwordsapp.ui.settings;
+package ru.nikshlykov.englishwordsapp.ui.settings.newwordscount;
 
 import android.content.Context;
 import android.content.res.TypedArray;

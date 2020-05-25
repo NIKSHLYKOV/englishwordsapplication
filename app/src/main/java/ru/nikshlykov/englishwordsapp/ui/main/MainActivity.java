@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity
 
     private Fragment lastModeFragment;
 
+    // TODO убрать флаги и перейти на взаимодействие между фрагментами и активити.
     private boolean selectedModesExistFlag;
     private boolean perhapsToChangeModesFlag;
 
@@ -75,7 +76,12 @@ public class MainActivity extends AppCompatActivity
                     // Если фрагмент не создан, тогда заменяем тот фрагмент, который на экране, только что созданным.
                     if (fragment == null) {
                         if (perhapsToChangeModesFlag) {
+                            // TODO передалать так, чтобы infoFragment нам сообщал об изменениях
+                            //  в выбранных режимах.
                             studyViewModel.getSelectedModes(MainActivity.this);
+                            //TODO переделать так, чтобы нам activity настроек сообщало об изменениях
+                            // в параметре кол-ва новых слов.
+                            studyViewModel.loadNewWordsCount();
                         } else {
                             if (selectedModesExistFlag) {
                                 getNextAvailableToRepeatWord();
@@ -119,13 +125,14 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         findViews();
-        contentLayoutId = findViewById(R.id.activity_main___linear_layout___content_layout).getId();
+
         // Присваиваем обработчик нажатия на нижнее меню.
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         // Создаём ViewModel для работы с БД.
         studyViewModel = new ViewModelProvider(this).get(StudyViewModel.class);
 
+        // Получаем выбранные пользователем режимы.
         studyViewModel.getSelectedModes(this);
     }
 
@@ -140,7 +147,12 @@ public class MainActivity extends AppCompatActivity
      */
     private void findViews() {
         navigation = findViewById(R.id.navigation);
+        contentLayoutId = findViewById(R.id.activity_main___linear_layout___content_layout).getId();
     }
+
+
+
+    // Процесс обучения
 
     @Override
     public void onSelectedModesLoaded(List<Mode> selectedModes) {
@@ -182,10 +194,19 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * Запрашивает следующее слово для повтора.
+     */
     private void getNextAvailableToRepeatWord() {
         studyViewModel.getNextAvailableToRepeatWord(this);
     }
 
+    /**
+     * Показывает пришедшее для повтора слово либо в режиме первого просмотра,
+     * либо в выбранном пользователем режиме.
+     *
+     * @param word слово для повтора/первого показа.
+     */
     @Override
     public void onAvailableToRepeatWordLoaded(Word word) {
         if (word != null) {
@@ -228,11 +249,25 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * Запрашивает следующее слово для повтора, если предыдущее обновилось.
+     *
+     * @param isUpdated
+     */
     @Override
     public void onWordUpdated(int isUpdated) {
+        // TODO использовать пришедшее значение, чтобы запрашивать слово или показывать
+        //  сообщение об ошибке.
+
+        // TODO сделать проверку на то, что в фокусе до сих пор StudyOrInfoFragment
         getNextAvailableToRepeatWord();
     }
 
+    /**
+     * Обрабатывает результат первого показа слова.
+     * @param wordId id слова, которое показывалось.
+     * @param result результат (0 - пропусить, 1 - изучать, 2 - знаю).
+     */
     @Override
     public void firstShowModeResult(long wordId, int result) {
         Log.i(LOG_TAG, "firstShowModeResult()");
@@ -240,11 +275,19 @@ public class MainActivity extends AppCompatActivity
         studyViewModel.firstShowProcessing(wordId, result, this);
     }
 
+    /**
+     * Обрабытывает результаты повторов (кроме первого показа).
+     * @param wordId id повторяемого слова.
+     * @param result результат повтора (0 - неверно, 1 - верно).
+     */
     @Override
     public void repeatResult(long wordId, int result) {
         studyViewModel.repeatProcessing(wordId, result, this);
     }
 
+
+
+    // Обработка выхода из приложения.
 
     /**
      * Обрабатывает нажатие кнопки назад и информирует о том, что

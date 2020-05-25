@@ -18,12 +18,13 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory app:title="Обучение">
-        <ru.nikshlykov.englishwordsapp.ui.settings.NewWordsCountPreference
-            android:key="new_words_max_count_for_day"
+        <ru.nikshlykov.englishwordsapp.ui.settings.newwordscount.NewWordsCountPreference
+            android:key="@string/preference_key___new_word_count"
             android:title="Макс. количество новых слов в день"
-            android:summary="Позволяет ограничить количество новых слов в день, чтобы не отнимать много времени."
+            android:summary="Позволяет ограничить затрачиваемое на изучение слов время, чтобы не потратить все силы сразу."
             android:defaultValue="5"
-            style="@style/AppPreference.DialogPreference"/>
+            style="@style/AppPreference.DialogPreference"
+            app:icon="@drawable/ic_brain_not_selected"/>
     </PreferenceCategory>
 
     <PreferenceCategory android:title="Уведомления">
@@ -31,11 +32,14 @@
             android:key="@string/preference_key___use_notifications"
             android:title="Присылать уведомления"
             android:defaultValue="false"/>
-        <Preference
+        <ru.nikshlykov.englishwordsapp.ui.settings.notificationtime.NotificationTimePreference
             android:dependency="@string/preference_key___use_notifications"
             android:key="@string/preference_key___notification_time"
             android:title="Время уведомления"
-            android:defaultValue="0"/>
+            android:summary="Позволяет выставить время ежедневного уведомления."
+            android:defaultValue="0"
+            style="@style/AppPreference.DialogPreference"
+            app:icon="@drawable/notification_time_icon_selector" />
     </PreferenceCategory>
 
     <PreferenceCategory app:title="Произношение робота">
@@ -62,18 +66,4 @@
             android:entryValues="@array/sort_words_in_subgroup_values"/>
 
     </PreferenceCategory>
-
-    <PreferenceCategory app:title="@string/messages_header">
-        <EditTextPreference
-            android:key="signature"
-            android:title="@string/signature_title"
-            android:defaultValue="0"
-            app:useSimpleSummaryProvider="true" />
-        <ListPreference
-            android:key="reply"
-            android:defaultValue="reply"
-            android:title="@string/reply_title"
-            app:useSimpleSummaryProvider="true" />
-    </PreferenceCategory>
-
 </PreferenceScreen>

@@ -17,7 +17,8 @@
         android:id="@+id/activity_subgroup___action___reset_words_progress"
         android:icon="@drawable/ic_replay_white_24dp"
         android:title="@string/action___reset_progress___title"
-        app:showAsAction="always"/>
+        app:showAsAction="always"
+        />
 
     <item
         android:id="@+id/activity_subgroup___action___delete_subgroup"

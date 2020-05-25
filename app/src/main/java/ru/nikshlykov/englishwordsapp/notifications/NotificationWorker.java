@@ -30,7 +30,7 @@ public class NotificationWorker extends Worker {
     @NonNull
     @Override
     public Result doWork() {
-        Log.i("Notification", "doWork()");
+        Log.i("Notification11", "doWork()");
         Context context = getApplicationContext();
 
         NotificationManager notificationManager = (NotificationManager)

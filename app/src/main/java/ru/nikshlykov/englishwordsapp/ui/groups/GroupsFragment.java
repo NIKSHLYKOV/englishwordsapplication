@@ -29,6 +29,11 @@ import static android.app.Activity.RESULT_OK;
 public class GroupsFragment extends Fragment
         implements SubgroupsRecyclerViewAdapter.OnSubgroupClickListener,
         SubgroupsRecyclerViewAdapter.OnSubgroupCheckedListener {
+
+    // TODO Сделать базовый фон для картинок подгрупп.
+
+    // TODO сделать анимацию для fab (закрывает элемент в конце).
+
     private String LOG_TAG = "GroupsFragment";
 
     private static final int REQUEST_CODE_CREATE_SUBGROUP = 1;
@@ -115,7 +120,6 @@ public class GroupsFragment extends Fragment
     @Override
     public void onStart() {
         super.onStart();
-        //groupsViewModel.loadGroupItems();
         Log.i(LOG_TAG, "onStart()");
     }
 

@@ -5,6 +5,8 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 
+import java.util.List;
+
 @Dao
 public interface RepeatDao {
 
@@ -25,4 +27,7 @@ public interface RepeatDao {
 
     @Query("SELECT * FROM Repeats ORDER BY _id DESC LIMIT 1")
     Repeat getRepeatWithMaxId();
+
+    @Query("SELECT * FROM Repeats")
+    List<Repeat> getAllRepeats();
 }

@@ -1,11 +1,13 @@
 package ru.nikshlykov.englishwordsapp.ui.groups;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -30,6 +32,7 @@ public class SubgroupsRecyclerViewAdapter extends RecyclerView.Adapter<Subgroups
         void onSubgroupClick(View view, long subgroupId, boolean isCreatedByUser);
     }
     private OnSubgroupClickListener onSubgroupClickListener;
+
     public interface OnSubgroupCheckedListener{
         void OnSubgroupChecked(View view, Subgroup subgroup);
     }
@@ -75,6 +78,7 @@ public class SubgroupsRecyclerViewAdapter extends RecyclerView.Adapter<Subgroups
     class SubgroupViewHolder extends RecyclerView.ViewHolder {
         private ImageView subgroupImageView;
         private TextView subgroupTextView;
+        private RelativeLayout forLearnSubgroupButtonRelativeLayout;
         private ToggleButton learnSubgroupToggleButton;
 
         SubgroupViewHolder(@NonNull View itemView) {
@@ -83,6 +87,7 @@ public class SubgroupsRecyclerViewAdapter extends RecyclerView.Adapter<Subgroups
             subgroupImageView = itemView.findViewById(R.id.subgroup_item___image_view___subgroup_image);
             subgroupTextView = itemView.findViewById(R.id.subgroup_item___text_view___subgroup_name);
             learnSubgroupToggleButton = itemView.findViewById(R.id.subgroup_item___toggle_button___to_learn);
+            forLearnSubgroupButtonRelativeLayout = itemView.findViewById(R.id.subgroup_item___relative_layout___for_to_learn_button);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -93,6 +98,15 @@ public class SubgroupsRecyclerViewAdapter extends RecyclerView.Adapter<Subgroups
                             onSubgroupClickListener.onSubgroupClick(v, subgroup.id, subgroup.isCreatedByUser());
                         }
                     }
+                }
+            });
+
+            forLearnSubgroupButtonRelativeLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.i("SubgroupsRVAdapter", "learnButtonLayout onClick()");
+                    boolean isChecked = learnSubgroupToggleButton.isChecked();
+                    learnSubgroupToggleButton.setChecked(!isChecked);
                 }
             });
 

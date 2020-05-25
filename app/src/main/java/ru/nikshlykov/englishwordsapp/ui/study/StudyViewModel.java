@@ -1,6 +1,7 @@
 package ru.nikshlykov.englishwordsapp.ui.study;
 
 import android.app.Application;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -13,17 +14,27 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.Observer;
+import androidx.preference.PreferenceManager;
 
+import ru.nikshlykov.englishwordsapp.MyApplication;
+import ru.nikshlykov.englishwordsapp.R;
 import ru.nikshlykov.englishwordsapp.db.AppRepository;
 import ru.nikshlykov.englishwordsapp.db.repeat.Repeat;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
 
-public class StudyViewModel extends AndroidViewModel {
+public class StudyViewModel extends AndroidViewModel implements
+        AppRepository.OnRepeatsCountForTodayLoadedListener {
+
+    // TODO делать execute в executorService в application и проверить, работает ли это реально.
 
     private static final String LOG_TAG = "StudyViewModel";
 
     private AppRepository repository;
 
+    AppRepository.OnAvailableToRepeatWordLoadedListener listener;
+
+    private boolean withNew;
+    private int newWordsCount;
     /*private MediatorLiveData<List<Word>> availableToRepeatWords;
     private LiveData<List<Word>> wordsFromStudiedSubgroups;
     private Observer<List<Word>> observer;*/
@@ -34,6 +45,8 @@ public class StudyViewModel extends AndroidViewModel {
         super(application);
         repository = new AppRepository(application);
 
+        withNew = true;
+        loadNewWordsCount();
         /*availableToRepeatWords = new MediatorLiveData<>();
 
         observer = new Observer<List<Word>>() {
@@ -59,9 +72,6 @@ public class StudyViewModel extends AndroidViewModel {
         availableToRepeatWords.addSource(wordsFromStudiedSubgroups, observer);*/
     }
 
-    public void getSelectedModes(AppRepository.OnSelectedModesLoadedListener listener) {
-        repository.newGetSelectedModes(listener);
-    }
 
     /*public Word getNextAvailableWord(long lastWordId){
         // Получаем первое слово в списке доступных и проверяем, не является ли оно тем,
@@ -88,6 +98,13 @@ public class StudyViewModel extends AndroidViewModel {
         return wordsFromStudiedSubgroups;
     }*/
 
+
+    // Выбранные режимы.
+
+    public void getSelectedModes(AppRepository.OnSelectedModesLoadedListener listener) {
+        repository.newGetSelectedModes(listener);
+    }
+
     public void setSelectedModesIds(ArrayList<Long> selectedModesIds) {
         this.selectedModesIds = selectedModesIds;
     }
@@ -99,15 +116,44 @@ public class StudyViewModel extends AndroidViewModel {
     }
 
 
+    // Слова, доступные к повтору или началу изучения.
 
-    public void getNextAvailableToRepeatWord(AppRepository.OnAvailableToRepeatWordLoadedListener listener) {
-        repository.getAvailableToRepeatWord(listener);
+    public void getNextAvailableToRepeatWord(
+            AppRepository.OnAvailableToRepeatWordLoadedListener listener) {
+        this.listener = listener;
+        repository.getRepeatsCountForToday(this);
+    }
+
+    public void loadNewWordsCount() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplication());
+        newWordsCount = sharedPreferences.getInt(getApplication().getString(R.string.preference_key___new_word_count), 10);
+        Log.i(LOG_TAG, "newWordsCount = " + newWordsCount);
+        repository.getRepeatsCountForToday(this);
+    }
+
+    @Override
+    public void onRepeatsCountForTodayLoaded(int repeatsCount) {
+        Log.i(LOG_TAG, "Повторов за сегодня: " + repeatsCount);
+        if (repeatsCount >= newWordsCount) {
+            if (withNew) {
+                Log.i(LOG_TAG, "Достигнут предел по количеству новых слов за день");
+            }
+            withNew = false;
+        } else {
+            if (!withNew) {
+                withNew = true;
+            }
+        }
+        repository.getAvailableToRepeatWord(withNew, listener);
+        //listener = null;
     }
 
 
+    // Обработка результатов повторов.
 
     /**
      * Обрабатывает результат первого показа слова пользователю.
+     *
      * @param wordId id показанного слова.
      * @param result результат повтора (0 - пропустить, 1 - изучать, 2 - знаю).
      */
@@ -136,6 +182,7 @@ public class StudyViewModel extends AndroidViewModel {
 
     /**
      * Обрабатывает результат повтора слова.
+     *
      * @param wordId id повторяемого слова.
      * @param result результат повтора (0 - неверно, 1 - верно).
      */
@@ -165,10 +212,11 @@ public class StudyViewModel extends AndroidViewModel {
 
     /**
      * Вставляет новый последний повтор по слову и обновляет запись слова в БД.
-     * @param wordId id повторяемого слова.
+     *
+     * @param wordId         id повторяемого слова.
      * @param sequenceNumber порядковый номер последнего повтора.
-     * @param result результат повтора (0 - неверно, 1 - верно).
-     * @param listener слушатель для обновления слова, который реализован в MainActivity.
+     * @param result         результат повтора (0 - неверно, 1 - верно).
+     * @param listener       слушатель для обновления слова, который реализован в MainActivity.
      */
     private void insertRepeatAndUpdateWord(long wordId, int sequenceNumber, int result,
                                            AppRepository.OnWordUpdatedListener listener) {

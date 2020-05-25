@@ -11,12 +11,16 @@ import androidx.work.ExistingWorkPolicy;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
+import androidx.work.Worker;
 
 import android.os.Build;
 import android.speech.tts.TextToSpeech;
 import android.widget.Toast;
 
+import org.xml.sax.Locator;
+
 import java.util.Locale;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -26,13 +30,6 @@ import ru.nikshlykov.englishwordsapp.notifications.NotificationWorker2;
 
 public class MyApplication extends Application
         implements Configuration.Provider {
-
-    @Override
-    public Configuration getWorkManagerConfiguration() {
-        return (new Configuration.Builder())
-                .setMinimumLoggingLevel(android.util.Log.INFO)
-                .build();
-    }
 
     public static final String PREFERENCE_FILE_NAME = "my_preferences";
 
@@ -54,15 +51,31 @@ public class MyApplication extends Application
 
         createNotificationChannel();
 
-
         // Чтобы отменить работу
         //WorkManager.getInstance(getApplicationContext()).cancelWorkById(notificationWorkRequest.getId());
 
         databaseExecutorService = Executors.newFixedThreadPool(3);
 
-        setNotificationPeriodicWorker(10);
+        //setNotificationPeriodicWorker(10);
+
+        /*OneTimeWorkRequest request = new OneTimeWorkRequest.Builder(NotificationWorker.class)
+                .setInitialDelay(10, TimeUnit.SECONDS)
+                .build();
+
+        WorkManager.getInstance(getApplicationContext()).enqueueUniqueWork(
+                "NotificationWork1", ExistingWorkPolicy.REPLACE, request);*/
     }
 
+
+
+    // Уведомления.
+
+    @Override
+    public Configuration getWorkManagerConfiguration() {
+        return (new Configuration.Builder())
+                .setMinimumLoggingLevel(android.util.Log.INFO)
+                .build();
+    }
 
     public void setNotificationPeriodicWorker(long delay){
         PeriodicWorkRequest notificationWorkRequest = new PeriodicWorkRequest.Builder(
@@ -91,7 +104,10 @@ public class MyApplication extends Application
         }
     }
 
-    // Методы, связанные с роботом TTS.
+
+
+    // Робот TTS для произношения слов.
+
     /**
      * Инициализирует textToSpeech при запуске приложения.
      */
@@ -137,5 +153,10 @@ public class MyApplication extends Application
     }
 
 
-    // Тут будут ещё какие-нибудь методы.
+
+    // ExecutorService.
+
+    public void execute(){
+
+    }
 }

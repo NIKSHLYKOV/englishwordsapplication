@@ -52,6 +52,10 @@ public class SubgroupActivity extends AppCompatActivity
         ResetProgressDialogFragment.ResetProgressListener,
         DeleteSubgroupDialogFragment.DeleteSubgroupListener {
 
+    // TODO сделать что-то с пунктом меню удаления подгруппы.
+
+    // TODO сделать свою view для отображения прогресса по слову. Лучше базу брать из той, которая в WordActivity.
+
     // Ключи для получения аргументов.
     public static final String EXTRA_SUBGROUP_ID = "SubgroupId";
     public static final String EXTRA_IS_CREATED_BY_USER = "IsCreatedByUser";
@@ -154,9 +158,9 @@ public class SubgroupActivity extends AppCompatActivity
                         // Если слов нет, то скрываем CheckBox изучения подгруппы.
                         if (words.isEmpty()) {
                             //learnSubgroupCheckBox.setVisibility(View.GONE);
-                            Toast.makeText(SubgroupActivity.this,
+                            /*Toast.makeText(SubgroupActivity.this,
                                     R.string.error_subgroup_is_empty, Toast.LENGTH_LONG)
-                                    .show(); // Пуста может быть только подгруппа созданная пользователем.
+                                    .show();*/ // Пуста может быть только подгруппа созданная пользователем.
                         } else {
                             //learnSubgroupCheckBox.setVisibility(View.VISIBLE);
                         }

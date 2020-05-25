@@ -56,6 +56,11 @@ public interface WordDao {
 
     @Query("SELECT DISTINCT Words.* FROM Words, Links, Subgroups " +
             "WHERE Words._id = Links.WordId AND Subgroups._id = Links.SubgroupId " +
+            "AND Subgroups.IsStudied = 1 AND Words.LearnProgress >= 0 ORDER BY Words.LearnProgress DESC, Words.Priority")
+    Word[] getNotNewWordsFromStudiedSubgroups();
+
+    @Query("SELECT DISTINCT Words.* FROM Words, Links, Subgroups " +
+            "WHERE Words._id = Links.WordId AND Subgroups._id = Links.SubgroupId " +
             "AND Subgroups.IsStudied = 1 ORDER BY Words.LearnProgress DESC, Words.Priority")
     LiveData<List<Word>> getAllLiveDataWordsFromStudiedSubgroups();
 }

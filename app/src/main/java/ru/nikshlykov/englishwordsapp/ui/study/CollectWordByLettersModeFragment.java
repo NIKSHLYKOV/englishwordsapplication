@@ -182,6 +182,7 @@ public class CollectWordByLettersModeFragment extends Fragment {
                     valueTextView.setVisibility(View.GONE);
                     removeLetterImageButton.setVisibility(View.GONE);
                     userVariantTextView.setVisibility(View.GONE);
+                    lettersGridLayout.setVisibility(View.GONE);
 
                     ConstraintLayout mainLayout = (ConstraintLayout) v.getParent().getParent()
                             .getParent();

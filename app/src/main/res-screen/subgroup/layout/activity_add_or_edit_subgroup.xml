@@ -20,15 +20,16 @@
     </com.google.android.material.textfield.TextInputLayout>
 
 
-    <Button
-        android:id="@+id/activity_add_or_edit_subgroup___button___save_new_group"
-        style="@style/Widget.AppCompat.Button.Borderless"
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/activity_add_or_edit_subgroup___material_button___save_new_group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 
         android:layout_alignParentBottom="true"
 
-        android:background="@drawable/shape_yellow_20dp"
+        style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+        app:cornerRadius="20dp"
+
         android:text="@string/create_group" />
 
 </RelativeLayout>
