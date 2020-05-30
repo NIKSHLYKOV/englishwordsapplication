@@ -82,4 +82,8 @@ public class ModesRecyclerViewAdapter extends RecyclerView.Adapter<ModesRecycler
         this.modes = modes;
         notifyDataSetChanged();
     }
+
+    public List<Mode> getModes() {
+        return modes;
+    }
 }

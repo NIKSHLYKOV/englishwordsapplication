@@ -1,12 +1,18 @@
 package ru.nikshlykov.englishwordsapp.ui.settings;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
+
 import ru.nikshlykov.englishwordsapp.R;
+import ru.nikshlykov.englishwordsapp.ui.settings.newwordscount.NewWordsCountPreference;
 
 public class SettingsActivity extends AppCompatActivity {
+
+    public static final String EXTRA_MAX_WORD_COUNT = "MaxWordCount";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,6 +24,20 @@ public class SettingsActivity extends AppCompatActivity {
                 .commit();
         Toolbar toolbar = findViewById(R.id.activity_settings___toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Настройки");
+        getSupportActionBar().setTitle(getString(R.string.settings));
+    }
+
+    @Override
+    public void onBackPressed() {
+        int newWordsCount = PreferenceManager.getDefaultSharedPreferences(this)
+                .getInt(getString(R.string.preference_key___new_word_count),
+                        NewWordsCountPreference.DEFAULT_VALUE);
+        Bundle maxWordCountData = new Bundle();
+        maxWordCountData.putInt(EXTRA_MAX_WORD_COUNT, newWordsCount);
+
+        Intent intent = new Intent();
+        intent.putExtras(maxWordCountData);
+        setResult(RESULT_OK, intent);
+        super.onBackPressed();
     }
 }

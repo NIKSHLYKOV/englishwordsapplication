@@ -1,15 +1,16 @@
 package ru.nikshlykov.englishwordsapp.ui.main;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import ru.nikshlykov.englishwordsapp.MyApplication;
@@ -18,6 +19,8 @@ import ru.nikshlykov.englishwordsapp.db.AppRepository;
 import ru.nikshlykov.englishwordsapp.db.mode.Mode;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
 import ru.nikshlykov.englishwordsapp.ui.groups.GroupsFragment;
+import ru.nikshlykov.englishwordsapp.ui.modes.ModesActivity;
+import ru.nikshlykov.englishwordsapp.ui.settings.SettingsActivity;
 import ru.nikshlykov.englishwordsapp.ui.study.FirstShowModeFragment;
 import ru.nikshlykov.englishwordsapp.ui.study.ModeFragmentsFactory;
 import ru.nikshlykov.englishwordsapp.ui.study.RepeatResultListener;
@@ -31,33 +34,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
-        implements AppRepository.OnSelectedModesLoadedListener,
+        implements ProfileFragment.ProfileFragmentReportListener,
+        AppRepository.OnSelectedModesLoadedListener,
         AppRepository.OnAvailableToRepeatWordLoadedListener,
         AppRepository.OnWordUpdatedListener,
-        RepeatResultListener,
-        FirstShowModeFragment.FirstShowModeReportListener {
+        RepeatResultListener, FirstShowModeFragment.FirstShowModeReportListener {
 
     // Тег для логирования.
     private static final String LOG_TAG = "MainActivity";
-
-    // View элементы.
-    private BottomNavigationView navigation; // Нижнее меню.
-    int contentLayoutId; // id layout'a для размещения в нём фрагментов.
-
-    // Время последнего нажатия на кнопку "Назад" в данном Activity.
-    private static long lastBackPressedTime;
-
-    private Fragment lastModeFragment;
-
-    // TODO убрать флаги и перейти на взаимодействие между фрагментами и активити.
-    private boolean selectedModesExistFlag;
-    private boolean perhapsToChangeModesFlag;
-
 
     // Теги для идентификации фрагментов.
     private final static String TAG_STUDY_OR_INFO_FRAGMENT = "StudyFragment";
     private final static String TAG_GROUPS_FRAGMENT = "GroupsFragment";
     private final static String TAG_PROFILE_FRAGMENT = "ProfileFragment";
+
+    // Коды запросов для общения между Activity.
+    private final static int REQUEST_CODE_EDIT_MODES = 1;
+    private final static int REQUEST_CODE_EDIT_SETTINGS = 2;
+
+    // View элементы.
+    private BottomNavigationView bottomNavigationView; // Нижнее меню.
+    private int contentLayoutId; // id layout'a для размещения в нём фрагментов.
+
+    // Время последнего нажатия на кнопку "Назад" в данном Activity.
+    private static long lastBackPressedTime;
+
+    private Fragment lastModeFragment;
 
     // ViewModel для работы с БД.
     private StudyViewModel studyViewModel;
@@ -75,39 +77,33 @@ public class MainActivity extends AppCompatActivity
                     fragment = fragmentManager.findFragmentByTag(TAG_STUDY_OR_INFO_FRAGMENT);
                     // Если фрагмент не создан, тогда заменяем тот фрагмент, который на экране, только что созданным.
                     if (fragment == null) {
-                        if (perhapsToChangeModesFlag) {
-                            // TODO передалать так, чтобы infoFragment нам сообщал об изменениях
-                            //  в выбранных режимах.
-                            studyViewModel.getSelectedModes(MainActivity.this);
-                            //TODO переделать так, чтобы нам activity настроек сообщало об изменениях
-                            // в параметре кол-ва новых слов.
-                            studyViewModel.loadNewWordsCount();
+                        if (studyViewModel.selectedModesExist()) {
+                            getNextAvailableToRepeatWord();
                         } else {
-                            if (selectedModesExistFlag) {
-                                getNextAvailableToRepeatWord();
-                            } else {
-                                displayInfoFragment(InfoFragment.FLAG_MODES_ARE_NOT_CHOSEN);
-                            }
+                            displayInfoFragment(InfoFragment.FLAG_MODES_ARE_NOT_CHOSEN);
                         }
                     }
                     return true;
+
                 case R.id.activity_main_menu___groups:
                     // Пытаемся найти фрагмент и проверяем, создан ли он (на экране).
                     fragment = fragmentManager.findFragmentByTag(TAG_GROUPS_FRAGMENT);
                     // Если фрагмент не создан, тогда меняем тот фрагмент, который на экране, только что созданным.
                     if (fragment == null) {
+                        // Сохраняем последний фрагмент режима.
                         fragmentManager
                                 .beginTransaction()
                                 .replace(contentLayoutId, new GroupsFragment(), TAG_GROUPS_FRAGMENT)
                                 .commit();
                     }
                     return true;
+
                 case R.id.activity_main_menu___profile:
                     // Пытаемся найти фрагмент и проверяем, создан ли он (на экране).
                     fragment = fragmentManager.findFragmentByTag(TAG_PROFILE_FRAGMENT);
                     // Если фрагмент не создан, тогда меняем тот фрагмент, который на экране, только что созданным.
                     if (fragment == null) {
-                        perhapsToChangeModesFlag = true;
+                        // Сохраняем последний фрагмент режима.
                         fragmentManager
                                 .beginTransaction()
                                 .replace(contentLayoutId, new ProfileFragment(), TAG_PROFILE_FRAGMENT)
@@ -127,7 +123,7 @@ public class MainActivity extends AppCompatActivity
         findViews();
 
         // Присваиваем обработчик нажатия на нижнее меню.
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         // Создаём ViewModel для работы с БД.
         studyViewModel = new ViewModelProvider(this).get(StudyViewModel.class);
@@ -146,10 +142,60 @@ public class MainActivity extends AppCompatActivity
      * Находит View элементы в разметке.
      */
     private void findViews() {
-        navigation = findViewById(R.id.navigation);
+        bottomNavigationView = findViewById(R.id.navigation);
         contentLayoutId = findViewById(R.id.activity_main___linear_layout___content_layout).getId();
     }
 
+
+    // Общение с другими Activity и Fragments, находящимися внутри
+
+    /**
+     * Открывает Activity режимов, чтобы получить от него результат - выбранные режимы.
+     */
+    @Override
+    public void reportOpenModesActivity() {
+        Log.i(LOG_TAG, "reportOpenModesActivity()");
+        Intent intent = new Intent(this, ModesActivity.class);
+        startActivityForResult(intent, REQUEST_CODE_EDIT_MODES);
+    }
+
+    /**
+     * Открывает Activity настроек, чтобы получить от него результат - максимальное количество
+     * новых слов в день.
+     */
+    @Override
+    public void reportOpenSettingsActivity() {
+        Log.i(LOG_TAG, "reportOpenSettingsActivity()");
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivityForResult(intent, REQUEST_CODE_EDIT_SETTINGS);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == REQUEST_CODE_EDIT_MODES) {
+                // Достаём пришедший массив id выбранных режимов.
+                Bundle extras = data.getExtras();
+                long[] selectedModesIds = extras.getLongArray(ModesActivity.EXTRA_SELECTED_MODES);
+
+                // Преобразовываем его в ArrayList.
+                ArrayList<Long> selectedModesIdsList = new ArrayList<>();
+                Log.i(LOG_TAG, "selectedModesIds: ");
+                for (int i = 0; i < selectedModesIds.length; i++) {
+                    selectedModesIdsList.add(selectedModesIds[i]);
+                    Log.i(LOG_TAG, "mode id: " + selectedModesIds[i]);
+                }
+
+                // Закидываем в studyViewModel для хранения.
+                studyViewModel.setSelectedModesIds(selectedModesIdsList);
+            } else if (requestCode == REQUEST_CODE_EDIT_SETTINGS) {
+                // Закидываем в studyViewModel новое количество новых слов в день.
+                studyViewModel.setNewWordsCount(data.getExtras()
+                        .getInt(SettingsActivity.EXTRA_MAX_WORD_COUNT));
+            }
+        }
+    }
 
 
     // Процесс обучения
@@ -159,22 +205,23 @@ public class MainActivity extends AppCompatActivity
         Log.i(LOG_TAG, "onSelectedModesLoaded");
         if (selectedModes != null) {
             if (selectedModes.size() != 0) {
-                selectedModesExistFlag = true;
+                // Создаём список выбранных режимов.
                 ArrayList<Long> selectedModesIds = new ArrayList<>(selectedModes.size());
                 for (Mode mode : selectedModes) {
                     selectedModesIds.add(mode.id);
                 }
+
+                // Сетим режимы в StudyViewModel для хранения.
                 studyViewModel.setSelectedModesIds(selectedModesIds);
+
+                // Запрашиваем следующее для повтора слово.
                 getNextAvailableToRepeatWord();
             } else {
-                selectedModesExistFlag = false;
                 displayInfoFragment(InfoFragment.FLAG_MODES_ARE_NOT_CHOSEN);
             }
         } else {
-            selectedModesExistFlag = false;
             displayInfoFragment(InfoFragment.FLAG_MODES_ARE_NOT_CHOSEN);
         }
-        perhapsToChangeModesFlag = false;
     }
 
     /**
@@ -210,38 +257,43 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onAvailableToRepeatWordLoaded(Word word) {
         if (word != null) {
-            Log.i(LOG_TAG,
-                    "word = " + word.word +
-                            "; learnProgress = " + word.learnProgress +
-                            "; lastRepetitionDate = " + word.lastRepetitionDate);
-            // ГДЕ ХРАНИТЬ EXTRA_WORD_ID ДЛЯ ВСЕХ ФРАГМЕНТОВ?
-            // ГДЕ ХРАНИТЬ EXTRA_WORD_ID ДЛЯ ВСЕХ ФРАГМЕНТОВ?
-            // ГДЕ ХРАНИТЬ EXTRA_WORD_ID ДЛЯ ВСЕХ ФРАГМЕНТОВ?
+            Log.i(LOG_TAG, "word = " + word.word + "; learnProgress = " + word.learnProgress +
+                    "; lastRepetitionDate = " + word.lastRepetitionDate);
 
             // Создаём Bundle для отправки id слова фрагменту.
             Bundle arguments = new Bundle();
             arguments.putLong("WordId", word.id);
 
+            // В зависимости от прогресса по слову показываем для него FirstShowModeFragment или
+            // другой ModeFragment.
             if (word.learnProgress == -1) {
+                // Создаём фрагмент режима первого показа слова  и отправляем в него id слова.
                 FirstShowModeFragment firstShowModeFragment = new FirstShowModeFragment();
                 firstShowModeFragment.setArguments(arguments);
+
+                // Показываем фрагмент режима.
                 getSupportFragmentManager()
                         .beginTransaction()
                         .setCustomAnimations(R.anim.enter_slide_in_left, R.anim.exit_slide_in_left)
                         .replace(contentLayoutId, firstShowModeFragment, TAG_STUDY_OR_INFO_FRAGMENT)
                         .commit();
             } else {
+                // Получаем id рандомного режимы из выбранных, если слово показывается не первый раз.
                 long randomModeId = studyViewModel.randomSelectedModeId();
                 Log.i(LOG_TAG, "randomModeId = " + randomModeId);
 
+                // Создаём фрагмент режима и отправляем в него id слова.
                 Fragment modeFragment = ModeFragmentsFactory.byId(randomModeId)
                         .createFragment(this);
                 modeFragment.setArguments(arguments);
+
+                // Показываем фрагмент режима.
                 getSupportFragmentManager()
                         .beginTransaction()
                         .setCustomAnimations(R.anim.enter_slide_in_left, R.anim.exit_slide_in_left)
                         .replace(contentLayoutId, modeFragment, TAG_STUDY_OR_INFO_FRAGMENT)
                         .commit();
+
                 lastModeFragment = modeFragment;
             }
         } else {
@@ -256,15 +308,19 @@ public class MainActivity extends AppCompatActivity
      */
     @Override
     public void onWordUpdated(int isUpdated) {
-        // TODO использовать пришедшее значение, чтобы запрашивать слово или показывать
-        //  сообщение об ошибке.
-
-        // TODO сделать проверку на то, что в фокусе до сих пор StudyOrInfoFragment
-        getNextAvailableToRepeatWord();
+        if (isUpdated == 1) {
+            // Делаем проверку на то, что пользователь ещё находится во вкладке изучение,
+            // т.к. ответ может прийти позже, чем пользователь сменит вкладку.
+            if (getSupportFragmentManager().findFragmentByTag(TAG_STUDY_OR_INFO_FRAGMENT) != null)
+                getNextAvailableToRepeatWord();
+        } else {
+            Toast.makeText(this, R.string.sorry_error_happened, Toast.LENGTH_SHORT).show();
+        }
     }
 
     /**
      * Обрабатывает результат первого показа слова.
+     *
      * @param wordId id слова, которое показывалось.
      * @param result результат (0 - пропусить, 1 - изучать, 2 - знаю).
      */
@@ -277,6 +333,7 @@ public class MainActivity extends AppCompatActivity
 
     /**
      * Обрабытывает результаты повторов (кроме первого показа).
+     *
      * @param wordId id повторяемого слова.
      * @param result результат повтора (0 - неверно, 1 - верно).
      */
@@ -284,7 +341,6 @@ public class MainActivity extends AppCompatActivity
     public void repeatResult(long wordId, int result) {
         studyViewModel.repeatProcessing(wordId, result, this);
     }
-
 
 
     // Обработка выхода из приложения.

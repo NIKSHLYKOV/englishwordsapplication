@@ -16,7 +16,7 @@ import ru.nikshlykov.englishwordsapp.R;
 
 public class NewWordsCountPreference extends DialogPreference {
 
-    private int DEFAULT_VALUE = 5;
+    public static final int DEFAULT_VALUE = 5;
     private int LAYOUT_RES_ID = R.layout.number_picker_dialog;
 
     private int newWordsCount;
@@ -35,10 +35,6 @@ public class NewWordsCountPreference extends DialogPreference {
     public NewWordsCountPreference(Context context, AttributeSet attrs,
                                    int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-
-        // Do custom stuff here
-        // ...
-        // read attributes etc.
     }
 
     public int getNewWordsCount() {

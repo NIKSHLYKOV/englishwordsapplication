@@ -21,14 +21,14 @@ public class SortWordsDialogFragment extends DialogFragment {
     // Параметр сортировки.
     private int sortParam;
     // Возможные значения параметра сортировки.
-    public static final int BY_PROGRESS = 0;
-    public static final int BY_ALPHABET = 1;
+    public static final int BY_ALPHABET = 0;
+    public static final int BY_PROGRESS = 1;
     // Ключ для получения флага.
     public static final String EXTRA_SORT_PARAM = "SortParam";
 
     // Интерфейс для общения с активити.
     public interface SortWordsListener{
-        public void sort(int sortParam);
+        void sort(int sortParam);
     }
     private SortWordsListener sortWordsListener;
 
@@ -49,8 +49,9 @@ public class SortWordsDialogFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        // Массив значений сортировки для диалога.
-        String[] sortParams = {"По прогрессу", "По алфавиту"};
+        // Массив отображаемых значений сортировки для диалога.
+        String[] sortParams = getResources()
+                .getStringArray(R.array.preference_entries___sort_words_in_subgroup);
 
         return new AlertDialog.Builder(getActivity())
                 .setTitle(R.string.dialog___sort_words___title)

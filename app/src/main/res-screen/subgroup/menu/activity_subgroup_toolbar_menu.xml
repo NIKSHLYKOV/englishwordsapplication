@@ -1,24 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item
-        android:id="@+id/activity_subgroup___action___sort"
-        android:icon="@drawable/ic_sort_by_alpha_white_24dp"
-        android:title="@string/action___sort_words___title"
-        app:showAsAction="always"/>
 
     <item
-        android:id="@+id/activity_subgroup___action___edit_subgroup"
-        android:icon="@drawable/ic_edit_white_24dp"
-        android:title="@string/action___edit_subgroup___title"
+        android:id="@+id/activity_subgroup___action___learn2"
+        android:title="@string/to_learn"
+        android:checkable="true"
+        android:icon="@drawable/background_brain_icon"
         app:showAsAction="always"/>
+    <!--<item
+        android:id="@+id/activity_subgroup___action___learn"
+        android:title="@string/to_learn"
+        android:checkable="true"
+        app:actionViewClass="android.widget.ToggleButton"
+        app:showAsAction="always"/>-->
 
     <item
         android:id="@+id/activity_subgroup___action___reset_words_progress"
         android:icon="@drawable/ic_replay_white_24dp"
         android:title="@string/action___reset_progress___title"
-        app:showAsAction="always"
+        app:showAsAction="never"
         />
+    <item
+        android:id="@+id/activity_subgroup___action___sort"
+        android:icon="@drawable/ic_sort_by_alpha_white_24dp"
+        android:title="@string/action___sort_words___title"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/activity_subgroup___action___edit_subgroup"
+        android:icon="@drawable/ic_edit_white_24dp"
+        android:title="@string/action___edit_subgroup___title"
+        app:showAsAction="never"/>
 
     <item
         android:id="@+id/activity_subgroup___action___delete_subgroup"

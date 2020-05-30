@@ -189,5 +189,4 @@
         android:textSize="18sp"
         android:visibility="invisible"/>
 
-
 </RelativeLayout>

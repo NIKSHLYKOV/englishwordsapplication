@@ -1,11 +1,11 @@
 <resources>
 
-    <string-array name="sort_words_in_subgroup_values">
-        <item>@string/by_alphabet</item>
-        <item>@string/by_progress</item>
+    <string-array name="preference_entry_values___sort_words_in_subgroup">
+        <item>0</item>
+        <item>1</item>
     </string-array>
 
-    <string-array name="sort_words_in_subgroup_entries">
+    <string-array name="preference_entries___sort_words_in_subgroup">
         <item>@string/by_alphabet</item>
         <item>@string/by_progress</item>
     </string-array>

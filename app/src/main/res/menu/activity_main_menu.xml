@@ -3,7 +3,7 @@
 
     <item
         android:id="@+id/activity_main_menu___study"
-        android:icon="@drawable/ic_school_24px"
+        android:icon="@drawable/ic_school_24dp"
         android:title="@string/title_study" />
 
     <item

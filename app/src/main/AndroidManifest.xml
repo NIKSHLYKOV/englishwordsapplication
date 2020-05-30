@@ -23,7 +23,7 @@
 
         <activity
             android:name=".ui.settings.SettingsActivity"
-            android:label="@string/title_activity_settings"
+            android:label="@string/settings"
             android:parentActivityName=".ui.main.MainActivity"
             android:screenOrientation="portrait">
             <meta-data

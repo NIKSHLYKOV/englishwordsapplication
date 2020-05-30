@@ -16,8 +16,6 @@ import ru.nikshlykov.englishwordsapp.R;
 
 public class InfoFragment extends Fragment {
 
-    // TODO сделать кнопку на режимы
-
     // Ключ для передачи флага фрагменту.
     public static final String KEY_INFO_FLAG = "InfoFlag";
 
@@ -52,10 +50,12 @@ public class InfoFragment extends Fragment {
         String text = "";
         switch (flag){
             case FLAG_MODES_ARE_NOT_CHOSEN:
-                text = "Для того, чтобы изучать слова, необходимо выбрать режимы изучения. Сделать это вы можете перейдя во вкладку \"Режимы\"";
+                text = "Для того, чтобы изучать слова, необходимо выбрать режимы изучения. " +
+                        "Сделать это вы можете перейдя во вкладку \"Профиль\" в пункт \"Режимы\"";
                 break;
             case FLAG_AVAILABLE_WORDS_ARE_NOT_EXISTING:
-                text = "Нет доступных слов на данный момент! Выбери группы, если ты ещё этого не делал или если ты выучил все слова из выбранных групп.";
+                text = "Нет доступных слов на данный момент! " +
+                        "Выбери группы, если ты ещё этого не делал или если ты выучил все слова из выбранных групп.";
                 break;
         }
         // Устанавливаем текст в TextView.

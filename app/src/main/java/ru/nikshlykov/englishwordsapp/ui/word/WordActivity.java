@@ -38,9 +38,6 @@ public class WordActivity extends AppCompatActivity
         implements ResetProgressDialogFragment.ResetProgressListener,
         AppRepository.OnExamplesLoadedListener {
 
-    // TODO Убрать кнопку сохранения для слов, созданных нами.
-    //  Убрать пока примеры.
-
     // Тег для логирования.
     private static final String LOG_TAG = "WordActivity";
 

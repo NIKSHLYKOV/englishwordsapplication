@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,6 +15,8 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 
 import java.util.ArrayList;
 
@@ -30,10 +31,6 @@ public class GroupsFragment extends Fragment
         implements SubgroupsRecyclerViewAdapter.OnSubgroupClickListener,
         SubgroupsRecyclerViewAdapter.OnSubgroupCheckedListener {
 
-    // TODO Сделать базовый фон для картинок подгрупп.
-
-    // TODO сделать анимацию для fab (закрывает элемент в конце).
-
     private String LOG_TAG = "GroupsFragment";
 
     private static final int REQUEST_CODE_CREATE_SUBGROUP = 1;
@@ -44,7 +41,7 @@ public class GroupsFragment extends Fragment
 
     // View компоненты фрагмента.
     private RecyclerView groupItemsRecyclerView;
-    private Button newSubgroupButton;
+    private ExtendedFloatingActionButton newSubgroupExtendedFAB;
 
     private GroupItemsRecyclerViewAdapter groupItemsRecyclerViewAdapter;
 
@@ -79,13 +76,14 @@ public class GroupsFragment extends Fragment
 
         findViews(view);
 
-        newSubgroupButton.setOnClickListener(new View.OnClickListener() {
+        newSubgroupExtendedFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, AddOrEditSubgroupActivity.class);
                 startActivityForResult(intent, REQUEST_CODE_CREATE_SUBGROUP);
             }
         });
+
 
         Log.d(LOG_TAG, "onCreateView");
         return view;
@@ -100,10 +98,10 @@ public class GroupsFragment extends Fragment
                     @Override
                     public void onChanged(ArrayList<GroupItem> groupItems) {
                         groupItemsRecyclerViewAdapter.setGroupItems(groupItems);
-                        if (subgroupCreatingFlag){
-                            while (true){
+                        if (subgroupCreatingFlag) {
+                            while (true) {
                                 if (groupItemsRecyclerViewAdapter
-                                        .getGroupItemAt(0).getGroup().id == -1){
+                                        .getGroupItemAt(0).getGroup().id == -1) {
                                     groupItemsRecyclerView.smoothScrollToPosition(0);
                                     subgroupCreatingFlag = false;
                                     break;
@@ -114,6 +112,16 @@ public class GroupsFragment extends Fragment
                 });
         groupItemsRecyclerView.setLayoutManager(new LinearLayoutManager(context,
                 RecyclerView.VERTICAL, false));
+        groupItemsRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0) {
+                    newSubgroupExtendedFAB.hide();
+                } else if (dy < 0) {
+                    newSubgroupExtendedFAB.show();
+                }
+            }
+        });
         groupItemsRecyclerView.setAdapter(groupItemsRecyclerViewAdapter);
     }
 
@@ -124,7 +132,7 @@ public class GroupsFragment extends Fragment
     }
 
     private void findViews(View view) {
-        newSubgroupButton = view.findViewById(R.id.fragment_groups___button___new_subgroup);
+        newSubgroupExtendedFAB = view.findViewById(R.id.fragment_groups___button___new_subgroup);
         groupItemsRecyclerView = view.findViewById(R.id.fragment_groups___recycler_view___groups_and_subgroups);
     }
 

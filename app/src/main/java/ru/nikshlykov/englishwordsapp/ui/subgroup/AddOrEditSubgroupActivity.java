@@ -14,6 +14,8 @@ import ru.nikshlykov.englishwordsapp.R;
 
 public class AddOrEditSubgroupActivity extends AppCompatActivity {
 
+    // TODO сделать colorPicker/iconPicker для фона подгруппы.
+
     // Extra для возвращения имени подгруппы.
     public static final String EXTRA_SUBGROUP_NAME = "SubgroupName";
 

@@ -1,6 +1,7 @@
 package ru.nikshlykov.englishwordsapp.ui.groups;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,11 +32,13 @@ public class SubgroupsRecyclerViewAdapter extends RecyclerView.Adapter<Subgroups
     public interface OnSubgroupClickListener {
         void onSubgroupClick(View view, long subgroupId, boolean isCreatedByUser);
     }
+
     private OnSubgroupClickListener onSubgroupClickListener;
 
-    public interface OnSubgroupCheckedListener{
+    public interface OnSubgroupCheckedListener {
         void OnSubgroupChecked(View view, Subgroup subgroup);
     }
+
     private OnSubgroupCheckedListener onSubgroupCheckedListener;
 
     public SubgroupsRecyclerViewAdapter(Context context, ArrayList<Subgroup> subgroups,
@@ -61,12 +64,16 @@ public class SubgroupsRecyclerViewAdapter extends RecyclerView.Adapter<Subgroups
 
         holder.subgroupTextView.setText(currentSubgroup.name);
 
-        Glide.with(context)
-                .load(AppRepository.PATH_TO_SUBGROUP_IMAGES + currentSubgroup.imageResourceId)
-                .placeholder(R.drawable.shape_load_picture)
-                .error(R.drawable.shape_load_picture)
-                .into(holder.subgroupImageView);
-
+        if (currentSubgroup.isCreatedByUser()) {
+            Drawable imageColor = context.getDrawable(R.drawable.user_subgroups_default_color);
+            holder.subgroupImageView.setImageDrawable(imageColor);
+        } else {
+            Glide.with(context)
+                    .load(AppRepository.PATH_TO_SUBGROUP_IMAGES + currentSubgroup.imageResourceId)
+                    .placeholder(R.drawable.shape_load_picture)
+                    .error(R.drawable.shape_load_picture)
+                    .into(holder.subgroupImageView);
+        }
         holder.learnSubgroupToggleButton.setChecked(currentSubgroup.isStudied == 1);
     }
 
@@ -113,9 +120,9 @@ public class SubgroupsRecyclerViewAdapter extends RecyclerView.Adapter<Subgroups
             learnSubgroupToggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (onSubgroupCheckedListener != null){
+                    if (onSubgroupCheckedListener != null) {
                         Subgroup subgroup = getSubgroupAt(getLayoutPosition());
-                        if (subgroup != null){
+                        if (subgroup != null) {
                             subgroup.isStudied = isChecked ? 1 : 0;
                             onSubgroupCheckedListener.OnSubgroupChecked(buttonView, subgroup);
                         }

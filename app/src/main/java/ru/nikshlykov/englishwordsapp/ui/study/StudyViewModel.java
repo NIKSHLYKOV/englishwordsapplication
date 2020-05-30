@@ -21,6 +21,7 @@ import ru.nikshlykov.englishwordsapp.R;
 import ru.nikshlykov.englishwordsapp.db.AppRepository;
 import ru.nikshlykov.englishwordsapp.db.repeat.Repeat;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
+import ru.nikshlykov.englishwordsapp.ui.settings.newwordscount.NewWordsCountPreference;
 
 public class StudyViewModel extends AndroidViewModel implements
         AppRepository.OnRepeatsCountForTodayLoadedListener {
@@ -31,7 +32,7 @@ public class StudyViewModel extends AndroidViewModel implements
 
     private AppRepository repository;
 
-    AppRepository.OnAvailableToRepeatWordLoadedListener listener;
+    private AppRepository.OnAvailableToRepeatWordLoadedListener listener;
 
     private boolean withNew;
     private int newWordsCount;
@@ -109,6 +110,12 @@ public class StudyViewModel extends AndroidViewModel implements
         this.selectedModesIds = selectedModesIds;
     }
 
+    public boolean selectedModesExist(){
+        if (selectedModesIds == null)
+            return false;
+        return selectedModesIds.size() != 0;
+    }
+
     public long randomSelectedModeId() {
         Random random = new Random();
         int index = random.nextInt(selectedModesIds.size());
@@ -124,11 +131,14 @@ public class StudyViewModel extends AndroidViewModel implements
         repository.getRepeatsCountForToday(this);
     }
 
+    public void setNewWordsCount(int newWordsCount){
+        this.newWordsCount = newWordsCount;
+    }
+
     public void loadNewWordsCount() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplication());
-        newWordsCount = sharedPreferences.getInt(getApplication().getString(R.string.preference_key___new_word_count), 10);
-        Log.i(LOG_TAG, "newWordsCount = " + newWordsCount);
-        repository.getRepeatsCountForToday(this);
+        newWordsCount = sharedPreferences.getInt(getApplication().getString(R.string.preference_key___new_word_count), NewWordsCountPreference.DEFAULT_VALUE);
+        Log.i(LOG_TAG, "loadNewWordsCount(): newWordsCount = " + newWordsCount);
     }
 
     @Override

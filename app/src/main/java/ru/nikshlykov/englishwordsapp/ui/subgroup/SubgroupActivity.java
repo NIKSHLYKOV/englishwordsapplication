@@ -12,7 +12,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.Toast;
+import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
@@ -30,19 +31,16 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.preference.Preference;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import ru.nikshlykov.englishwordsapp.MyApplication;
 import ru.nikshlykov.englishwordsapp.R;
 import ru.nikshlykov.englishwordsapp.db.AppRepository;
 import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
-import ru.nikshlykov.englishwordsapp.ui.main.MainActivity;
 import ru.nikshlykov.englishwordsapp.ui.word.LinkOrDeleteWordDialogFragment;
 import ru.nikshlykov.englishwordsapp.ui.word.ResetProgressDialogFragment;
 import ru.nikshlykov.englishwordsapp.ui.word.WordActivity;
@@ -52,18 +50,18 @@ public class SubgroupActivity extends AppCompatActivity
         ResetProgressDialogFragment.ResetProgressListener,
         DeleteSubgroupDialogFragment.DeleteSubgroupListener {
 
-    // TODO сделать что-то с пунктом меню удаления подгруппы.
+    // TODO сделать свою view для отображения прогресса по слову.
+    //  Лучше базу брать из той, которая в WordActivity.
 
-    // TODO сделать свою view для отображения прогресса по слову. Лучше базу брать из той, которая в WordActivity.
+    // TODO связать кнопку на toolbar с изучением подгруппы.
 
     // Ключи для получения аргументов.
     public static final String EXTRA_SUBGROUP_ID = "SubgroupId";
     public static final String EXTRA_IS_CREATED_BY_USER = "IsCreatedByUser";
+    // Ключи для передачи аргументов.
+    public static final String EXTRA_DELETE_SUBGROUP = "DeleteSubgroup";
 
-    // Ключ для получения параметра сортировки слов.
-    public static final String PREFERENCE_SORT_WORDS_IN_SUBGROUP = "SortWordsInSubgroup";
-
-    // Возможные ответные коды из WordActivity.
+    // Возможные ответные коды на startActivityForResult().
     private static final int REQUEST_CODE_EDIT_EXISTING_WORD = 1;
     private static final int REQUEST_CODE_CREATE_NEW_WORD = 2;
     private static final int REQUEST_CODE_EDIT_SUBGROUP = 3;
@@ -75,28 +73,28 @@ public class SubgroupActivity extends AppCompatActivity
     private static final String DIALOG_SORT_WORDS = "SortWordsDialogFragment";
     private static final String DIALOG_RESET_WORDS_PROGRESS = "ResetWordsProgressDialogFragment";
     private static final String DIALOG_DELETE_SUBGROUP = "DeleteSubgroupDialogFragment";
-    private static final String DIALOG_LINK_WORD = "LinkWordDialogFragment";
-    public static final String EXTRA_DELETE_SUBGROUP = "DeleteSubgroup";
+    private static final String DIALOG_LINK_OR_DELETE_WORD = "LinkOrDeleteWordDialogFragment";
 
     // View элементы.
-    private FloatingActionButton createWordFloatingActionButton;
-    //private CheckBox learnSubgroupCheckBox;
+    private FloatingActionButton createWordFAB;
     private Toolbar toolbar;
+    private TextView infoTextView;
 
     private RecyclerView recyclerView;
     private WordsRecyclerViewAdapter adapter;
-
     // Иконки для свайпа слова в recyclerView.
     private Drawable deleteIcon;
     private Drawable linkIcon;
 
+    private SubgroupViewModel subgroupViewModel;
+
     private long subgroupId;
     private boolean subgroupIsCreatedByUser;
     private boolean deleteFlag;
-    private SubgroupViewModel subgroupViewModel;
 
     private Observer<ArrayList<Subgroup>> availableSubgroupsObserver;
 
+    // параметр сортировки слов в подгруппе.
     private int sortParam;
 
     @Override
@@ -131,7 +129,7 @@ public class SubgroupActivity extends AppCompatActivity
                     toolbarLayout.setCollapsedTitleTextAppearance(R.style.CollapsingToolbarCollapseTitle);
                     toolbarLayout.setExpandedTitleTextAppearance(R.style.CollapsingToolbarExpandedTitle);
 
-                    setSubgroupImage(subgroup.imageResourceId);
+                    setSubgroupImage(subgroup.isCreatedByUser(), subgroup.imageResourceId);
 
                     initCreateWordFAB(subgroup);
 
@@ -157,10 +155,14 @@ public class SubgroupActivity extends AppCompatActivity
                     if (!deleteFlag) {
                         // Если слов нет, то скрываем CheckBox изучения подгруппы.
                         if (words.isEmpty()) {
-                            //learnSubgroupCheckBox.setVisibility(View.GONE);
-                            /*Toast.makeText(SubgroupActivity.this,
+                            if (!subgroupIsCreatedByUser) {
+                                infoTextView.setText("Здесь скоро появятся слова. Пожалуйста, подождите обновления!");
+                            } else {
+                                //learnSubgroupCheckBox.setVisibility(View.GONE);
+                                /*Toast.makeText(SubgroupActivity.this,
                                     R.string.error_subgroup_is_empty, Toast.LENGTH_LONG)
-                                    .show();*/ // Пуста может быть только подгруппа созданная пользователем.
+                                    .show();*/
+                            }
                         } else {
                             //learnSubgroupCheckBox.setVisibility(View.VISIBLE);
                         }
@@ -169,14 +171,6 @@ public class SubgroupActivity extends AppCompatActivity
                 }
             }
         });
-    }
-
-    private void setSubgroupImage(String imageResourceId) {
-        Glide.with(this)
-                .load(AppRepository.PATH_TO_HIGH_SUBGROUP_IMAGES + imageResourceId)
-                .placeholder(R.drawable.shape_load_picture)
-                .error(Glide.with(this).load(AppRepository.PATH_TO_SUBGROUP_IMAGES + imageResourceId))
-                .into((ImageView)findViewById(R.id.activity_subgroup___image_view___subgroup_image));
     }
 
     @Override
@@ -188,17 +182,6 @@ public class SubgroupActivity extends AppCompatActivity
         }
     }
 
-    /**
-     * Метод обрабатывает результат работы WordActivity, которое может создавать новое слово
-     * или редактировать уже существующее.
-     *
-     * @param requestCode код запроса.
-     * @param resultCode код ответа.
-     * @param data        содержит данные о слове. В любом случае там будут непустые слово (Word) и
-     *                    значения (Value), а также транскрипция (Transcription), которая может быть пустой.
-     *                    Дополнительно параметр может содержать id слова (WordId), если мы изменили
-     *                    существующее слово.
-     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -208,7 +191,7 @@ public class SubgroupActivity extends AppCompatActivity
             String transcription = data.getStringExtra(WordActivity.EXTRA_TRANSCRIPTION);
             String value = data.getStringExtra(WordActivity.EXTRA_VALUE);
 
-            switch (requestCode){
+            switch (requestCode) {
                 // Создание нового слова.
                 case REQUEST_CODE_CREATE_NEW_WORD:
                     final Word newWord = new Word(word, transcription, value);
@@ -223,7 +206,7 @@ public class SubgroupActivity extends AppCompatActivity
                     }
                     break;
 
-                // Редактирование существующего слова.
+                // Редактирование подгруппы.
                 case REQUEST_CODE_EDIT_SUBGROUP:
                     String newSubgroupName = data.getStringExtra(AddOrEditSubgroupActivity.EXTRA_SUBGROUP_NAME);
                     subgroupViewModel.updateSubgroupName(newSubgroupName);
@@ -232,26 +215,48 @@ public class SubgroupActivity extends AppCompatActivity
         }
     }
 
-    /**
-     * Методы по работе с Toolbar.
-     */
+
+    // Toolbar.
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         Log.d(LOG_TAG, "onCreateOptionsMenu()");
         getMenuInflater().inflate(R.menu.activity_subgroup_toolbar_menu, menu);
-        MenuItem deleteSubgroupItem = menu.findItem(R.id.activity_subgroup___action___delete_subgroup);
-        MenuItem editSubgroupItem = menu.findItem(R.id.activity_subgroup___action___edit_subgroup);
+
+        // Скрываем действия, доступные только для созданных пользователем подгрупп.
         if (!subgroupIsCreatedByUser) {
-            deleteSubgroupItem.setVisible(false);
-            editSubgroupItem.setVisible(false);
+            menu.findItem(R.id.activity_subgroup___action___delete_subgroup).setVisible(false);
+            menu.findItem(R.id.activity_subgroup___action___edit_subgroup).setVisible(false);
         }
+
+        /*ToggleButton learnToggleButton = (ToggleButton) menu.findItem(R.id.activity_subgroup___action___learn)
+                .getActionView();
+        learnToggleButton.setLayoutParams(new Toolbar.LayoutParams(
+                getResources().getDimensionPixelSize(R.dimen.toggle_button_brain_width),
+                getResources().getDimensionPixelSize(R.dimen.toggle_button_brain_height)));
+        learnToggleButton.setText("");
+        learnToggleButton.setTextOn("");
+        learnToggleButton.setTextOff("");
+        learnToggleButton.setBackgroundDrawable(getDrawable(R.drawable.background_brain_icon));*/
+
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         FragmentManager manager = getSupportFragmentManager();
 
         switch (item.getItemId()) {
+            case R.id.activity_subgroup___action___learn2:
+                if (item.isChecked()) {
+                    item.setChecked(false);
+                    item.setIcon(getDrawable(R.drawable.ic_brain_not_selected));
+                } else {
+                    item.setChecked(true);
+                    item.setIcon(getDrawable(R.drawable.ic_brain_selected_yellow));
+                }
+                return true;
+
             // Сортировка слов по алфавиту или сложности.
             case R.id.activity_subgroup___action___sort:
                 Log.d(LOG_TAG, "sort words");
@@ -295,12 +300,31 @@ public class SubgroupActivity extends AppCompatActivity
         }
     }
 
+    private void setSubgroupImage(boolean subgroupIsCreatedByUser, String imageResourceId) {
+        ImageView subgroupImageView = findViewById(R.id.activity_subgroup___image_view___subgroup_image);
+        if (subgroupIsCreatedByUser) {
+            Drawable imageColor = getDrawable(R.drawable.user_subgroups_default_color);
+            subgroupImageView.setImageDrawable(imageColor);
+        } else {
+            Glide.with(this)
+                    .load(AppRepository.PATH_TO_HIGH_SUBGROUP_IMAGES + imageResourceId)
+                    .placeholder(R.drawable.shape_load_picture)
+                    .error(Glide.with(this).load(AppRepository.PATH_TO_SUBGROUP_IMAGES + imageResourceId))
+                    .into(subgroupImageView);
+        }
+    }
+
+
+    // Параметр сортировки слова.
+
     /**
      * Обрабатывает результат работы SortWordsDialogFragment.
+     *
      * @param sortParam параметр сортировки, полученный из фрагмента.
      */
     @Override
     public void sort(int sortParam) {
+        Log.i(LOG_TAG, "sortParam from SortWordsDialogFragment = " + sortParam);
         // Проверяем, изменился ли вообще параметр, чтобы не делать лишней работы.
         if (this.sortParam != sortParam) {
             // Устанавливаем новый параметр сортировки.
@@ -312,26 +336,29 @@ public class SubgroupActivity extends AppCompatActivity
 
     /**
      * Достаёт параметр сортировки слов в подгруппе.
+     *
      * @return параметр сортировки.
      */
     private int getSortParam() {
         SharedPreferences sharedPreferences =
-                getSharedPreferences(MyApplication.PREFERENCE_FILE_NAME, MODE_PRIVATE);
-        return sharedPreferences.getInt(PREFERENCE_SORT_WORDS_IN_SUBGROUP,
-                SortWordsDialogFragment.BY_PROGRESS);
+                PreferenceManager.getDefaultSharedPreferences(this);
+        return Integer.parseInt(sharedPreferences.getString(getString(R.string.preference_key___sort_words_in_subgroups),
+                String.valueOf(SortWordsDialogFragment.BY_ALPHABET)));
     }
 
     /**
      * Сохраняет параметр сортировки слов в подгруппе.
+     *
      * @param sortParam последний выставленный параметр сортировки.
      */
-    private void saveSortParam(int sortParam){
-        SharedPreferences.Editor editor =
-                getSharedPreferences(MyApplication.PREFERENCE_FILE_NAME, MODE_PRIVATE).edit();
-        editor.putInt(PREFERENCE_SORT_WORDS_IN_SUBGROUP, sortParam);
+    private void saveSortParam(int sortParam) {
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+        editor.putString(getString(R.string.preference_key___sort_words_in_subgroups), String.valueOf(sortParam));
         editor.apply();
     }
 
+
+    // Создание Activity и View.
 
     /**
      * Получает из Extras id подгруппы и флаг того, создана ли она пользователем.
@@ -348,59 +375,21 @@ public class SubgroupActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * Находит View в разметке.
+     */
     private void findViews() {
-        createWordFloatingActionButton = findViewById(R.id.activity_subgroup___floating_action_button___new_word);
+        createWordFAB = findViewById(R.id.activity_subgroup___floating_action_button___new_word);
         toolbar = findViewById(R.id.activity_subgroup___toolbar);
         recyclerView = findViewById(R.id.activity_subgroup___recycler_view___words);
-    }
-
-    private void setAvailableSubgroupsObserver(final long wordId){
-        availableSubgroupsObserver = new Observer<ArrayList<Subgroup>>() {
-            @Override
-            public void onChanged(ArrayList<Subgroup> subgroups) {
-                Log.d(LOG_TAG, "availableSubgroups onChanged()");
-                if (subgroups != null){
-                    Log.d(LOG_TAG, "availableSubgroups onChanged() value != null");
-                    LinkOrDeleteWordDialogFragment linkOrDeleteWordDialogFragment =
-                            new LinkOrDeleteWordDialogFragment();
-                    Bundle arguments = new Bundle();
-
-                    arguments.putLong(LinkOrDeleteWordDialogFragment.EXTRA_WORD_ID,
-                            wordId);
-
-                    arguments.putInt(LinkOrDeleteWordDialogFragment.EXTRA_FLAG,
-                            LinkOrDeleteWordDialogFragment.TO_LINK);
-
-                    long[] subgroupsIds = new long[subgroups.size()];
-                    String[] subgroupsNames = new String[subgroups.size()];
-                    for (int i = 0; i < subgroups.size(); i++){
-                        Subgroup subgroup = subgroups.get(i);
-                        subgroupsNames[i] = subgroup.name;
-                        subgroupsIds[i] = subgroup.id;
-                    }
-                    arguments.putStringArray(LinkOrDeleteWordDialogFragment.EXTRA_AVAILABLE_SUBGROUPS_NAMES,
-                            subgroupsNames);
-                    arguments.putLongArray(LinkOrDeleteWordDialogFragment.EXTRA_AVAILABLE_SUBGROUPS_IDS,
-                            subgroupsIds);
-
-                    linkOrDeleteWordDialogFragment.setArguments(arguments);
-
-                    linkOrDeleteWordDialogFragment.show(getSupportFragmentManager(), "some tag");
-
-                    subgroupViewModel.clearAvailableSubgroupsToAndRemoveObserver(availableSubgroupsObserver);
-                }
-                else{
-                    Log.d(LOG_TAG, "availableSubgroups onChanged() value = null");
-                }
-            }
-        };
+        infoTextView = findViewById(R.id.activity_subgroup___text_view___info);
     }
 
     private void initCreateWordFAB(Subgroup subgroup) {
         // Проверяем, что подгруппа создана пользователем.
         if (subgroup.isCreatedByUser()) {
             // Присваиваем обработчик кнопке для создания нового слова.
-            createWordFloatingActionButton.setOnClickListener(new View.OnClickListener() {
+            createWordFAB.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent createNewWordIntent = new Intent(getApplicationContext(),
@@ -411,17 +400,30 @@ public class SubgroupActivity extends AppCompatActivity
             });
         } else {
             // Скрываем fab для создания нового слова.
-            createWordFloatingActionButton.setClickable(false);
-            createWordFloatingActionButton.setVisibility(View.GONE);
+            createWordFAB.setClickable(false);
+            createWordFAB.setVisibility(View.GONE);
         }
     }
 
+
+    // RecyclerView.
+
     private void initRecyclerView() {
         // Создаём вспомогательные вещи для RecyclerView и соединяем их с ним.
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(SubgroupActivity.this);
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(SubgroupActivity.this, DividerItemDecoration.VERTICAL);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.addItemDecoration(dividerItemDecoration);
+        recyclerView.setLayoutManager(new LinearLayoutManager(SubgroupActivity.this));
+        recyclerView.addItemDecoration(new DividerItemDecoration(SubgroupActivity.this, DividerItemDecoration.VERTICAL));
+        if (subgroupIsCreatedByUser) {
+            recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                    if (dy > 0) {
+                        createWordFAB.hide();
+                    } else if (dy < 0) {
+                        createWordFAB.show();
+                    }
+                }
+            });
+        }
     }
 
     private void initRecyclerViewAdapter() {
@@ -445,38 +447,6 @@ public class SubgroupActivity extends AppCompatActivity
         // Находим иконки, изображаемые при свайпе.
         linkIcon = ContextCompat.getDrawable(this, R.drawable.ic_link_white_24dp);
         deleteIcon = ContextCompat.getDrawable(this, R.drawable.ic_delete_white_24dp);
-    }
-
-
-    /**
-     * Принимает сообщение от ResetWordProgressDialogFragment.
-     *
-     * @param message представляет из себя сообщение.
-     */
-    @Override
-    public void resetMessage(String message) {
-        if (message.equals(ResetProgressDialogFragment.RESET_MESSAGE)) {
-            subgroupViewModel.resetWordsProgress();
-        }
-    }
-
-    @Override
-    public void deleteMessage(String message) {
-        if (message.equals(DeleteSubgroupDialogFragment.DELETE_MESSAGE)) {
-            Subgroup currentSubgroup = subgroupViewModel.getLiveDataSubgroup().getValue();
-            if (currentSubgroup != null) {
-                if (currentSubgroup.isCreatedByUser()) {
-                    subgroupViewModel.deleteSubgroup();
-                    deleteFlag = true;
-
-                    Intent wordData = new Intent();
-                    wordData.putExtra(EXTRA_DELETE_SUBGROUP, true);
-                    setResult(RESULT_OK, wordData);
-
-                    finish();
-                }
-            }
-        }
     }
 
     public MySimpleCallback createMySimpleCallbackBySubgroup(Subgroup subgroup) {
@@ -572,6 +542,86 @@ public class SubgroupActivity extends AppCompatActivity
             }
 
             super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+        }
+    }
+
+    private void setAvailableSubgroupsObserver(final long wordId) {
+        availableSubgroupsObserver = new Observer<ArrayList<Subgroup>>() {
+            @Override
+            public void onChanged(ArrayList<Subgroup> subgroups) {
+                Log.d(LOG_TAG, "availableSubgroups onChanged()");
+                if (subgroups != null) {
+                    Log.d(LOG_TAG, "availableSubgroups onChanged() value != null");
+                    LinkOrDeleteWordDialogFragment linkOrDeleteWordDialogFragment =
+                            new LinkOrDeleteWordDialogFragment();
+                    Bundle arguments = new Bundle();
+
+                    arguments.putLong(LinkOrDeleteWordDialogFragment.EXTRA_WORD_ID,
+                            wordId);
+
+                    arguments.putInt(LinkOrDeleteWordDialogFragment.EXTRA_FLAG,
+                            LinkOrDeleteWordDialogFragment.TO_LINK);
+
+                    long[] subgroupsIds = new long[subgroups.size()];
+                    String[] subgroupsNames = new String[subgroups.size()];
+                    for (int i = 0; i < subgroups.size(); i++) {
+                        Subgroup subgroup = subgroups.get(i);
+                        subgroupsNames[i] = subgroup.name;
+                        subgroupsIds[i] = subgroup.id;
+                    }
+                    arguments.putStringArray(LinkOrDeleteWordDialogFragment.EXTRA_AVAILABLE_SUBGROUPS_NAMES,
+                            subgroupsNames);
+                    arguments.putLongArray(LinkOrDeleteWordDialogFragment.EXTRA_AVAILABLE_SUBGROUPS_IDS,
+                            subgroupsIds);
+
+                    linkOrDeleteWordDialogFragment.setArguments(arguments);
+
+                    linkOrDeleteWordDialogFragment.show(getSupportFragmentManager(), DIALOG_LINK_OR_DELETE_WORD);
+
+                    subgroupViewModel.clearAvailableSubgroupsToAndRemoveObserver(availableSubgroupsObserver);
+                } else {
+                    Log.d(LOG_TAG, "availableSubgroups onChanged() value = null");
+                }
+            }
+        };
+    }
+
+
+    // Диалоги.
+
+    /**
+     * Принимает сообщение от ResetWordProgressDialogFragment.
+     *
+     * @param message представляет из себя сообщение.
+     */
+    @Override
+    public void resetMessage(String message) {
+        if (message.equals(ResetProgressDialogFragment.RESET_MESSAGE)) {
+            subgroupViewModel.resetWordsProgress();
+        }
+    }
+
+    /**
+     * Принимает сообщение от DeleteSubgroupDialogFragment.
+     *
+     * @param message удалять подгруппу или нет.
+     */
+    @Override
+    public void deleteMessage(String message) {
+        if (message.equals(DeleteSubgroupDialogFragment.DELETE_MESSAGE)) {
+            Subgroup currentSubgroup = subgroupViewModel.getLiveDataSubgroup().getValue();
+            if (currentSubgroup != null) {
+                if (currentSubgroup.isCreatedByUser()) {
+                    subgroupViewModel.deleteSubgroup();
+                    deleteFlag = true;
+
+                    Intent wordData = new Intent();
+                    wordData.putExtra(EXTRA_DELETE_SUBGROUP, true);
+                    setResult(RESULT_OK, wordData);
+
+                    finish();
+                }
+            }
         }
     }
 }

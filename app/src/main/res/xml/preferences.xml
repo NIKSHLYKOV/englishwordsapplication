@@ -61,9 +61,9 @@
         <ListPreference
             android:key="@string/preference_key___sort_words_in_subgroups"
             android:title="Сортировка слов в группах"
-            android:defaultValue="По алфавиту"
-            android:entries="@array/sort_words_in_subgroup_entries"
-            android:entryValues="@array/sort_words_in_subgroup_values"/>
+            android:defaultValue="0"
+            android:entries="@array/preference_entries___sort_words_in_subgroup"
+            android:entryValues="@array/preference_entry_values___sort_words_in_subgroup"/>
 
     </PreferenceCategory>
 </PreferenceScreen>

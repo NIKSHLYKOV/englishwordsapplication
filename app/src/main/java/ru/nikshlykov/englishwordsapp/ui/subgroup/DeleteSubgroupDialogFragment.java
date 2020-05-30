@@ -43,7 +43,7 @@ public class DeleteSubgroupDialogFragment extends DialogFragment {
                 .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        // Отправляем Activity сообщение о том, что сбрасывание подтверждено.
+                        // Отправляем Activity сообщение о том, что удаление подтверждено.
                         deleteSubgroupListener.deleteMessage(DELETE_MESSAGE);
                     }
                 })

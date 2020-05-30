@@ -26,7 +26,7 @@ public class ModesViewModel extends AndroidViewModel {
         return liveDataModes;
     }
 
-    public void updateModes() {
-        repository.update(liveDataModes.getValue());
+    public void updateModes(List<Mode> modes) {
+        repository.update(modes);
     }
 }

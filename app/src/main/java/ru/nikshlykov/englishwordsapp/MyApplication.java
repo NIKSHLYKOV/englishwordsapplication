@@ -51,19 +51,9 @@ public class MyApplication extends Application
 
         createNotificationChannel();
 
-        // Чтобы отменить работу
-        //WorkManager.getInstance(getApplicationContext()).cancelWorkById(notificationWorkRequest.getId());
-
         databaseExecutorService = Executors.newFixedThreadPool(3);
 
         //setNotificationPeriodicWorker(10);
-
-        /*OneTimeWorkRequest request = new OneTimeWorkRequest.Builder(NotificationWorker.class)
-                .setInitialDelay(10, TimeUnit.SECONDS)
-                .build();
-
-        WorkManager.getInstance(getApplicationContext()).enqueueUniqueWork(
-                "NotificationWork1", ExistingWorkPolicy.REPLACE, request);*/
     }
 
 
@@ -100,7 +90,8 @@ public class MyApplication extends Application
             channel.setDescription(description);
 
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
+            if (notificationManager != null)
+                notificationManager.createNotificationChannel(channel);
         }
     }
 

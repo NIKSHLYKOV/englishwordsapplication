@@ -40,9 +40,12 @@
     <string name="learned_words">Изученные слова</string>
     <string name="studied_words">Изучаемые слова</string>
 
+    <!-- Режимы -->
+    <string name="modes">Режимы</string>
+    <string name="save_modes">Сохранить режимы</string>
+
 
     <string name="title_profile">Профиль</string>
-    <string name="modes">Режимы</string>
     <string name="examples">Примеры</string>
 
     <string name="action___delete_word___title">Удалить слово</string>
@@ -81,7 +84,7 @@
     <string name="to_add">Добавить</string>
     <string name="to_save">Сохранить</string>
     <string name="ok">ОК</string>
-    <string name="title_activity_settings">Settings</string>
+    <string name="settings">Настройки</string>
     <string name="sorry_error_happened">Извините, произошла ошибка!</string>
     <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </string>
 

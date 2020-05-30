@@ -173,7 +173,6 @@ public class AppRepository {
     public interface OnWordUpdatedListener {
         void onWordUpdated(int isUpdated);
     }
-
     private static class UpdateWordAsyncTask extends AsyncTask<Word, Void, Integer> {
         private WordDao wordDao;
         private WeakReference<OnWordUpdatedListener> listener;
@@ -228,7 +227,6 @@ public class AppRepository {
     public interface OnWordLoadedListener {
         void onLoaded(Word word);
     }
-
     private static class GetWordAsyncTask extends AsyncTask<Long, Void, Word> {
         private WordDao wordDao;
         private WeakReference<OnWordLoadedListener> listener;
@@ -257,7 +255,6 @@ public class AppRepository {
     public interface OnAvailableToRepeatWordLoadedListener {
         void onAvailableToRepeatWordLoaded(Word word);
     }
-
     private static class GetAvailableToRepeatWordAsyncTask extends AsyncTask<Void, Void, Word> {
         private WordDao wordDao;
         private boolean withNew;

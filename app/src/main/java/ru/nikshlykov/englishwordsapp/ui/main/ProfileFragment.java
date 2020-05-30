@@ -27,10 +27,18 @@ public class ProfileFragment extends Fragment {
     private MaterialButton settings;
     private MaterialButton modes;
 
+    private ProfileFragmentReportListener reportListener;
+
+    public interface ProfileFragmentReportListener{
+        void reportOpenModesActivity();
+        void reportOpenSettingsActivity();
+    }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         this.context = context;
+        reportListener = (ProfileFragmentReportListener) context;
     }
 
     @Nullable
@@ -42,18 +50,22 @@ public class ProfileFragment extends Fragment {
         modes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, ModesActivity.class);
-                startActivity(intent);
+                reportListener.reportOpenModesActivity();
             }
         });
         settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, SettingsActivity.class);
-                startActivity(intent);
+                reportListener.reportOpenSettingsActivity();
             }
         });
         return view;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        reportListener = null;
     }
 
     private void findViews(View view) {

@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.format.DateFormat;
 import android.util.Log;
 
 import androidx.fragment.app.DialogFragment;
@@ -29,6 +28,8 @@ import static ru.nikshlykov.englishwordsapp.R.string.preference_key___tts_pitch;
 
 public class SettingsFragment extends PreferenceFragmentCompat implements
         SharedPreferences.OnSharedPreferenceChangeListener {
+
+    private static final int REQUEST_CODE_REPEATING_NOTIFICATIONS = 1;
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -62,7 +63,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
         } else if (key.equals(getString(R.string.preference_key___notification_time))) {
             int newNotificationTime = sharedPreferences.getInt(key, 0);
             Log.i("Settings", "New notification time is " + newNotificationTime + " after midnight (minutes)");
-            initRepeatingNotifications(newNotificationTime);
+            setRepeatingNotifications(newNotificationTime);
         }
     }
 
@@ -95,9 +96,8 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
     }
 
 
-    // TODO Не забыть протестить cancel.
     // TODO сделать реакцию на boot.
-    private void initRepeatingNotifications(int minutesAfterMidnight) {
+    private void setRepeatingNotifications(int minutesAfterMidnight) {
         // Получаем контекст.
         Context context = getContext();
 
@@ -111,7 +111,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
         Calendar now = Calendar.getInstance();
 
         // Вычисляем время, когда необходимое для первоначальной тревоги.
-        if (now.after(userTime)){
+        if (now.after(userTime)) {
             userTime.add(Calendar.DATE, 1);
         }
 
@@ -119,29 +119,20 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
         // Возможно, будет необходимо сделать другой флаг, чтобы не было Update,
         // если пользователь хочет сделать несколько уведомлений в день.
         Intent intent = new Intent(context, AlarmReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 1,
-                intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, REQUEST_CODE_REPEATING_NOTIFICATIONS,
+                intent, 0);
 
-        // Получаем manager и сетим alarm.
+        // Получаем manager, отменяем предыдужий pendingIntent и сетим новый.
         // Прежде всего используем setExactAndAllowIdle, т.к. он точно будет работать (даже когда
         // приложение закрыто).
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Activity.ALARM_SERVICE);
+        if (pendingIntent != null && alarmManager != null){
+            alarmManager.cancel(pendingIntent);
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,
                     userTime.getTimeInMillis(), pendingIntent);
         } else alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP,
                 userTime.getTimeInMillis(), 24 * 60 * 60 * 1000, pendingIntent);
-    }
-
-    private void cancelRepeatingNotifications() {
-        /*Intent intent = new Intent(getActivity(), AlarmReceiver.class);
-        PendingIntent pendingIntent =
-                PendingIntent.getService(context, 2, intent,
-                        PendingIntent.FLAG_NO_CREATE);
-        AlarmManager alarmManager =
-                (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        if (pendingIntent != null && alarmManager != null) {
-            alarmManager.cancel(pendingIntent);
-        }*/
     }
 }
