@@ -64,6 +64,11 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
             int newNotificationTime = sharedPreferences.getInt(key, 0);
             Log.i("Settings", "New notification time is " + newNotificationTime + " after midnight (minutes)");
             setRepeatingNotifications(newNotificationTime);
+        } else if(key.equals(getString(R.string.preference_key___use_notifications))){
+            boolean useNotificationFlag = sharedPreferences.getBoolean(key, false);
+            if (!useNotificationFlag){
+                cancelNotifications();
+            }
         }
     }
 
@@ -134,5 +139,16 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
                     userTime.getTimeInMillis(), pendingIntent);
         } else alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP,
                 userTime.getTimeInMillis(), 24 * 60 * 60 * 1000, pendingIntent);
+    }
+
+    public void cancelNotifications(){
+        Context context = getContext();
+        Intent intent = new Intent(context, AlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, REQUEST_CODE_REPEATING_NOTIFICATIONS,
+                intent, 0);
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Activity.ALARM_SERVICE);
+        if (pendingIntent != null && alarmManager != null){
+            alarmManager.cancel(pendingIntent);
+        }
     }
 }

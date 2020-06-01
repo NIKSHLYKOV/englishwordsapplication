@@ -97,6 +97,8 @@ public class WordActivity extends AppCompatActivity
 
         getWordIdAndPrepareInterface();
 
+        initSaveButtonClick();
+
         initAvailableSubgroupsObserver();
     }
 
@@ -177,7 +179,6 @@ public class WordActivity extends AppCompatActivity
                 });
 
                 if (wordId < 0){
-                    initSaveButtonClick();
                     saveButton.setVisibility(View.VISIBLE);
                     findViewById(R.id.activity_word___text_input_layout___word).setEnabled(true);
                     findViewById(R.id.activity_word___text_input_layout___transcription).setEnabled(true);
