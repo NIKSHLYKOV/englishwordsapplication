@@ -35,8 +35,6 @@ public class GroupsViewModel extends AndroidViewModel implements
         repository = new AppRepository(application);
 
         mutableLiveDataGroupItems = new MutableLiveData<>();
-
-        repository.getGroupItems(this);
     }
 
     public MutableLiveData<ArrayList<GroupItem>> getMutableLiveDataGroupItems() {
@@ -54,7 +52,7 @@ public class GroupsViewModel extends AndroidViewModel implements
 
     @Override
     public void onGroupItemsLoaded(ArrayList<GroupItem> groupItems) {
-        mutableLiveDataGroupItems.postValue(groupItems);
+        mutableLiveDataGroupItems.setValue(groupItems);
     }
 
     @Override

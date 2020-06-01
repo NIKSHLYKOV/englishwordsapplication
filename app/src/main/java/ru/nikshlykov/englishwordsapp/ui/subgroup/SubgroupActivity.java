@@ -13,7 +13,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
@@ -53,15 +52,17 @@ public class SubgroupActivity extends AppCompatActivity
     // TODO сделать свою view для отображения прогресса по слову.
     //  Лучше базу брать из той, которая в WordActivity.
 
-    // TODO связать кнопку на toolbar с изучением подгруппы.
+    // TODO сделать возможность передавать подгруппы и слова между activity и fragments.
 
     // Ключи для получения аргументов.
     public static final String EXTRA_SUBGROUP_ID = "SubgroupId";
-    public static final String EXTRA_IS_CREATED_BY_USER = "IsCreatedByUser";
+    public static final String EXTRA_SUBGROUP_IS_CREATED_BY_USER = "SubgroupIsCreatedByUser";
+    public static final String EXTRA_SUBGROUP_IS_STUDIED = "SubgroupIsStudied";
+
     // Ключи для передачи аргументов.
     public static final String EXTRA_DELETE_SUBGROUP = "DeleteSubgroup";
 
-    // Возможные ответные коды на startActivityForResult().
+    // Коды запросов для startActivityForResult().
     private static final int REQUEST_CODE_EDIT_EXISTING_WORD = 1;
     private static final int REQUEST_CODE_CREATE_NEW_WORD = 2;
     private static final int REQUEST_CODE_EDIT_SUBGROUP = 3;
@@ -90,6 +91,8 @@ public class SubgroupActivity extends AppCompatActivity
 
     private long subgroupId;
     private boolean subgroupIsCreatedByUser;
+    private boolean subgroupIsStudied;
+
     private boolean deleteFlag;
 
     private Observer<ArrayList<Subgroup>> availableSubgroupsObserver;
@@ -113,11 +116,13 @@ public class SubgroupActivity extends AppCompatActivity
 
         sortParam = getSortParam();
 
+        initCreateWordFAB();
+
         // Создаём для Activity ViewModel.
         subgroupViewModel = new ViewModelProvider(this).get(SubgroupViewModel.class);
 
         subgroupViewModel.setLiveDataSubgroup(subgroupId, sortParam);
-        subgroupViewModel.getLiveDataSubgroup().observe(this, new Observer<Subgroup>() {
+        subgroupViewModel.getSubgroupMutableLiveData().observe(this, new Observer<Subgroup>() {
             @Override
             public void onChanged(Subgroup subgroup) {
                 if (subgroup != null) {
@@ -129,9 +134,7 @@ public class SubgroupActivity extends AppCompatActivity
                     toolbarLayout.setCollapsedTitleTextAppearance(R.style.CollapsingToolbarCollapseTitle);
                     toolbarLayout.setExpandedTitleTextAppearance(R.style.CollapsingToolbarExpandedTitle);
 
-                    setSubgroupImage(subgroup.isCreatedByUser(), subgroup.imageResourceId);
-
-                    initCreateWordFAB(subgroup);
+                    setSubgroupImage(subgroupIsCreatedByUser, subgroup.imageResourceId);
 
                     // Создаём вещи для свайпа слов.
                     initSwipeIcons();
@@ -174,12 +177,25 @@ public class SubgroupActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onPause() {
+        super.onPause();
+        Log.i(LOG_TAG, "onPause()");
         if (!deleteFlag) {
             subgroupViewModel.updateSubgroup();
             saveSortParam(sortParam);
         }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.i(LOG_TAG, "onStop()");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.i(LOG_TAG, "onPause()");
     }
 
     @Override
@@ -201,7 +217,7 @@ public class SubgroupActivity extends AppCompatActivity
                 // Редактирование существующего слова.
                 case REQUEST_CODE_EDIT_EXISTING_WORD:
                     long wordId = data.getLongExtra(WordActivity.EXTRA_WORD_ID, 0);
-                    if (wordId != 0) {
+                    if (wordId < 0) {
                         subgroupViewModel.updateWord(wordId, word, value, transcription);
                     }
                     break;
@@ -209,7 +225,7 @@ public class SubgroupActivity extends AppCompatActivity
                 // Редактирование подгруппы.
                 case REQUEST_CODE_EDIT_SUBGROUP:
                     String newSubgroupName = data.getStringExtra(AddOrEditSubgroupActivity.EXTRA_SUBGROUP_NAME);
-                    subgroupViewModel.updateSubgroupName(newSubgroupName);
+                    subgroupViewModel.setSubgroupName(newSubgroupName);
                     break;
             }
         }
@@ -223,6 +239,11 @@ public class SubgroupActivity extends AppCompatActivity
         Log.d(LOG_TAG, "onCreateOptionsMenu()");
         getMenuInflater().inflate(R.menu.activity_subgroup_toolbar_menu, menu);
 
+        if (subgroupIsStudied) {
+            menu.findItem(R.id.activity_subgroup___action___learn)
+                    .setChecked(true)
+                    .setIcon(getDrawable(R.drawable.ic_brain_selected_yellow));
+        }
         // Скрываем действия, доступные только для созданных пользователем подгрупп.
         if (!subgroupIsCreatedByUser) {
             menu.findItem(R.id.activity_subgroup___action___delete_subgroup).setVisible(false);
@@ -247,13 +268,15 @@ public class SubgroupActivity extends AppCompatActivity
         FragmentManager manager = getSupportFragmentManager();
 
         switch (item.getItemId()) {
-            case R.id.activity_subgroup___action___learn2:
+            case R.id.activity_subgroup___action___learn:
                 if (item.isChecked()) {
                     item.setChecked(false);
                     item.setIcon(getDrawable(R.drawable.ic_brain_not_selected));
+                    subgroupViewModel.setIsStudied(false);
                 } else {
                     item.setChecked(true);
                     item.setIcon(getDrawable(R.drawable.ic_brain_selected_yellow));
+                    subgroupViewModel.setIsStudied(true);
                 }
                 return true;
 
@@ -272,7 +295,7 @@ public class SubgroupActivity extends AppCompatActivity
                 Log.d(LOG_TAG, "edit subgroup");
                 Intent intent = new Intent(this, AddOrEditSubgroupActivity.class);
                 intent.putExtra(AddOrEditSubgroupActivity.EXTRA_SUBGROUP_NAME, subgroupViewModel
-                        .getLiveDataSubgroup().getValue().name);
+                        .getSubgroupMutableLiveData().getValue().name);
                 startActivityForResult(intent, REQUEST_CODE_EDIT_SUBGROUP);
                 return true;
 
@@ -369,7 +392,8 @@ public class SubgroupActivity extends AppCompatActivity
             finish();
         try {
             subgroupId = arguments.getLong(EXTRA_SUBGROUP_ID);
-            subgroupIsCreatedByUser = arguments.getBoolean(EXTRA_IS_CREATED_BY_USER);
+            subgroupIsCreatedByUser = arguments.getBoolean(EXTRA_SUBGROUP_IS_CREATED_BY_USER);
+            subgroupIsStudied = arguments.getBoolean(EXTRA_SUBGROUP_IS_STUDIED);
         } catch (NullPointerException ex) {
             finish();
         }
@@ -385,9 +409,9 @@ public class SubgroupActivity extends AppCompatActivity
         infoTextView = findViewById(R.id.activity_subgroup___text_view___info);
     }
 
-    private void initCreateWordFAB(Subgroup subgroup) {
+    private void initCreateWordFAB() {
         // Проверяем, что подгруппа создана пользователем.
-        if (subgroup.isCreatedByUser()) {
+        if (subgroupIsCreatedByUser) {
             // Присваиваем обработчик кнопке для создания нового слова.
             createWordFAB.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -411,7 +435,8 @@ public class SubgroupActivity extends AppCompatActivity
     private void initRecyclerView() {
         // Создаём вспомогательные вещи для RecyclerView и соединяем их с ним.
         recyclerView.setLayoutManager(new LinearLayoutManager(SubgroupActivity.this));
-        recyclerView.addItemDecoration(new DividerItemDecoration(SubgroupActivity.this, DividerItemDecoration.VERTICAL));
+        recyclerView.addItemDecoration(new DividerItemDecoration(SubgroupActivity.this,
+                DividerItemDecoration.VERTICAL));
         if (subgroupIsCreatedByUser) {
             recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override
@@ -609,7 +634,7 @@ public class SubgroupActivity extends AppCompatActivity
     @Override
     public void deleteMessage(String message) {
         if (message.equals(DeleteSubgroupDialogFragment.DELETE_MESSAGE)) {
-            Subgroup currentSubgroup = subgroupViewModel.getLiveDataSubgroup().getValue();
+            Subgroup currentSubgroup = subgroupViewModel.getSubgroupMutableLiveData().getValue();
             if (currentSubgroup != null) {
                 if (currentSubgroup.isCreatedByUser()) {
                     subgroupViewModel.deleteSubgroup();

@@ -319,6 +319,11 @@ public class AppRepository {
         return subgroupDao.getLiveDataSubgroupById(subgroupId);
     }
 
+    public void getSubgroupById(long subgroupId, OnSubgroupLoadedListener listener){
+        GetSubgroupByIdAsyncTask task = new GetSubgroupByIdAsyncTask(subgroupDao, listener);
+        task.execute(subgroupId);
+    }
+
     public void getAvailableSubgroupTo(long wordId, int flagTo, OnSubgroupsLoadedListener listener) {
         Log.d(LOG_TAG, "getAvailableSubgroupsTo()");
         GetAvailableSubgroupsToAsyncTask task = new GetAvailableSubgroupsToAsyncTask(subgroupDao,
@@ -394,6 +399,7 @@ public class AppRepository {
 
         @Override
         protected Void doInBackground(Subgroup... subgroups) {
+            Log.i(LOG_TAG, "UpdateSubgroupAsyncTask: subgroup.isStudied = " + subgroups[0].isStudied);
             subgroupDao.update(subgroups[0]);
             return null;
         }
@@ -413,10 +419,36 @@ public class AppRepository {
         }
     }
 
+    public interface  OnSubgroupLoadedListener{
+        void onSubgroupLoaded(Subgroup subgroup);
+    }
+    private static class GetSubgroupByIdAsyncTask extends AsyncTask<Long, Void, Subgroup> {
+        private SubgroupDao subgroupDao;
+        private WeakReference<OnSubgroupLoadedListener> listener;
+
+        private GetSubgroupByIdAsyncTask(SubgroupDao subgroupDao, OnSubgroupLoadedListener listener) {
+            this.subgroupDao = subgroupDao;
+            this.listener = new WeakReference<>(listener);
+        }
+
+        @Override
+        protected Subgroup doInBackground(Long... longs) {
+            return subgroupDao.getSubgroupById(longs[0]);
+        }
+
+        @Override
+        protected void onPostExecute(Subgroup subgroup) {
+            super.onPostExecute(subgroup);
+            OnSubgroupLoadedListener listener = this.listener.get();
+            if (listener != null) {
+                listener.onSubgroupLoaded(subgroup);
+            }
+        }
+    }
+
     public interface OnSubgroupsLoadedListener {
         void onLoaded(ArrayList<Subgroup> subgroups);
     }
-
     private static class GetAvailableSubgroupsToAsyncTask extends AsyncTask<Long, Void, ArrayList<Subgroup>> {
         private SubgroupDao subgroupDao;
         private LinkDao linkDao;

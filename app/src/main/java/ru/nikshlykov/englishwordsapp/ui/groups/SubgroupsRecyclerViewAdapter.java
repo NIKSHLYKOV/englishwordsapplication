@@ -30,7 +30,7 @@ public class SubgroupsRecyclerViewAdapter extends RecyclerView.Adapter<Subgroups
     private Context context;
 
     public interface OnSubgroupClickListener {
-        void onSubgroupClick(View view, long subgroupId, boolean isCreatedByUser);
+        void onSubgroupClick(View view, Subgroup subgroup);
     }
 
     private OnSubgroupClickListener onSubgroupClickListener;
@@ -85,7 +85,6 @@ public class SubgroupsRecyclerViewAdapter extends RecyclerView.Adapter<Subgroups
     class SubgroupViewHolder extends RecyclerView.ViewHolder {
         private ImageView subgroupImageView;
         private TextView subgroupTextView;
-        private RelativeLayout forLearnSubgroupButtonRelativeLayout;
         private ToggleButton learnSubgroupToggleButton;
 
         SubgroupViewHolder(@NonNull View itemView) {
@@ -94,7 +93,7 @@ public class SubgroupsRecyclerViewAdapter extends RecyclerView.Adapter<Subgroups
             subgroupImageView = itemView.findViewById(R.id.subgroup_item___image_view___subgroup_image);
             subgroupTextView = itemView.findViewById(R.id.subgroup_item___text_view___subgroup_name);
             learnSubgroupToggleButton = itemView.findViewById(R.id.subgroup_item___toggle_button___to_learn);
-            forLearnSubgroupButtonRelativeLayout = itemView.findViewById(R.id.subgroup_item___relative_layout___for_to_learn_button);
+            RelativeLayout forLearnSubgroupButtonRelativeLayout = itemView.findViewById(R.id.subgroup_item___relative_layout___for_to_learn_button);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -102,7 +101,7 @@ public class SubgroupsRecyclerViewAdapter extends RecyclerView.Adapter<Subgroups
                     if (onSubgroupClickListener != null) {
                         Subgroup subgroup = getSubgroupAt(getLayoutPosition());
                         if (subgroup != null) {
-                            onSubgroupClickListener.onSubgroupClick(v, subgroup.id, subgroup.isCreatedByUser());
+                            onSubgroupClickListener.onSubgroupClick(v, subgroup);
                         }
                     }
                 }

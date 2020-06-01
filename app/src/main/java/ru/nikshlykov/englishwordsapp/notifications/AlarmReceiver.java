@@ -29,7 +29,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
             Calendar calendar = Calendar.getInstance();
-            calendar.add(Calendar.HOUR, 1);
+            calendar.add(Calendar.DATE, 1);
             // TODO Сделать уточнение времени, с помощью получения extra из Intent.
             Intent nextNotificationIntent = new Intent(context, AlarmReceiver.class);
             PendingIntent nextNotificationPendingIntent = PendingIntent.getBroadcast(context,

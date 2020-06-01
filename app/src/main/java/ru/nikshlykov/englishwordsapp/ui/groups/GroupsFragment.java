@@ -34,7 +34,7 @@ public class GroupsFragment extends Fragment
     private String LOG_TAG = "GroupsFragment";
 
     private static final int REQUEST_CODE_CREATE_SUBGROUP = 1;
-    private static final int REQUEST_DELETE_SUBGROUP = 2;
+    private static final int REQUEST_EDIT_SUBGROUP = 2;
 
     // ViewModel для взаимодействия с БД.
     private GroupsViewModel groupsViewModel;
@@ -54,8 +54,8 @@ public class GroupsFragment extends Fragment
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        this.context = context;
         Log.d(LOG_TAG, "onAttach");
+        this.context = context;
     }
 
 
@@ -63,15 +63,16 @@ public class GroupsFragment extends Fragment
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.i(LOG_TAG, "onCreate()");
-        groupsViewModel = new ViewModelProvider(getActivity()).get(GroupsViewModel.class);
         groupItemsRecyclerViewAdapter = new GroupItemsRecyclerViewAdapter(context,
                 this, this);
+        groupsViewModel = new ViewModelProvider(getActivity()).get(GroupsViewModel.class);
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        Log.i(LOG_TAG, "onCreateView()");
         View view = inflater.inflate(R.layout.fragment_groups, null);
 
         findViews(view);
@@ -83,9 +84,6 @@ public class GroupsFragment extends Fragment
                 startActivityForResult(intent, REQUEST_CODE_CREATE_SUBGROUP);
             }
         });
-
-
-        Log.d(LOG_TAG, "onCreateView");
         return view;
     }
 
@@ -97,7 +95,9 @@ public class GroupsFragment extends Fragment
                 new Observer<ArrayList<GroupItem>>() {
                     @Override
                     public void onChanged(ArrayList<GroupItem> groupItems) {
+                        Log.i(LOG_TAG, "groupItems onChanged()");
                         groupItemsRecyclerViewAdapter.setGroupItems(groupItems);
+
                         if (subgroupCreatingFlag) {
                             while (true) {
                                 if (groupItemsRecyclerViewAdapter
@@ -110,6 +110,7 @@ public class GroupsFragment extends Fragment
                         }
                     }
                 });
+        groupsViewModel.loadGroupItems();
         groupItemsRecyclerView.setLayoutManager(new LinearLayoutManager(context,
                 RecyclerView.VERTICAL, false));
         groupItemsRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -131,6 +132,42 @@ public class GroupsFragment extends Fragment
         Log.i(LOG_TAG, "onStart()");
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.i(LOG_TAG, "onResume()");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.i(LOG_TAG, "onPause()");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.i(LOG_TAG, "onStop()");
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        Log.i(LOG_TAG, "onDestroyView()");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.i(LOG_TAG, "onDestroyView()");
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        Log.i(LOG_TAG, "onDetach()");
+    }
+
     private void findViews(View view) {
         newSubgroupExtendedFAB = view.findViewById(R.id.fragment_groups___button___new_subgroup);
         groupItemsRecyclerView = view.findViewById(R.id.fragment_groups___recycler_view___groups_and_subgroups);
@@ -139,31 +176,30 @@ public class GroupsFragment extends Fragment
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            if (requestCode == REQUEST_CODE_CREATE_SUBGROUP) {
-                String newSubgroupName = data.getStringExtra(AddOrEditSubgroupActivity.EXTRA_SUBGROUP_NAME);
-                groupsViewModel.insertSubgroup(newSubgroupName);
-                subgroupCreatingFlag = true;
-            }
-
-            if (requestCode == REQUEST_DELETE_SUBGROUP) {
-                groupsViewModel.loadGroupItems();
-            }
+        if (requestCode == REQUEST_CODE_CREATE_SUBGROUP && resultCode == RESULT_OK) {
+            String newSubgroupName = data.getStringExtra(AddOrEditSubgroupActivity.EXTRA_SUBGROUP_NAME);
+            groupsViewModel.insertSubgroup(newSubgroupName);
+            subgroupCreatingFlag = true;
+        }
+        if (requestCode == REQUEST_EDIT_SUBGROUP) {
+            groupsViewModel.loadGroupItems();
         }
     }
 
     @Override
-    public void onSubgroupClick(View view, long subgroupId, boolean isCreatedByUser) {
+    public void onSubgroupClick(View view, Subgroup subgroup) {
         Intent intent = new Intent(context, SubgroupActivity.class);
-        intent.putExtra(SubgroupActivity.EXTRA_SUBGROUP_ID, subgroupId);
-        intent.putExtra(SubgroupActivity.EXTRA_IS_CREATED_BY_USER, isCreatedByUser);
-        startActivityForResult(intent, REQUEST_DELETE_SUBGROUP);
+        intent.putExtra(SubgroupActivity.EXTRA_SUBGROUP_ID, subgroup.id);
+        intent.putExtra(SubgroupActivity.EXTRA_SUBGROUP_IS_CREATED_BY_USER, subgroup.isCreatedByUser());
+        intent.putExtra(SubgroupActivity.EXTRA_SUBGROUP_IS_STUDIED, subgroup.isStudied == 1);
+        startActivityForResult(intent, REQUEST_EDIT_SUBGROUP);
     }
 
     @Override
     public void OnSubgroupChecked(View view, Subgroup subgroup) {
         groupsViewModel.updateSubgroup(subgroup);
-        Log.i(LOG_TAG, "subgroup update: isStudied = " + subgroup.isStudied);
+        Log.i(LOG_TAG, "Subgroup (id:" + subgroup.id + ") update query: new isStudied = "
+                + subgroup.isStudied);
     }
 }
 
