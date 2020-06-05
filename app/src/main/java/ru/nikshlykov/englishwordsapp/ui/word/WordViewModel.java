@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer;
 import java.util.ArrayList;
 import java.util.List;
 
+import ru.nikshlykov.englishwordsapp.MyApplication;
 import ru.nikshlykov.englishwordsapp.db.AppRepository;
 import ru.nikshlykov.englishwordsapp.db.example.Example;
 import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup;
@@ -38,13 +39,14 @@ public class WordViewModel extends AndroidViewModel
     public void setLiveDataWord(long wordId) {
         liveDataWord = repository.getLiveDataWordById(wordId);
     }
+
     public LiveData<Word> getLiveDataWord() {
         return liveDataWord;
     }
 
     public void update(final long wordId, final String word, final String transcription,
                        final String value) {
-        new Thread(new Runnable() {
+        ((MyApplication) getApplication()).executeWithDatabase(new Runnable() {
             @Override
             public void run() {
                 Word editWord = repository.getWordById(wordId);
@@ -53,7 +55,7 @@ public class WordViewModel extends AndroidViewModel
                 editWord.value = value;
                 repository.update(editWord, null);
             }
-        }).start();
+        });
     }
 
     /**
@@ -71,16 +73,15 @@ public class WordViewModel extends AndroidViewModel
     }
 
 
-
     public MutableLiveData<ArrayList<Subgroup>> getAvailableSubgroupsTo(int flag) {
-        if (availableSubgroupsTo.getValue() == null){
+        if (availableSubgroupsTo.getValue() == null) {
             Log.d(LOG_TAG, "availableSubgroupsTo value = null");
             repository.getAvailableSubgroupTo(liveDataWord.getValue().id, flag, this);
         }
         return availableSubgroupsTo;
     }
 
-    public void clearAvailableSubgroupsToAndRemoveObserver(Observer<ArrayList<Subgroup>> observer){
+    public void clearAvailableSubgroupsToAndRemoveObserver(Observer<ArrayList<Subgroup>> observer) {
         Log.d(LOG_TAG, "clearAvailableSubgroupsTo()");
         availableSubgroupsTo.setValue(null);
         availableSubgroupsTo.removeObserver(observer);
@@ -93,9 +94,9 @@ public class WordViewModel extends AndroidViewModel
     }
 
 
-    public void getExamples(AppRepository.OnExamplesLoadedListener listener){
+    public void getExamples(AppRepository.OnExamplesLoadedListener listener) {
         Word word = liveDataWord.getValue();
-        if (word != null){
+        if (word != null) {
             repository.getExamplesByWordId(word.id, listener);
         }
     }

@@ -10,6 +10,7 @@ import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
+import ru.nikshlykov.englishwordsapp.MyApplication;
 import ru.nikshlykov.englishwordsapp.db.AppRepository;
 import ru.nikshlykov.englishwordsapp.db.link.Link;
 import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup;
@@ -184,7 +185,7 @@ public class SubgroupViewModel extends AndroidViewModel
      */
     public void updateWord(final long wordId, final String word, final String value,
                            final String transcription) {
-        new Thread(new Runnable() {
+        ((MyApplication)getApplication()).executeWithDatabase(new Runnable() {
             @Override
             public void run() {
                 Word editWord = repository.getWordById(wordId);
@@ -193,7 +194,7 @@ public class SubgroupViewModel extends AndroidViewModel
                 editWord.value = value;
                 repository.update(editWord, null);
             }
-        }).start();
+        });
     }
 
 

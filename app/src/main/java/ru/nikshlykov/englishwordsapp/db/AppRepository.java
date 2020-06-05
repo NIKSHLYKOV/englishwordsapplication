@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import ru.nikshlykov.englishwordsapp.MyApplication;
 import ru.nikshlykov.englishwordsapp.db.example.Example;
 import ru.nikshlykov.englishwordsapp.db.example.ExampleDao;
 import ru.nikshlykov.englishwordsapp.db.group.Group;
@@ -45,6 +46,8 @@ public class AppRepository {
     private static final String LOG_TAG = "AppRepository";
     private AppDatabase database;
 
+    private static MyApplication application;
+
     private ExampleDao exampleDao;
     private GroupDao groupDao;
     private LinkDao linkDao;
@@ -57,6 +60,8 @@ public class AppRepository {
     public AppRepository(Application application) {
         database = AppDatabase.getInstance(application);
 
+        this.application = (MyApplication) application;
+
         exampleDao = database.exampleDao();
         groupDao = database.groupDao();
         linkDao = database.linkDao();
@@ -66,6 +71,8 @@ public class AppRepository {
         subgroupDao = database.subgroupDao();
         wordDao = database.wordDao();
     }
+
+
 
     /**
      * Методы для работы со словами.
@@ -83,16 +90,17 @@ public class AppRepository {
         new DeleteWordAsyncTask(wordDao).execute(word);
     }
 
-    // РАЗОБРАТЬСЯ С ИСПОЛЬЗОВАНИЕМ В STUDYVIEWMODEL.
+    // МОЖНО ЛИ ТАК ПИСАТЬ??? (БЕЗ НОВОГО ПОТОКА)
     public Word getWordById(long id) {
-        GetWordByIdAsyncTask task = new GetWordByIdAsyncTask(wordDao);
+        /*GetWordByIdAsyncTask task = new GetWordByIdAsyncTask(wordDao);
         task.execute(id);
         try {
             return task.get();
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
-        return null;
+        return null;*/
+        return wordDao.getWordById(id);
     }
 
     public LiveData<Word> getLiveDataWordById(long wordId) {
@@ -123,8 +131,10 @@ public class AppRepository {
         task.execute();
     }
 
+    // МОЖНО ЛИ ТАК ПИСАТЬ???
+    // ГДЕ ХРАНИТЬ EXECUTORSERVICE??? МОЖЕТ, ПРОСТО ЗДЕСЬ, В REPOSITORY?
     public void resetWordsProgress(final long subgroupId) {
-        new Thread(new Runnable() {
+        application.executeWithDatabase(new Runnable() {
             @Override
             public void run() {
                 List<Word> words = wordDao.getWordsFromSubgroup(subgroupId);
@@ -133,7 +143,7 @@ public class AppRepository {
                 }
                 wordDao.update(words);
             }
-        }).start();
+        });
     }
 
     /**
@@ -142,7 +152,6 @@ public class AppRepository {
     public interface OnWordInsertedListener {
         void onInserted(long wordId);
     }
-
     private static class NewInsertWordAsyncTask extends AsyncTask<Word, Void, Long> {
         private WordDao wordDao;
         private WeakReference<OnWordInsertedListener> listener;
@@ -210,8 +219,7 @@ public class AppRepository {
             return null;
         }
     }
-
-    private static class GetWordByIdAsyncTask extends AsyncTask<Long, Void, Word> {
+    /*private static class GetWordByIdAsyncTask extends AsyncTask<Long, Void, Word> {
         private WordDao wordDao;
 
         private GetWordByIdAsyncTask(WordDao wordDao) {
@@ -222,8 +230,7 @@ public class AppRepository {
         protected Word doInBackground(Long... longs) {
             return wordDao.getWordById(longs[0]);
         }
-    }
-
+    }*/
     public interface OnWordLoadedListener {
         void onLoaded(Word word);
     }
@@ -295,6 +302,7 @@ public class AppRepository {
     }
 
 
+
     /**
      * Методы для работы с подгруппами.
      */
@@ -319,7 +327,7 @@ public class AppRepository {
         return subgroupDao.getLiveDataSubgroupById(subgroupId);
     }
 
-    public void getSubgroupById(long subgroupId, OnSubgroupLoadedListener listener){
+    public void getSubgroupById(long subgroupId, OnSubgroupLoadedListener listener) {
         GetSubgroupByIdAsyncTask task = new GetSubgroupByIdAsyncTask(subgroupDao, listener);
         task.execute(subgroupId);
     }
@@ -419,9 +427,10 @@ public class AppRepository {
         }
     }
 
-    public interface  OnSubgroupLoadedListener{
+    public interface OnSubgroupLoadedListener {
         void onSubgroupLoaded(Subgroup subgroup);
     }
+
     private static class GetSubgroupByIdAsyncTask extends AsyncTask<Long, Void, Subgroup> {
         private SubgroupDao subgroupDao;
         private WeakReference<OnSubgroupLoadedListener> listener;
@@ -449,6 +458,7 @@ public class AppRepository {
     public interface OnSubgroupsLoadedListener {
         void onLoaded(ArrayList<Subgroup> subgroups);
     }
+
     private static class GetAvailableSubgroupsToAsyncTask extends AsyncTask<Long, Void, ArrayList<Subgroup>> {
         private SubgroupDao subgroupDao;
         private LinkDao linkDao;
@@ -529,6 +539,7 @@ public class AppRepository {
     }
 
 
+
     /**
      * Методы для работы с группами.
      */
@@ -543,7 +554,6 @@ public class AppRepository {
     public interface OnGroupItemsLoadedListener {
         void onGroupItemsLoaded(ArrayList<GroupItem> groupItems);
     }
-
     private static class GetGroupItemsAsyncTask extends AsyncTask<Void, Void, ArrayList<GroupItem>> {
         private SubgroupDao subgroupDao;
         private GroupDao groupDao;
@@ -583,6 +593,7 @@ public class AppRepository {
 
 
     }
+
 
 
     /**
@@ -627,6 +638,7 @@ public class AppRepository {
             return null;
         }
     }
+
 
 
     /**
@@ -691,6 +703,7 @@ public class AppRepository {
     }
 
 
+
     /**
      * Методы для работы с повторами.
      */
@@ -702,16 +715,17 @@ public class AppRepository {
         new DeleteRepeatAsyncTask(repeatDao).execute(repeat);
     }
 
-    // РАЗОБРАТЬСЯ С ИСПОЛЬЗОВАНИЕМ В STUDYVIEWMODEL.
+    // МОЖНО ЛИ ТАК ПИСАТЬ?
     public Repeat getLastRepeatByWord(long wordId) {
-        GetLastRepeatByWordAsyncTask task = new GetLastRepeatByWordAsyncTask(repeatDao);
+        /*GetLastRepeatByWordAsyncTask task = new GetLastRepeatByWordAsyncTask(repeatDao);
         task.execute(wordId);
         try {
             return task.get();
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
-        return null;
+        return null;*/
+        return repeatDao.getLastRepeatByWord(wordId);
     }
 
     public void getRepeatsCountForToday(OnRepeatsCountForTodayLoadedListener listener) {
@@ -722,7 +736,6 @@ public class AppRepository {
     public interface OnRepeatsCountForTodayLoadedListener {
         void onRepeatsCountForTodayLoaded(int repeatsCount);
     }
-
 
     /**
      * AsyncTasks для работы с повторами.
@@ -760,8 +773,7 @@ public class AppRepository {
             return repeatDao.delete(repeats[0]);
         }
     }
-
-    private static class GetLastRepeatByWordAsyncTask extends AsyncTask<Long, Void, Repeat> {
+   /* private static class GetLastRepeatByWordAsyncTask extends AsyncTask<Long, Void, Repeat> {
         private RepeatDao repeatDao;
 
         private GetLastRepeatByWordAsyncTask(RepeatDao repeatDao) {
@@ -772,8 +784,7 @@ public class AppRepository {
         protected Repeat doInBackground(Long... longs) {
             return repeatDao.getLastRepeatByWord(longs[0]);
         }
-    }
-
+    }*/
     private static class GetNewWordsFirstShowRepeatsCountForTodayAsyncTask extends AsyncTask<Void, Void, Integer> {
         private RepeatDao repeatDao;
         private WeakReference<OnRepeatsCountForTodayLoadedListener> listener;
@@ -812,6 +823,7 @@ public class AppRepository {
     }
 
 
+
     /**
      * Методы для работы с примерами.
      */
@@ -822,7 +834,6 @@ public class AppRepository {
     public interface OnExamplesLoadedListener {
         void onLoaded(List<Example> examples);
     }
-
     private static class GetExamplesByWordAsyncTask extends AsyncTask<Long, Void, List<Example>> {
         private ExampleDao exampleDao;
         private WeakReference<OnExamplesLoadedListener> listener;

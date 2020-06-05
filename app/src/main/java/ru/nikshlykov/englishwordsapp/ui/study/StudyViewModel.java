@@ -110,7 +110,7 @@ public class StudyViewModel extends AndroidViewModel implements
         this.selectedModesIds = selectedModesIds;
     }
 
-    public boolean selectedModesExist(){
+    public boolean selectedModesExist() {
         if (selectedModesIds == null)
             return false;
         return selectedModesIds.size() != 0;
@@ -131,11 +131,11 @@ public class StudyViewModel extends AndroidViewModel implements
         repository.getRepeatsCountForToday(this);
     }
 
-    public void setNewWordsCount(int newWordsCount){
+    public void setNewWordsCount(int newWordsCount) {
         this.newWordsCount = newWordsCount;
     }
 
-    public void loadNewWordsCount() {
+    private void loadNewWordsCount() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplication());
         newWordsCount = sharedPreferences.getInt(getApplication().getString(R.string.preference_key___new_word_count), NewWordsCountPreference.DEFAULT_VALUE);
         Log.i(LOG_TAG, "loadNewWordsCount(): newWordsCount = " + newWordsCount);
@@ -143,7 +143,7 @@ public class StudyViewModel extends AndroidViewModel implements
 
     @Override
     public void onRepeatsCountForTodayLoaded(int repeatsCount) {
-        Log.i(LOG_TAG, "Повторов за сегодня: " + repeatsCount);
+        Log.i(LOG_TAG, "Начатых за сегодня слов: " + repeatsCount);
         if (repeatsCount >= newWordsCount) {
             if (withNew) {
                 Log.i(LOG_TAG, "Достигнут предел по количеству новых слов за день");
@@ -167,25 +167,37 @@ public class StudyViewModel extends AndroidViewModel implements
      * @param wordId id показанного слова.
      * @param result результат повтора (0 - пропустить, 1 - изучать, 2 - знаю).
      */
-    public void firstShowProcessing(final long wordId, final int result, AppRepository.OnWordUpdatedListener listener) {
+    public void firstShowProcessing(final long wordId, final int result, final AppRepository.OnWordUpdatedListener listener) {
         switch (result) {
             case 0:
-                // Увеличиваем столбец приоритетности - слово с меньшей вероятностью будет появляться.
-                Word skippedWord = repository.getWordById(wordId);
-                skippedWord.priority++;
-                repository.update(skippedWord, listener);
+                ((MyApplication) getApplication()).executeWithDatabase(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Увеличиваем столбец приоритетности - слово с меньшей вероятностью будет появляться.
+                        Word skippedWord = repository.getWordById(wordId);
+                        if (skippedWord != null) {
+                            skippedWord.priority++;
+                            repository.update(skippedWord, listener);
+                        }
+                    }
+                });
                 break;
             case 1:
-                insertRepeatAndUpdateWord(wordId, 0, result, listener);
+                insertRepeatAndUpdateWord(wordId, result, listener);
                 break;
             case 2:
-                // Если пользователь при первом показе слова указал, что он его знает.
-                // Получаем слово и выставляем прогресс на 8.
-                // С помощью этого можно будет отличать слова, которые пользователь уже знает, от тех,
-                // которые он выучил с помощью приложения (они будут иметь прогресс равный 7).
-                Word word = repository.getWordById(wordId);
-                word.learnProgress = 8;
-                repository.update(word, listener);
+                ((MyApplication) getApplication()).executeWithDatabase(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Если пользователь при первом показе слова указал, что он его знает.
+                        // Получаем слово и выставляем прогресс на 8.
+                        // С помощью этого можно будет отличать слова, которые пользователь уже знает, от тех,
+                        // которые он выучил с помощью приложения (они будут иметь прогресс равный 7).
+                        Word word = repository.getWordById(wordId);
+                        word.learnProgress = 8;
+                        repository.update(word, listener);
+                    }
+                });
                 break;
         }
     }
@@ -197,62 +209,70 @@ public class StudyViewModel extends AndroidViewModel implements
      * @param result результат повтора (0 - неверно, 1 - верно).
      */
     public void repeatProcessing(final long wordId, final int result, AppRepository.OnWordUpdatedListener listener) {
-        // Находим порядковый номер данного повтора.
-        int newRepeatSequenceNumber = 0;
-        // Получаем последний повтор по данному слову.
-        // Он должен обязательно быть, т.к. этот метод для повторов без первого показа.
-        Repeat lastRepeat = repository.getLastRepeatByWord(wordId);
-        // Проверяем то, что есть последний повтор.
-        if (lastRepeat != null) {
-            if (lastRepeat.getResult() == 1) {
-                // Устанавливаем номер на один больше, если последний повтор был успешным.
-                newRepeatSequenceNumber = lastRepeat.getSequenceNumber() + 1;
-            } else if (lastRepeat.getResult() == 0) {
-                if (lastRepeat.getSequenceNumber() == 1) {
-                    // Устанавливаем тот же номер, если последний повтор имел порядковый номер 1 и был неуспешным.
-                    newRepeatSequenceNumber = lastRepeat.getSequenceNumber();
-                } else {
-                    // Устанавливаем номер на один меньше, если последний повтор имел порядковый номер не 1 и был неуспешным.
-                    newRepeatSequenceNumber = lastRepeat.getSequenceNumber() - 1;
-                }
-            }
-            insertRepeatAndUpdateWord(wordId, newRepeatSequenceNumber, result, listener);
-        }
+        insertRepeatAndUpdateWord(wordId, result, listener);
     }
 
     /**
      * Вставляет новый последний повтор по слову и обновляет запись слова в БД.
      *
      * @param wordId         id повторяемого слова.
-     * @param sequenceNumber порядковый номер последнего повтора.
      * @param result         результат повтора (0 - неверно, 1 - верно).
      * @param listener       слушатель для обновления слова, который реализован в MainActivity.
      */
-    private void insertRepeatAndUpdateWord(long wordId, int sequenceNumber, int result,
-                                           AppRepository.OnWordUpdatedListener listener) {
-        // Получаем текущую дату.
-        Date currentDate = new Date();
-        // Создаём повтор и вставляем его в БД.
-        Repeat newRepeat = new Repeat(wordId, sequenceNumber, currentDate.getTime(), result);
-        repository.insert(newRepeat);
+    private void insertRepeatAndUpdateWord(final long wordId, final int result,
+                                           final AppRepository.OnWordUpdatedListener listener) {
+        ((MyApplication)getApplication()).executeWithDatabase(new Runnable() {
+            @Override
+            public void run(){
 
-        // Получаем слово по id.
-        Word word = repository.getWordById(wordId);
-        // Устанавливаем дату последнего повтора.
-        word.lastRepetitionDate = currentDate.getTime();
-        // Устанавливаем ему новый прогресс в зависимости от результата повтора.
-        if (result == 0) {
-            if (word.learnProgress > 0)
-                word.learnProgress--;
-        } else if (result == 1) {
-            if (word.learnProgress < 7)
-                word.learnProgress++;
-        }
-        Log.i(LOG_TAG,
-                "word = " + word.word +
-                        "; learnProgress = " + word.learnProgress +
-                        "; lastRepetitionDate = " + word.lastRepetitionDate);
-        // Обновляем слово.
-        repository.update(word, listener);
+                // Находим порядковый номер данного повтора.
+                int newRepeatSequenceNumber = 0;
+                // Получаем последний повтор по данному слову.
+                // Он должен обязательно быть, т.к. этот метод для повторов без первого показа.
+                Repeat lastRepeat = repository.getLastRepeatByWord(wordId);
+                // Проверяем то, что есть последний повтор.
+                if (lastRepeat != null) {
+                    if (lastRepeat.getResult() == 1) {
+                        // Устанавливаем номер на один больше, если последний повтор был успешным.
+                        newRepeatSequenceNumber = lastRepeat.getSequenceNumber() + 1;
+                    } else if (lastRepeat.getResult() == 0) {
+                        if (lastRepeat.getSequenceNumber() == 1) {
+                            // Устанавливаем тот же номер, если последний повтор имел порядковый номер 1 и был неуспешным.
+                            newRepeatSequenceNumber = lastRepeat.getSequenceNumber();
+                        } else {
+                            // Устанавливаем номер на один меньше, если последний повтор имел порядковый номер не 1 и был неуспешным.
+                            newRepeatSequenceNumber = lastRepeat.getSequenceNumber() - 1;
+                        }
+                    }
+                }
+
+
+                // Получаем текущую дату.
+                long currentTime = new Date().getTime();
+                // Создаём повтор и вставляем его в БД.
+                Repeat newRepeat = new Repeat(wordId, newRepeatSequenceNumber, currentTime, result);
+                repository.insert(newRepeat);
+
+
+                // Получаем слово по id.
+                Word word = repository.getWordById(wordId);
+                // Устанавливаем дату последнего повтора.
+                word.lastRepetitionDate = currentTime;
+                // Устанавливаем ему новый прогресс в зависимости от результата повтора.
+                if (result == 0) {
+                    if (word.learnProgress > 0)
+                        word.learnProgress--;
+                } else if (result == 1) {
+                    if (word.learnProgress < 7)
+                        word.learnProgress++;
+                }
+                Log.i(LOG_TAG,
+                        "word = " + word.word +
+                                "; learnProgress = " + word.learnProgress +
+                                "; lastRepetitionDate = " + word.lastRepetitionDate);
+                // Обновляем слово.
+                repository.update(word, listener);
+            }
+        });
     }
 }

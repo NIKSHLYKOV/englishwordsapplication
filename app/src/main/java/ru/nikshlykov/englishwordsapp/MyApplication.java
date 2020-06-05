@@ -147,7 +147,7 @@ public class MyApplication extends Application
 
     // ExecutorService.
 
-    public void execute(){
-
+    public void executeWithDatabase(Runnable runnable){
+        databaseExecutorService.execute(runnable);
     }
 }
