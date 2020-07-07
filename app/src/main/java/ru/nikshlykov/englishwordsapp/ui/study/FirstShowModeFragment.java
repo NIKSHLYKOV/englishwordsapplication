@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import ru.nikshlykov.englishwordsapp.R;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
+import ru.nikshlykov.englishwordsapp.ui.main.MainActivity;
 import ru.nikshlykov.englishwordsapp.ui.word.WordViewModel;
 
 import android.util.Log;
@@ -32,10 +33,11 @@ public class FirstShowModeFragment extends Fragment {
     private TextView transcriptionTextView;
     private TextView valueTextView;
 
-    private WordViewModel wordViewModel;
-    private long wordId;
+    //private WordViewModel wordViewModel;
+    private Word word;
 
     private FirstShowModeReportListener firstShowModeReportListener;
+
     public interface FirstShowModeReportListener {
         void firstShowModeResult(long wordId, int result);
     }
@@ -49,12 +51,13 @@ public class FirstShowModeFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        wordViewModel = new ViewModelProvider(getActivity()).get(WordViewModel.class);
+        //wordViewModel = new ViewModelProvider(getActivity()).get(WordViewModel.class);
 
         // Получаем id слова.
-        wordId = getArguments().getLong(EXTRA_WORD_ID);
+        //wordId = getArguments().getLong(EXTRA_WORD_ID);
         // Получаем слово по id из БД.
-        wordViewModel.setLiveDataWord(wordId);
+        //wordViewModel.setWord(wordId);
+        word = getArguments().getParcelable(MainActivity.EXTRA_WORD_OBJECT);
     }
 
     @Nullable
@@ -69,7 +72,7 @@ public class FirstShowModeFragment extends Fragment {
         learnButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                firstShowModeReportListener.firstShowModeResult(wordId, 1);
+                firstShowModeReportListener.firstShowModeResult(word.id, 1);
             }
         });
 
@@ -78,7 +81,7 @@ public class FirstShowModeFragment extends Fragment {
         knowButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                firstShowModeReportListener.firstShowModeResult(wordId, 2);
+                firstShowModeReportListener.firstShowModeResult(word.id, 2);
             }
         });
 
@@ -87,7 +90,7 @@ public class FirstShowModeFragment extends Fragment {
         skipButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                firstShowModeReportListener.firstShowModeResult(wordId, 0);
+                firstShowModeReportListener.firstShowModeResult(word.id, 0);
             }
         });
 
@@ -97,14 +100,8 @@ public class FirstShowModeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        wordViewModel.getLiveDataWord().observe(getViewLifecycleOwner(), new Observer<Word>() {
-            @Override
-            public void onChanged(Word word) {
-                if(word != null){
-                    setWordParametersToViews(word);
-                }
-            }
-        });
+
+        setWordParametersToViews(word);
     }
 
     private void findViews(View v) {

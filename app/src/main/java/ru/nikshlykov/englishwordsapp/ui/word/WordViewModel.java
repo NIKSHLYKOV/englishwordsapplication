@@ -5,46 +5,66 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import ru.nikshlykov.englishwordsapp.MyApplication;
-import ru.nikshlykov.englishwordsapp.db.AppRepository;
-import ru.nikshlykov.englishwordsapp.db.example.Example;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+import ru.nikshlykov.englishwordsapp.App;
+import ru.nikshlykov.englishwordsapp.db.GroupsRepository;
+import ru.nikshlykov.englishwordsapp.db.WordsRepository;
 import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
 
+@Singleton
 public class WordViewModel extends AndroidViewModel
-        implements AppRepository.OnSubgroupsLoadedListener {
+        implements GroupsRepository.OnSubgroupsLoadedListener {
 
     private static final String LOG_TAG = "WordViewModel";
 
-    private AppRepository repository;
+    @Inject
+    public WordsRepository wordsRepository;
 
-    private LiveData<Word> liveDataWord;
+    @Inject
+    public GroupsRepository groupsRepository;
+
+    private MutableLiveData<Word> wordMutableLiveData;
 
     // Список подгрупп для добавления или удаления связи с ними.
     private MutableLiveData<ArrayList<Subgroup>> availableSubgroupsTo;
 
+    @Inject
     public WordViewModel(@NonNull Application application) {
         super(application);
-        repository = new AppRepository(application);
+        ((App)application).getAppComponent().inject(this);
         availableSubgroupsTo = new MutableLiveData<>();
+        wordMutableLiveData = new MutableLiveData<>();
     }
 
-    public void setLiveDataWord(long wordId) {
-        liveDataWord = repository.getLiveDataWordById(wordId);
+
+
+    // Слово
+
+    public void setWord(Word word) {
+        wordMutableLiveData.setValue(word);
     }
 
-    public LiveData<Word> getLiveDataWord() {
-        return liveDataWord;
+    public MutableLiveData<Word> getWordMutableLiveData() {
+        return wordMutableLiveData;
     }
 
-    public void update(final long wordId, final String word, final String transcription,
+    public long getWordId(){
+        Word word = wordMutableLiveData.getValue();
+        if (word != null){
+            return word.id;
+        }
+        return 0L;
+    }
+
+    /*public void update(final long wordId, final String word, final String transcription,
                        final String value) {
         ((MyApplication) getApplication()).executeWithDatabase(new Runnable() {
             @Override
@@ -56,27 +76,56 @@ public class WordViewModel extends AndroidViewModel
                 repository.update(editWord, null);
             }
         });
+    }*/
+
+    public void setWordParameters(String word, String transcription, String value) {
+        Word currentWord = wordMutableLiveData.getValue();
+        if (currentWord != null){
+            currentWord.word = word;
+            currentWord.value = value;
+            currentWord.transcription = transcription;
+            wordMutableLiveData.setValue(currentWord);
+        }
+    }
+
+    public void updateWordInDB(){
+        wordsRepository.execute(new Runnable() {
+            @Override
+            public void run() {
+                Word word = wordMutableLiveData.getValue();
+                if (word != null){
+                    wordsRepository.update(word, null);
+                }
+            }
+        });
     }
 
     /**
      * Сбрасывает прогресс по слову.
      */
     public void resetProgress() {
-        Word word = liveDataWord.getValue();
+        Word word = wordMutableLiveData.getValue();
         if (word != null) {
             /* удалить все предыдущие повторы по слову,
             если будет необходимо.*/
 
             word.learnProgress = -1;
-            repository.update(word, null);
+            wordsRepository.update(word, null);
+            wordMutableLiveData.setValue(word);
         }
     }
 
 
+
+    // Связывание с пользовательскими подгруппами
+
     public MutableLiveData<ArrayList<Subgroup>> getAvailableSubgroupsTo(int flag) {
         if (availableSubgroupsTo.getValue() == null) {
             Log.d(LOG_TAG, "availableSubgroupsTo value = null");
-            repository.getAvailableSubgroupTo(liveDataWord.getValue().id, flag, this);
+            Word word = wordMutableLiveData.getValue();
+            if (word != null) {
+                groupsRepository.getAvailableSubgroupTo(word.id, flag, this);
+            }
         }
         return availableSubgroupsTo;
     }
@@ -94,10 +143,15 @@ public class WordViewModel extends AndroidViewModel
     }
 
 
-    public void getExamples(AppRepository.OnExamplesLoadedListener listener) {
-        Word word = liveDataWord.getValue();
+
+    // Примеры
+
+    public void getExamples(WordsRepository.OnExamplesLoadedListener listener) {
+        Word word = wordMutableLiveData.getValue();
         if (word != null) {
-            repository.getExamplesByWordId(word.id, listener);
+            wordsRepository.getExamplesByWordId(word.id, listener);
         }
     }
+
+
 }

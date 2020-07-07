@@ -6,33 +6,34 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Random;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MediatorLiveData;
-import androidx.lifecycle.Observer;
 import androidx.preference.PreferenceManager;
 
-import ru.nikshlykov.englishwordsapp.MyApplication;
+import javax.inject.Inject;
+
+import ru.nikshlykov.englishwordsapp.App;
 import ru.nikshlykov.englishwordsapp.R;
-import ru.nikshlykov.englishwordsapp.db.AppRepository;
+import ru.nikshlykov.englishwordsapp.db.ModesRepository;
+import ru.nikshlykov.englishwordsapp.db.WordsRepository;
 import ru.nikshlykov.englishwordsapp.db.repeat.Repeat;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
 import ru.nikshlykov.englishwordsapp.ui.settings.newwordscount.NewWordsCountPreference;
 
 public class StudyViewModel extends AndroidViewModel implements
-        AppRepository.OnRepeatsCountForTodayLoadedListener {
-
-    // TODO делать execute в executorService в application и проверить, работает ли это реально.
+        WordsRepository.OnRepeatsCountForTodayLoadedListener {
 
     private static final String LOG_TAG = "StudyViewModel";
 
-    private AppRepository repository;
+    @Inject
+    public WordsRepository wordsRepository;
 
-    private AppRepository.OnAvailableToRepeatWordLoadedListener listener;
+    @Inject
+    public ModesRepository modesRepository;
+
+    private WordsRepository.OnAvailableToRepeatWordLoadedListener listener;
 
     private boolean withNew;
     private int newWordsCount;
@@ -44,7 +45,7 @@ public class StudyViewModel extends AndroidViewModel implements
 
     public StudyViewModel(@NonNull Application application) {
         super(application);
-        repository = new AppRepository(application);
+        ((App)application).getAppComponent().inject(this);
 
         withNew = true;
         loadNewWordsCount();
@@ -102,8 +103,8 @@ public class StudyViewModel extends AndroidViewModel implements
 
     // Выбранные режимы.
 
-    public void getSelectedModes(AppRepository.OnSelectedModesLoadedListener listener) {
-        repository.newGetSelectedModes(listener);
+    public void getSelectedModes(ModesRepository.OnSelectedModesLoadedListener listener) {
+        modesRepository.newGetSelectedModes(listener);
     }
 
     public void setSelectedModesIds(ArrayList<Long> selectedModesIds) {
@@ -126,9 +127,9 @@ public class StudyViewModel extends AndroidViewModel implements
     // Слова, доступные к повтору или началу изучения.
 
     public void getNextAvailableToRepeatWord(
-            AppRepository.OnAvailableToRepeatWordLoadedListener listener) {
+            WordsRepository.OnAvailableToRepeatWordLoadedListener listener) {
         this.listener = listener;
-        repository.getRepeatsCountForToday(this);
+        wordsRepository.getRepeatsCountForToday(this);
     }
 
     public void setNewWordsCount(int newWordsCount) {
@@ -154,7 +155,7 @@ public class StudyViewModel extends AndroidViewModel implements
                 withNew = true;
             }
         }
-        repository.getAvailableToRepeatWord(withNew, listener);
+        wordsRepository.getAvailableToRepeatWord(withNew, listener);
         //listener = null;
     }
 
@@ -167,17 +168,17 @@ public class StudyViewModel extends AndroidViewModel implements
      * @param wordId id показанного слова.
      * @param result результат повтора (0 - пропустить, 1 - изучать, 2 - знаю).
      */
-    public void firstShowProcessing(final long wordId, final int result, final AppRepository.OnWordUpdatedListener listener) {
+    public void firstShowProcessing(final long wordId, final int result, final WordsRepository.OnWordUpdatedListener listener) {
         switch (result) {
             case 0:
-                ((MyApplication) getApplication()).executeWithDatabase(new Runnable() {
+                wordsRepository.execute(new Runnable() {
                     @Override
                     public void run() {
                         // Увеличиваем столбец приоритетности - слово с меньшей вероятностью будет появляться.
-                        Word skippedWord = repository.getWordById(wordId);
+                        Word skippedWord = wordsRepository.getWordById(wordId);
                         if (skippedWord != null) {
                             skippedWord.priority++;
-                            repository.update(skippedWord, listener);
+                            wordsRepository.update(skippedWord, listener);
                         }
                     }
                 });
@@ -186,16 +187,16 @@ public class StudyViewModel extends AndroidViewModel implements
                 insertRepeatAndUpdateWord(wordId, result, listener);
                 break;
             case 2:
-                ((MyApplication) getApplication()).executeWithDatabase(new Runnable() {
+                wordsRepository.execute(new Runnable() {
                     @Override
                     public void run() {
                         // Если пользователь при первом показе слова указал, что он его знает.
                         // Получаем слово и выставляем прогресс на 8.
                         // С помощью этого можно будет отличать слова, которые пользователь уже знает, от тех,
                         // которые он выучил с помощью приложения (они будут иметь прогресс равный 7).
-                        Word word = repository.getWordById(wordId);
+                        Word word = wordsRepository.getWordById(wordId);
                         word.learnProgress = 8;
-                        repository.update(word, listener);
+                        wordsRepository.update(word, listener);
                     }
                 });
                 break;
@@ -208,7 +209,7 @@ public class StudyViewModel extends AndroidViewModel implements
      * @param wordId id повторяемого слова.
      * @param result результат повтора (0 - неверно, 1 - верно).
      */
-    public void repeatProcessing(final long wordId, final int result, AppRepository.OnWordUpdatedListener listener) {
+    public void repeatProcessing(final long wordId, final int result, WordsRepository.OnWordUpdatedListener listener) {
         insertRepeatAndUpdateWord(wordId, result, listener);
     }
 
@@ -220,8 +221,8 @@ public class StudyViewModel extends AndroidViewModel implements
      * @param listener       слушатель для обновления слова, который реализован в MainActivity.
      */
     private void insertRepeatAndUpdateWord(final long wordId, final int result,
-                                           final AppRepository.OnWordUpdatedListener listener) {
-        ((MyApplication)getApplication()).executeWithDatabase(new Runnable() {
+                                           final WordsRepository.OnWordUpdatedListener listener) {
+        wordsRepository.execute(new Runnable() {
             @Override
             public void run(){
 
@@ -229,7 +230,7 @@ public class StudyViewModel extends AndroidViewModel implements
                 int newRepeatSequenceNumber = 0;
                 // Получаем последний повтор по данному слову.
                 // Он должен обязательно быть, т.к. этот метод для повторов без первого показа.
-                Repeat lastRepeat = repository.getLastRepeatByWord(wordId);
+                Repeat lastRepeat = wordsRepository.getLastRepeatByWord(wordId);
                 // Проверяем то, что есть последний повтор.
                 if (lastRepeat != null) {
                     if (lastRepeat.getResult() == 1) {
@@ -251,11 +252,11 @@ public class StudyViewModel extends AndroidViewModel implements
                 long currentTime = new Date().getTime();
                 // Создаём повтор и вставляем его в БД.
                 Repeat newRepeat = new Repeat(wordId, newRepeatSequenceNumber, currentTime, result);
-                repository.insert(newRepeat);
+                wordsRepository.insert(newRepeat);
 
 
                 // Получаем слово по id.
-                Word word = repository.getWordById(wordId);
+                Word word = wordsRepository.getWordById(wordId);
                 // Устанавливаем дату последнего повтора.
                 word.lastRepetitionDate = currentTime;
                 // Устанавливаем ему новый прогресс в зависимости от результата повтора.
@@ -271,7 +272,7 @@ public class StudyViewModel extends AndroidViewModel implements
                                 "; learnProgress = " + word.learnProgress +
                                 "; lastRepetitionDate = " + word.lastRepetitionDate);
                 // Обновляем слово.
-                repository.update(word, listener);
+                wordsRepository.update(word, listener);
             }
         });
     }

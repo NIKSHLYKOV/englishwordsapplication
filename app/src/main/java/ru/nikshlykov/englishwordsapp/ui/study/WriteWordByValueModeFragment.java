@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -16,7 +15,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -27,6 +25,7 @@ import com.google.android.material.textfield.TextInputLayout;
 
 import ru.nikshlykov.englishwordsapp.R;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
+import ru.nikshlykov.englishwordsapp.ui.main.MainActivity;
 import ru.nikshlykov.englishwordsapp.ui.word.WordViewModel;
 
 public class WriteWordByValueModeFragment extends Fragment {
@@ -41,8 +40,8 @@ public class WriteWordByValueModeFragment extends Fragment {
     private Handler handler;
 
     // ViewModel для работы с БД.
-    private long wordId;
-    private WordViewModel wordViewModel;
+    private Word word;
+    //private WordViewModel wordViewModel;
 
     // Слушатель результата повтора.
     private RepeatResultListener repeatResultListener;
@@ -58,16 +57,13 @@ public class WriteWordByValueModeFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         // Получаем id слова.
-        wordId = getArguments().getLong("WordId");
+        word = getArguments().getParcelable(MainActivity.EXTRA_WORD_OBJECT);
 
-        wordViewModel = new ViewModelProvider(getActivity()).get(WordViewModel.class);
-        wordViewModel.setLiveDataWord(wordId);
-
-        handler = new Handler(){
+        handler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
-                repeatResultListener.repeatResult(wordId, msg.what);
+                repeatResultListener.repeatResult(word.id, msg.what);
             }
         };
     }
@@ -83,20 +79,15 @@ public class WriteWordByValueModeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        wordViewModel.getLiveDataWord().observe(getViewLifecycleOwner(), new Observer<Word>() {
-            @Override
-            public void onChanged(final Word word) {
-                if (word != null){
-                    valueTextView.setText(word.value);
 
-                    initConfirmImageButton(word);
-                }
-            }
-        });
+        valueTextView.setText(word.value);
+
+        initConfirmImageButton(word);
     }
 
     /**
      * Устанавливает обработчик нажатия кнопке подтверждения.
+     *
      * @param word слово.
      */
     private void initConfirmImageButton(final Word word) {
@@ -139,6 +130,7 @@ public class WriteWordByValueModeFragment extends Fragment {
 
     /**
      * Находит View элементы в разметке.
+     *
      * @param v корневая View.
      */
     private void findViews(@NonNull View v) {

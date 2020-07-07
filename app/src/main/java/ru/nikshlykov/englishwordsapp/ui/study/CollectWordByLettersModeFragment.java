@@ -27,6 +27,7 @@ import java.util.Random;
 
 import ru.nikshlykov.englishwordsapp.R;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
+import ru.nikshlykov.englishwordsapp.ui.main.MainActivity;
 import ru.nikshlykov.englishwordsapp.ui.word.WordViewModel;
 
 public class CollectWordByLettersModeFragment extends Fragment {
@@ -44,8 +45,8 @@ public class CollectWordByLettersModeFragment extends Fragment {
     private ImageView resultImageView;
 
     // ViewModel для работы с БД и словом.
-    private WordViewModel wordViewModel;
-    private long wordId;
+    //private WordViewModel wordViewModel;
+    private Word word;
 
     // Интерфейс для передачи результата повтора.
     private RepeatResultListener repeatResultListener;
@@ -67,16 +68,13 @@ public class CollectWordByLettersModeFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         // Получаем id слова.
-        wordId = getArguments().getLong("WordId");
+        word = getArguments().getParcelable(MainActivity.EXTRA_WORD_OBJECT);
 
-        wordViewModel = new ViewModelProvider(getActivity()).get(WordViewModel.class);
-        wordViewModel.setLiveDataWord(wordId);
-
-        handler = new Handler(){
+        handler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
-                repeatResultListener.repeatResult(wordId, msg.what);
+                repeatResultListener.repeatResult(word.id, msg.what);
             }
         };
     }
@@ -95,29 +93,22 @@ public class CollectWordByLettersModeFragment extends Fragment {
 
         removeLetterImageButton.setEnabled(false);
 
-        wordViewModel.getLiveDataWord().observe(getViewLifecycleOwner(), new Observer<Word>() {
-            @Override
-            public void onChanged(final Word word) {
-                if (word != null) {
-                    // Устанавливаем перевод.
-                    valueTextView.setText(word.value);
+        // Устанавливаем перевод.
+        valueTextView.setText(word.value);
 
-                    // Получаем слово на английском и находим его длину.
-                    String wordOnEnglish = word.word;
-                    final int lettersCount = wordOnEnglish.length();
+        // Получаем слово на английском и находим его длину.
+        String wordOnEnglish = word.word;
+        final int lettersCount = wordOnEnglish.length();
 
-                    invisibleButtons = new ArrayList<>(lettersCount);
+        invisibleButtons = new ArrayList<>(lettersCount);
 
-                    ArrayList<Character> shuffleLetters = getShuffleCharacters(wordOnEnglish);
+        ArrayList<Character> shuffleLetters = getShuffleCharacters(wordOnEnglish);
 
-                    // Закидываем случайно расставленные буквы в кнопки по порядку.
-                    for (int i = 0; i < lettersCount; i++) {
-                        Button button = initCharButton(word, shuffleLetters.get(i));
-                        lettersGridLayout.addView(button);
-                    }
-                }
-            }
-        });
+        // Закидываем случайно расставленные буквы в кнопки по порядку.
+        for (int i = 0; i < lettersCount; i++) {
+            Button button = initCharButton(word, shuffleLetters.get(i));
+            lettersGridLayout.addView(button);
+        }
 
         initRemoveButton();
     }
@@ -137,7 +128,7 @@ public class CollectWordByLettersModeFragment extends Fragment {
                     invisibleButtons.remove(invisibleButtons.size() - 1)
                             .setVisibility(View.VISIBLE);
 
-                    if (invisibleButtons.size() == 0){
+                    if (invisibleButtons.size() == 0) {
                         removeLetterImageButton.setEnabled(false);
                     }
                 }
@@ -147,7 +138,8 @@ public class CollectWordByLettersModeFragment extends Fragment {
 
     /**
      * Создаёт кнопку для символа. Задаёт ей стиль, параметры высоты и ширины, а также отступы.
-     * @param word слово, для которого вызвался режим.
+     *
+     * @param word   слово, для которого вызвался режим.
      * @param letter символ, который будет текстом на кнопке (как правило, это буква).
      * @return кнопку.
      */
@@ -155,11 +147,11 @@ public class CollectWordByLettersModeFragment extends Fragment {
         final int lettersCount = word.word.length();
 
         Button button = new Button(new ContextThemeWrapper(context,
-               R.style.BorderlessButton), null, 0);
+                R.style.BorderlessButton), null, 0);
         button.setBackgroundResource(R.drawable.shape_white_color_primary_15dp);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 dpToPx(50), dpToPx(50));
-        layoutParams.setMargins(dpToPx(2), dpToPx(2),dpToPx(2),dpToPx(2));
+        layoutParams.setMargins(dpToPx(2), dpToPx(2), dpToPx(2), dpToPx(2));
         button.setLayoutParams(layoutParams);
         button.setText(letter.toString());
 
@@ -211,6 +203,7 @@ public class CollectWordByLettersModeFragment extends Fragment {
 
     /**
      * Перемешивает символы в строке.
+     *
      * @param string строка для перемешивания.
      * @return список из случайно добавленных в него символов.
      */
@@ -233,6 +226,7 @@ public class CollectWordByLettersModeFragment extends Fragment {
 
     /**
      * Находит View элементы в разметке.
+     *
      * @param v корневой элемент разметки.
      */
     private void findViews(View v) {

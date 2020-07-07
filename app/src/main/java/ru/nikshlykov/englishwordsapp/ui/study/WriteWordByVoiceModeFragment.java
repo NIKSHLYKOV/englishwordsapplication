@@ -16,17 +16,15 @@ import android.widget.RelativeLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
-import ru.nikshlykov.englishwordsapp.MyApplication;
+import ru.nikshlykov.englishwordsapp.App;
 import ru.nikshlykov.englishwordsapp.R;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
-import ru.nikshlykov.englishwordsapp.ui.word.WordViewModel;
+import ru.nikshlykov.englishwordsapp.ui.main.MainActivity;
 
 public class WriteWordByVoiceModeFragment extends Fragment {
 
@@ -47,8 +45,8 @@ public class WriteWordByVoiceModeFragment extends Fragment {
     private ImageView resultImageView;
 
     // ViewModel для работы с БД.
-    private WordViewModel wordViewModel;
-    private long wordId;
+    //private WordViewModel wordViewModel;
+    private Word word;
 
     private Handler handler;
 
@@ -63,20 +61,16 @@ public class WriteWordByVoiceModeFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Получаем id слова.
-        wordId = getArguments().getLong("WordId");
-
-        wordViewModel = new ViewModelProvider(getActivity()).get(WordViewModel.class);
-        wordViewModel.setLiveDataWord(wordId);
+        word = getArguments().getParcelable(MainActivity.EXTRA_WORD_OBJECT);
 
 
-        textToSpeech = ((MyApplication)getActivity().getApplicationContext()).getTextToSpeech();
+        textToSpeech = ((App) getActivity().getApplicationContext()).getTextToSpeech();
 
-        handler = new Handler(){
+        handler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
-                repeatResultListener.repeatResult(wordId, msg.what);
+                repeatResultListener.repeatResult(word.id, msg.what);
             }
         };
     }
@@ -92,25 +86,21 @@ public class WriteWordByVoiceModeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        wordViewModel.getLiveDataWord().observe(getViewLifecycleOwner(), new Observer<Word>() {
-            @Override
-            public void onChanged(final Word word) {
-                if(word != null) {
-                    voiceImageButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            textToSpeech.speak(word.word, TextToSpeech.QUEUE_FLUSH, null, "Id");
-                        }
-                    });
 
-                    initConfirmImageButton(word);
-                }
+        voiceImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                textToSpeech.speak(word.word, TextToSpeech.QUEUE_FLUSH, null, "Id");
             }
         });
+
+        initConfirmImageButton(word);
+
     }
 
     /**
      * Устанавливает обработчик нажатия кнопке подтверждения.
+     *
      * @param word слово.
      */
     private void initConfirmImageButton(final Word word) {
@@ -154,6 +144,7 @@ public class WriteWordByVoiceModeFragment extends Fragment {
 
     /**
      * Находит View элементы в разметке.
+     *
      * @param v корневая View.
      */
     private void findViews(View v) {

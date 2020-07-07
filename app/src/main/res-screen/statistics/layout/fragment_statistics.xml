@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+
+    android:layout_margin="8dp"
+    app:cardBackgroundColor="@color/progress_6"
+    app:cardCornerRadius="10dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="8dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="@string/statistics"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Количество взятых на изучение слов">
+
+            </TextView>
+            <TextView
+                android:id="@+id/fragment_statistics___text_view___new_words_count"
+                android:layout_width="48dp"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:textColor="@android:color/black"
+                android:text="21"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Количество повторов">
+
+            </TextView>
+            <TextView
+                android:id="@+id/fragment_statistics___text_view___repeats_count"
+                android:layout_width="48dp"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:textColor="@android:color/black"
+                android:text="152"/>
+        </LinearLayout>
+
+        <!-- Второй вариант
+        <androidx.gridlayout.widget.GridLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:rowCount="2"
+            app:columnCount="2">
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:text="Начато сегодня слов"/>
+
+        </androidx.gridlayout.widget.GridLayout>-->
+
+    </LinearLayout>
+
+
+</androidx.cardview.widget.CardView>

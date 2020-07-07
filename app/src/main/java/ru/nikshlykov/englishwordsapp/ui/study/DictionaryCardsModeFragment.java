@@ -18,6 +18,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import ru.nikshlykov.englishwordsapp.R;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
+import ru.nikshlykov.englishwordsapp.ui.main.MainActivity;
 import ru.nikshlykov.englishwordsapp.ui.word.WordViewModel;
 
 public class DictionaryCardsModeFragment extends Fragment {
@@ -36,13 +37,14 @@ public class DictionaryCardsModeFragment extends Fragment {
     private TextView wordTextView;
     private TextView transcriptionTextView;
     private TextView valueTextView;
+
     private Button doNotRememberButton;
     private Button rememberButton;
     private ImageButton showImageButton;
 
     private RepeatResultListener repeatResultListener;
 
-    private long wordId;
+    private Word word;
     private WordViewModel wordViewModel;
 
     @Override
@@ -55,11 +57,12 @@ public class DictionaryCardsModeFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        word = getArguments().getParcelable(MainActivity.EXTRA_WORD_OBJECT);
         // Получаем id слова.
-        wordId = getArguments().getLong("WordId");
+        //wordId = getArguments().getLong("WordId");
 
-        wordViewModel = new ViewModelProvider(getActivity()).get(WordViewModel.class);
-        wordViewModel.setLiveDataWord(wordId);
+        //wordViewModel = new ViewModelProvider(getActivity()).get(WordViewModel.class);
+        //wordViewModel.setWord(wordId);
     }
 
     @Nullable
@@ -81,14 +84,14 @@ public class DictionaryCardsModeFragment extends Fragment {
         doNotRememberButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                repeatResultListener.repeatResult(wordId, 0);
+                repeatResultListener.repeatResult(word.id, 0);
             }
         });
 
         rememberButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                repeatResultListener.repeatResult(wordId, 1);
+                repeatResultListener.repeatResult(word.id, 1);
             }
         });
 
@@ -114,14 +117,8 @@ public class DictionaryCardsModeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        wordViewModel.getLiveDataWord().observe(getViewLifecycleOwner(), new Observer<Word>() {
-            @Override
-            public void onChanged(Word word) {
-                if (word != null) {
-                    setWordParametersToViews(word);
-                }
-            }
-        });
+
+        setWordParametersToViews(word);
     }
 
     private void findViewsEngToRus(View v) {

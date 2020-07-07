@@ -10,8 +10,9 @@ import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
-import ru.nikshlykov.englishwordsapp.MyApplication;
-import ru.nikshlykov.englishwordsapp.db.AppRepository;
+import ru.nikshlykov.englishwordsapp.App;
+import ru.nikshlykov.englishwordsapp.db.GroupsRepository;
+import ru.nikshlykov.englishwordsapp.db.WordsRepository;
 import ru.nikshlykov.englishwordsapp.db.link.Link;
 import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
@@ -20,12 +21,19 @@ import ru.nikshlykov.englishwordsapp.ui.word.LinkOrDeleteWordDialogFragment;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class SubgroupViewModel extends AndroidViewModel
-        implements AppRepository.OnSubgroupLoadedListener,
-        AppRepository.OnWordInsertedListener,
-        AppRepository.OnSubgroupsLoadedListener {
+        implements WordsRepository.OnWordInsertedListener,
+        GroupsRepository.OnSubgroupsLoadedListener {
+
     private static final String LOG_TAG = "SubgroupViewModel";
-    private AppRepository repository;
+
+    @Inject
+    public GroupsRepository groupsRepository;
+
+    @Inject
+    public WordsRepository wordsRepository;
 
     private MutableLiveData<Subgroup> subgroupMutableLiveData;
 
@@ -41,7 +49,8 @@ public class SubgroupViewModel extends AndroidViewModel
 
     public SubgroupViewModel(@NonNull Application application) {
         super(application);
-        repository = new AppRepository(application);
+        ((App)application).getAppComponent().inject(this);
+
         subgroupMutableLiveData = new MutableLiveData<>();
         words = new MediatorLiveData<>();
         observer = new Observer<List<Word>>() {
@@ -53,17 +62,11 @@ public class SubgroupViewModel extends AndroidViewModel
         availableSubgroupToLink = new MutableLiveData<>();
     }
 
-    /**
-     * Проводит базовую инициализацию.
-     *
-     * @param id        подгруппы, который необходим для подгрузки её самой и залинкованных с ней.
-     * @param sortParam параметр сортировки.
-     */
-    public void setLiveDataSubgroup(long id, int sortParam) {
-        // Подгружаем подгруппу и возможные списки слов для words.
-        repository.getSubgroupById(id, this);
-        wordsByAlphabet = repository.getWordsFromSubgroupByAlphabet(id);
-        wordsByProgress = repository.getWordsFromSubgroupByProgress(id);
+    public void setLiveDataSubgroup(Subgroup subgroup, int sortParam) {
+        subgroupMutableLiveData.setValue(subgroup);
+        // Подгружаем возможные списки слов для words.
+        wordsByAlphabet = wordsRepository.getWordsFromSubgroupByAlphabet(subgroup.id);
+        wordsByProgress = wordsRepository.getWordsFromSubgroupByProgress(subgroup.id);
         // Устанавниваем начальный источник для words в зависимости от параметра сортировки.
         switch (sortParam) {
             case SortWordsDialogFragment.BY_ALPHABET:
@@ -75,14 +78,9 @@ public class SubgroupViewModel extends AndroidViewModel
         }
     }
 
-    @Override
-    public void onSubgroupLoaded(Subgroup subgroup) {
-        subgroupMutableLiveData.postValue(subgroup);
-    }
 
-    /**
-     * Методы для работы с подгруппой.
-     */
+
+    // Подгруппа
 
     public MutableLiveData<Subgroup> getSubgroupMutableLiveData() {
         return subgroupMutableLiveData;
@@ -94,7 +92,7 @@ public class SubgroupViewModel extends AndroidViewModel
     public void deleteSubgroup() {
         Subgroup subgroup = subgroupMutableLiveData.getValue();
         if (subgroup != null)
-            repository.delete(subgroup);
+            groupsRepository.delete(subgroup);
     }
 
     /**
@@ -106,10 +104,9 @@ public class SubgroupViewModel extends AndroidViewModel
         Subgroup subgroup = subgroupMutableLiveData.getValue();
         if (subgroup != null){
             Log.i(LOG_TAG, "subgroup.isStudied = " + subgroup.isStudied);
-            repository.update(subgroup);
+            groupsRepository.update(subgroup);
         }
     }
-
     /*public void updateSubgroupName(final String newSubgroupName) {
         final Subgroup subgroup = subgroupMutableLiveData.getValue();
         if (subgroup != null) {
@@ -117,7 +114,6 @@ public class SubgroupViewModel extends AndroidViewModel
             repository.update(subgroup);
         }
     }*/
-
     /**
      * Устанавливает параметр изучения для подгруппы.
      *
@@ -136,11 +132,16 @@ public class SubgroupViewModel extends AndroidViewModel
         }
     }
 
+    public void setSubgroupName(String newSubgroupName) {
+        Subgroup subgroup = subgroupMutableLiveData.getValue();
+        if (subgroup != null){
+            subgroup.name = newSubgroupName;
+            subgroupMutableLiveData.postValue(subgroup);
+        }
+    }
 
 
-    /**
-     * Методы для работы со словами, залинкованными с подгруппой.
-     */
+    // Слова, залинкованные со словом
 
     public MediatorLiveData<List<Word>> getWords() {
         return words;
@@ -171,7 +172,7 @@ public class SubgroupViewModel extends AndroidViewModel
         Subgroup subgroup = subgroupMutableLiveData.getValue();
         // Прописать обновление у всех слова данной подгруппы.
         if (subgroup != null) {
-            repository.resetWordsProgress(subgroup.id);
+            wordsRepository.resetWordsProgress(subgroup.id);
         }
     }
 
@@ -185,14 +186,14 @@ public class SubgroupViewModel extends AndroidViewModel
      */
     public void updateWord(final long wordId, final String word, final String value,
                            final String transcription) {
-        ((MyApplication)getApplication()).executeWithDatabase(new Runnable() {
+        groupsRepository.execute(new Runnable() {
             @Override
             public void run() {
-                Word editWord = repository.getWordById(wordId);
+                Word editWord = wordsRepository.getWordById(wordId);
                 editWord.word = word;
                 editWord.transcription = transcription;
                 editWord.value = value;
-                repository.update(editWord, null);
+                wordsRepository.update(editWord, null);
             }
         });
     }
@@ -207,7 +208,7 @@ public class SubgroupViewModel extends AndroidViewModel
     public void insert(Word word) {
         Log.i(LOG_TAG, "insert():\n" +
                 "word = " + word.word + "; value = " + word.value);
-        repository.insert(word, this);
+        wordsRepository.insert(word, this);
     }
 
     /**
@@ -220,7 +221,7 @@ public class SubgroupViewModel extends AndroidViewModel
         Log.i(LOG_TAG, "onInserted():\nwordId = " + wordId);
         Subgroup subgroup = subgroupMutableLiveData.getValue();
         if (subgroup != null) {
-            repository.insert(new Link(subgroup.id, wordId));
+            groupsRepository.insert(new Link(subgroup.id, wordId));
         }
     }
 
@@ -233,7 +234,7 @@ public class SubgroupViewModel extends AndroidViewModel
         Subgroup subgroup = subgroupMutableLiveData.getValue();
         if (subgroup != null) {
             Link link = new Link(subgroup.id, wordId);
-            repository.delete(link);
+            groupsRepository.delete(link);
         }
     }
 
@@ -249,7 +250,7 @@ public class SubgroupViewModel extends AndroidViewModel
             Link link = new Link(subgroup.id, wordId);
             Log.i("SubgroupViewModel", "link.subgroupId = " + link.getSubgroupId() + ".\n"
                     + "link.wordId = " + link.getWordId());
-            repository.insert(link);
+            groupsRepository.insert(link);
         }
     }
 
@@ -257,7 +258,7 @@ public class SubgroupViewModel extends AndroidViewModel
     public MutableLiveData<ArrayList<Subgroup>> getAvailableSubgroupsToLink(long wordId) {
         if (availableSubgroupToLink.getValue() == null) {
             Log.d(LOG_TAG, "availableSubgroupsTo value = null");
-            repository.getAvailableSubgroupTo(wordId, LinkOrDeleteWordDialogFragment.TO_LINK, this);
+            groupsRepository.getAvailableSubgroupTo(wordId, LinkOrDeleteWordDialogFragment.TO_LINK, this);
         }
         return availableSubgroupToLink;
     }
@@ -274,11 +275,4 @@ public class SubgroupViewModel extends AndroidViewModel
         availableSubgroupToLink.setValue(subgroups);
     }
 
-    public void setSubgroupName(String newSubgroupName) {
-        Subgroup subgroup = subgroupMutableLiveData.getValue();
-        if (subgroup != null){
-            subgroup.name = newSubgroupName;
-            subgroupMutableLiveData.postValue(subgroup);
-        }
-    }
 }

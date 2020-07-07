@@ -2,27 +2,23 @@ package ru.nikshlykov.englishwordsapp.ui.subgroup;
 
 import android.content.Context;
 import android.speech.tts.TextToSpeech;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.DiffUtil;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
-import ru.nikshlykov.englishwordsapp.MyApplication;
+import ru.nikshlykov.englishwordsapp.App;
 import ru.nikshlykov.englishwordsapp.R;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
 
@@ -48,7 +44,7 @@ public class WordsRecyclerViewAdapter
 
     public WordsRecyclerViewAdapter(final Context context) {
         // Создаём TTS
-        textToSpeech = ((MyApplication)context.getApplicationContext()).getTextToSpeech();
+        textToSpeech = ((App)context.getApplicationContext()).getTextToSpeech();
     }
 
     @Override

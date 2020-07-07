@@ -1,6 +1,9 @@
 package ru.nikshlykov.englishwordsapp.db.word;
 
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.room.ColumnInfo;
@@ -10,7 +13,7 @@ import androidx.room.PrimaryKey;
 import java.util.Date;
 
 @Entity(tableName = "Words")
-public class Word {
+public class Word implements Parcelable {
 
     public Word(@NonNull String word, String transcription, @NonNull String value) {
         this.word = word;
@@ -52,6 +55,10 @@ public class Word {
     @NonNull
     @ColumnInfo(name = "Priority", defaultValue = "0")
     public int priority; // Приоритет слова. Если слово пропускается, то значение увеличивается.
+
+
+
+    // Object методы
 
     @Override
     public boolean equals(@Nullable Object obj) {
@@ -99,19 +106,54 @@ public class Word {
     }
 
 
-    /*public static class WordsTable {
-        // Названия таблицы слов и её колонок
-        public static final String TABLE_NAME = "Words";
-        public static final String COLUMN_ID = "_id";
-        public static final String COLUMN_WORD = "Word";
-        public static final String COLUMN_VALUE = "Value";
-        public static final String COLUMN_TRANSCRIPTION = "Transcription";
-        public static final String COLUMN_LEARNPROGRESS = "LearnProgress";
-        public static final String COLUMN_ISLEARNED = "IsLearned";
-        public static final String COLUMN_PARTOFSPEECH = "PartOfSpeech";
-        public static final String COLUMN_LASTREPETITIONDATE = "LastRepetitionDate";
-        public static final String COLUMN_EXAMPLES = "Examples";
-    }*/
+
+    // Parcelable
+
+    public Word(Parcel in) {
+        id = in.readLong();
+        word = in.readString();
+        transcription = in.readString();
+        value = in.readString();
+        learnProgress = in.readInt();
+        createdByUser = in.readInt();
+        partOfSpeech = in.readString();
+        lastRepetitionDate = in.readLong();
+        priority = in.readInt();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(id);
+        dest.writeString(word);
+        dest.writeString(transcription);
+        dest.writeString(value);
+        dest.writeInt(learnProgress);
+        dest.writeInt(createdByUser);
+        dest.writeString(partOfSpeech);
+        dest.writeLong(lastRepetitionDate);
+        dest.writeInt(priority);
+    }
+
+    public static final Parcelable.Creator<Word> CREATOR = new Parcelable.Creator<Word>() {
+        @Override
+        public Word createFromParcel(Parcel in) {
+            return new Word(in);
+        }
+
+        @Override
+        public Word[] newArray(int size) {
+            return new Word[size];
+        }
+    };
+
+
+
+    // Повторы слова
 
     public boolean isAvailableToRepeat(Date currentDate) {
         switch (learnProgress) {

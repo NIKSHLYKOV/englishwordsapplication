@@ -6,20 +6,26 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import ru.nikshlykov.englishwordsapp.db.AppRepository;
+import ru.nikshlykov.englishwordsapp.App;
+import ru.nikshlykov.englishwordsapp.db.ModesRepository;
 import ru.nikshlykov.englishwordsapp.db.mode.Mode;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class ModesViewModel extends AndroidViewModel {
-    private AppRepository repository;
+
+    @Inject
+    public ModesRepository modesRepository;
 
     private LiveData<List<Mode>> liveDataModes;
 
     public ModesViewModel(@NonNull Application application) {
         super(application);
-        repository = new AppRepository(application);
-        liveDataModes = repository.getLiveDataModes();
+        ((App)application).getAppComponent().inject(this);
+
+        liveDataModes = modesRepository.getLiveDataModes();
     }
 
     public LiveData<List<Mode>> getLiveDataModes() {
@@ -27,6 +33,6 @@ public class ModesViewModel extends AndroidViewModel {
     }
 
     public void updateModes(List<Mode> modes) {
-        repository.update(modes);
+        modesRepository.update(modes);
     }
 }

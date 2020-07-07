@@ -16,7 +16,7 @@ import androidx.preference.PreferenceFragmentCompat;
 
 import java.util.Calendar;
 
-import ru.nikshlykov.englishwordsapp.MyApplication;
+import ru.nikshlykov.englishwordsapp.App;
 import ru.nikshlykov.englishwordsapp.R;
 import ru.nikshlykov.englishwordsapp.notifications.AlarmReceiver;
 import ru.nikshlykov.englishwordsapp.ui.settings.newwordscount.NewWordsCountPreference;
@@ -54,11 +54,11 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
 
         if (key.equals(getString(preference_key___tts_pitch))) {
             int pitch = sharedPreferences.getInt(key, 10);
-            ((MyApplication) getActivity().getApplicationContext())
+            ((App) getActivity().getApplicationContext())
                     .setTextToSpeechPitch(pitch);
         } else if (key.equals(getString(R.string.preference_key___tts_speech_rate))) {
             int speechRate = sharedPreferences.getInt(key, 10);
-            MyApplication application = (MyApplication) getActivity().getApplicationContext();
+            App application = (App) getActivity().getApplicationContext();
             application.setTextToSpeechSpeechRate(speechRate);
         } else if (key.equals(getString(R.string.preference_key___notification_time))) {
             int newNotificationTime = sharedPreferences.getInt(key, 0);

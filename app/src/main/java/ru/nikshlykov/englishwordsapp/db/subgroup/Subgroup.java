@@ -1,5 +1,8 @@
 package ru.nikshlykov.englishwordsapp.db.subgroup;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.room.ColumnInfo;
@@ -20,7 +23,16 @@ import static androidx.room.ForeignKey.CASCADE;
                 onDelete = CASCADE,
                 onUpdate = CASCADE),
         indices = @Index("groupId"))
-public class Subgroup {
+public class Subgroup implements Parcelable {
+
+    public Subgroup(long id, @NonNull String name, long groupId, int isStudied,
+                    @NonNull String imageURL) {
+        this.id = id;
+        this.name = name;
+        this.groupId = groupId;
+        this.isStudied = isStudied;
+        this.imageURL = imageURL;
+    }
 
     @PrimaryKey
     @NonNull
@@ -41,20 +53,20 @@ public class Subgroup {
 
     @NonNull
     @ColumnInfo(name = "ImageResourceId")
-    public String imageResourceId; // id картинки для вывода в GroupsFragment.
+    public String imageURL; // id картинки для вывода в GroupsFragment.
 
     public boolean isCreatedByUser(){
         return groupId == SubgroupDao.GROUP_FOR_NEW_SUBGROUPS_ID;
     }
 
-    public static class SubgroupsTable {
+    /*public static class SubgroupsTable {
         // Названия таблицы подгрупп и её колонок
         public static final String TABLE_SUBGROUPS = "Subgroups";
         public static final String TABLE_SUBGROUPS_COLUMN_ID = "_id";
         public static final String TABLE_SUBGROUPS_COLUMN_SUBGROUPNAME = "SubgroupName";
         public static final String TABLE_SUBGROUPS_COLUMN_PARENTGROUPID = "groupId";
         public static final String TABLE_SUBGROUPS_COLUMN_ISSTUDIED = "IsStudied";
-    }
+    }*/
 
     @Override
     public boolean equals(@Nullable Object obj) {
@@ -71,6 +83,44 @@ public class Subgroup {
                 name.equals(comparedSubgroup.name) &&
                 groupId == comparedSubgroup.groupId &&
                 isStudied == comparedSubgroup.isStudied &&
-                imageResourceId.equals(comparedSubgroup.imageResourceId);
+                imageURL.equals(comparedSubgroup.imageURL);
     }
+
+
+
+    // Parcelable
+
+    public Subgroup(Parcel in) {
+        id = in.readLong();
+        name = in.readString();
+        groupId = in.readLong();
+        isStudied = in.readInt();
+        imageURL = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(id);
+        dest.writeString(name);
+        dest.writeLong(groupId);
+        dest.writeInt(isStudied);
+        dest.writeString(imageURL);
+    }
+
+    public static final Parcelable.Creator<Subgroup> CREATOR = new Parcelable.Creator<Subgroup>() {
+        @Override
+        public Subgroup createFromParcel(Parcel in) {
+            return new Subgroup(in);
+        }
+
+        @Override
+        public Subgroup[] newArray(int size) {
+            return new Subgroup[size];
+        }
+    };
 }

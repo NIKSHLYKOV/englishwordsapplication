@@ -21,7 +21,7 @@ import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 
 import ru.nikshlykov.englishwordsapp.R;
-import ru.nikshlykov.englishwordsapp.db.AppRepository;
+import ru.nikshlykov.englishwordsapp.db.GroupsRepository;
 import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup;
 
 public class SubgroupsRecyclerViewAdapter extends RecyclerView.Adapter<SubgroupsRecyclerViewAdapter.SubgroupViewHolder> {
@@ -69,7 +69,7 @@ public class SubgroupsRecyclerViewAdapter extends RecyclerView.Adapter<Subgroups
             holder.subgroupImageView.setImageDrawable(imageColor);
         } else {
             Glide.with(context)
-                    .load(AppRepository.PATH_TO_SUBGROUP_IMAGES + currentSubgroup.imageResourceId)
+                    .load(GroupsRepository.PATH_TO_SUBGROUP_IMAGES + currentSubgroup.imageURL)
                     .placeholder(R.drawable.shape_load_picture)
                     .error(R.drawable.shape_load_picture)
                     .into(holder.subgroupImageView);

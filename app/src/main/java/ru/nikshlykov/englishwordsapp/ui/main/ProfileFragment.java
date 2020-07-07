@@ -12,12 +12,14 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.button.MaterialButton;
 
 import ru.nikshlykov.englishwordsapp.R;
 import ru.nikshlykov.englishwordsapp.ui.modes.ModesActivity;
 import ru.nikshlykov.englishwordsapp.ui.settings.SettingsActivity;
+import ru.nikshlykov.englishwordsapp.ui.statistics.StatisticsFragment;
 
 public class ProfileFragment extends Fragment {
     private final static String LOG_TAG = "ProfileFragment";
@@ -59,6 +61,13 @@ public class ProfileFragment extends Fragment {
                 reportListener.reportOpenSettingsActivity();
             }
         });
+
+        FragmentTransaction fragmentTransaction = getChildFragmentManager().beginTransaction();
+        StatisticsFragment statisticsFragment = new StatisticsFragment();
+        fragmentTransaction.replace(R.id.fragment_profile___linear_layout___statistics, statisticsFragment);
+        //fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        fragmentTransaction.commit();
+
         return view;
     }
 

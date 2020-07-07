@@ -13,9 +13,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
-import ru.nikshlykov.englishwordsapp.MyApplication;
+import ru.nikshlykov.englishwordsapp.App;
 import ru.nikshlykov.englishwordsapp.R;
-import ru.nikshlykov.englishwordsapp.db.AppRepository;
+import ru.nikshlykov.englishwordsapp.db.ModesRepository;
+import ru.nikshlykov.englishwordsapp.db.WordsRepository;
 import ru.nikshlykov.englishwordsapp.db.mode.Mode;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
 import ru.nikshlykov.englishwordsapp.ui.groups.GroupsFragment;
@@ -35,13 +36,15 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements ProfileFragment.ProfileFragmentReportListener,
-        AppRepository.OnSelectedModesLoadedListener,
-        AppRepository.OnAvailableToRepeatWordLoadedListener,
-        AppRepository.OnWordUpdatedListener,
+        ModesRepository.OnSelectedModesLoadedListener,
+        WordsRepository.OnAvailableToRepeatWordLoadedListener,
+        WordsRepository.OnWordUpdatedListener,
         RepeatResultListener, FirstShowModeFragment.FirstShowModeReportListener {
 
     // Тег для логирования.
     private static final String LOG_TAG = "MainActivity";
+
+    public static final String EXTRA_WORD_OBJECT = "WordObject";
 
     // Теги для идентификации фрагментов.
     private final static String TAG_STUDY_OR_INFO_FRAGMENT = "StudyFragment";
@@ -135,7 +138,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ((MyApplication) getApplicationContext()).getTextToSpeech().shutdown();
+        ((App) getApplicationContext()).getTextToSpeech().shutdown();
     }
 
     /**
@@ -262,7 +265,7 @@ public class MainActivity extends AppCompatActivity
 
             // Создаём Bundle для отправки id слова фрагменту.
             Bundle arguments = new Bundle();
-            arguments.putLong("WordId", word.id);
+            arguments.putParcelable(EXTRA_WORD_OBJECT, word);
 
             // В зависимости от прогресса по слову показываем для него FirstShowModeFragment или
             // другой ModeFragment.

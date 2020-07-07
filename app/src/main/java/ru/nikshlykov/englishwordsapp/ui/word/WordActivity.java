@@ -1,6 +1,5 @@
 package ru.nikshlykov.englishwordsapp.ui.word;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
@@ -25,9 +24,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.textfield.TextInputEditText;
 
-import ru.nikshlykov.englishwordsapp.MyApplication;
+import javax.inject.Inject;
+
+import ru.nikshlykov.englishwordsapp.App;
 import ru.nikshlykov.englishwordsapp.R;
-import ru.nikshlykov.englishwordsapp.db.AppRepository;
+import ru.nikshlykov.englishwordsapp.db.WordsRepository;
 import ru.nikshlykov.englishwordsapp.db.example.Example;
 import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
@@ -36,16 +37,23 @@ import static ru.nikshlykov.englishwordsapp.ui.word.LinkOrDeleteWordDialogFragme
 
 public class WordActivity extends AppCompatActivity
         implements ResetProgressDialogFragment.ResetProgressListener,
-        AppRepository.OnExamplesLoadedListener {
+        WordsRepository.OnExamplesLoadedListener {
 
     // Тег для логирования.
     private static final String LOG_TAG = "WordActivity";
 
     // Extras для получения данных из интента.
     public static final String EXTRA_WORD_ID = "WordId";
-    public static final String EXTRA_WORD = "Word";
+    public static final String EXTRA_WORD = "word";
     public static final String EXTRA_TRANSCRIPTION = "Transcription";
     public static final String EXTRA_VALUE = "Value";
+
+    public static final String EXTRA_START_TO = "StartPurpose";
+    public static final String EXTRA_WORD_OBJECT = "WordObject";
+
+    // Возможные цели старта Activity.
+    public static final int START_TO_CREATE_WORD = 0;
+    public static final int START_TO_EDIT_WORD = 1;
 
     // Теги для диалоговых фрагментов.
     private static final String DIALOG_RESET_WORD_PROGRESS = "ResetWordProgressDialogFragment";
@@ -66,12 +74,13 @@ public class WordActivity extends AppCompatActivity
     private RecyclerView examplesRecyclerView;
     private ExamplesRecyclerViewAdapter examplesRecyclerViewAdapter;
 
-    // id слова, для которого открылось Activity.
+    /*// id слова, для которого открылось Activity.
     // Будет равно 0, если открыто для создания нового слова.
-    private long wordId = 0L;
+    private long wordId = 0L;*/
 
     // ViewModel для работы с БД.
-    private WordViewModel wordViewModel;
+    @Inject
+    public WordViewModel wordViewModel;
 
     // Observer отвечающий за обработку подгруженных подгрупп для связывания или удаления.
     public Observer<ArrayList<Subgroup>> availableSubgroupsObserver;
@@ -83,6 +92,8 @@ public class WordActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        ((App)getApplication()).getAppComponent().inject(this);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_word);
         // Находим View в разметке.
@@ -93,9 +104,9 @@ public class WordActivity extends AppCompatActivity
 
         initToolbar();
 
-        textToSpeech = ((MyApplication) getApplicationContext()).getTextToSpeech();
+        textToSpeech = ((App) getApplicationContext()).getTextToSpeech();
 
-        getWordIdAndPrepareInterface();
+        getDataAndPrepareInterface();
 
         initSaveButtonClick();
 
@@ -133,16 +144,20 @@ public class WordActivity extends AppCompatActivity
      * Получает id слова из Extras и, в зависимости от него, либо скрывает некоторые элементы,
      * чтобы создать новое слово, либо устанавливает параметры уже существующего слова в наши View.
      */
-    private void getWordIdAndPrepareInterface() {
+    private void getDataAndPrepareInterface() {
         Bundle arguments = getIntent().getExtras();
         if (arguments != null) {
             // Получаем id слова, которое было выбрано.
-            wordId = arguments.getLong(EXTRA_WORD_ID);
-            Log.i(LOG_TAG, "wordId = " + wordId);
-            // Если слово уже создано.
-            if (wordId != 0) {
+            int startTo = arguments.getInt(EXTRA_START_TO);
+            Log.i(LOG_TAG, "startTo = " + startTo);
 
-                /*RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(
+            switch (startTo) {
+                case START_TO_CREATE_WORD:
+                    prepareInterfaceForNewWordCreating();
+                    break;
+
+                case START_TO_EDIT_WORD:
+                    /*RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(
                         WordActivity.this);
                 examplesRecyclerView.setLayoutManager(layoutManager);
                 examplesRecyclerViewAdapter = new ExamplesRecyclerViewAdapter(WordActivity.this);
@@ -156,53 +171,51 @@ public class WordActivity extends AppCompatActivity
                     }
                 });*/
 
-                wordViewModel.setLiveDataWord(wordId);
-                wordViewModel.getLiveDataWord().observe(this, new Observer<Word>() {
-                    @Override
-                    public void onChanged(Word word) {
-                        Log.d(LOG_TAG, "word onChanged()");
-                        if (word != null) {
-                            setWordToViews(word);
+                    Word word = arguments.getParcelable(EXTRA_WORD_OBJECT);
 
-                            // Присваиваем обработчик нажатия на кнопку воспроизведения слова.
-                            ttsButton.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    textToSpeech.speak(wordTextInputEditText.getText().toString(),
-                                            TextToSpeech.QUEUE_ADD, null, "1");
+                    wordViewModel.setWord(word);
+                    wordViewModel.getWordMutableLiveData().observe(this, new Observer<Word>() {
+                        @Override
+                        public void onChanged(Word word) {
+                            Log.d(LOG_TAG, "word onChanged()");
+                            if (word != null) {
+                                setWordToViews(word);
+
+                                // Делаем доступными для редактирования поля с параметрами слова.
+                                if (word.createdByUser == 1) {
+                                    saveButton.setVisibility(View.VISIBLE);
+                                    findViewById(R.id.activity_word___text_input_layout___word).setEnabled(true);
+                                    findViewById(R.id.activity_word___text_input_layout___transcription).setEnabled(true);
+                                    findViewById(R.id.activity_word___text_input_layout___value).setEnabled(true);
                                 }
-                            });
 
-                            /*wordViewModel.getExamples(WordActivity.this);*/
+                                /*wordViewModel.getExamples(WordActivity.this);*/
+                            }
                         }
-                    }
-                });
+                    });
 
-                if (wordId < 0){
-                    saveButton.setVisibility(View.VISIBLE);
-                    findViewById(R.id.activity_word___text_input_layout___word).setEnabled(true);
-                    findViewById(R.id.activity_word___text_input_layout___transcription).setEnabled(true);
-                    findViewById(R.id.activity_word___text_input_layout___value).setEnabled(true);
-                }
-            }
-            // Если пользователь создаёт новое слово.
-            else {
-                // Скрываем элементы.
-                prepareInterfaceForNewWordCreating();
+                    // Присваиваем обработчик нажатия на кнопку воспроизведения слова.
+                    ttsButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            textToSpeech.speak(wordTextInputEditText.getText().toString(),
+                                    TextToSpeech.QUEUE_ADD, null, "1");
+                        }
+                    });
+                    break;
+                default:
+                    errorProcessing();
             }
         } else {
-            errorNullExtrasProcessing();
+            errorProcessing();
         }
     }
 
     /**
      * Выводит сообщение об ошибке и закрывает activity.
      */
-    private void errorNullExtrasProcessing() {
-        // Выводим сообщение об ошибке и закрываем Activity, т.к. в него
-        // обязательно должно что-то передаваться.
-        Toast.makeText(this, R.string.sorry_error_happened, Toast.LENGTH_LONG).show();
-        Log.d(LOG_TAG, "arguments have not been transferred");
+    private void errorProcessing() {
+        Log.e(LOG_TAG, "Error happened!");
         finish();
     }
 
@@ -226,13 +239,17 @@ public class WordActivity extends AppCompatActivity
                     } else {*/
 
                     // Считываем данные из EditText'ов и отправляем их обратно в SubgroupActivity.
-                    Intent wordData = new Intent();
+                    /*Intent wordData = new Intent();
                     wordData.putExtra(EXTRA_WORD_ID, wordId);
                     wordData.putExtra(EXTRA_WORD, word);
                     wordData.putExtra(EXTRA_TRANSCRIPTION, transcription);
-                    wordData.putExtra(EXTRA_VALUE, value);
-                    setResult(RESULT_OK, wordData);
+                    wordData.putExtra(EXTRA_VALUE, value);*/
 
+                    //wordData.putExtra(EXTRA_WORD_OBJECT, )
+                    //setResult(RESULT_OK, wordData);
+                    wordViewModel.setWordParameters(word, transcription, value);
+                    wordViewModel.updateWordInDB();
+                    //
                     /*}*/
 
                     // Закрываем Activity.
@@ -246,6 +263,9 @@ public class WordActivity extends AppCompatActivity
             }
         });
     }
+
+    // TODO Что делать с сохранением прогресса, если пользователь не нажал сохранить
+    // Наверное, просто апдейтить его в самом диалоге сбрасывания прогресса.
 
     /**
      * Инициализирует availableSubgroupsObserver.
@@ -261,29 +281,32 @@ public class WordActivity extends AppCompatActivity
                             new LinkOrDeleteWordDialogFragment();
                     Bundle arguments = new Bundle();
 
-                    arguments.putLong(LinkOrDeleteWordDialogFragment.EXTRA_WORD_ID,
-                            wordId);
+                    long wordId = wordViewModel.getWordId();
+                    if (wordId != 0L) {
+                        arguments.putLong(LinkOrDeleteWordDialogFragment.EXTRA_WORD_ID,
+                                wordId);
 
-                    arguments.putInt(LinkOrDeleteWordDialogFragment.EXTRA_FLAG,
-                            linkOrDeleteFlag);
+                        arguments.putInt(LinkOrDeleteWordDialogFragment.EXTRA_FLAG,
+                                linkOrDeleteFlag);
 
-                    long[] subgroupsIds = new long[subgroups.size()];
-                    String[] subgroupsNames = new String[subgroups.size()];
-                    for (int i = 0; i < subgroups.size(); i++) {
-                        Subgroup subgroup = subgroups.get(i);
-                        subgroupsNames[i] = subgroup.name;
-                        subgroupsIds[i] = subgroup.id;
+                        long[] subgroupsIds = new long[subgroups.size()];
+                        String[] subgroupsNames = new String[subgroups.size()];
+                        for (int i = 0; i < subgroups.size(); i++) {
+                            Subgroup subgroup = subgroups.get(i);
+                            subgroupsNames[i] = subgroup.name;
+                            subgroupsIds[i] = subgroup.id;
+                        }
+                        arguments.putStringArray(LinkOrDeleteWordDialogFragment.EXTRA_AVAILABLE_SUBGROUPS_NAMES,
+                                subgroupsNames);
+                        arguments.putLongArray(LinkOrDeleteWordDialogFragment.EXTRA_AVAILABLE_SUBGROUPS_IDS,
+                                subgroupsIds);
+
+                        linkOrDeleteWordDialogFragment.setArguments(arguments);
+
+                        linkOrDeleteWordDialogFragment.show(getSupportFragmentManager(), "some tag");
+
+                        wordViewModel.clearAvailableSubgroupsToAndRemoveObserver(availableSubgroupsObserver);
                     }
-                    arguments.putStringArray(LinkOrDeleteWordDialogFragment.EXTRA_AVAILABLE_SUBGROUPS_NAMES,
-                            subgroupsNames);
-                    arguments.putLongArray(LinkOrDeleteWordDialogFragment.EXTRA_AVAILABLE_SUBGROUPS_IDS,
-                            subgroupsIds);
-
-                    linkOrDeleteWordDialogFragment.setArguments(arguments);
-
-                    linkOrDeleteWordDialogFragment.show(getSupportFragmentManager(), "some tag");
-
-                    wordViewModel.clearAvailableSubgroupsToAndRemoveObserver(availableSubgroupsObserver);
                 } else {
                     Log.d(LOG_TAG, "availableSubgroups onChanged() value = null");
                 }
@@ -295,23 +318,20 @@ public class WordActivity extends AppCompatActivity
      * Устанавливаем параметры слова (слово, транскрипция, перевод, часть речи, прогресс в разные View.
      */
     private void setWordToViews(Word word) {
-        if (word.createdByUser == 1){
-            saveButton.setVisibility(View.VISIBLE);
-        }
-
         // Устанавливаем параметры слова в EditText'ы.
         wordTextInputEditText.setText(word.word);
         valueTextInputEditText.setText(word.value);
         transcriptionTextInputEditText.setText(word.transcription);
+
+        // Устанавливаем часть речи, если она указана.
         if (word.partOfSpeech != null) {
-            // Устанавливаем часть речи.
             partOfSpeechTextView.setText(word.partOfSpeech);
         } else {
             partOfSpeechTextView.setVisibility(View.GONE);
         }
 
+        // Устанавливаем прогресс.
         View learnProgressView = new View(this);
-        // Индекс для вставки или удаления progressView.
         int progressViewIndex = 0;
         switch (word.learnProgress) {
             case -1:

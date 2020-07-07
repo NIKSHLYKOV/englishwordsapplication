@@ -4,31 +4,25 @@ import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.SharedPreferences;
+
 import androidx.preference.PreferenceManager;
 import androidx.work.Configuration;
 import androidx.work.ExistingPeriodicWorkPolicy;
-import androidx.work.ExistingWorkPolicy;
-import androidx.work.OneTimeWorkRequest;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
-import androidx.work.Worker;
 
 import android.os.Build;
 import android.speech.tts.TextToSpeech;
 import android.widget.Toast;
 
-import org.xml.sax.Locator;
-
 import java.util.Locale;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import ru.nikshlykov.englishwordsapp.di.AppComponent;
+import ru.nikshlykov.englishwordsapp.di.DaggerAppComponent;
 import ru.nikshlykov.englishwordsapp.notifications.NotificationWorker;
-import ru.nikshlykov.englishwordsapp.notifications.NotificationWorker2;
 
-public class MyApplication extends Application
+public class App extends Application
         implements Configuration.Provider {
 
     public static final String PREFERENCE_FILE_NAME = "my_preferences";
@@ -36,11 +30,15 @@ public class MyApplication extends Application
     private TextToSpeech textToSpeech;
     private String TTS_ERROR = "Ошибка синтезирования речи!";
 
-    ExecutorService databaseExecutorService;
+    /*private ExecutorService databaseExecutorService;*/
+
+    private AppComponent appComponent;
 
     @Override
     public void onCreate() {
         super.onCreate();
+
+        appComponent = DaggerAppComponent.factory().create(this);
 
         // Устанавливаем дефолтные значения в настройках. Сработает только один раз
         // при первом запуске приложения.
@@ -51,7 +49,7 @@ public class MyApplication extends Application
 
         createNotificationChannel();
 
-        databaseExecutorService = Executors.newFixedThreadPool(3);
+
 
         //setNotificationPeriodicWorker(10);
     }
@@ -145,9 +143,17 @@ public class MyApplication extends Application
 
 
 
-    // ExecutorService.
+    // ExecutorService
 
-    public void executeWithDatabase(Runnable runnable){
+    /*public void executeWithDatabase(Runnable runnable){
         databaseExecutorService.execute(runnable);
+    }*/
+
+
+
+    // Dagger Component
+
+    public AppComponent getAppComponent() {
+        return appComponent;
     }
 }

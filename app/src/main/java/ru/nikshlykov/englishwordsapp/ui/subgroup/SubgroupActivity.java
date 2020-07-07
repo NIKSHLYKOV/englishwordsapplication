@@ -37,7 +37,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import ru.nikshlykov.englishwordsapp.R;
-import ru.nikshlykov.englishwordsapp.db.AppRepository;
+import ru.nikshlykov.englishwordsapp.db.GroupsRepository;
 import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
 import ru.nikshlykov.englishwordsapp.ui.word.LinkOrDeleteWordDialogFragment;
@@ -52,9 +52,10 @@ public class SubgroupActivity extends AppCompatActivity
     // TODO сделать свою view для отображения прогресса по слову.
     //  Лучше базу брать из той, которая в WordActivity.
 
-    // TODO сделать возможность передавать подгруппы и слова между activity и fragments.
+    // TODO сделать возможность передавать подгруппы между activity и fragments.
 
     // Ключи для получения аргументов.
+    public static final String EXTRA_SUBGROUP_OBJECT = "SubgroupObject";
     public static final String EXTRA_SUBGROUP_ID = "SubgroupId";
     public static final String EXTRA_SUBGROUP_IS_CREATED_BY_USER = "SubgroupIsCreatedByUser";
     public static final String EXTRA_SUBGROUP_IS_STUDIED = "SubgroupIsStudied";
@@ -89,9 +90,11 @@ public class SubgroupActivity extends AppCompatActivity
 
     private SubgroupViewModel subgroupViewModel;
 
+    private Subgroup subgroup;
+    // TODO убрать всякие id и т.д.
     private long subgroupId;
-    private boolean subgroupIsCreatedByUser;
     private boolean subgroupIsStudied;
+    private boolean subgroupIsCreatedByUser;
 
     private boolean deleteFlag;
 
@@ -121,7 +124,9 @@ public class SubgroupActivity extends AppCompatActivity
         // Создаём для Activity ViewModel.
         subgroupViewModel = new ViewModelProvider(this).get(SubgroupViewModel.class);
 
-        subgroupViewModel.setLiveDataSubgroup(subgroupId, sortParam);
+        // TODO сделать нормально сразу из arguments.
+        subgroupViewModel.setLiveDataSubgroup(subgroup, sortParam);
+
         subgroupViewModel.getSubgroupMutableLiveData().observe(this, new Observer<Subgroup>() {
             @Override
             public void onChanged(Subgroup subgroup) {
@@ -134,7 +139,7 @@ public class SubgroupActivity extends AppCompatActivity
                     toolbarLayout.setCollapsedTitleTextAppearance(R.style.CollapsingToolbarCollapseTitle);
                     toolbarLayout.setExpandedTitleTextAppearance(R.style.CollapsingToolbarExpandedTitle);
 
-                    setSubgroupImage(subgroupIsCreatedByUser, subgroup.imageResourceId);
+                    setSubgroupImage(subgroup.isCreatedByUser(), subgroup.imageURL);
 
                     // Создаём вещи для свайпа слов.
                     initSwipeIcons();
@@ -206,6 +211,8 @@ public class SubgroupActivity extends AppCompatActivity
             String word = data.getStringExtra(WordActivity.EXTRA_WORD);
             String transcription = data.getStringExtra(WordActivity.EXTRA_TRANSCRIPTION);
             String value = data.getStringExtra(WordActivity.EXTRA_VALUE);
+
+            Word wordObj = data.getParcelableExtra(WordActivity.EXTRA_WORD_OBJECT);
 
             switch (requestCode) {
                 // Создание нового слова.
@@ -330,9 +337,9 @@ public class SubgroupActivity extends AppCompatActivity
             subgroupImageView.setImageDrawable(imageColor);
         } else {
             Glide.with(this)
-                    .load(AppRepository.PATH_TO_HIGH_SUBGROUP_IMAGES + imageResourceId)
+                    .load(GroupsRepository.PATH_TO_HIGH_SUBGROUP_IMAGES + imageResourceId)
                     .placeholder(R.drawable.shape_load_picture)
-                    .error(Glide.with(this).load(AppRepository.PATH_TO_SUBGROUP_IMAGES + imageResourceId))
+                    .error(Glide.with(this).load(GroupsRepository.PATH_TO_SUBGROUP_IMAGES + imageResourceId))
                     .into(subgroupImageView);
         }
     }
@@ -388,12 +395,19 @@ public class SubgroupActivity extends AppCompatActivity
      */
     private void getBundleArguments() {
         Bundle arguments = getIntent().getExtras();
-        if (arguments == null)
-            finish();
         try {
-            subgroupId = arguments.getLong(EXTRA_SUBGROUP_ID);
+            subgroup = arguments.getParcelable(SubgroupActivity.EXTRA_SUBGROUP_OBJECT);
+            if (subgroup != null) {
+                subgroupIsCreatedByUser = subgroup.isCreatedByUser();
+                subgroupId = subgroup.id;
+                subgroupIsStudied = subgroup.isStudied == 1;
+            } else {
+                finish();
+            }
+            /*subgroupId = arguments.getLong(EXTRA_SUBGROUP_ID);
             subgroupIsCreatedByUser = arguments.getBoolean(EXTRA_SUBGROUP_IS_CREATED_BY_USER);
-            subgroupIsStudied = arguments.getBoolean(EXTRA_SUBGROUP_IS_STUDIED);
+            subgroupIsStudied = arguments.getBoolean(EXTRA_SUBGROUP_IS_STUDIED);*/
+
         } catch (NullPointerException ex) {
             finish();
         }
@@ -419,6 +433,7 @@ public class SubgroupActivity extends AppCompatActivity
                     Intent createNewWordIntent = new Intent(getApplicationContext(),
                             WordActivity.class);
                     createNewWordIntent.putExtra(EXTRA_SUBGROUP_ID, subgroupId);
+                    createNewWordIntent.putExtra(WordActivity.EXTRA_START_TO, WordActivity.START_TO_CREATE_WORD);
                     startActivityForResult(createNewWordIntent, REQUEST_CODE_CREATE_NEW_WORD);
                 }
             });
@@ -462,7 +477,9 @@ public class SubgroupActivity extends AppCompatActivity
                 final Word currentWord = adapter.getWords().get(position);
                 Intent editExistingWordIntent = new Intent(SubgroupActivity.this,
                         WordActivity.class);
-                editExistingWordIntent.putExtra(WordActivity.EXTRA_WORD_ID, currentWord.id);
+                editExistingWordIntent.putExtra(WordActivity.EXTRA_WORD_OBJECT, currentWord);
+                editExistingWordIntent.putExtra(WordActivity.EXTRA_START_TO, WordActivity.START_TO_EDIT_WORD);
+                //editExistingWordIntent.putExtra(WordActivity.EXTRA_WORD_ID, currentWord.id);
                 startActivityForResult(editExistingWordIntent, REQUEST_CODE_EDIT_EXISTING_WORD);
             }
         });
