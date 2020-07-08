@@ -1,6 +1,7 @@
 package ru.nikshlykov.englishwordsapp.ui.word;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,6 +14,9 @@ import androidx.lifecycle.ViewModelProvider;
 
 import java.util.ArrayList;
 
+import javax.inject.Inject;
+
+import ru.nikshlykov.englishwordsapp.App;
 import ru.nikshlykov.englishwordsapp.R;
 import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup;
 
@@ -42,7 +46,14 @@ public class LinkOrDeleteWordDialogFragment extends DialogFragment {
     private boolean[] checkedSubgroups;
 
     // ViewModel для работы с БД.
-    private WordDialogsViewModel wordDialogsViewModel;
+    @Inject
+    public WordDialogsViewModel wordDialogsViewModel;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        ((App)getActivity().getApplication()).getAppComponent().inject(this);
+        super.onAttach(context);
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

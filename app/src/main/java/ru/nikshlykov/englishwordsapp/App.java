@@ -30,8 +30,6 @@ public class App extends Application
     private TextToSpeech textToSpeech;
     private String TTS_ERROR = "Ошибка синтезирования речи!";
 
-    /*private ExecutorService databaseExecutorService;*/
-
     private AppComponent appComponent;
 
     @Override
@@ -48,8 +46,6 @@ public class App extends Application
         initTTS();
 
         createNotificationChannel();
-
-
 
         //setNotificationPeriodicWorker(10);
     }
@@ -140,14 +136,6 @@ public class App extends Application
         textToSpeech.setSpeechRate(speechRate * 0.1f);
         textToSpeech.speak("An example of speech rate.", TextToSpeech.QUEUE_FLUSH, null, "1");
     }
-
-
-
-    // ExecutorService
-
-    /*public void executeWithDatabase(Runnable runnable){
-        databaseExecutorService.execute(runnable);
-    }*/
 
 
 

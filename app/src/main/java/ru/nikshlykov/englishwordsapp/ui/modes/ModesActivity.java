@@ -17,6 +17,9 @@ import com.google.android.material.button.MaterialButton;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import ru.nikshlykov.englishwordsapp.App;
 import ru.nikshlykov.englishwordsapp.R;
 import ru.nikshlykov.englishwordsapp.db.mode.Mode;
 
@@ -27,13 +30,15 @@ public class ModesActivity extends AppCompatActivity {
     public static final String EXTRA_SELECTED_MODES = "SelectedModes";
 
     // ViewModel для работы с БД.
-    private ModesViewModel modesViewModel;
+    @Inject
+    public ModesViewModel modesViewModel;
 
     private ModesRecyclerViewAdapter adapter;
 
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        ((App)getApplication()).getAppComponent().inject(this);
         super.onCreate(savedInstanceState);
         Log.i(LOG_TAG, "onCreate()");
         setContentView(R.layout.activity_modes);

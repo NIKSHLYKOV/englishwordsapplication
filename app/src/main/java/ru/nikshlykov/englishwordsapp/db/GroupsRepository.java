@@ -50,7 +50,6 @@ public class GroupsRepository {
     private GroupDao groupDao;
     private LinkDao linkDao;
     private SubgroupDao subgroupDao;
-    private WordDao wordDao;
 
     private ExecutorService databaseExecutorService;
 

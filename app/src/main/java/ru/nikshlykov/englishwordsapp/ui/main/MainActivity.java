@@ -34,6 +34,8 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class MainActivity extends AppCompatActivity
         implements ProfileFragment.ProfileFragmentReportListener,
         ModesRepository.OnSelectedModesLoadedListener,
@@ -65,7 +67,8 @@ public class MainActivity extends AppCompatActivity
     private Fragment lastModeFragment;
 
     // ViewModel для работы с БД.
-    private StudyViewModel studyViewModel;
+    @Inject
+    public StudyViewModel studyViewModel;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -121,6 +124,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.AppTheme);
+        ((App)getApplication()).getAppComponent().inject(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         findViews();

@@ -12,6 +12,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import javax.inject.Inject;
+
+import ru.nikshlykov.englishwordsapp.App;
 import ru.nikshlykov.englishwordsapp.R;
 
 public class StatisticsFragment extends Fragment {
@@ -19,17 +22,18 @@ public class StatisticsFragment extends Fragment {
     private TextView newWordsCountTextView;
     private TextView repeatsCountTextView;
 
-    private StatisticsViewModel statisticsViewModel;
+    @Inject
+    public StatisticsViewModel statisticsViewModel;
 
     @Override
     public void onAttach(@NonNull Context context) {
+        ((App)getActivity().getApplication()).getAppComponent().inject(this);
         super.onAttach(context);
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        statisticsViewModel = new ViewModelProvider(getActivity()).get(StatisticsViewModel.class);
     }
 
     @Nullable

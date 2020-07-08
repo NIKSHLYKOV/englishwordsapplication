@@ -36,6 +36,9 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import javax.inject.Inject;
+
+import ru.nikshlykov.englishwordsapp.App;
 import ru.nikshlykov.englishwordsapp.R;
 import ru.nikshlykov.englishwordsapp.db.GroupsRepository;
 import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup;
@@ -51,8 +54,6 @@ public class SubgroupActivity extends AppCompatActivity
 
     // TODO сделать свою view для отображения прогресса по слову.
     //  Лучше базу брать из той, которая в WordActivity.
-
-    // TODO сделать возможность передавать подгруппы между activity и fragments.
 
     // Ключи для получения аргументов.
     public static final String EXTRA_SUBGROUP_OBJECT = "SubgroupObject";
@@ -88,7 +89,8 @@ public class SubgroupActivity extends AppCompatActivity
     private Drawable deleteIcon;
     private Drawable linkIcon;
 
-    private SubgroupViewModel subgroupViewModel;
+    @Inject
+    public SubgroupViewModel subgroupViewModel;
 
     private Subgroup subgroup;
     // TODO убрать всякие id и т.д.
@@ -105,6 +107,7 @@ public class SubgroupActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        ((App)getApplication()).getAppComponent().inject(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_subgroup);
 

@@ -9,12 +9,14 @@ import androidx.lifecycle.MutableLiveData;
 import java.util.ArrayList;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import ru.nikshlykov.englishwordsapp.App;
 import ru.nikshlykov.englishwordsapp.db.GroupsRepository;
 import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup;
 import ru.nikshlykov.englishwordsapp.db.subgroup.SubgroupDao;
 
+@Singleton
 public class GroupsViewModel extends AndroidViewModel implements
         GroupsRepository.OnGroupItemsLoadedListener,
         GroupsRepository.OnMinSubgroupIdLoadedListener,
@@ -27,6 +29,7 @@ public class GroupsViewModel extends AndroidViewModel implements
 
     private String newSubgroupName;
 
+    @Inject
     public GroupsViewModel(@NonNull Application application) {
         super(application);
         ((App)application).getAppComponent().inject(this);

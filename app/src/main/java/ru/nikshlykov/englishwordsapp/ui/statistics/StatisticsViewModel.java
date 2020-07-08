@@ -9,11 +9,13 @@ import androidx.lifecycle.MutableLiveData;
 import java.util.ArrayList;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import ru.nikshlykov.englishwordsapp.App;
 import ru.nikshlykov.englishwordsapp.db.WordsRepository;
 import ru.nikshlykov.englishwordsapp.db.repeat.Repeat;
 
+@Singleton
 public class StatisticsViewModel extends AndroidViewModel {
 
     @Inject
@@ -21,6 +23,7 @@ public class StatisticsViewModel extends AndroidViewModel {
 
     private MutableLiveData<ArrayList<Repeat>> allRepeatsMutableLiveData;
 
+    @Inject
     public StatisticsViewModel(@NonNull Application application) {
         super(application);
         ((App)application).getAppComponent().inject(this);

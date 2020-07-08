@@ -22,7 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
+@Singleton
 public class SubgroupViewModel extends AndroidViewModel
         implements WordsRepository.OnWordInsertedListener,
         GroupsRepository.OnSubgroupsLoadedListener {
@@ -47,6 +49,7 @@ public class SubgroupViewModel extends AndroidViewModel
 
     private MutableLiveData<ArrayList<Subgroup>> availableSubgroupToLink;
 
+    @Inject
     public SubgroupViewModel(@NonNull Application application) {
         super(application);
         ((App)application).getAppComponent().inject(this);

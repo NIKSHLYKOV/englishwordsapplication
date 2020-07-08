@@ -13,7 +13,9 @@ import ru.nikshlykov.englishwordsapp.db.mode.Mode;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
+@Singleton
 public class ModesViewModel extends AndroidViewModel {
 
     @Inject
@@ -21,6 +23,7 @@ public class ModesViewModel extends AndroidViewModel {
 
     private LiveData<List<Mode>> liveDataModes;
 
+    @Inject
     public ModesViewModel(@NonNull Application application) {
         super(application);
         ((App)application).getAppComponent().inject(this);

@@ -2,7 +2,6 @@ package ru.nikshlykov.englishwordsapp.ui.main;
 
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,8 +16,6 @@ import androidx.fragment.app.FragmentTransaction;
 import com.google.android.material.button.MaterialButton;
 
 import ru.nikshlykov.englishwordsapp.R;
-import ru.nikshlykov.englishwordsapp.ui.modes.ModesActivity;
-import ru.nikshlykov.englishwordsapp.ui.settings.SettingsActivity;
 import ru.nikshlykov.englishwordsapp.ui.statistics.StatisticsFragment;
 
 public class ProfileFragment extends Fragment {
@@ -26,8 +23,8 @@ public class ProfileFragment extends Fragment {
     private Context context;
 
     // View элементы.
-    private MaterialButton settings;
-    private MaterialButton modes;
+    private MaterialButton settingsMaterialButton;
+    private MaterialButton modesMaterialButton;
 
     private ProfileFragmentReportListener reportListener;
 
@@ -49,13 +46,13 @@ public class ProfileFragment extends Fragment {
         Log.d(LOG_TAG, "onCreateView");
         View view = inflater.inflate(R.layout.fragment_profile, null);
         findViews(view);
-        modes.setOnClickListener(new View.OnClickListener() {
+        modesMaterialButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 reportListener.reportOpenModesActivity();
             }
         });
-        settings.setOnClickListener(new View.OnClickListener() {
+        settingsMaterialButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 reportListener.reportOpenSettingsActivity();
@@ -78,8 +75,8 @@ public class ProfileFragment extends Fragment {
     }
 
     private void findViews(View view) {
-        settings = view.findViewById(R.id.fragment_profile___material_button___settings);
-        modes = view.findViewById(R.id.fragment_profile___material_button___modes);
+        settingsMaterialButton = view.findViewById(R.id.fragment_profile___material_button___settings);
+        modesMaterialButton = view.findViewById(R.id.fragment_profile___material_button___modes);
     }
 }
 

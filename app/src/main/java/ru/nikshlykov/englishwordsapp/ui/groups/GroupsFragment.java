@@ -20,6 +20,9 @@ import com.google.android.material.floatingactionbutton.ExtendedFloatingActionBu
 
 import java.util.ArrayList;
 
+import javax.inject.Inject;
+
+import ru.nikshlykov.englishwordsapp.App;
 import ru.nikshlykov.englishwordsapp.R;
 import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup;
 import ru.nikshlykov.englishwordsapp.ui.subgroup.AddOrEditSubgroupActivity;
@@ -37,7 +40,8 @@ public class GroupsFragment extends Fragment
     private static final int REQUEST_EDIT_SUBGROUP = 2;
 
     // ViewModel для взаимодействия с БД.
-    private GroupsViewModel groupsViewModel;
+    @Inject
+    public GroupsViewModel groupsViewModel;
 
     // View компоненты фрагмента.
     private RecyclerView groupItemsRecyclerView;
@@ -53,6 +57,7 @@ public class GroupsFragment extends Fragment
 
     @Override
     public void onAttach(Context context) {
+        ((App)getActivity().getApplication()).getAppComponent().inject(this);
         super.onAttach(context);
         Log.d(LOG_TAG, "onAttach");
         this.context = context;
