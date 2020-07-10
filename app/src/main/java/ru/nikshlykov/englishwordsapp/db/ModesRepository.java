@@ -43,8 +43,7 @@ public class ModesRepository {
 
     private ModeDao modeDao;
 
-    public ModesRepository(Application application) {
-        AppDatabase database = AppDatabase.getInstance(application);
+    public ModesRepository(AppDatabase database) {
 
         modeDao = database.modeDao();
     }

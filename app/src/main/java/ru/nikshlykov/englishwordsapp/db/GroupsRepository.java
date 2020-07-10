@@ -53,8 +53,7 @@ public class GroupsRepository {
     private ExecutorService databaseExecutorService;
 
 
-    public GroupsRepository(Application application) {
-        AppDatabase database = AppDatabase.getInstance(application);
+    public GroupsRepository(AppDatabase database) {
 
         groupDao = database.groupDao();
         linkDao = database.linkDao();
