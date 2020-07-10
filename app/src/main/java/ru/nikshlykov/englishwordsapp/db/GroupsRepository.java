@@ -44,7 +44,6 @@ public class GroupsRepository {
     public static final String PATH_TO_HIGH_SUBGROUP_IMAGES =
             "https://raw.githubusercontent.com/NIKSHLYKOV/englishwordsappimages/master/high_images/";
 
-    private static GroupsRepository instance;
     private static final String LOG_TAG = GroupsRepository.class.getCanonicalName();
 
     private GroupDao groupDao;
@@ -53,13 +52,8 @@ public class GroupsRepository {
 
     private ExecutorService databaseExecutorService;
 
-    public static GroupsRepository getInstance(Application application) {
-        if (instance == null)
-            instance = new GroupsRepository(application);
-        return instance;
-    }
 
-    private GroupsRepository(Application application) {
+    public GroupsRepository(Application application) {
         AppDatabase database = AppDatabase.getInstance(application);
 
         groupDao = database.groupDao();

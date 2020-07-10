@@ -39,7 +39,6 @@ import static ru.nikshlykov.englishwordsapp.ui.word.LinkOrDeleteWordDialogFragme
 
 public class WordsRepository {
 
-    private static WordsRepository instance;
     private static final String LOG_TAG = WordsRepository.class.getCanonicalName();
 
     private ExampleDao exampleDao;
@@ -48,13 +47,8 @@ public class WordsRepository {
 
     private ExecutorService databaseExecutorService;
 
-    public static WordsRepository getInstance(Application application) {
-        if (instance == null)
-            instance = new WordsRepository(application);
-        return instance;
-    }
 
-    private WordsRepository(Application application) {
+    public WordsRepository(Application application) {
         AppDatabase database = AppDatabase.getInstance(application);
 
         exampleDao = database.exampleDao();

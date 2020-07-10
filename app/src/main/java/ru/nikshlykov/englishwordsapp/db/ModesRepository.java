@@ -39,18 +39,11 @@ import static ru.nikshlykov.englishwordsapp.ui.word.LinkOrDeleteWordDialogFragme
 
 public class ModesRepository {
 
-    private static ModesRepository instance;
     private static final String LOG_TAG = ModesRepository.class.getCanonicalName();
 
     private ModeDao modeDao;
 
-    public static ModesRepository getInstance(Application application) {
-        if (instance == null)
-            instance = new ModesRepository(application);
-        return instance;
-    }
-
-    private ModesRepository(Application application) {
+    public ModesRepository(Application application) {
         AppDatabase database = AppDatabase.getInstance(application);
 
         modeDao = database.modeDao();
