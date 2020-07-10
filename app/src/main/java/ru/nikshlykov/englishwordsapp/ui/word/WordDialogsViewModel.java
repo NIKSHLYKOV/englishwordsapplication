@@ -5,8 +5,6 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 
-import javax.inject.Inject;
-
 
 import ru.nikshlykov.englishwordsapp.db.GroupsRepository;
 import ru.nikshlykov.englishwordsapp.db.link.Link;
@@ -17,7 +15,6 @@ public class WordDialogsViewModel extends AndroidViewModel {
 
     private GroupsRepository groupsRepository;
 
-    @Inject
     public WordDialogsViewModel(@NonNull Application application, GroupsRepository groupsRepository) {
         super(application);
         this.groupsRepository = groupsRepository;

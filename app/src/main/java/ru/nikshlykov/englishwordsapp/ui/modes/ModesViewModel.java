@@ -11,15 +11,12 @@ import ru.nikshlykov.englishwordsapp.db.mode.Mode;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 public class ModesViewModel extends AndroidViewModel {
 
     private ModesRepository modesRepository;
 
     private LiveData<List<Mode>> liveDataModes;
 
-    @Inject
     public ModesViewModel(@NonNull Application application, ModesRepository modesRepository) {
         super(application);
         this.modesRepository = modesRepository;

@@ -23,7 +23,8 @@ import ru.nikshlykov.englishwordsapp.ui.word.WordDialogsViewModel;
 import ru.nikshlykov.englishwordsapp.ui.word.WordViewModel;
 
 
-@Component(modules = {RepositoryModule.class, ContextModule.class, DatabaseModule.class})
+@Component(modules = {RepositoryModule.class, ContextModule.class, DatabaseModule.class,
+ViewModelModule.class})
 @Singleton
 public interface AppComponent {
 

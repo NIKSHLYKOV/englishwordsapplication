@@ -10,8 +10,6 @@ import androidx.lifecycle.Observer;
 
 import java.util.ArrayList;
 
-import javax.inject.Inject;
-
 
 import ru.nikshlykov.englishwordsapp.db.GroupsRepository;
 import ru.nikshlykov.englishwordsapp.db.WordsRepository;
@@ -32,7 +30,6 @@ public class WordViewModel extends AndroidViewModel
     // Список подгрупп для добавления или удаления связи с ними.
     private MutableLiveData<ArrayList<Subgroup>> availableSubgroupsTo;
 
-    @Inject
     public WordViewModel(@NonNull Application application, WordsRepository wordsRepository,
                          GroupsRepository groupsRepository) {
         super(application);

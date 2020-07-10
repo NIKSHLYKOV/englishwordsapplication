@@ -20,8 +20,6 @@ import ru.nikshlykov.englishwordsapp.ui.word.LinkOrDeleteWordDialogFragment;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-
 public class SubgroupViewModel extends AndroidViewModel
         implements WordsRepository.OnWordInsertedListener,
         GroupsRepository.OnSubgroupsLoadedListener {
@@ -44,7 +42,6 @@ public class SubgroupViewModel extends AndroidViewModel
 
     private MutableLiveData<ArrayList<Subgroup>> availableSubgroupToLink;
 
-    @Inject
     public SubgroupViewModel(@NonNull Application application, GroupsRepository groupsRepository,
                              WordsRepository wordsRepository) {
         super(application);
