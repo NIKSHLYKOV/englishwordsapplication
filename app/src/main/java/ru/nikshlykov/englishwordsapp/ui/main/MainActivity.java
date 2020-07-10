@@ -132,9 +132,6 @@ public class MainActivity extends AppCompatActivity
         // Присваиваем обработчик нажатия на нижнее меню.
         bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        // Создаём ViewModel для работы с БД.
-        studyViewModel = new ViewModelProvider(this).get(StudyViewModel.class);
-
         // Получаем выбранные пользователем режимы.
         studyViewModel.getSelectedModes(this);
     }

@@ -42,15 +42,6 @@ public interface AppComponent {
     void inject(GroupsFragment groupsFragment);
     void inject(StatisticsFragment statisticsFragment);
 
-
-    void inject(WordViewModel wordViewModel);
-    void inject(StudyViewModel studyViewModel);
-    void inject(SubgroupViewModel subgroupViewModel);
-    void inject(ModesViewModel modesViewModel);
-    void inject(GroupsViewModel groupsViewModel);
-    void inject(StatisticsViewModel statisticsViewModel);
-    void inject(WordDialogsViewModel wordDialogsViewModel);
-
     /* void inject(ProfileFragment profileFragment);
     void inject(InfoFragment infoFragment);
 

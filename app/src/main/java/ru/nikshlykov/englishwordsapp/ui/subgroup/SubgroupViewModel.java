@@ -10,7 +10,6 @@ import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
-import ru.nikshlykov.englishwordsapp.App;
 import ru.nikshlykov.englishwordsapp.db.GroupsRepository;
 import ru.nikshlykov.englishwordsapp.db.WordsRepository;
 import ru.nikshlykov.englishwordsapp.db.link.Link;
@@ -22,20 +21,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
-@Singleton
 public class SubgroupViewModel extends AndroidViewModel
         implements WordsRepository.OnWordInsertedListener,
         GroupsRepository.OnSubgroupsLoadedListener {
 
     private static final String LOG_TAG = "SubgroupViewModel";
 
-    @Inject
-    public GroupsRepository groupsRepository;
+    private GroupsRepository groupsRepository;
 
-    @Inject
-    public WordsRepository wordsRepository;
+    private WordsRepository wordsRepository;
 
     private MutableLiveData<Subgroup> subgroupMutableLiveData;
 
@@ -50,9 +45,11 @@ public class SubgroupViewModel extends AndroidViewModel
     private MutableLiveData<ArrayList<Subgroup>> availableSubgroupToLink;
 
     @Inject
-    public SubgroupViewModel(@NonNull Application application) {
+    public SubgroupViewModel(@NonNull Application application, GroupsRepository groupsRepository,
+                             WordsRepository wordsRepository) {
         super(application);
-        ((App)application).getAppComponent().inject(this);
+        this.groupsRepository = groupsRepository;
+        this.wordsRepository = wordsRepository;
 
         subgroupMutableLiveData = new MutableLiveData<>();
         words = new MediatorLiveData<>();

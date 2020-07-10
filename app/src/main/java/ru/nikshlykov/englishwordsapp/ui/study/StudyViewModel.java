@@ -13,9 +13,8 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.preference.PreferenceManager;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
-import ru.nikshlykov.englishwordsapp.App;
+
 import ru.nikshlykov.englishwordsapp.R;
 import ru.nikshlykov.englishwordsapp.db.ModesRepository;
 import ru.nikshlykov.englishwordsapp.db.WordsRepository;
@@ -23,17 +22,14 @@ import ru.nikshlykov.englishwordsapp.db.repeat.Repeat;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
 import ru.nikshlykov.englishwordsapp.ui.settings.newwordscount.NewWordsCountPreference;
 
-@Singleton
 public class StudyViewModel extends AndroidViewModel implements
         WordsRepository.OnRepeatsCountForTodayLoadedListener {
 
     private static final String LOG_TAG = "StudyViewModel";
 
-    @Inject
-    public WordsRepository wordsRepository;
+    private WordsRepository wordsRepository;
 
-    @Inject
-    public ModesRepository modesRepository;
+    private ModesRepository modesRepository;
 
     private WordsRepository.OnAvailableToRepeatWordLoadedListener listener;
 
@@ -46,9 +42,11 @@ public class StudyViewModel extends AndroidViewModel implements
     private ArrayList<Long> selectedModesIds;
 
     @Inject
-    public StudyViewModel(@NonNull Application application) {
+    public StudyViewModel(@NonNull Application application, WordsRepository wordsRepository,
+                          ModesRepository modesRepository) {
         super(application);
-        ((App)application).getAppComponent().inject(this);
+        this.wordsRepository = wordsRepository;
+        this.modesRepository = modesRepository;
 
         withNew = true;
         loadNewWordsCount();

@@ -99,9 +99,6 @@ public class WordActivity extends AppCompatActivity
         // Находим View в разметке.
         findViews();
 
-        // Создаём ViewModel для работы с БД.
-        wordViewModel = new ViewModelProvider(this).get(WordViewModel.class);
-
         initToolbar();
 
         textToSpeech = ((App) getApplicationContext()).getTextToSpeech();
