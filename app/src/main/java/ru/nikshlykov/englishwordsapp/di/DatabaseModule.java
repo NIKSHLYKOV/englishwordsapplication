@@ -2,6 +2,8 @@ package ru.nikshlykov.englishwordsapp.di;
 
 import android.app.Application;
 
+import javax.inject.Singleton;
+
 import dagger.Module;
 import dagger.Provides;
 import ru.nikshlykov.englishwordsapp.db.GroupsRepository;
@@ -12,17 +14,20 @@ import ru.nikshlykov.englishwordsapp.db.WordsRepository;
 public class DatabaseModule {
 
     @Provides
+    @Singleton
     ModesRepository provideModesRepository(Application application){
-        return ModesRepository.getInstance(application);
+        return new ModesRepository(application);
     }
 
     @Provides
+    @Singleton
     GroupsRepository provideGroupsRepository(Application application){
-        return GroupsRepository.getInstance(application);
+        return new GroupsRepository(application);
     }
 
     @Provides
+    @Singleton
     WordsRepository provideWordsRepository(Application application){
-        return WordsRepository.getInstance(application);
+        return new WordsRepository(application);
     }
 }
