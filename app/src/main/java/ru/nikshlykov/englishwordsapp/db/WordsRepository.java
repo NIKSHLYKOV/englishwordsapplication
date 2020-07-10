@@ -48,8 +48,7 @@ public class WordsRepository {
     private ExecutorService databaseExecutorService;
 
 
-    public WordsRepository(Application application) {
-        AppDatabase database = AppDatabase.getInstance(application);
+    public WordsRepository(AppDatabase database) {
 
         exampleDao = database.exampleDao();
         repeatDao = database.repeatDao();

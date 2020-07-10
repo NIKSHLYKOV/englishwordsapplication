@@ -1,7 +1,6 @@
 package ru.nikshlykov.englishwordsapp.di;
 
 import android.app.Application;
-import android.content.Context;
 
 import javax.inject.Singleton;
 
@@ -16,7 +15,6 @@ import ru.nikshlykov.englishwordsapp.ui.modes.ModesViewModel;
 import ru.nikshlykov.englishwordsapp.ui.statistics.StatisticsFragment;
 import ru.nikshlykov.englishwordsapp.ui.statistics.StatisticsViewModel;
 import ru.nikshlykov.englishwordsapp.ui.study.StudyViewModel;
-import ru.nikshlykov.englishwordsapp.ui.subgroup.AddOrEditSubgroupActivity;
 import ru.nikshlykov.englishwordsapp.ui.subgroup.SubgroupActivity;
 import ru.nikshlykov.englishwordsapp.ui.subgroup.SubgroupViewModel;
 import ru.nikshlykov.englishwordsapp.ui.word.LinkOrDeleteWordDialogFragment;
@@ -25,7 +23,7 @@ import ru.nikshlykov.englishwordsapp.ui.word.WordDialogsViewModel;
 import ru.nikshlykov.englishwordsapp.ui.word.WordViewModel;
 
 
-@Component(modules = {DatabaseModule.class, ContextModule.class})
+@Component(modules = {RepositoryModule.class, ContextModule.class, DatabaseModule.class})
 @Singleton
 public interface AppComponent {
 
