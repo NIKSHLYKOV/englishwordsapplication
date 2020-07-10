@@ -8,8 +8,6 @@ import androidx.lifecycle.MutableLiveData;
 
 import java.util.ArrayList;
 
-import javax.inject.Inject;
-
 import ru.nikshlykov.englishwordsapp.db.WordsRepository;
 import ru.nikshlykov.englishwordsapp.db.repeat.Repeat;
 
@@ -19,7 +17,6 @@ public class StatisticsViewModel extends AndroidViewModel {
 
     private MutableLiveData<ArrayList<Repeat>> allRepeatsMutableLiveData;
 
-    @Inject
     public StatisticsViewModel(@NonNull Application application, WordsRepository wordsRepository) {
         super(application);
         this.wordsRepository = wordsRepository;

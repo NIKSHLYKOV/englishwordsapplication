@@ -12,8 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.preference.PreferenceManager;
 
-import javax.inject.Inject;
-
 
 import ru.nikshlykov.englishwordsapp.R;
 import ru.nikshlykov.englishwordsapp.db.ModesRepository;
@@ -41,7 +39,6 @@ public class StudyViewModel extends AndroidViewModel implements
 
     private ArrayList<Long> selectedModesIds;
 
-    @Inject
     public StudyViewModel(@NonNull Application application, WordsRepository wordsRepository,
                           ModesRepository modesRepository) {
         super(application);
