@@ -43,9 +43,6 @@ public class ModesActivity extends AppCompatActivity {
         Log.i(LOG_TAG, "onCreate()");
         setContentView(R.layout.activity_modes);
 
-        // Инициализируем ViewModel для работы с БД.
-        modesViewModel = new ViewModelProvider(this).get(ModesViewModel.class);
-
         initRecyclerViewWithAdapter();
 
         initSaveButton();

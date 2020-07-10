@@ -11,25 +11,21 @@ import androidx.lifecycle.Observer;
 import java.util.ArrayList;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
-import ru.nikshlykov.englishwordsapp.App;
+
 import ru.nikshlykov.englishwordsapp.db.GroupsRepository;
 import ru.nikshlykov.englishwordsapp.db.WordsRepository;
 import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
 
-@Singleton
 public class WordViewModel extends AndroidViewModel
         implements GroupsRepository.OnSubgroupsLoadedListener {
 
     private static final String LOG_TAG = "WordViewModel";
 
-    @Inject
-    public WordsRepository wordsRepository;
+    private WordsRepository wordsRepository;
 
-    @Inject
-    public GroupsRepository groupsRepository;
+    private GroupsRepository groupsRepository;
 
     private MutableLiveData<Word> wordMutableLiveData;
 
@@ -37,9 +33,12 @@ public class WordViewModel extends AndroidViewModel
     private MutableLiveData<ArrayList<Subgroup>> availableSubgroupsTo;
 
     @Inject
-    public WordViewModel(@NonNull Application application) {
+    public WordViewModel(@NonNull Application application, WordsRepository wordsRepository,
+                         GroupsRepository groupsRepository) {
         super(application);
-        ((App)application).getAppComponent().inject(this);
+        this.wordsRepository = wordsRepository;
+        this.groupsRepository = groupsRepository;
+
         availableSubgroupsTo = new MutableLiveData<>();
         wordMutableLiveData = new MutableLiveData<>();
     }

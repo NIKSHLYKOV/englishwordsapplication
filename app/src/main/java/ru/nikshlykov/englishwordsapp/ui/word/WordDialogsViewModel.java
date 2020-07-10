@@ -6,24 +6,21 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
-import ru.nikshlykov.englishwordsapp.App;
+
 import ru.nikshlykov.englishwordsapp.db.GroupsRepository;
 import ru.nikshlykov.englishwordsapp.db.link.Link;
 
-@Singleton
 public class WordDialogsViewModel extends AndroidViewModel {
 
     private long wordId;
 
-    @Inject
-    public GroupsRepository groupsRepository;
+    private GroupsRepository groupsRepository;
 
     @Inject
-    public WordDialogsViewModel(@NonNull Application application) {
+    public WordDialogsViewModel(@NonNull Application application, GroupsRepository groupsRepository) {
         super(application);
-        ((App)application).getAppComponent().inject(this);
+        this.groupsRepository = groupsRepository;
     }
 
     public void setWordId(long wordId) {

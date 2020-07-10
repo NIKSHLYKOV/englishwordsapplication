@@ -62,8 +62,6 @@ public class LinkOrDeleteWordDialogFragment extends DialogFragment {
 
         getDialogArguments();
 
-        // Создаём ViewModel.
-        wordDialogsViewModel = new ViewModelProvider(getActivity()).get(WordDialogsViewModel.class);
         wordDialogsViewModel.setWordId(wordId);
     }
 

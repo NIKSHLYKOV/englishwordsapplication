@@ -124,9 +124,6 @@ public class SubgroupActivity extends AppCompatActivity
 
         initCreateWordFAB();
 
-        // Создаём для Activity ViewModel.
-        subgroupViewModel = new ViewModelProvider(this).get(SubgroupViewModel.class);
-
         // TODO сделать нормально сразу из arguments.
         subgroupViewModel.setLiveDataSubgroup(subgroup, sortParam);
 

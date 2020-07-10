@@ -70,7 +70,6 @@ public class GroupsFragment extends Fragment
         Log.i(LOG_TAG, "onCreate()");
         groupItemsRecyclerViewAdapter = new GroupItemsRecyclerViewAdapter(context,
                 this, this);
-        groupsViewModel = new ViewModelProvider(getActivity()).get(GroupsViewModel.class);
     }
 
     @Nullable
