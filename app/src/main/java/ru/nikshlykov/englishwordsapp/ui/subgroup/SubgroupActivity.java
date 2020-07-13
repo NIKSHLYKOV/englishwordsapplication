@@ -24,7 +24,6 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
@@ -38,7 +37,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import javax.inject.Inject;
 
-import ru.nikshlykov.englishwordsapp.App;
+import dagger.android.support.DaggerAppCompatActivity;
 import ru.nikshlykov.englishwordsapp.R;
 import ru.nikshlykov.englishwordsapp.db.GroupsRepository;
 import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup;
@@ -47,7 +46,7 @@ import ru.nikshlykov.englishwordsapp.ui.word.LinkOrDeleteWordDialogFragment;
 import ru.nikshlykov.englishwordsapp.ui.word.ResetProgressDialogFragment;
 import ru.nikshlykov.englishwordsapp.ui.word.WordActivity;
 
-public class SubgroupActivity extends AppCompatActivity
+public class SubgroupActivity extends DaggerAppCompatActivity
         implements SortWordsDialogFragment.SortWordsListener,
         ResetProgressDialogFragment.ResetProgressListener,
         DeleteSubgroupDialogFragment.DeleteSubgroupListener {
@@ -109,7 +108,6 @@ public class SubgroupActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        ((App)getApplication()).getAppComponent().inject(this);
         super.onCreate(savedInstanceState);
         subgroupViewModel = viewModelFactory.create(SubgroupViewModel.class);
 

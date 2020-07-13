@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -22,7 +21,7 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 
-import ru.nikshlykov.englishwordsapp.App;
+import dagger.android.support.DaggerFragment;
 import ru.nikshlykov.englishwordsapp.R;
 import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup;
 import ru.nikshlykov.englishwordsapp.ui.subgroup.AddOrEditSubgroupActivity;
@@ -30,7 +29,7 @@ import ru.nikshlykov.englishwordsapp.ui.subgroup.SubgroupActivity;
 
 import static android.app.Activity.RESULT_OK;
 
-public class GroupsFragment extends Fragment
+public class GroupsFragment extends DaggerFragment
         implements SubgroupsRecyclerViewAdapter.OnSubgroupClickListener,
         SubgroupsRecyclerViewAdapter.OnSubgroupCheckedListener {
 
@@ -58,7 +57,6 @@ public class GroupsFragment extends Fragment
 
     @Override
     public void onAttach(Context context) {
-        ((App)getActivity().getApplication()).getAppComponent().inject(this);
         super.onAttach(context);
         Log.d(LOG_TAG, "onAttach");
         this.context = context;

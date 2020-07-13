@@ -6,7 +6,6 @@ import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -19,11 +18,11 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import ru.nikshlykov.englishwordsapp.App;
+import dagger.android.support.DaggerAppCompatActivity;
 import ru.nikshlykov.englishwordsapp.R;
 import ru.nikshlykov.englishwordsapp.db.mode.Mode;
 
-public class ModesActivity extends AppCompatActivity {
+public class ModesActivity extends DaggerAppCompatActivity {
 
     private static final String LOG_TAG = "ModesActivity";
 
@@ -41,7 +40,6 @@ public class ModesActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         Log.i(LOG_TAG, "onCreate()");
-        ((App)getApplication()).getAppComponent().inject(this);
         super.onCreate(savedInstanceState);
         modesViewModel = viewModelFactory.create(ModesViewModel.class);
 
