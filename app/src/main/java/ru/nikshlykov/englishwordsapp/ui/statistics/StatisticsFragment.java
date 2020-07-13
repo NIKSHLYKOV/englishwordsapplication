@@ -22,8 +22,10 @@ public class StatisticsFragment extends Fragment {
     private TextView newWordsCountTextView;
     private TextView repeatsCountTextView;
 
+    private StatisticsViewModel statisticsViewModel;
+
     @Inject
-    public StatisticsViewModel statisticsViewModel;
+    public ViewModelProvider.Factory viewModelFactory;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -34,6 +36,7 @@ public class StatisticsFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        statisticsViewModel = viewModelFactory.create(StatisticsViewModel.class);
     }
 
     @Nullable

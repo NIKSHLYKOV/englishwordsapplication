@@ -89,8 +89,10 @@ public class SubgroupActivity extends AppCompatActivity
     private Drawable deleteIcon;
     private Drawable linkIcon;
 
+    private SubgroupViewModel subgroupViewModel;
+
     @Inject
-    public SubgroupViewModel subgroupViewModel;
+    public ViewModelProvider.Factory viewModelFactory;
 
     private Subgroup subgroup;
     // TODO убрать всякие id и т.д.
@@ -109,6 +111,8 @@ public class SubgroupActivity extends AppCompatActivity
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         ((App)getApplication()).getAppComponent().inject(this);
         super.onCreate(savedInstanceState);
+        subgroupViewModel = viewModelFactory.create(SubgroupViewModel.class);
+
         setContentView(R.layout.activity_subgroup);
 
         // Получаем id подгруппы из Intent.

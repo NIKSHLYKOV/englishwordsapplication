@@ -67,8 +67,10 @@ public class MainActivity extends AppCompatActivity
     private Fragment lastModeFragment;
 
     // ViewModel для работы с БД.
+    private StudyViewModel studyViewModel;
+
     @Inject
-    public StudyViewModel studyViewModel;
+    public ViewModelProvider.Factory viewModelFactory;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -126,6 +128,8 @@ public class MainActivity extends AppCompatActivity
         setTheme(R.style.AppTheme);
         ((App)getApplication()).getAppComponent().inject(this);
         super.onCreate(savedInstanceState);
+        studyViewModel = viewModelFactory.create(StudyViewModel.class);
+
         setContentView(R.layout.activity_main);
         findViews();
 

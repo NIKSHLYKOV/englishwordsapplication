@@ -30,17 +30,21 @@ public class ModesActivity extends AppCompatActivity {
     public static final String EXTRA_SELECTED_MODES = "SelectedModes";
 
     // ViewModel для работы с БД.
+    private ModesViewModel modesViewModel;
+
     @Inject
-    public ModesViewModel modesViewModel;
+    public ViewModelProvider.Factory viewModelFactory;
 
     private ModesRecyclerViewAdapter adapter;
 
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        Log.i(LOG_TAG, "onCreate()");
         ((App)getApplication()).getAppComponent().inject(this);
         super.onCreate(savedInstanceState);
-        Log.i(LOG_TAG, "onCreate()");
+        modesViewModel = viewModelFactory.create(ModesViewModel.class);
+
         setContentView(R.layout.activity_modes);
 
         initRecyclerViewWithAdapter();

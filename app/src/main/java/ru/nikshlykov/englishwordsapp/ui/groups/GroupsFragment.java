@@ -40,8 +40,10 @@ public class GroupsFragment extends Fragment
     private static final int REQUEST_EDIT_SUBGROUP = 2;
 
     // ViewModel для взаимодействия с БД.
+    private GroupsViewModel groupsViewModel;
+
     @Inject
-    public GroupsViewModel groupsViewModel;
+    public ViewModelProvider.Factory viewModelFactory;
 
     // View компоненты фрагмента.
     private RecyclerView groupItemsRecyclerView;
@@ -54,7 +56,6 @@ public class GroupsFragment extends Fragment
 
     private boolean subgroupCreatingFlag;
 
-
     @Override
     public void onAttach(Context context) {
         ((App)getActivity().getApplication()).getAppComponent().inject(this);
@@ -66,8 +67,10 @@ public class GroupsFragment extends Fragment
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         Log.i(LOG_TAG, "onCreate()");
+        super.onCreate(savedInstanceState);
+        groupsViewModel = viewModelFactory.create(GroupsViewModel.class);
+
         groupItemsRecyclerViewAdapter = new GroupItemsRecyclerViewAdapter(context,
                 this, this);
     }

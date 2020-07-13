@@ -79,8 +79,10 @@ public class WordActivity extends AppCompatActivity
     private long wordId = 0L;*/
 
     // ViewModel для работы с БД.
+    private WordViewModel wordViewModel;
+
     @Inject
-    public WordViewModel wordViewModel;
+    public ViewModelProvider.Factory viewModelFactory;
 
     // Observer отвечающий за обработку подгруженных подгрупп для связывания или удаления.
     public Observer<ArrayList<Subgroup>> availableSubgroupsObserver;
@@ -93,8 +95,9 @@ public class WordActivity extends AppCompatActivity
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         ((App)getApplication()).getAppComponent().inject(this);
-
         super.onCreate(savedInstanceState);
+        wordViewModel = viewModelFactory.create(WordViewModel.class);
+
         setContentView(R.layout.activity_word);
         // Находим View в разметке.
         findViews();

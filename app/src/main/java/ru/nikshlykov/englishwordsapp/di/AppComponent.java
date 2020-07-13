@@ -7,19 +7,12 @@ import javax.inject.Singleton;
 import dagger.BindsInstance;
 import dagger.Component;
 import ru.nikshlykov.englishwordsapp.ui.groups.GroupsFragment;
-import ru.nikshlykov.englishwordsapp.ui.groups.GroupsViewModel;
 import ru.nikshlykov.englishwordsapp.ui.main.MainActivity;
 import ru.nikshlykov.englishwordsapp.ui.modes.ModesActivity;
-import ru.nikshlykov.englishwordsapp.ui.modes.ModesViewModel;
 import ru.nikshlykov.englishwordsapp.ui.statistics.StatisticsFragment;
-import ru.nikshlykov.englishwordsapp.ui.statistics.StatisticsViewModel;
-import ru.nikshlykov.englishwordsapp.ui.study.StudyViewModel;
 import ru.nikshlykov.englishwordsapp.ui.subgroup.SubgroupActivity;
-import ru.nikshlykov.englishwordsapp.ui.subgroup.SubgroupViewModel;
 import ru.nikshlykov.englishwordsapp.ui.word.LinkOrDeleteWordDialogFragment;
 import ru.nikshlykov.englishwordsapp.ui.word.WordActivity;
-import ru.nikshlykov.englishwordsapp.ui.word.WordDialogsViewModel;
-import ru.nikshlykov.englishwordsapp.ui.word.WordViewModel;
 
 
 @Component(modules = {RepositoryModule.class, ContextModule.class, DatabaseModule.class,
