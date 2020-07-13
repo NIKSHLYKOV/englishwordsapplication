@@ -46,8 +46,10 @@ public class LinkOrDeleteWordDialogFragment extends DialogFragment {
     private boolean[] checkedSubgroups;
 
     // ViewModel для работы с БД.
+    private WordDialogsViewModel wordDialogsViewModel;
+
     @Inject
-    public WordDialogsViewModel wordDialogsViewModel;
+    public ViewModelProvider.Factory viewModelFactory;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -59,6 +61,7 @@ public class LinkOrDeleteWordDialogFragment extends DialogFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         Log.d(LOG_TAG, "onCreate");
         super.onCreate(savedInstanceState);
+        wordDialogsViewModel = viewModelFactory.create(WordDialogsViewModel.class);
 
         getDialogArguments();
 
