@@ -8,11 +8,11 @@ import androidx.annotation.NonNull;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
+import dagger.android.support.DaggerAppCompatActivity;
 import ru.nikshlykov.englishwordsapp.App;
 import ru.nikshlykov.englishwordsapp.R;
 import ru.nikshlykov.englishwordsapp.db.ModesRepository;
@@ -36,7 +36,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends DaggerAppCompatActivity
         implements ProfileFragment.ProfileFragmentReportListener,
         ModesRepository.OnSelectedModesLoadedListener,
         WordsRepository.OnAvailableToRepeatWordLoadedListener,
@@ -126,7 +126,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.AppTheme);
-        ((App)getApplication()).getAppComponent().inject(this);
         super.onCreate(savedInstanceState);
         studyViewModel = viewModelFactory.create(StudyViewModel.class);
 

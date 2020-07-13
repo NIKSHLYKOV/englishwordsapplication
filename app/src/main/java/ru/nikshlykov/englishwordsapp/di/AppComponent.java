@@ -6,6 +6,9 @@ import javax.inject.Singleton;
 
 import dagger.BindsInstance;
 import dagger.Component;
+import dagger.android.AndroidInjectionModule;
+import dagger.android.AndroidInjector;
+import ru.nikshlykov.englishwordsapp.App;
 import ru.nikshlykov.englishwordsapp.ui.groups.GroupsFragment;
 import ru.nikshlykov.englishwordsapp.ui.main.MainActivity;
 import ru.nikshlykov.englishwordsapp.ui.modes.ModesActivity;
@@ -15,10 +18,10 @@ import ru.nikshlykov.englishwordsapp.ui.word.LinkOrDeleteWordDialogFragment;
 import ru.nikshlykov.englishwordsapp.ui.word.WordActivity;
 
 
-@Component(modules = {RepositoryModule.class, ContextModule.class, DatabaseModule.class,
-ViewModelModule.class})
+@Component(modules = {AndroidInjectionModule.class, RepositoryModule.class, ContextModule.class,
+        DatabaseModule.class, ViewModelModule.class, ActivityModule.class, FragmentModule.class})
 @Singleton
-public interface AppComponent {
+public interface AppComponent extends AndroidInjector<App> {
 
     @Component.Factory
     interface Factory {

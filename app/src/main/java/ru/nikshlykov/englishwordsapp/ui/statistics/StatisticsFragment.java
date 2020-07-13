@@ -9,15 +9,14 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import javax.inject.Inject;
 
-import ru.nikshlykov.englishwordsapp.App;
+import dagger.android.support.DaggerFragment;
 import ru.nikshlykov.englishwordsapp.R;
 
-public class StatisticsFragment extends Fragment {
+public class StatisticsFragment extends DaggerFragment {
 
     private TextView newWordsCountTextView;
     private TextView repeatsCountTextView;
@@ -29,7 +28,6 @@ public class StatisticsFragment extends Fragment {
 
     @Override
     public void onAttach(@NonNull Context context) {
-        ((App)getActivity().getApplication()).getAppComponent().inject(this);
         super.onAttach(context);
     }
 

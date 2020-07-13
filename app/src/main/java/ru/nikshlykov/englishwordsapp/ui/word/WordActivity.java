@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
@@ -26,6 +25,7 @@ import com.google.android.material.textfield.TextInputEditText;
 
 import javax.inject.Inject;
 
+import dagger.android.support.DaggerAppCompatActivity;
 import ru.nikshlykov.englishwordsapp.App;
 import ru.nikshlykov.englishwordsapp.R;
 import ru.nikshlykov.englishwordsapp.db.WordsRepository;
@@ -35,7 +35,7 @@ import ru.nikshlykov.englishwordsapp.db.word.Word;
 
 import static ru.nikshlykov.englishwordsapp.ui.word.LinkOrDeleteWordDialogFragment.TO_DELETE;
 
-public class WordActivity extends AppCompatActivity
+public class WordActivity extends DaggerAppCompatActivity
         implements ResetProgressDialogFragment.ResetProgressListener,
         WordsRepository.OnExamplesLoadedListener {
 
@@ -94,7 +94,6 @@ public class WordActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        ((App)getApplication()).getAppComponent().inject(this);
         super.onCreate(savedInstanceState);
         wordViewModel = viewModelFactory.create(WordViewModel.class);
 
