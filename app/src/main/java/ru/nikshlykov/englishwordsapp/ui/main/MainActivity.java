@@ -269,7 +269,7 @@ public class MainActivity extends AppCompatActivity
      */
     @Override
     public void onAvailableToRepeatWordLoaded(Word word) {
-        if (word != null) {
+        /*if (word != null) {
             Log.i(LOG_TAG, "word = " + word.word + "; learnProgress = " + word.learnProgress +
                     "; lastRepetitionDate = " + word.lastRepetitionDate);
 
@@ -311,7 +311,7 @@ public class MainActivity extends AppCompatActivity
             }
         } else {
             displayInfoFragment(InfoFragment.FLAG_AVAILABLE_WORDS_ARE_NOT_EXISTING);
-        }
+        }*/
     }
 
     /**

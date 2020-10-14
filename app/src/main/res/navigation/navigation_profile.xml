@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_profile"
+    app:startDestination="@id/profile_dest">
+
+    <activity
+        android:id="@+id/modes_dest"
+        android:name="ru.nikshlykov.englishwordsapp.ui.modes.ModesActivity"
+        android:label="ModesActivity"
+        tools:layout="@layout/activity_modes"
+        />
+    <activity
+        android:id="@+id/settings_dest"
+        android:name="ru.nikshlykov.englishwordsapp.ui.settings.SettingsActivity"
+        android:label="SettingsActivity"
+        tools:layout="@layout/activity_settings"/>
+    <fragment
+        android:id="@+id/profile_dest"
+        android:name="ru.nikshlykov.englishwordsapp.ui.main.ProfileFragment"
+        android:label="ProfileFragment"
+        tools:layout="@layout/fragment_profile"/>
+</navigation>
