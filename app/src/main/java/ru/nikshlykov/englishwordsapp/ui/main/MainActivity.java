@@ -12,6 +12,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.NavigationUI;
 
 import ru.nikshlykov.englishwordsapp.App;
 import ru.nikshlykov.englishwordsapp.R;
@@ -70,7 +73,7 @@ public class MainActivity extends AppCompatActivity
     @Inject
     public StudyViewModel studyViewModel;
 
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
+    /*private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -119,18 +122,21 @@ public class MainActivity extends AppCompatActivity
             }
             return false;
         }
-    };
+    };*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.AppTheme);
-        ((App)getApplication()).getAppComponent().inject(this);
+        ((App) getApplication()).getAppComponent().inject(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         findViews();
 
         // Присваиваем обработчик нажатия на нижнее меню.
-        bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        //bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+        NavController navController = Navigation.findNavController(this, R.id.activity_main___nav_host_fragment);
+        NavigationUI.setupWithNavController(bottomNavigationView, navController);
 
         // Создаём ViewModel для работы с БД.
         studyViewModel = new ViewModelProvider(this).get(StudyViewModel.class);
