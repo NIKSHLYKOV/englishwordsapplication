@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_main"
+    app:startDestination="@id/study_flow_dest">
+
+    <fragment
+        android:id="@+id/groups_words_flow_dest"
+        android:name="ru.nikshlykov.englishwordsapp.ui.groups.GroupsFragment"
+        android:label="GroupsFragment"
+        tools:layout="@layout/fragment_groups"/>
+    <fragment
+        android:id="@+id/profile_flow_dest"
+        android:name="ru.nikshlykov.englishwordsapp.ui.main.ProfileFragment"
+        android:label="ProfileFragment"
+        tools:layout="@layout/fragment_profile"/>
+    <fragment
+        android:id="@+id/study_flow_dest"
+        android:name="ru.nikshlykov.englishwordsapp.ui.study.CollectWordByLettersModeFragment"
+        android:label="CollectWordByLettersModeFragment"
+        tools:layout="@layout/fragment_collect_word_by_letters_mode"/>
+</navigation>
