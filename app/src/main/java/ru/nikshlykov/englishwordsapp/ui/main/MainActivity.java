@@ -150,7 +150,7 @@ public class MainActivity extends AppCompatActivity
      */
     private void findViews() {
         bottomNavigationView = findViewById(R.id.navigation);
-        contentLayoutId = findViewById(R.id.activity_main___linear_layout___content_layout).getId();
+        contentLayoutId = findViewById(R.id.activity_main___nav_host_fragment).getId();
     }
 
 
