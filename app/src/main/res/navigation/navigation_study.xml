@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_study"
+    app:startDestination="@id/info_dest">
+
+    <fragment
+        android:id="@+id/info_dest"
+        android:name="ru.nikshlykov.englishwordsapp.ui.main.InfoFragment"
+        android:label="InfoFragment"
+        tools:layout="@layout/fragment_info"/>
+    <fragment
+        android:id="@+id/collect_word_by_letters_mode_dest"
+        android:name="ru.nikshlykov.englishwordsapp.ui.study.CollectWordByLettersModeFragment"
+        android:label="CollectWordByLettersModeFragment"
+        tools:layout="@layout/fragment_collect_word_by_letters_mode"/>
+    <fragment
+        android:id="@+id/dictionary_cards_mode_dest"
+        android:name="ru.nikshlykov.englishwordsapp.ui.study.DictionaryCardsModeFragment"
+        android:label="DictionaryCardsModeFragment"
+        tools:layout="@layout/fragment_dictionary_cards_eng_to_rus"/>
+    <fragment
+        android:id="@+id/first_show_mode_dest"
+        android:name="ru.nikshlykov.englishwordsapp.ui.study.FirstShowModeFragment"
+        android:label="FirstShowModeFragment"
+        tools:layout="@layout/fragment_first_show_mode"/>
+    <fragment
+        android:id="@+id/write_word_by_voice_mode_dest"
+        android:name="ru.nikshlykov.englishwordsapp.ui.study.WriteWordByVoiceModeFragment"
+        android:label="WriteWordByVoiceModeFragment"
+        tools:layout="@layout/fragment_write_word_by_voice_mode"/>
+    <fragment
+        android:id="@+id/write_word_by_value_mode_dest"
+        android:name="ru.nikshlykov.englishwordsapp.ui.study.WriteWordByValueModeFragment"
+        android:label="WriteWordByValueModeFragment"
+        tools:layout="@layout/fragment_write_word_by_value_mode"/>
+</navigation>

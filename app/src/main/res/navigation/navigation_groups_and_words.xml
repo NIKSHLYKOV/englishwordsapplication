@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_groups_and_words"
+    app:startDestination="@id/groups_dest">
+
+    <fragment
+        android:id="@+id/groups_dest"
+        android:name="ru.nikshlykov.englishwordsapp.ui.groups.GroupsFragment"
+        android:label="GroupsFragment"
+        tools:layout="@layout/fragment_groups"/>
+</navigation>

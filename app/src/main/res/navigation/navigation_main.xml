@@ -7,17 +7,17 @@
 
     <fragment
         android:id="@+id/groups_and_words_flow_dest"
-        android:name="ru.nikshlykov.englishwordsapp.ui.groups.GroupsFragment"
-        android:label="GroupsFragment"
-        tools:layout="@layout/fragment_groups"/>
+        android:name="ru.nikshlykov.englishwordsapp.ui.flowfragments.GroupsAndWordsFlowFragment"
+        android:label="GroupsAndWordFlowFragment"
+        tools:layout="@layout/flow_fragment_groups_and_words"/>
     <fragment
         android:id="@+id/profile_flow_dest"
-        android:name="ru.nikshlykov.englishwordsapp.ui.main.ProfileFragment"
-        android:label="ProfileFragment"
-        tools:layout="@layout/fragment_profile"/>
+        android:name="ru.nikshlykov.englishwordsapp.ui.flowfragments.ProfileFlowFragment"
+        android:label="ProfileFlowFragment"
+        tools:layout="@layout/flow_fragment_profile"/>
     <fragment
         android:id="@+id/study_flow_dest"
-        android:name="ru.nikshlykov.englishwordsapp.ui.groups.GroupsFragment"
-        android:label="CollectWordByLettersModeFragment"
-        tools:layout="@layout/fragment_groups"/>
+        android:name="ru.nikshlykov.englishwordsapp.ui.flowfragments.StudyFlowFragment"
+        android:label="StudyFlowFragment"
+        tools:layout="@layout/flow_fragment_study"/>
 </navigation>
