@@ -9,7 +9,12 @@
         android:id="@+id/info_dest"
         android:name="ru.nikshlykov.englishwordsapp.ui.main.InfoFragment"
         android:label="InfoFragment"
-        tools:layout="@layout/fragment_info"/>
+        tools:layout="@layout/fragment_info">
+        <argument
+            android:name="infoFlag"
+            app:argType="integer"
+            android:defaultValue="1" />
+    </fragment>
     <fragment
         android:id="@+id/collect_word_by_letters_mode_dest"
         android:name="ru.nikshlykov.englishwordsapp.ui.study.CollectWordByLettersModeFragment"
@@ -35,4 +40,10 @@
         android:name="ru.nikshlykov.englishwordsapp.ui.study.WriteWordByValueModeFragment"
         android:label="WriteWordByValueModeFragment"
         tools:layout="@layout/fragment_write_word_by_value_mode"/>
+    <action android:id="@+id/action_global_info_dest" app:destination="@id/info_dest" />
+    <action android:id="@+id/action_global_collect_word_by_letters_mode_dest" app:destination="@id/collect_word_by_letters_mode_dest" />
+    <action android:id="@+id/action_global_first_show_mode_dest" app:destination="@id/first_show_mode_dest" />
+    <action android:id="@+id/action_global_dictionary_cards_mode_dest" app:destination="@id/dictionary_cards_mode_dest" />
+    <action android:id="@+id/action_global_write_word_by_voice_mode_dest" app:destination="@id/write_word_by_voice_mode_dest" />
+    <action android:id="@+id/action_global_write_word_by_value_mode_dest" app:destination="@id/write_word_by_value_mode_dest" />
 </navigation>

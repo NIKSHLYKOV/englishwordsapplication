@@ -13,13 +13,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 
 import ru.nikshlykov.englishwordsapp.R;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
-import ru.nikshlykov.englishwordsapp.ui.main.MainActivity;
-import ru.nikshlykov.englishwordsapp.ui.word.WordViewModel;
+import ru.nikshlykov.englishwordsapp.ui.flowfragments.StudyFlowFragment;
 
 public class DictionaryCardsModeFragment extends Fragment {
 
@@ -45,19 +42,23 @@ public class DictionaryCardsModeFragment extends Fragment {
     private RepeatResultListener repeatResultListener;
 
     private Word word;
-    private WordViewModel wordViewModel;
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        repeatResultListener = (RepeatResultListener) context;
+        Fragment parentFlowFragment = getParentFragment().getParentFragment();
+        if (parentFlowFragment instanceof FirstShowModeFragment.FirstShowModeReportListener) {
+            repeatResultListener = (RepeatResultListener) parentFlowFragment;
+        } else {
+            throw new RuntimeException(parentFlowFragment.toString() + " must implement RepeatResultListener");
+        }
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        word = getArguments().getParcelable(MainActivity.EXTRA_WORD_OBJECT);
+        word = getArguments().getParcelable(StudyFlowFragment.EXTRA_WORD_OBJECT);
         // Получаем id слова.
         //wordId = getArguments().getLong("WordId");
 
@@ -70,12 +71,13 @@ public class DictionaryCardsModeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d("CardModeFragment", "onCreateView");
         View view = null;
+        // TODO Адаптировать как под русский, так и под английский режим
         switch (flag) {
             case FLAG_ENG_TO_RUS:
                 view = inflater.inflate(R.layout.fragment_dictionary_cards_eng_to_rus, null);
                 findViewsEngToRus(view);
                 break;
-            case FLAG_RUS_TO_ENG:
+            default:
                 view = inflater.inflate(R.layout.fragment_dictionary_cards_rus_to_eng, null);
                 findViewsRusToEng(view);
                 break;
@@ -102,7 +104,7 @@ public class DictionaryCardsModeFragment extends Fragment {
                     case FLAG_ENG_TO_RUS:
                         valueTextView.setVisibility(View.VISIBLE);
                         break;
-                    case FLAG_RUS_TO_ENG:
+                    default:
                         wordTextView.setVisibility(View.VISIBLE);
                         transcriptionTextView.setVisibility(View.VISIBLE);
                         break;

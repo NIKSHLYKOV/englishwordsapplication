@@ -19,21 +19,15 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.gridlayout.widget.GridLayout;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 
 import java.util.ArrayList;
 import java.util.Random;
 
 import ru.nikshlykov.englishwordsapp.R;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
-import ru.nikshlykov.englishwordsapp.ui.main.MainActivity;
-import ru.nikshlykov.englishwordsapp.ui.word.WordViewModel;
+import ru.nikshlykov.englishwordsapp.ui.flowfragments.StudyFlowFragment;
 
 public class CollectWordByLettersModeFragment extends Fragment {
-
-    // Тег для логирования.
-    private static final String LOG_TAG = "CollectWordByLettersMF";
 
     private Context context;
 
@@ -60,7 +54,12 @@ public class CollectWordByLettersModeFragment extends Fragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         this.context = context;
-        repeatResultListener = (RepeatResultListener) context;
+        Fragment parentFlowFragment = getParentFragment().getParentFragment();
+        if (parentFlowFragment instanceof FirstShowModeFragment.FirstShowModeReportListener) {
+            repeatResultListener = (RepeatResultListener) parentFlowFragment;
+        } else {
+            throw new RuntimeException(parentFlowFragment.toString() + " must implement RepeatResultListener");
+        }
     }
 
     @Override
@@ -68,7 +67,7 @@ public class CollectWordByLettersModeFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         // Получаем id слова.
-        word = getArguments().getParcelable(MainActivity.EXTRA_WORD_OBJECT);
+        word = getArguments().getParcelable(StudyFlowFragment.EXTRA_WORD_OBJECT);
 
         handler = new Handler() {
             @Override

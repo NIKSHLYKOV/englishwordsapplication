@@ -7,13 +7,10 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 
 import ru.nikshlykov.englishwordsapp.R;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
-import ru.nikshlykov.englishwordsapp.ui.main.MainActivity;
-import ru.nikshlykov.englishwordsapp.ui.word.WordViewModel;
+import ru.nikshlykov.englishwordsapp.ui.flowfragments.StudyFlowFragment;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -45,7 +42,12 @@ public class FirstShowModeFragment extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        firstShowModeReportListener = (FirstShowModeReportListener) context;
+        Fragment parentFlowFragment = getParentFragment().getParentFragment();
+        if (parentFlowFragment instanceof FirstShowModeReportListener) {
+            firstShowModeReportListener = (FirstShowModeReportListener) parentFlowFragment;
+        } else {
+            throw new RuntimeException(parentFlowFragment.toString() + " must implement FirstShowModeReportListener");
+        }
     }
 
     @Override
@@ -57,7 +59,7 @@ public class FirstShowModeFragment extends Fragment {
         //wordId = getArguments().getLong(EXTRA_WORD_ID);
         // Получаем слово по id из БД.
         //wordViewModel.setWord(wordId);
-        word = getArguments().getParcelable(MainActivity.EXTRA_WORD_OBJECT);
+        word = getArguments().getParcelable(StudyFlowFragment.EXTRA_WORD_OBJECT);
     }
 
     @Nullable
