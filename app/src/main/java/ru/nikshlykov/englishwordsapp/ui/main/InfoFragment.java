@@ -17,7 +17,7 @@ import ru.nikshlykov.englishwordsapp.R;
 public class InfoFragment extends Fragment {
 
     // Ключ для передачи флага фрагменту.
-    public static final String KEY_INFO_FLAG = "InfoFlag";
+    public static final String KEY_INFO_FLAG = "infoFlag";
 
     // Флаги.
     public static final int FLAG_MODES_ARE_NOT_CHOSEN = 1;
@@ -48,7 +48,7 @@ public class InfoFragment extends Fragment {
         TextView infoText = v.findViewById(R.id.fragment_info___text_view___info);
         // Объявляем переменную для текста и находим необходимый для вывода текст.
         String text = "";
-        switch (flag){
+        switch (flag) {
             case FLAG_MODES_ARE_NOT_CHOSEN:
                 text = "Для того, чтобы изучать слова, необходимо выбрать режимы изучения. " +
                         "Сделать это вы можете перейдя во вкладку \"Профиль\" в пункт \"Режимы\"";

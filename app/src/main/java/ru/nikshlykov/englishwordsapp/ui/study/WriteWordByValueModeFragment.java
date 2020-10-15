@@ -16,8 +16,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
@@ -25,8 +23,7 @@ import com.google.android.material.textfield.TextInputLayout;
 
 import ru.nikshlykov.englishwordsapp.R;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
-import ru.nikshlykov.englishwordsapp.ui.main.MainActivity;
-import ru.nikshlykov.englishwordsapp.ui.word.WordViewModel;
+import ru.nikshlykov.englishwordsapp.ui.flowfragments.StudyFlowFragment;
 
 public class WriteWordByValueModeFragment extends Fragment {
 
@@ -49,7 +46,12 @@ public class WriteWordByValueModeFragment extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        repeatResultListener = (RepeatResultListener) context;
+        Fragment parentFlowFragment = getParentFragment().getParentFragment();
+        if (parentFlowFragment instanceof FirstShowModeFragment.FirstShowModeReportListener) {
+            repeatResultListener = (RepeatResultListener) parentFlowFragment;
+        } else {
+            throw new RuntimeException(parentFlowFragment.toString() + " must implement RepeatResultListener");
+        }
     }
 
     @Override
@@ -57,7 +59,7 @@ public class WriteWordByValueModeFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         // Получаем id слова.
-        word = getArguments().getParcelable(MainActivity.EXTRA_WORD_OBJECT);
+        word = getArguments().getParcelable(StudyFlowFragment.EXTRA_WORD_OBJECT);
 
         handler = new Handler() {
             @Override

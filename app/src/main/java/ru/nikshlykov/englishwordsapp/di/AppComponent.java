@@ -7,6 +7,7 @@ import javax.inject.Singleton;
 
 import dagger.BindsInstance;
 import dagger.Component;
+import ru.nikshlykov.englishwordsapp.ui.flowfragments.StudyFlowFragment;
 import ru.nikshlykov.englishwordsapp.ui.groups.GroupsFragment;
 import ru.nikshlykov.englishwordsapp.ui.groups.GroupsViewModel;
 import ru.nikshlykov.englishwordsapp.ui.main.MainActivity;
@@ -36,10 +37,11 @@ public interface AppComponent {
     void inject(WordActivity wordActivity);
     void inject(LinkOrDeleteWordDialogFragment linkOrDeleteWordDialogFragment);
     void inject(SubgroupActivity subgroupActivity);
-    void inject(MainActivity mainActivity);
     void inject(ModesActivity modesActivity);
     //void inject(AddOrEditSubgroupActivity addOrEditSubgroupActivity);
     //void inject(GroupActivity groupActivity);
+
+    void inject(StudyFlowFragment studyFlowFragment);
 
     void inject(GroupsFragment groupsFragment);
     void inject(StatisticsFragment statisticsFragment);
