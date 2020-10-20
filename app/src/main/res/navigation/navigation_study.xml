@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/info_dest"
-        android:name="ru.nikshlykov.englishwordsapp.ui.main.InfoFragment"
+        android:name="ru.nikshlykov.englishwordsapp.ui.fragments.InfoFragment"
         android:label="InfoFragment"
         tools:layout="@layout/fragment_info">
         <argument
@@ -17,27 +17,27 @@
     </fragment>
     <fragment
         android:id="@+id/collect_word_by_letters_mode_dest"
-        android:name="ru.nikshlykov.englishwordsapp.ui.study.CollectWordByLettersModeFragment"
+        android:name="ru.nikshlykov.englishwordsapp.ui.fragments.CollectWordByLettersModeFragment"
         android:label="CollectWordByLettersModeFragment"
         tools:layout="@layout/fragment_collect_word_by_letters_mode"/>
     <fragment
         android:id="@+id/dictionary_cards_mode_dest"
-        android:name="ru.nikshlykov.englishwordsapp.ui.study.DictionaryCardsModeFragment"
+        android:name="ru.nikshlykov.englishwordsapp.ui.fragments.DictionaryCardsModeFragment"
         android:label="DictionaryCardsModeFragment"
         tools:layout="@layout/fragment_dictionary_cards_eng_to_rus"/>
     <fragment
         android:id="@+id/first_show_mode_dest"
-        android:name="ru.nikshlykov.englishwordsapp.ui.study.FirstShowModeFragment"
+        android:name="ru.nikshlykov.englishwordsapp.ui.fragments.FirstShowModeFragment"
         android:label="FirstShowModeFragment"
         tools:layout="@layout/fragment_first_show_mode"/>
     <fragment
         android:id="@+id/write_word_by_voice_mode_dest"
-        android:name="ru.nikshlykov.englishwordsapp.ui.study.WriteWordByVoiceModeFragment"
+        android:name="ru.nikshlykov.englishwordsapp.ui.fragments.WriteWordByVoiceModeFragment"
         android:label="WriteWordByVoiceModeFragment"
         tools:layout="@layout/fragment_write_word_by_voice_mode"/>
     <fragment
         android:id="@+id/write_word_by_value_mode_dest"
-        android:name="ru.nikshlykov.englishwordsapp.ui.study.WriteWordByValueModeFragment"
+        android:name="ru.nikshlykov.englishwordsapp.ui.fragments.WriteWordByValueModeFragment"
         android:label="WriteWordByValueModeFragment"
         tools:layout="@layout/fragment_write_word_by_value_mode"/>
     <action android:id="@+id/action_global_info_dest" app:destination="@id/info_dest" />

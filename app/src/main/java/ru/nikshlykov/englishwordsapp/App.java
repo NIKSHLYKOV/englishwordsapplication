@@ -18,11 +18,13 @@ import android.widget.Toast;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
+import dagger.android.AndroidInjector;
+import dagger.android.DaggerApplication;
 import ru.nikshlykov.englishwordsapp.di.AppComponent;
 import ru.nikshlykov.englishwordsapp.di.DaggerAppComponent;
 import ru.nikshlykov.englishwordsapp.notifications.NotificationWorker;
 
-public class App extends Application
+public class App extends DaggerApplication
         implements Configuration.Provider {
 
     public static final String PREFERENCE_FILE_NAME = "my_preferences";
@@ -34,9 +36,8 @@ public class App extends Application
 
     @Override
     public void onCreate() {
-        super.onCreate();
-
         appComponent = DaggerAppComponent.factory().create(this);
+        super.onCreate();
 
         // Устанавливаем дефолтные значения в настройках. Сработает только один раз
         // при первом запуске приложения.
@@ -141,7 +142,8 @@ public class App extends Application
 
     // Dagger Component
 
-    public AppComponent getAppComponent() {
+    @Override
+    protected AndroidInjector<? extends DaggerApplication> applicationInjector() {
         return appComponent;
     }
 }

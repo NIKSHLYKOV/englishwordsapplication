@@ -20,19 +20,21 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import dagger.android.support.DaggerFragment;
 import ru.nikshlykov.englishwordsapp.App;
 import ru.nikshlykov.englishwordsapp.R;
 import ru.nikshlykov.englishwordsapp.db.ModesRepository;
 import ru.nikshlykov.englishwordsapp.db.WordsRepository;
 import ru.nikshlykov.englishwordsapp.db.mode.Mode;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
-import ru.nikshlykov.englishwordsapp.ui.main.InfoFragment;
-import ru.nikshlykov.englishwordsapp.ui.study.FirstShowModeFragment;
-import ru.nikshlykov.englishwordsapp.ui.study.RepeatResultListener;
-import ru.nikshlykov.englishwordsapp.ui.study.StudyViewModel;
+import ru.nikshlykov.englishwordsapp.ui.RepeatResultListener;
+import ru.nikshlykov.englishwordsapp.ui.ViewModelFactory;
+import ru.nikshlykov.englishwordsapp.ui.fragments.FirstShowModeFragment;
+import ru.nikshlykov.englishwordsapp.ui.fragments.InfoFragment;
+import ru.nikshlykov.englishwordsapp.ui.viewmodels.StudyViewModel;
 import ru.nikshlykov.englishwordsapp.utils.Navigation;
 
-public class StudyFlowFragment extends Fragment implements ModesRepository.OnSelectedModesLoadedListener,
+public class StudyFlowFragment extends DaggerFragment implements ModesRepository.OnSelectedModesLoadedListener,
         WordsRepository.OnAvailableToRepeatWordLoadedListener,
         WordsRepository.OnWordUpdatedListener, RepeatResultListener,
         FirstShowModeFragment.FirstShowModeReportListener {
@@ -44,21 +46,17 @@ public class StudyFlowFragment extends Fragment implements ModesRepository.OnSel
 
     // ViewModel для работы с БД.
     @Inject
-    public StudyViewModel studyViewModel;
+    public ViewModelProvider.Factory viewModelFactory;
+    private StudyViewModel studyViewModel;
 
     private NavController navController;
 
-    @Override
-    public void onAttach(@NonNull Context context) {
-        ((App) getActivity().getApplication()).getAppComponent().inject(this);
-        super.onAttach(context);
-    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Создаём ViewModel для работы с БД.
-        studyViewModel = new ViewModelProvider(this).get(StudyViewModel.class);
+        studyViewModel = viewModelFactory.create(StudyViewModel.class);
 
         // Получаем выбранные пользователем режимы.
         studyViewModel.getSelectedModes(this);

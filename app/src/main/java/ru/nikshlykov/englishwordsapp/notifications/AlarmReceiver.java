@@ -19,7 +19,7 @@ import androidx.core.app.NotificationManagerCompat;
 import java.util.Calendar;
 
 import ru.nikshlykov.englishwordsapp.R;
-import ru.nikshlykov.englishwordsapp.ui.main.MainActivity;
+import ru.nikshlykov.englishwordsapp.ui.activities.MainActivity;
 
 public class AlarmReceiver extends BroadcastReceiver {
 

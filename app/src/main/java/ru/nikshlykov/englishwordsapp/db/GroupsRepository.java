@@ -1,6 +1,5 @@
 package ru.nikshlykov.englishwordsapp.db;
 
-import android.app.Application;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -9,33 +8,21 @@ import androidx.lifecycle.LiveData;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import ru.nikshlykov.englishwordsapp.App;
-import ru.nikshlykov.englishwordsapp.db.example.Example;
-import ru.nikshlykov.englishwordsapp.db.example.ExampleDao;
 import ru.nikshlykov.englishwordsapp.db.group.Group;
 import ru.nikshlykov.englishwordsapp.db.group.GroupDao;
 import ru.nikshlykov.englishwordsapp.db.link.Link;
 import ru.nikshlykov.englishwordsapp.db.link.LinkDao;
-import ru.nikshlykov.englishwordsapp.db.mode.Mode;
-import ru.nikshlykov.englishwordsapp.db.mode.ModeDao;
-import ru.nikshlykov.englishwordsapp.db.repeat.Repeat;
-import ru.nikshlykov.englishwordsapp.db.repeat.RepeatDao;
-import ru.nikshlykov.englishwordsapp.db.setting.SettingDao;
 import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup;
 import ru.nikshlykov.englishwordsapp.db.subgroup.SubgroupDao;
-import ru.nikshlykov.englishwordsapp.db.word.Word;
-import ru.nikshlykov.englishwordsapp.db.word.WordDao;
-import ru.nikshlykov.englishwordsapp.ui.groups.GroupItem;
+import ru.nikshlykov.englishwordsapp.ui.GroupItem;
 
-import static ru.nikshlykov.englishwordsapp.ui.word.LinkOrDeleteWordDialogFragment.TO_DELETE;
-import static ru.nikshlykov.englishwordsapp.ui.word.LinkOrDeleteWordDialogFragment.TO_LINK;
+import static ru.nikshlykov.englishwordsapp.ui.fragments.LinkOrDeleteWordDialogFragment.TO_DELETE;
+import static ru.nikshlykov.englishwordsapp.ui.fragments.LinkOrDeleteWordDialogFragment.TO_LINK;
 
 public class GroupsRepository {
 
@@ -44,7 +31,6 @@ public class GroupsRepository {
     public static final String PATH_TO_HIGH_SUBGROUP_IMAGES =
             "https://raw.githubusercontent.com/NIKSHLYKOV/englishwordsappimages/master/high_images/";
 
-    private static GroupsRepository instance;
     private static final String LOG_TAG = GroupsRepository.class.getCanonicalName();
 
     private GroupDao groupDao;
@@ -53,14 +39,8 @@ public class GroupsRepository {
 
     private ExecutorService databaseExecutorService;
 
-    public static GroupsRepository getInstance(Application application) {
-        if (instance == null)
-            instance = new GroupsRepository(application);
-        return instance;
-    }
 
-    private GroupsRepository(Application application) {
-        AppDatabase database = AppDatabase.getInstance(application);
+    public GroupsRepository(AppDatabase database) {
 
         groupDao = database.groupDao();
         linkDao = database.linkDao();
