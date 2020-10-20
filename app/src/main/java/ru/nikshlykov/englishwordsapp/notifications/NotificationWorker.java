@@ -17,7 +17,7 @@ import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
 import ru.nikshlykov.englishwordsapp.R;
-import ru.nikshlykov.englishwordsapp.ui.main.MainActivity;
+import ru.nikshlykov.englishwordsapp.ui.activities.MainActivity;
 
 public class NotificationWorker extends Worker {
 

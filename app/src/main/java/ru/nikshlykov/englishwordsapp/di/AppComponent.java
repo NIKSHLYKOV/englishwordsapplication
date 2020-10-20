@@ -9,13 +9,13 @@ import dagger.Component;
 import dagger.android.AndroidInjectionModule;
 import dagger.android.AndroidInjector;
 import ru.nikshlykov.englishwordsapp.App;
-import ru.nikshlykov.englishwordsapp.ui.groups.GroupsFragment;
-import ru.nikshlykov.englishwordsapp.ui.main.MainActivity;
-import ru.nikshlykov.englishwordsapp.ui.modes.ModesActivity;
-import ru.nikshlykov.englishwordsapp.ui.statistics.StatisticsFragment;
-import ru.nikshlykov.englishwordsapp.ui.subgroup.SubgroupActivity;
-import ru.nikshlykov.englishwordsapp.ui.word.LinkOrDeleteWordDialogFragment;
-import ru.nikshlykov.englishwordsapp.ui.word.WordActivity;
+import ru.nikshlykov.englishwordsapp.ui.fragments.GroupsFragment;
+import ru.nikshlykov.englishwordsapp.ui.activities.MainActivity;
+import ru.nikshlykov.englishwordsapp.ui.activities.ModesActivity;
+import ru.nikshlykov.englishwordsapp.ui.fragments.StatisticsFragment;
+import ru.nikshlykov.englishwordsapp.ui.activities.SubgroupActivity;
+import ru.nikshlykov.englishwordsapp.ui.fragments.LinkOrDeleteWordDialogFragment;
+import ru.nikshlykov.englishwordsapp.ui.activities.WordActivity;
 
 
 @Component(modules = {AndroidInjectionModule.class, RepositoryModule.class, ContextModule.class,

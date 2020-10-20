@@ -11,13 +11,13 @@ import javax.inject.Inject;
 import ru.nikshlykov.englishwordsapp.db.GroupsRepository;
 import ru.nikshlykov.englishwordsapp.db.ModesRepository;
 import ru.nikshlykov.englishwordsapp.db.WordsRepository;
-import ru.nikshlykov.englishwordsapp.ui.groups.GroupsViewModel;
-import ru.nikshlykov.englishwordsapp.ui.modes.ModesViewModel;
-import ru.nikshlykov.englishwordsapp.ui.statistics.StatisticsViewModel;
-import ru.nikshlykov.englishwordsapp.ui.study.StudyViewModel;
-import ru.nikshlykov.englishwordsapp.ui.subgroup.SubgroupViewModel;
-import ru.nikshlykov.englishwordsapp.ui.word.WordDialogsViewModel;
-import ru.nikshlykov.englishwordsapp.ui.word.WordViewModel;
+import ru.nikshlykov.englishwordsapp.ui.viewmodels.GroupsViewModel;
+import ru.nikshlykov.englishwordsapp.ui.viewmodels.ModesViewModel;
+import ru.nikshlykov.englishwordsapp.ui.viewmodels.StatisticsViewModel;
+import ru.nikshlykov.englishwordsapp.ui.viewmodels.StudyViewModel;
+import ru.nikshlykov.englishwordsapp.ui.viewmodels.SubgroupViewModel;
+import ru.nikshlykov.englishwordsapp.ui.viewmodels.WordDialogsViewModel;
+import ru.nikshlykov.englishwordsapp.ui.viewmodels.WordViewModel;
 
 public class ViewModelFactory implements ViewModelProvider.Factory {
 
