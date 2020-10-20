@@ -2,9 +2,9 @@ package ru.nikshlykov.englishwordsapp.di;
 
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
-import ru.nikshlykov.englishwordsapp.ui.groups.GroupsFragment;
-import ru.nikshlykov.englishwordsapp.ui.statistics.StatisticsFragment;
-import ru.nikshlykov.englishwordsapp.ui.word.LinkOrDeleteWordDialogFragment;
+import ru.nikshlykov.englishwordsapp.ui.fragments.GroupsFragment;
+import ru.nikshlykov.englishwordsapp.ui.fragments.StatisticsFragment;
+import ru.nikshlykov.englishwordsapp.ui.fragments.LinkOrDeleteWordDialogFragment;
 
 @Module
 public abstract class FragmentModule {

@@ -9,7 +9,6 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -22,10 +21,9 @@ import androidx.work.WorkerParameters;
 
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
-import java.util.jar.Attributes;
 
 import ru.nikshlykov.englishwordsapp.R;
-import ru.nikshlykov.englishwordsapp.ui.main.MainActivity;
+import ru.nikshlykov.englishwordsapp.ui.activities.MainActivity;
 
 public class NotificationWorker2 extends Worker{
 
