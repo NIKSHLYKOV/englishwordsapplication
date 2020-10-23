@@ -27,6 +27,8 @@ import ru.nikshlykov.englishwordsapp.notifications.NotificationWorker;
 public class App extends DaggerApplication
         implements Configuration.Provider {
 
+    // TODO Проверить все EditText на лишние пробелы.
+
     public static final String PREFERENCE_FILE_NAME = "my_preferences";
 
     private TextToSpeech textToSpeech;

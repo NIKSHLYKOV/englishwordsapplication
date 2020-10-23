@@ -15,6 +15,7 @@ import ru.nikshlykov.englishwordsapp.ui.viewmodels.GroupsViewModel;
 import ru.nikshlykov.englishwordsapp.ui.viewmodels.ModesViewModel;
 import ru.nikshlykov.englishwordsapp.ui.viewmodels.StatisticsViewModel;
 import ru.nikshlykov.englishwordsapp.ui.viewmodels.StudyViewModel;
+import ru.nikshlykov.englishwordsapp.ui.viewmodels.SubgroupDataViewModel;
 import ru.nikshlykov.englishwordsapp.ui.viewmodels.SubgroupViewModel;
 import ru.nikshlykov.englishwordsapp.ui.viewmodels.WordDialogsViewModel;
 import ru.nikshlykov.englishwordsapp.ui.viewmodels.WordViewModel;
@@ -42,17 +43,19 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
             return (T) new StudyViewModel(application, wordsRepository, modesRepository);
         } else if (modelClass == GroupsViewModel.class) {
             return (T) new GroupsViewModel(application, groupsRepository);
-        } else if(modelClass == SubgroupViewModel.class){
+        } else if (modelClass == SubgroupViewModel.class) {
             return (T) new SubgroupViewModel(application, groupsRepository, wordsRepository);
-        } else if(modelClass == WordDialogsViewModel.class){
+        } else if (modelClass == WordDialogsViewModel.class) {
             return (T) new WordDialogsViewModel(application, groupsRepository);
-        } else if(modelClass == WordViewModel.class){
+        } else if (modelClass == WordViewModel.class) {
             return (T) new WordViewModel(application, wordsRepository, groupsRepository);
-        } else if(modelClass == StatisticsViewModel.class){
+        } else if (modelClass == StatisticsViewModel.class) {
             return (T) new StatisticsViewModel(application, wordsRepository);
-        } else if(modelClass == ModesViewModel.class){
+        } else if (modelClass == ModesViewModel.class) {
             return (T) new ModesViewModel(application, modesRepository);
-        } else{
+        } else if (modelClass == SubgroupDataViewModel.class) {
+            return (T) new SubgroupDataViewModel(groupsRepository);
+        } else {
             throw new IllegalArgumentException("ViewModel Not Found");
         }
     }

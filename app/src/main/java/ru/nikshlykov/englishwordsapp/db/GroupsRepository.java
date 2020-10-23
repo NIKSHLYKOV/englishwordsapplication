@@ -50,7 +50,7 @@ public class GroupsRepository {
         databaseExecutorService = Executors.newFixedThreadPool(1);
     }
 
-    public void execute(Runnable runnable){
+    public void execute(Runnable runnable) {
         databaseExecutorService.execute(runnable);
     }
 
@@ -63,8 +63,12 @@ public class GroupsRepository {
         task.execute();
     }
 
+    public void insertSubgroup(String subgroupName, OnSubgroupInsertedListener listener) {
+        new InsertSubgroupAsyncTask(subgroupDao, listener).execute(subgroupName);
+    }
+
     public void insert(Subgroup subgroup, OnSubgroupInsertedListener listener) {
-        new InsertSubgroupAsyncTask(subgroupDao, listener).execute(subgroup);
+        //new InsertSubgroupAsyncTask(subgroupDao, listener).execute(subgroup);
     }
 
     public void update(Subgroup subgroup) {
@@ -126,7 +130,7 @@ public class GroupsRepository {
         void onSubgroupInserted(long subgroupId);
     }
 
-    private static class InsertSubgroupAsyncTask extends AsyncTask<Subgroup, Void, Long> {
+    private static class InsertSubgroupAsyncTask extends AsyncTask<String, Void, Long> {
         private SubgroupDao subgroupDao;
         private WeakReference<OnSubgroupInsertedListener> listener;
 
@@ -136,8 +140,10 @@ public class GroupsRepository {
         }
 
         @Override
-        protected Long doInBackground(Subgroup... subgroups) {
-            return subgroupDao.insert(subgroups[0]);
+        protected Long doInBackground(String... strings) {
+            long newSubgroupId = subgroupDao.getSubgroupWithMinId().id - 1;
+            return subgroupDao.insert(new Subgroup(newSubgroupId, strings[0],
+                    SubgroupDao.GROUP_FOR_NEW_SUBGROUPS_ID, 0, "subgroup_chemistry.jpg"));
         }
 
         @Override
@@ -291,7 +297,6 @@ public class GroupsRepository {
     }
 
 
-
     /**
      * Методы для работы с группами.
      */
@@ -306,6 +311,7 @@ public class GroupsRepository {
     public interface OnGroupItemsLoadedListener {
         void onGroupItemsLoaded(ArrayList<GroupItem> groupItems);
     }
+
     private static class GetGroupItemsAsyncTask extends AsyncTask<Void, Void, ArrayList<GroupItem>> {
         private SubgroupDao subgroupDao;
         private GroupDao groupDao;
@@ -345,7 +351,6 @@ public class GroupsRepository {
 
 
     }
-
 
 
     /**
