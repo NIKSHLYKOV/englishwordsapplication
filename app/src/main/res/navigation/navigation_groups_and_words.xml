@@ -10,4 +10,18 @@
         android:name="ru.nikshlykov.englishwordsapp.ui.groups.GroupsFragment"
         android:label="GroupsFragment"
         tools:layout="@layout/fragment_groups"/>
+    <fragment
+        android:id="@+id/subgroupDataFragment"
+        android:name="ru.nikshlykov.englishwordsapp.ui.fragments.SubgroupDataFragment"
+        android:label="SubgroupDataFragment"
+        tools:layout="@layout/fragment_subgroup_data">
+        <argument
+            android:name="subgroupId"
+            app:argType="long"
+            android:defaultValue="0L" />
+        <action
+            android:id="@+id/action_subgroupDataFragment_to_groups_dest"
+            app:destination="@id/groups_dest" />
+    </fragment>
+    <action android:id="@+id/action_global_subgroupDataFragment" app:destination="@id/subgroupDataFragment" />
 </navigation>

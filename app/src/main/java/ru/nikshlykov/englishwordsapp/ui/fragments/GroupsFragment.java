@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavDirections;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -29,6 +30,7 @@ import ru.nikshlykov.englishwordsapp.ui.adapters.GroupItemsRecyclerViewAdapter;
 import ru.nikshlykov.englishwordsapp.ui.adapters.SubgroupsRecyclerViewAdapter;
 import ru.nikshlykov.englishwordsapp.ui.activities.AddOrEditSubgroupActivity;
 import ru.nikshlykov.englishwordsapp.ui.activities.SubgroupActivity;
+import ru.nikshlykov.englishwordsapp.ui.flowfragments.OnChildFragmentInteractionListener;
 import ru.nikshlykov.englishwordsapp.ui.viewmodels.GroupsViewModel;
 
 import static android.app.Activity.RESULT_OK;
@@ -48,6 +50,8 @@ public class GroupsFragment extends DaggerFragment
     @Inject
     public ViewModelProvider.Factory viewModelFactory;
 
+    private OnChildFragmentInteractionListener onChildFragmentInteractionListener;
+
     // View компоненты фрагмента.
     private RecyclerView groupItemsRecyclerView;
     private ExtendedFloatingActionButton newSubgroupExtendedFAB;
@@ -64,6 +68,13 @@ public class GroupsFragment extends DaggerFragment
         super.onAttach(context);
         Log.d(LOG_TAG, "onAttach");
         this.context = context;
+
+        if (getParentFragment().getParentFragment() instanceof OnChildFragmentInteractionListener) {
+            onChildFragmentInteractionListener =
+                    (OnChildFragmentInteractionListener) getParentFragment().getParentFragment();
+        } else {
+            throw new RuntimeException(getParentFragment().getParentFragment().toString() + " must implement OnChildFragmentInteractionListener");
+        }
     }
 
 
@@ -89,12 +100,14 @@ public class GroupsFragment extends DaggerFragment
         newSubgroupExtendedFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, AddOrEditSubgroupActivity.class);
-                startActivityForResult(intent, REQUEST_CODE_CREATE_SUBGROUP);
+                NavDirections navDirections = GroupsFragmentDirections.actionGlobalSubgroupDataFragment();
+                onChildFragmentInteractionListener.onChildFragmentInteraction(navDirections);
             }
         });
         return view;
     }
+
+    // TODO скролить доверху, если добавилась новая группа.
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
