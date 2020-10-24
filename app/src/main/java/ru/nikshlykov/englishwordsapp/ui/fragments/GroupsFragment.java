@@ -210,12 +210,15 @@ public class GroupsFragment extends DaggerFragment
 
     @Override
     public void onSubgroupClick(View view, Subgroup subgroup) {
-        Intent intent = new Intent(context, SubgroupActivity.class);
-        intent.putExtra(SubgroupActivity.EXTRA_SUBGROUP_OBJECT, subgroup);
         /*intent.putExtra(SubgroupActivity.EXTRA_SUBGROUP_ID, subgroup.id);
         intent.putExtra(SubgroupActivity.EXTRA_SUBGROUP_IS_CREATED_BY_USER, subgroup.isCreatedByUser());
         intent.putExtra(SubgroupActivity.EXTRA_SUBGROUP_IS_STUDIED, subgroup.isStudied == 1);*/
-        startActivityForResult(intent, REQUEST_EDIT_SUBGROUP);
+
+        /*Intent intent = new Intent(context, SubgroupActivity.class);
+        intent.putExtra(SubgroupActivity.EXTRA_SUBGROUP_OBJECT, subgroup);
+        startActivityForResult(intent, REQUEST_EDIT_SUBGROUP);*/
+        NavDirections navDirections = GroupsFragmentDirections.actionGroupsDestToSubgroupFragment(subgroup);
+        onChildFragmentInteractionListener.onChildFragmentInteraction(navDirections);
     }
 
     @Override

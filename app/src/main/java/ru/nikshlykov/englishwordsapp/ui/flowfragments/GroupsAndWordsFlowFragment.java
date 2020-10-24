@@ -35,10 +35,13 @@ public class GroupsAndWordsFlowFragment extends Fragment implements OnChildFragm
     @Override
     public void onChildFragmentInteraction(NavDirections navDirections) {
         switch (navDirections.getActionId()) {
+            // TODO Привести id к одному виду.
             case R.id.action_global_subgroupDataFragment:
+            case R.id.action_groups_dest_to_subgroupFragment:
                 navController.navigate(navDirections);
                 break;
             case R.id.action_subgroupDataFragment_to_groups_dest:
+            case R.id.action_subgroupFragment_to_groups_dest:
                 navController.popBackStack();
                 break;
         }

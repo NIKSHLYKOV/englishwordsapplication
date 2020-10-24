@@ -7,6 +7,7 @@ import ru.nikshlykov.englishwordsapp.ui.fragments.GroupsFragment;
 import ru.nikshlykov.englishwordsapp.ui.fragments.StatisticsFragment;
 import ru.nikshlykov.englishwordsapp.ui.fragments.LinkOrDeleteWordDialogFragment;
 import ru.nikshlykov.englishwordsapp.ui.fragments.SubgroupDataFragment;
+import ru.nikshlykov.englishwordsapp.ui.fragments.SubgroupFragment;
 
 @Module
 public abstract class FragmentModule {
@@ -25,4 +26,7 @@ public abstract class FragmentModule {
 
     @ContributesAndroidInjector
     abstract SubgroupDataFragment contributeSubgroupDataFragment();
+
+    @ContributesAndroidInjector
+    abstract SubgroupFragment contributeSubgroupFragment();
 }
