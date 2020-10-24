@@ -72,7 +72,11 @@ public class GroupsRepository {
     }
 
     public void update(Subgroup subgroup) {
-        new UpdateSubgroupAsyncTask(subgroupDao).execute(subgroup);
+        new UpdateSubgroupAsyncTask(subgroupDao, null).execute(subgroup);
+    }
+
+    public void update(Subgroup subgroup, OnSubgroupUpdatedListener listener) {
+        new UpdateSubgroupAsyncTask(subgroupDao, listener).execute(subgroup);
     }
 
     public void delete(Subgroup subgroup) {
@@ -156,20 +160,35 @@ public class GroupsRepository {
         }
     }
 
-    private static class UpdateSubgroupAsyncTask extends AsyncTask<Subgroup, Void, Void> {
-        private SubgroupDao subgroupDao;
+    public interface OnSubgroupUpdatedListener {
+        void onSubgroupUpdated(boolean isSubgroupUpdated);
+    }
 
-        private UpdateSubgroupAsyncTask(SubgroupDao subgroupDao) {
+    private static class UpdateSubgroupAsyncTask extends AsyncTask<Subgroup, Void, Boolean> {
+        private SubgroupDao subgroupDao;
+        private WeakReference<OnSubgroupUpdatedListener> listener;
+
+        private UpdateSubgroupAsyncTask(SubgroupDao subgroupDao, OnSubgroupUpdatedListener listener) {
             this.subgroupDao = subgroupDao;
+            this.listener = new WeakReference<>(listener);
         }
 
         @Override
-        protected Void doInBackground(Subgroup... subgroups) {
+        protected Boolean doInBackground(Subgroup... subgroups) {
             Log.i(LOG_TAG, "UpdateSubgroupAsyncTask: subgroup.isStudied = " + subgroups[0].isStudied);
-            subgroupDao.update(subgroups[0]);
-            return null;
+            return subgroupDao.update(subgroups[0]) == 1;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+            OnSubgroupUpdatedListener listener = this.listener.get();
+            if (listener != null) {
+                listener.onSubgroupUpdated(aBoolean);
+            }
         }
     }
+
 
     private static class DeleteSubgroupAsyncTask extends AsyncTask<Subgroup, Void, Void> {
         private SubgroupDao subgroupDao;

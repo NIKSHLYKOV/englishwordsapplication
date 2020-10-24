@@ -250,6 +250,8 @@ public class WordActivity extends DaggerAppCompatActivity
 
                     //wordData.putExtra(EXTRA_WORD_OBJECT, )
                     //setResult(RESULT_OK, wordData);
+
+                    // TODO сделать обработку добавления нового слова.
                     wordViewModel.setWordParameters(word, transcription, value);
                     wordViewModel.updateWordInDB();
                     //
