@@ -28,8 +28,6 @@ import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup;
 import ru.nikshlykov.englishwordsapp.ui.GroupItem;
 import ru.nikshlykov.englishwordsapp.ui.adapters.GroupItemsRecyclerViewAdapter;
 import ru.nikshlykov.englishwordsapp.ui.adapters.SubgroupsRecyclerViewAdapter;
-import ru.nikshlykov.englishwordsapp.ui.activities.AddOrEditSubgroupActivity;
-import ru.nikshlykov.englishwordsapp.ui.activities.SubgroupActivity;
 import ru.nikshlykov.englishwordsapp.ui.flowfragments.OnChildFragmentInteractionListener;
 import ru.nikshlykov.englishwordsapp.ui.viewmodels.GroupsViewModel;
 
@@ -199,8 +197,7 @@ public class GroupsFragment extends DaggerFragment
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_CREATE_SUBGROUP && resultCode == RESULT_OK) {
-            String newSubgroupName = data.getStringExtra(AddOrEditSubgroupActivity.EXTRA_SUBGROUP_NAME);
-            groupsViewModel.insertSubgroup(newSubgroupName);
+            // TODO разобраться с флагом, т.к. он больше не используется.
             subgroupCreatingFlag = true;
         }
         if (requestCode == REQUEST_EDIT_SUBGROUP) {

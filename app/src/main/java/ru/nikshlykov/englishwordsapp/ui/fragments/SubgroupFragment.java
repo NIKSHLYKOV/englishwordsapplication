@@ -48,7 +48,6 @@ import ru.nikshlykov.englishwordsapp.R;
 import ru.nikshlykov.englishwordsapp.db.GroupsRepository;
 import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
-import ru.nikshlykov.englishwordsapp.ui.activities.AddOrEditSubgroupActivity;
 import ru.nikshlykov.englishwordsapp.ui.activities.WordActivity;
 import ru.nikshlykov.englishwordsapp.ui.flowfragments.OnChildFragmentInteractionListener;
 import ru.nikshlykov.englishwordsapp.ui.fragments.DeleteSubgroupDialogFragment;
@@ -58,8 +57,6 @@ import ru.nikshlykov.englishwordsapp.ui.adapters.WordsRecyclerViewAdapter;
 import ru.nikshlykov.englishwordsapp.ui.fragments.LinkOrDeleteWordDialogFragment;
 import ru.nikshlykov.englishwordsapp.ui.fragments.ResetProgressDialogFragment;
 
-import static android.app.Activity.RESULT_OK;
-
 public class SubgroupFragment extends DaggerFragment
         implements SortWordsDialogFragment.SortWordsListener,
         ResetProgressDialogFragment.ResetProgressListener,
@@ -67,6 +64,10 @@ public class SubgroupFragment extends DaggerFragment
 
     // TODO сделать свою view для отображения прогресса по слову.
     //  Лучше базу брать из той, которая в WordActivity.
+
+    // TODO надо будет отсюда убрать onActivityResult (уже убрал). При этом надо учесть, что
+    //  группа (название) должно обновиться. По этому надо подтягивать группу из БД
+    //  через LiveData. Могут быть проблемы при удалении подгруппы, проверить этот момент.
 
     // Ключи для получения аргументов.
     public static final String EXTRA_SUBGROUP_OBJECT = "SubgroupObject";
@@ -249,27 +250,8 @@ public class SubgroupFragment extends DaggerFragment
         Log.i(LOG_TAG, "onDestroy()");
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode == RESULT_OK) {
-            switch (requestCode) {
-                // TODO надо будет отсюда убрать onActivityResult. При этом надо учесть, что
-                //  группа (название) должно обновиться. По этому надо подтягивать группу из БД
-                //  через LiveData. Могут быть проблемы при удалении подгруппы, проверить этот момент.
-                // Редактирование подгруппы.
-                case REQUEST_CODE_EDIT_SUBGROUP:
-                    String newSubgroupName = data.getStringExtra(AddOrEditSubgroupActivity.EXTRA_SUBGROUP_NAME);
-                    subgroupViewModel.setSubgroupName(newSubgroupName);
-                    break;
-            }
-        }
-    }
-
 
     // Toolbar.
-
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
@@ -361,10 +343,6 @@ public class SubgroupFragment extends DaggerFragment
             // Редактирование подгруппы.
             case R.id.activity_subgroup___action___edit_subgroup:
                 Log.d(LOG_TAG, "edit subgroup");
-                /*Intent intent = new Intent(getContext(), AddOrEditSubgroupActivity.class);
-                intent.putExtra(AddOrEditSubgroupActivity.EXTRA_SUBGROUP_NAME, subgroupViewModel
-                        .getSubgroupMutableLiveData().getValue().name);
-                startActivityForResult(intent, REQUEST_CODE_EDIT_SUBGROUP);*/
                 NavDirections navDirections = SubgroupFragmentDirections
                         .actionGlobalSubgroupDataFragment()
                         .setSubgroupId(subgroupId);

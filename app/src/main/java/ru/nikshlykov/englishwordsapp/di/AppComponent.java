@@ -14,7 +14,6 @@ import ru.nikshlykov.englishwordsapp.ui.fragments.GroupsFragment;
 import ru.nikshlykov.englishwordsapp.ui.activities.MainActivity;
 import ru.nikshlykov.englishwordsapp.ui.activities.ModesActivity;
 import ru.nikshlykov.englishwordsapp.ui.fragments.StatisticsFragment;
-import ru.nikshlykov.englishwordsapp.ui.activities.SubgroupActivity;
 import ru.nikshlykov.englishwordsapp.ui.fragments.LinkOrDeleteWordDialogFragment;
 import ru.nikshlykov.englishwordsapp.ui.activities.WordActivity;
 
@@ -31,7 +30,6 @@ public interface AppComponent extends AndroidInjector<App> {
 
     void inject(WordActivity wordActivity);
     void inject(LinkOrDeleteWordDialogFragment linkOrDeleteWordDialogFragment);
-    void inject(SubgroupActivity subgroupActivity);
     void inject(ModesActivity modesActivity);
     //void inject(AddOrEditSubgroupActivity addOrEditSubgroupActivity);
     //void inject(GroupActivity groupActivity);
