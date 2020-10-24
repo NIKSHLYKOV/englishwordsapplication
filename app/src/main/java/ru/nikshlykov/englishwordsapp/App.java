@@ -29,6 +29,9 @@ public class App extends DaggerApplication
 
     // TODO Проверить все EditText на лишние пробелы.
 
+    // TODO Проверить все Fragments/Activities на то, что они могут менять размер, чтобы кнопки
+    //  были над клавой и EditText'ы были в фокусе с учётом клавы. Для этого вроде в
+    //  AddOrEditSubgroupActivity использовалось в Manifest AdjustResize.
     public static final String PREFERENCE_FILE_NAME = "my_preferences";
 
     private TextToSpeech textToSpeech;

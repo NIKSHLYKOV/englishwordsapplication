@@ -6,6 +6,7 @@ import javax.inject.Singleton;
 
 import dagger.BindsInstance;
 import dagger.Component;
+import ru.nikshlykov.englishwordsapp.ui.flowfragments.StudyFlowFragment;
 import dagger.android.AndroidInjectionModule;
 import dagger.android.AndroidInjector;
 import ru.nikshlykov.englishwordsapp.App;
@@ -13,7 +14,6 @@ import ru.nikshlykov.englishwordsapp.ui.fragments.GroupsFragment;
 import ru.nikshlykov.englishwordsapp.ui.activities.MainActivity;
 import ru.nikshlykov.englishwordsapp.ui.activities.ModesActivity;
 import ru.nikshlykov.englishwordsapp.ui.fragments.StatisticsFragment;
-import ru.nikshlykov.englishwordsapp.ui.activities.SubgroupActivity;
 import ru.nikshlykov.englishwordsapp.ui.fragments.LinkOrDeleteWordDialogFragment;
 import ru.nikshlykov.englishwordsapp.ui.activities.WordActivity;
 
@@ -30,11 +30,11 @@ public interface AppComponent extends AndroidInjector<App> {
 
     void inject(WordActivity wordActivity);
     void inject(LinkOrDeleteWordDialogFragment linkOrDeleteWordDialogFragment);
-    void inject(SubgroupActivity subgroupActivity);
-    void inject(MainActivity mainActivity);
     void inject(ModesActivity modesActivity);
     //void inject(AddOrEditSubgroupActivity addOrEditSubgroupActivity);
     //void inject(GroupActivity groupActivity);
+
+    void inject(StudyFlowFragment studyFlowFragment);
 
     void inject(GroupsFragment groupsFragment);
     void inject(StatisticsFragment statisticsFragment);

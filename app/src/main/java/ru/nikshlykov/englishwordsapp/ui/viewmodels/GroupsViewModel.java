@@ -10,19 +10,15 @@ import java.util.ArrayList;
 
 import ru.nikshlykov.englishwordsapp.db.GroupsRepository;
 import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup;
-import ru.nikshlykov.englishwordsapp.db.subgroup.SubgroupDao;
 import ru.nikshlykov.englishwordsapp.ui.GroupItem;
 
 public class GroupsViewModel extends AndroidViewModel implements
         GroupsRepository.OnGroupItemsLoadedListener,
-        GroupsRepository.OnMinSubgroupIdLoadedListener,
         GroupsRepository.OnSubgroupInsertedListener{
 
     private GroupsRepository groupsRepository;
 
     private MutableLiveData<ArrayList<GroupItem>> mutableLiveDataGroupItems;
-
-    private String newSubgroupName;
 
     public GroupsViewModel(@NonNull Application application, GroupsRepository groupsRepository) {
         super(application);
@@ -35,11 +31,6 @@ public class GroupsViewModel extends AndroidViewModel implements
         return mutableLiveDataGroupItems;
     }
 
-    public void insertSubgroup(String newSubgroupName) {
-        this.newSubgroupName = newSubgroupName;
-        groupsRepository.getMinSubgroupId(this);
-    }
-
     public void updateSubgroup(Subgroup subgroup) {
         groupsRepository.update(subgroup);
     }
@@ -50,16 +41,9 @@ public class GroupsViewModel extends AndroidViewModel implements
     }
 
     @Override
-    public void onMinSubgroupIdLoaded(Long minSubgroupId) {
-        long newSubgroupId = minSubgroupId - 1;
-        Subgroup newSubgroup = new Subgroup(newSubgroupId, newSubgroupName,
-                SubgroupDao.GROUP_FOR_NEW_SUBGROUPS_ID, 0,
-                "subgroup_chemistry.jpg");
-        groupsRepository.insert(newSubgroup, this);
-    }
-
-    @Override
     public void onSubgroupInserted(long subgroupId) {
+        // TODO Этот код не будет достигнуть, т.к. теперь Insert делает SubgroupDataFragment.
+        //  Поэтому, наверное, после надо будет просто getGroupItems вызывать в ЖЦ GroupsFragment.
         groupsRepository.getGroupItems(this);
     }
 
