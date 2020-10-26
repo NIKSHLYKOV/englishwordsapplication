@@ -344,7 +344,7 @@ public class SubgroupFragment extends DaggerFragment
             case R.id.activity_subgroup___action___edit_subgroup:
                 Log.d(LOG_TAG, "edit subgroup");
                 NavDirections navDirections = SubgroupFragmentDirections
-                        .actionGlobalSubgroupDataFragment()
+                        .actionGlobalSubgroupDataDest()
                         .setSubgroupId(subgroupId);
                 onChildFragmentInteractionListener.onChildFragmentInteraction(navDirections);
                 return true;
@@ -442,7 +442,7 @@ public class SubgroupFragment extends DaggerFragment
             subgroupId = subgroup.id;
             subgroupIsStudied = subgroup.isStudied == 1;
         } else {
-            NavDirections navDirections = SubgroupFragmentDirections.actionSubgroupFragmentToGroupsDest();
+            NavDirections navDirections = SubgroupFragmentDirections.actionSubgroupDestToGroupsDest();
             onChildFragmentInteractionListener.onChildFragmentInteraction(navDirections);
         }
     }
@@ -474,7 +474,7 @@ public class SubgroupFragment extends DaggerFragment
                     //  добавляет новое слово, другой - редактирует существующее слово. Тогда
                     //  и уберём этот код.
                     NavDirections navDirections = SubgroupFragmentDirections
-                            .actionSubgroupFragmentToWordFragment(new Word("a", "a", "a"))
+                            .actionSubgroupDestToWordDest(new Word("a", "a", "a"))
                             .setStartTo(WordFragment.START_TO_CREATE_WORD);
                     onChildFragmentInteractionListener.onChildFragmentInteraction(navDirections);
                 }
@@ -524,7 +524,7 @@ public class SubgroupFragment extends DaggerFragment
                 //editExistingWordIntent.putExtra(WordActivity.EXTRA_WORD_ID, currentWord.id);
                 startActivityForResult(editExistingWordIntent, REQUEST_CODE_EDIT_EXISTING_WORD);*/
                 NavDirections navDirections = SubgroupFragmentDirections
-                        .actionSubgroupFragmentToWordFragment(currentWord)
+                        .actionSubgroupDestToWordDest(currentWord)
                         .setStartTo(WordFragment.START_TO_EDIT_WORD);
                 onChildFragmentInteractionListener.onChildFragmentInteraction(navDirections);
             }
@@ -703,7 +703,7 @@ public class SubgroupFragment extends DaggerFragment
                     subgroupViewModel.deleteSubgroup();
                     deleteFlag = true;
 
-                    NavDirections navDirections = SubgroupFragmentDirections.actionSubgroupFragmentToGroupsDest();
+                    NavDirections navDirections = SubgroupFragmentDirections.actionSubgroupDestToGroupsDest();
                     onChildFragmentInteractionListener.onChildFragmentInteraction(navDirections);
                 }
             }

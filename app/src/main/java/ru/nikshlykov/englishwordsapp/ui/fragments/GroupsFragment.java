@@ -98,7 +98,7 @@ public class GroupsFragment extends DaggerFragment
         newSubgroupExtendedFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                NavDirections navDirections = GroupsFragmentDirections.actionGlobalSubgroupDataFragment();
+                NavDirections navDirections = GroupsFragmentDirections.actionGlobalSubgroupDataDest();
                 onChildFragmentInteractionListener.onChildFragmentInteraction(navDirections);
             }
         });
@@ -214,7 +214,7 @@ public class GroupsFragment extends DaggerFragment
         /*Intent intent = new Intent(context, SubgroupActivity.class);
         intent.putExtra(SubgroupActivity.EXTRA_SUBGROUP_OBJECT, subgroup);
         startActivityForResult(intent, REQUEST_EDIT_SUBGROUP);*/
-        NavDirections navDirections = GroupsFragmentDirections.actionGroupsDestToSubgroupFragment(subgroup);
+        NavDirections navDirections = GroupsFragmentDirections.actionGroupsDestToSubgroupDest(subgroup);
         onChildFragmentInteractionListener.onChildFragmentInteraction(navDirections);
     }
 

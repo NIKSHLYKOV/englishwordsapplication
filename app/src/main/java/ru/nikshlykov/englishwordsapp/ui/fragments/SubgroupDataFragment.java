@@ -110,7 +110,7 @@ public class SubgroupDataFragment extends DaggerFragment {
                                 //  нажатию на кнопку назад в FlowFragment, который будет это перехватывать.
                                 //  И 'нажимать' её в коде, когда нам нужно после каких-то действий
                                 //  переместиться назад.
-                                NavDirections navDirections = SubgroupDataFragmentDirections.actionSubgroupDataFragmentToGroupsDest();
+                                NavDirections navDirections = SubgroupDataFragmentDirections.actionSubgroupDataDestToGroupsDest();
                                 onChildFragmentInteractionListener.onChildFragmentInteraction(navDirections);
                             }
                         }
