@@ -40,5 +40,24 @@
         <action
             android:id="@+id/action_subgroupFragment_to_groups_dest"
             app:destination="@id/groups_dest" />
+        <action
+            android:id="@+id/action_subgroupFragment_to_wordFragment"
+            app:destination="@id/wordFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/wordFragment"
+        android:name="ru.nikshlykov.englishwordsapp.ui.fragments.WordFragment"
+        android:label="WordFragment"
+        tools:layout="@layout/fragment_word">
+        <action
+            android:id="@+id/action_wordFragment_to_subgroupFragment"
+            app:destination="@id/subgroupFragment" />
+        <argument
+            android:name="startTo"
+            android:defaultValue="0"
+            app:argType="integer" />
+        <argument
+            android:name="word"
+            app:argType="ru.nikshlykov.englishwordsapp.db.word.Word" />
     </fragment>
 </navigation>

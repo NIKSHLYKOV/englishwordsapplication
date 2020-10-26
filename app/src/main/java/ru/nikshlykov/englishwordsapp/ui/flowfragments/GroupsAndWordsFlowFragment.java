@@ -38,10 +38,12 @@ public class GroupsAndWordsFlowFragment extends Fragment implements OnChildFragm
             // TODO Привести id к одному виду.
             case R.id.action_global_subgroupDataFragment:
             case R.id.action_groups_dest_to_subgroupFragment:
+            case R.id.action_subgroupFragment_to_wordFragment:
                 navController.navigate(navDirections);
                 break;
             case R.id.action_subgroupDataFragment_to_groups_dest:
             case R.id.action_subgroupFragment_to_groups_dest:
+            case R.id.action_wordFragment_to_subgroupFragment:
                 navController.popBackStack();
                 break;
         }
