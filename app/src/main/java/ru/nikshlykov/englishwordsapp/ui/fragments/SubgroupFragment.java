@@ -1,7 +1,6 @@
 package ru.nikshlykov.englishwordsapp.ui.fragments;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -48,14 +47,9 @@ import ru.nikshlykov.englishwordsapp.R;
 import ru.nikshlykov.englishwordsapp.db.GroupsRepository;
 import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup;
 import ru.nikshlykov.englishwordsapp.db.word.Word;
-import ru.nikshlykov.englishwordsapp.ui.activities.WordActivity;
 import ru.nikshlykov.englishwordsapp.ui.flowfragments.OnChildFragmentInteractionListener;
-import ru.nikshlykov.englishwordsapp.ui.fragments.DeleteSubgroupDialogFragment;
-import ru.nikshlykov.englishwordsapp.ui.fragments.SortWordsDialogFragment;
 import ru.nikshlykov.englishwordsapp.ui.viewmodels.SubgroupViewModel;
 import ru.nikshlykov.englishwordsapp.ui.adapters.WordsRecyclerViewAdapter;
-import ru.nikshlykov.englishwordsapp.ui.fragments.LinkOrDeleteWordDialogFragment;
-import ru.nikshlykov.englishwordsapp.ui.fragments.ResetProgressDialogFragment;
 
 public class SubgroupFragment extends DaggerFragment
         implements SortWordsDialogFragment.SortWordsListener,
@@ -68,6 +62,9 @@ public class SubgroupFragment extends DaggerFragment
     // TODO надо будет отсюда убрать onActivityResult (уже убрал). При этом надо учесть, что
     //  группа (название) должно обновиться. По этому надо подтягивать группу из БД
     //  через LiveData. Могут быть проблемы при удалении подгруппы, проверить этот момент.
+
+    // TODO починить диалоги. Скорее всего, проблема в том, что диалоговые фрагменты ждут слушателя,
+    //  но они крепятся к Activity, которая не реализует интерфейса.
 
     // Ключи для получения аргументов.
     public static final String EXTRA_SUBGROUP_OBJECT = "SubgroupObject";
@@ -114,9 +111,6 @@ public class SubgroupFragment extends DaggerFragment
 
     private OnChildFragmentInteractionListener onChildFragmentInteractionListener;
 
-    // TODO разобраться с этим объектом. Можно будет просто id передавать, если
-    //  через LiveData будем следить, т.к. он сейчас используется для хранения до передачи в ViewModel.
-    private Subgroup subgroup;
     private long subgroupId;
     private boolean subgroupIsStudied;
     private boolean subgroupIsCreatedByUser;
@@ -150,7 +144,7 @@ public class SubgroupFragment extends DaggerFragment
 
         sortParam = getSortParam();
 
-        subgroupViewModel.setLiveDataSubgroup(subgroup, sortParam);
+        subgroupViewModel.setLiveDataSubgroup(subgroupId, sortParam);
     }
 
     @Nullable
@@ -173,7 +167,7 @@ public class SubgroupFragment extends DaggerFragment
 
         initCreateWordFAB();
 
-        subgroupViewModel.getSubgroupMutableLiveData().observe(getViewLifecycleOwner(), new Observer<Subgroup>() {
+        subgroupViewModel.getSubgroupLiveData().observe(getViewLifecycleOwner(), new Observer<Subgroup>() {
             @Override
             public void onChanged(Subgroup subgroup) {
                 if (subgroup != null) {
@@ -233,6 +227,11 @@ public class SubgroupFragment extends DaggerFragment
         super.onPause();
         Log.i(LOG_TAG, "onPause()");
         if (!deleteFlag) {
+            // TODO проверить Lifecycle в GroupsFragment.
+            //  Если заходить в неизучаемую группу и делать её изучаемой, то не показывается
+            //  обновлённый значок мозга, если сразу назад переходить
+            //  Если заходить в изучаемую группу и делать её неизучаемой, то при переходе назад
+            //  она вообще почему-то не обновляется.
             subgroupViewModel.updateSubgroup();
             saveSortParam(sortParam);
         }
@@ -322,11 +321,11 @@ public class SubgroupFragment extends DaggerFragment
                 if (item.isChecked()) {
                     item.setChecked(false);
                     item.setIcon(getContext().getDrawable(R.drawable.ic_brain_not_selected));
-                    subgroupViewModel.setIsStudied(false);
+                    subgroupViewModel.setNewIsStudied(false);
                 } else {
                     item.setChecked(true);
                     item.setIcon(getContext().getDrawable(R.drawable.ic_brain_selected_yellow));
-                    subgroupViewModel.setIsStudied(true);
+                    subgroupViewModel.setNewIsStudied(true);
                 }
                 return true;
 
@@ -374,6 +373,7 @@ public class SubgroupFragment extends DaggerFragment
     }
 
     private void setSubgroupImage(boolean subgroupIsCreatedByUser, String imageResourceId) {
+        // TODO Проверить, не будет ли лагать, если будет LiveDataSubgroup.
         if (subgroupIsCreatedByUser) {
             Drawable imageColor = getContext().getDrawable(R.drawable.user_subgroups_default_color);
             subgroupImageView.setImageDrawable(imageColor);
@@ -437,7 +437,9 @@ public class SubgroupFragment extends DaggerFragment
      */
     private void getBundleArguments() {
         if (getArguments() != null) {
-            subgroup = SubgroupFragmentArgs.fromBundle(getArguments()).getSubgroup();
+            // TODO разобраться с этим объектом. Можно будет просто id передавать, если
+            //  через LiveData будем следить, т.к. он сейчас используется для хранения до передачи в ViewModel.
+            Subgroup subgroup = SubgroupFragmentArgs.fromBundle(getArguments()).getSubgroup();
             subgroupIsCreatedByUser = subgroup.isCreatedByUser();
             subgroupId = subgroup.id;
             subgroupIsStudied = subgroup.isStudied == 1;
@@ -697,7 +699,7 @@ public class SubgroupFragment extends DaggerFragment
     @Override
     public void deleteMessage(String message) {
         if (message.equals(DeleteSubgroupDialogFragment.DELETE_MESSAGE)) {
-            Subgroup currentSubgroup = subgroupViewModel.getSubgroupMutableLiveData().getValue();
+            Subgroup currentSubgroup = subgroupViewModel.getSubgroupLiveData().getValue();
             if (currentSubgroup != null) {
                 if (currentSubgroup.isCreatedByUser()) {
                     subgroupViewModel.deleteSubgroup();

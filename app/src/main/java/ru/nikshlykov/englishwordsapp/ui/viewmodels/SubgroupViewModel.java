@@ -31,7 +31,9 @@ public class SubgroupViewModel extends AndroidViewModel
 
     private WordsRepository wordsRepository;
 
-    private MutableLiveData<Subgroup> subgroupMutableLiveData;
+    private LiveData<Subgroup> subgroupLiveData;
+    private long subgroupId;
+    private int newIsStudied;
 
     // Список слов для Activity.
     private MediatorLiveData<List<Word>> words;
@@ -49,7 +51,7 @@ public class SubgroupViewModel extends AndroidViewModel
         this.groupsRepository = groupsRepository;
         this.wordsRepository = wordsRepository;
 
-        subgroupMutableLiveData = new MutableLiveData<>();
+        //subgroupMutableLiveData = new MutableLiveData<>();
         words = new MediatorLiveData<>();
         observer = new Observer<List<Word>>() {
             @Override
@@ -60,37 +62,35 @@ public class SubgroupViewModel extends AndroidViewModel
         availableSubgroupToLink = new MutableLiveData<>();
     }
 
-    public void setLiveDataSubgroup(Subgroup subgroup, int sortParam) {
-        subgroupMutableLiveData.setValue(subgroup);
+    public void setLiveDataSubgroup(long subgroupId, int sortParam) {
+        this.subgroupId = subgroupId;
+        subgroupLiveData = groupsRepository.getLiveDataSubgroupById(subgroupId);
         // Подгружаем возможные списки слов для words.
-        wordsByAlphabet = wordsRepository.getWordsFromSubgroupByAlphabet(subgroup.id);
-        wordsByProgress = wordsRepository.getWordsFromSubgroupByProgress(subgroup.id);
+        wordsByAlphabet = wordsRepository.getWordsFromSubgroupByAlphabet(subgroupId);
+        wordsByProgress = wordsRepository.getWordsFromSubgroupByProgress(subgroupId);
         // Устанавниваем начальный источник для words в зависимости от параметра сортировки.
-        switch (sortParam) {
-            case SortWordsDialogFragment.BY_ALPHABET:
-                words.addSource(wordsByAlphabet, observer);
-                break;
-            default:
-                words.addSource(wordsByProgress, observer);
-                break;
+        if (sortParam == SortWordsDialogFragment.BY_ALPHABET) {
+            words.addSource(wordsByAlphabet, observer);
+        } else {
+            words.addSource(wordsByProgress, observer);
         }
     }
 
 
-
     // Подгруппа
 
-    public MutableLiveData<Subgroup> getSubgroupMutableLiveData() {
-        return subgroupMutableLiveData;
+    public LiveData<Subgroup> getSubgroupLiveData() {
+        return subgroupLiveData;
     }
 
     /**
      * Удаляет подгруппу.
      */
     public void deleteSubgroup() {
-        Subgroup subgroup = subgroupMutableLiveData.getValue();
+        Subgroup subgroup = subgroupLiveData.getValue();
         if (subgroup != null)
             groupsRepository.delete(subgroup);
+
     }
 
     /**
@@ -99,47 +99,28 @@ public class SubgroupViewModel extends AndroidViewModel
      */
     public void updateSubgroup() {
         Log.i(LOG_TAG, "updateSubgroup()");
-        Subgroup subgroup = subgroupMutableLiveData.getValue();
-        if (subgroup != null){
-            Log.i(LOG_TAG, "subgroup.isStudied = " + subgroup.isStudied);
+        Subgroup subgroup = subgroupLiveData.getValue();
+        if (subgroup != null) {
+            subgroup.isStudied = newIsStudied;
             groupsRepository.update(subgroup);
         }
     }
-    /*public void updateSubgroupName(final String newSubgroupName) {
-        final Subgroup subgroup = subgroupMutableLiveData.getValue();
-        if (subgroup != null) {
-            subgroup.name = newSubgroupName;
-            repository.update(subgroup);
-        }
-    }*/
+
     /**
      * Устанавливает параметр изучения для подгруппы.
      *
      * @param isStudied значение параметра isChecked чекбокса.
      */
-    public void setIsStudied(boolean isStudied) {
-        Log.i(LOG_TAG, "setIsStudied(): isStudied = " + isStudied);
-        final Subgroup subgroup = subgroupMutableLiveData.getValue();
-        if (subgroup != null) {
-            if (isStudied) {
-                subgroup.isStudied = 1;
-            } else {
-                subgroup.isStudied = 0;
-            }
-            subgroupMutableLiveData.postValue(subgroup);
-        }
-    }
-
-    public void setSubgroupName(String newSubgroupName) {
-        Subgroup subgroup = subgroupMutableLiveData.getValue();
-        if (subgroup != null){
-            subgroup.name = newSubgroupName;
-            subgroupMutableLiveData.postValue(subgroup);
+    public void setNewIsStudied(boolean isStudied) {
+        if (isStudied) {
+            newIsStudied = 1;
+        } else {
+            newIsStudied = 0;
         }
     }
 
 
-    // Слова, залинкованные со словом
+    // Слова, залинкованные с подгруппой
 
     public MediatorLiveData<List<Word>> getWords() {
         return words;
@@ -167,35 +148,9 @@ public class SubgroupViewModel extends AndroidViewModel
      * Сбрасывает прогресс по всем словам, залинкованным с данной подгруппой.
      */
     public void resetWordsProgress() {
-        Subgroup subgroup = subgroupMutableLiveData.getValue();
-        // Прописать обновление у всех слова данной подгруппы.
-        if (subgroup != null) {
-            wordsRepository.resetWordsProgress(subgroup.id);
-        }
+        // TODO можно ещё всякие условия для безопасности сделать.
+        wordsRepository.resetWordsProgress(subgroupId);
     }
-
-    /**
-     * Обновляет существующее слово.
-     *
-     * @param wordId        id слова.
-     * @param word          само слово.
-     * @param value         значение слова.
-     * @param transcription транскрипция слова.
-     */
-    public void updateWord(final long wordId, final String word, final String value,
-                           final String transcription) {
-        groupsRepository.execute(new Runnable() {
-            @Override
-            public void run() {
-                Word editWord = wordsRepository.getWordById(wordId);
-                editWord.word = word;
-                editWord.transcription = transcription;
-                editWord.value = value;
-                wordsRepository.update(editWord, null);
-            }
-        });
-    }
-
 
     /**
      * Добавляет новое слово в БД и закидывает SubgroupViewModel в виде слушателя
@@ -217,10 +172,7 @@ public class SubgroupViewModel extends AndroidViewModel
     @Override
     public void onInserted(long wordId) {
         Log.i(LOG_TAG, "onInserted():\nwordId = " + wordId);
-        Subgroup subgroup = subgroupMutableLiveData.getValue();
-        if (subgroup != null) {
-            groupsRepository.insert(new Link(subgroup.id, wordId));
-        }
+        groupsRepository.insert(new Link(subgroupId, wordId));
     }
 
     /**
@@ -229,11 +181,8 @@ public class SubgroupViewModel extends AndroidViewModel
      * @param wordId id слова.
      */
     public void deleteLinkWithSubgroup(long wordId) {
-        Subgroup subgroup = subgroupMutableLiveData.getValue();
-        if (subgroup != null) {
-            Link link = new Link(subgroup.id, wordId);
-            groupsRepository.delete(link);
-        }
+        Link link = new Link(subgroupId, wordId);
+        groupsRepository.delete(link);
     }
 
     /**
@@ -242,14 +191,10 @@ public class SubgroupViewModel extends AndroidViewModel
      * @param wordId id слова.
      */
     public void insertLinkWithSubgroup(long wordId) {
-        Log.i("SubgroupViewModel", "insertLinkWithSubgroup()");
-        Subgroup subgroup = subgroupMutableLiveData.getValue();
-        if (subgroup != null) {
-            Link link = new Link(subgroup.id, wordId);
-            Log.i("SubgroupViewModel", "link.subgroupId = " + link.getSubgroupId() + ".\n"
-                    + "link.wordId = " + link.getWordId());
-            groupsRepository.insert(link);
-        }
+        Link link = new Link(subgroupId, wordId);
+        Log.i("SubgroupViewModel", "link.subgroupId = " + link.getSubgroupId() + ".\n"
+                + "link.wordId = " + link.getWordId());
+        groupsRepository.insert(link);
     }
 
 
@@ -272,5 +217,4 @@ public class SubgroupViewModel extends AndroidViewModel
         Log.d(LOG_TAG, "onLoaded()");
         availableSubgroupToLink.setValue(subgroups);
     }
-
 }
