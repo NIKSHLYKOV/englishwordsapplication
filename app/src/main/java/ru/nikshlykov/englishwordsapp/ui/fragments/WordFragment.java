@@ -259,7 +259,7 @@ public class WordFragment extends DaggerFragment
         Log.e(LOG_TAG, "Error happened!");
         // TODO Сделать потом, наверное, через нажатие кнопки назад программно.
         NavDirections navDirections = WordFragmentDirections
-                .actionWordFragmentToSubgroupFragment(new Subgroup(0L, "a", 0L, 0, "a"));
+                .actionWordDestToSubgroupDest(new Subgroup(0L, "a", 0L, 0, "a"));
         onChildFragmentInteractionListener.onChildFragmentInteraction(navDirections);
     }
 
@@ -300,7 +300,7 @@ public class WordFragment extends DaggerFragment
 
                     // Закрываем fragment.
                     NavDirections navDirections = WordFragmentDirections
-                            .actionWordFragmentToSubgroupFragment(new Subgroup(0L, "a", 0L, 0, "a"));
+                            .actionWordDestToSubgroupDest(new Subgroup(0L, "a", 0L, 0, "a"));
                     onChildFragmentInteractionListener.onChildFragmentInteraction(navDirections);
                 }
                 // Выводим Toast о том, что они должны быть заполнены.

@@ -23,6 +23,7 @@ public class DeleteSubgroupDialogFragment extends DialogFragment {
 
     // Интерфейс для взаимодействия с Activity.
     private DeleteSubgroupListener deleteSubgroupListener;
+
     public interface DeleteSubgroupListener {
         void deleteMessage(String message);
     }
@@ -31,7 +32,10 @@ public class DeleteSubgroupDialogFragment extends DialogFragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         // Присваиваем слушатель.
-        deleteSubgroupListener = (DeleteSubgroupListener) context;
+        // TODO разобраться с удалением подгруппы. Т.к. этот слушатель больше не работает.
+        // deleteSubgroupListener = (DeleteSubgroupListener) context;
+
+        // TODO просмотреть ещё диалоговые фрагменты, в которых могут быть слушатели.
     }
 
     @NonNull

@@ -161,6 +161,8 @@ public class MainActivity extends DaggerAppCompatActivity
         startActivityForResult(intent, REQUEST_CODE_EDIT_SETTINGS);
     }
 
+    // TODO проверить использование onActivityResult. Оно вроде сейчас вообще не нужно.
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
