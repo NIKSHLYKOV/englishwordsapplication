@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/fragment_word___action___link_word"
+        android:icon="@drawable/ic_link_white_24dp"
+        android:title="@string/action___link_word___title"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/fragment_word___action___reset_word_progress"
+        android:icon="@drawable/ic_replay_white_24dp"
+        android:title="@string/action___reset_progress___title"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/fragment_word___action___delete_word"
+        android:icon="@drawable/ic_delete_white_24dp"
+        android:title="@string/action___delete_word___title"
+        app:showAsAction="ifRoom" />
+</menu>

@@ -465,11 +465,18 @@ public class SubgroupFragment extends DaggerFragment
             createWordFAB.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent createNewWordIntent = new Intent(getContext(),
+                    /*Intent createNewWordIntent = new Intent(getContext(),
                             WordActivity.class);
                     createNewWordIntent.putExtra(EXTRA_SUBGROUP_ID, subgroupId);
                     createNewWordIntent.putExtra(WordActivity.EXTRA_START_TO, WordActivity.START_TO_CREATE_WORD);
-                    startActivityForResult(createNewWordIntent, REQUEST_CODE_CREATE_NEW_WORD);
+                    startActivityForResult(createNewWordIntent, REQUEST_CODE_CREATE_NEW_WORD);*/
+                    // TODO Скорее всего, будем разделять WordFragment на два: один фрагмент
+                    //  добавляет новое слово, другой - редактирует существующее слово. Тогда
+                    //  и уберём этот код.
+                    NavDirections navDirections = SubgroupFragmentDirections
+                            .actionSubgroupFragmentToWordFragment(new Word("a", "a", "a"))
+                            .setStartTo(WordFragment.START_TO_CREATE_WORD);
+                    onChildFragmentInteractionListener.onChildFragmentInteraction(navDirections);
                 }
             });
         } else {
@@ -510,12 +517,16 @@ public class SubgroupFragment extends DaggerFragment
             @Override
             public void onEntryClick(View view, int position) {
                 final Word currentWord = adapter.getWords().get(position);
-                Intent editExistingWordIntent = new Intent(getContext(),
+                /*Intent editExistingWordIntent = new Intent(getContext(),
                         WordActivity.class);
                 editExistingWordIntent.putExtra(WordActivity.EXTRA_WORD_OBJECT, currentWord);
                 editExistingWordIntent.putExtra(WordActivity.EXTRA_START_TO, WordActivity.START_TO_EDIT_WORD);
                 //editExistingWordIntent.putExtra(WordActivity.EXTRA_WORD_ID, currentWord.id);
-                startActivityForResult(editExistingWordIntent, REQUEST_CODE_EDIT_EXISTING_WORD);
+                startActivityForResult(editExistingWordIntent, REQUEST_CODE_EDIT_EXISTING_WORD);*/
+                NavDirections navDirections = SubgroupFragmentDirections
+                        .actionSubgroupFragmentToWordFragment(currentWord)
+                        .setStartTo(WordFragment.START_TO_EDIT_WORD);
+                onChildFragmentInteractionListener.onChildFragmentInteraction(navDirections);
             }
         });
     }
