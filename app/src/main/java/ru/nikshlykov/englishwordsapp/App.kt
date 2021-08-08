@@ -1,154 +1,128 @@
-package ru.nikshlykov.englishwordsapp;
+package ru.nikshlykov.englishwordsapp
 
-import android.app.Application;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.content.SharedPreferences;
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.os.Build
+import android.speech.tts.TextToSpeech
+import android.util.Log
+import android.widget.Toast
+import androidx.preference.PreferenceManager
+import androidx.work.Configuration
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequest
+import androidx.work.WorkManager
+import dagger.android.AndroidInjector
+import dagger.android.DaggerApplication
+import ru.nikshlykov.englishwordsapp.di.AppComponent
+import ru.nikshlykov.englishwordsapp.di.DaggerAppComponent
+import ru.nikshlykov.englishwordsapp.notifications.NotificationWorker
+import java.util.*
+import java.util.concurrent.TimeUnit
 
-import androidx.preference.PreferenceManager;
-import androidx.work.Configuration;
-import androidx.work.ExistingPeriodicWorkPolicy;
-import androidx.work.PeriodicWorkRequest;
-import androidx.work.WorkManager;
+class App : DaggerApplication(), Configuration.Provider {
+  var textToSpeech: TextToSpeech? = null
+    private set
+  private val TTS_ERROR = "Ошибка синтезирования речи!"
+  private var appComponent: AppComponent? = null
+  override fun onCreate() {
+    appComponent = DaggerAppComponent.factory().create(this)
+    super.onCreate()
 
-import android.os.Build;
-import android.speech.tts.TextToSpeech;
-import android.widget.Toast;
+    // Устанавливаем дефолтные значения в настройках. Сработает только один раз
+    // при первом запуске приложения.
+    PreferenceManager.setDefaultValues(this, R.xml.preferences, false)
 
-import java.util.Locale;
-import java.util.concurrent.TimeUnit;
+    // Инициализируем TTS.
+    initTTS()
+    createNotificationChannel()
 
-import dagger.android.AndroidInjector;
-import dagger.android.DaggerApplication;
-import ru.nikshlykov.englishwordsapp.di.AppComponent;
-import ru.nikshlykov.englishwordsapp.di.DaggerAppComponent;
-import ru.nikshlykov.englishwordsapp.notifications.NotificationWorker;
+    //setNotificationPeriodicWorker(10);
+  }
 
-public class App extends DaggerApplication
-        implements Configuration.Provider {
+  // Уведомления.
+  override fun getWorkManagerConfiguration(): Configuration {
+    return Configuration.Builder()
+      .setMinimumLoggingLevel(Log.INFO)
+      .build()
+  }
 
+  fun setNotificationPeriodicWorker(delay: Long) {
+    val notificationWorkRequest = PeriodicWorkRequest.Builder(
+      NotificationWorker::class.java, 1, TimeUnit.DAYS
+    )
+      .setInitialDelay(delay, TimeUnit.SECONDS)
+      .addTag("NotificationWork")
+      .build()
+    WorkManager.getInstance(applicationContext).enqueueUniquePeriodicWork(
+      "NotificationWork1", ExistingPeriodicWorkPolicy.REPLACE, notificationWorkRequest
+    )
+  }
+
+  private fun createNotificationChannel() {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+      val id = getString(R.string.notification_channel___remember_to_study___id)
+      val name: CharSequence = getString(R.string.notification_channel___remember_to_study___name)
+      val description = getString(R.string.notification_channel___remember_to_study___description)
+      val importance = NotificationManager.IMPORTANCE_DEFAULT
+      val channel = NotificationChannel(id, name, importance)
+      channel.description = description
+      val notificationManager = getSystemService(
+        NotificationManager::class.java
+      )
+      notificationManager?.createNotificationChannel(channel)
+    }
+  }
+  // Робот TTS для произношения слов.
+  /**
+   * Инициализирует textToSpeech при запуске приложения.
+   */
+  private fun initTTS() {
+    // Получаем настройки для робота TTS и инициализируем его.
+    val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+    val ttsPitch = sharedPreferences
+      .getInt(getString(R.string.preference_key___tts_pitch), 10) * 0.1f
+    val ttsSpeechRate = sharedPreferences
+      .getInt(getString(R.string.preference_key___tts_pitch), 10) * 0.1f
+    textToSpeech = TextToSpeech(applicationContext) { status ->
+      if (status == TextToSpeech.SUCCESS) {
+        // Установка языка, высоты и скорости речи.
+        textToSpeech!!.language = Locale.US
+        textToSpeech!!.setPitch(ttsPitch)
+        textToSpeech!!.setSpeechRate(ttsSpeechRate)
+      } else if (status == TextToSpeech.ERROR) {
+        Toast.makeText(applicationContext, TTS_ERROR, Toast.LENGTH_LONG).show()
+      }
+    }
+  }
+
+  /**
+   * Устанавливает новый тембр роботу.
+   * @param pitch параметр тембра из настроек (там он может быть от 5 до 25).
+   */
+  fun setTextToSpeechPitch(pitch: Int) {
+    textToSpeech!!.setPitch(pitch * 0.1f)
+    textToSpeech!!.speak("An example of pitch.", TextToSpeech.QUEUE_FLUSH, null, "1")
+  }
+
+  /**
+   * Устанавливает новую скорость роботу.
+   * @param speechRate параметр скорости из настроек (там он может быть от 1 до 25).
+   */
+  fun setTextToSpeechSpeechRate(speechRate: Int) {
+    textToSpeech!!.setSpeechRate(speechRate * 0.1f)
+    textToSpeech!!.speak("An example of speech rate.", TextToSpeech.QUEUE_FLUSH, null, "1")
+  }
+
+  // Dagger Component
+  override fun applicationInjector(): AppComponent? {
+    return appComponent
+  }
+
+  companion object {
     // TODO Проверить все EditText на лишние пробелы.
-
     // TODO Проверить все Fragments/Activities на то, что они могут менять размер, чтобы кнопки
     //  были над клавой и EditText'ы были в фокусе с учётом клавы. Для этого вроде в
     //  AddOrEditSubgroupActivity использовалось в Manifest AdjustResize.
-    public static final String PREFERENCE_FILE_NAME = "my_preferences";
-
-    private TextToSpeech textToSpeech;
-    private String TTS_ERROR = "Ошибка синтезирования речи!";
-
-    private AppComponent appComponent;
-
-    @Override
-    public void onCreate() {
-        appComponent = DaggerAppComponent.factory().create(this);
-        super.onCreate();
-
-        // Устанавливаем дефолтные значения в настройках. Сработает только один раз
-        // при первом запуске приложения.
-        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
-
-        // Инициализируем TTS.
-        initTTS();
-
-        createNotificationChannel();
-
-        //setNotificationPeriodicWorker(10);
-    }
-
-
-
-    // Уведомления.
-
-    @Override
-    public Configuration getWorkManagerConfiguration() {
-        return (new Configuration.Builder())
-                .setMinimumLoggingLevel(android.util.Log.INFO)
-                .build();
-    }
-
-    public void setNotificationPeriodicWorker(long delay){
-        PeriodicWorkRequest notificationWorkRequest = new PeriodicWorkRequest.Builder(
-                NotificationWorker.class, 1, TimeUnit.DAYS)
-                .setInitialDelay(delay, TimeUnit.SECONDS)
-                .addTag("NotificationWork")
-                .build();
-
-        WorkManager.getInstance(getApplicationContext()).enqueueUniquePeriodicWork(
-                "NotificationWork1", ExistingPeriodicWorkPolicy.REPLACE, notificationWorkRequest);
-    }
-
-    private void createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-
-            String id = getString(R.string.notification_channel___remember_to_study___id);
-            CharSequence name = getString(R.string.notification_channel___remember_to_study___name);
-            String description = getString(R.string.notification_channel___remember_to_study___description);
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-
-            NotificationChannel channel = new NotificationChannel(id, name, importance);
-            channel.setDescription(description);
-
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            if (notificationManager != null)
-                notificationManager.createNotificationChannel(channel);
-        }
-    }
-
-
-
-    // Робот TTS для произношения слов.
-
-    /**
-     * Инициализирует textToSpeech при запуске приложения.
-     */
-    private void initTTS() {
-        // Получаем настройки для робота TTS и инициализируем его.
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        final float ttsPitch = sharedPreferences
-                .getInt(getString(R.string.preference_key___tts_pitch), 10) * 0.1f;
-        final float ttsSpeechRate = sharedPreferences
-                .getInt(getString(R.string.preference_key___tts_pitch), 10) * 0.1f;
-        textToSpeech = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
-            @Override
-            public void onInit(int status) {
-                if (status == TextToSpeech.SUCCESS) {
-                    // Установка языка, высоты и скорости речи.
-                    textToSpeech.setLanguage(Locale.US);
-                    textToSpeech.setPitch(ttsPitch);
-                    textToSpeech.setSpeechRate(ttsSpeechRate);
-                } else if (status == TextToSpeech.ERROR) {
-                    Toast.makeText(getApplicationContext(), TTS_ERROR, Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-    }
-    public TextToSpeech getTextToSpeech() {
-        return textToSpeech;
-    }
-    /**
-     * Устанавливает новый тембр роботу.
-     * @param pitch параметр тембра из настроек (там он может быть от 5 до 25).
-     */
-    public void setTextToSpeechPitch(int pitch){
-        textToSpeech.setPitch(pitch * 0.1f);
-        textToSpeech.speak("An example of pitch.", TextToSpeech.QUEUE_FLUSH, null, "1");
-    }
-    /**
-     * Устанавливает новую скорость роботу.
-     * @param speechRate параметр скорости из настроек (там он может быть от 1 до 25).
-     */
-    public void setTextToSpeechSpeechRate(int speechRate){
-        textToSpeech.setSpeechRate(speechRate * 0.1f);
-        textToSpeech.speak("An example of speech rate.", TextToSpeech.QUEUE_FLUSH, null, "1");
-    }
-
-
-
-    // Dagger Component
-
-    @Override
-    protected AndroidInjector<? extends DaggerApplication> applicationInjector() {
-        return appComponent;
-    }
+    const val PREFERENCE_FILE_NAME = "my_preferences"
+  }
 }

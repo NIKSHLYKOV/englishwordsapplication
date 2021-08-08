@@ -1,65 +1,34 @@
-package ru.nikshlykov.englishwordsapp.db.link;
+package ru.nikshlykov.englishwordsapp.db.link
 
-import androidx.annotation.NonNull;
-import androidx.room.ColumnInfo;
-import androidx.room.Entity;
-import androidx.room.ForeignKey;
-import androidx.room.Index;
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
+import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup
+import ru.nikshlykov.englishwordsapp.db.word.Word
 
-import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup;
-import ru.nikshlykov.englishwordsapp.db.word.Word;
-
-import static androidx.room.ForeignKey.CASCADE;
-
-@Entity(tableName = "Links", foreignKeys = {
-        @ForeignKey(
-                entity = Subgroup.class,
-                parentColumns = "_id",
-                childColumns = "SubgroupId",
-                onDelete = CASCADE,
-                onUpdate = CASCADE),
-        @ForeignKey(
-                entity = Word.class,
-                parentColumns = "_id",
-                childColumns = "WordId",
-                onDelete = CASCADE,
-                onUpdate = CASCADE)},
-        primaryKeys = {"SubgroupId", "WordId"},
-        indices = {
-                @Index("WordId"),
-                @Index("SubgroupId")})
-public class Link {
-
-    public Link(long subgroupId, long wordId) {
-        this.subgroupId = subgroupId;
-        this.wordId = wordId;
-    }
-
-    @NonNull
-    @ColumnInfo(name = "SubgroupId")
-    private long subgroupId;
-
-    @NonNull
-    @ColumnInfo(name = "WordId")
-    private long wordId;
-
-    @NonNull
-    @ColumnInfo(name = "LevelInParentGroup", defaultValue = "10")
-    private int levelInParentGroup;
-
-    public long getSubgroupId() {
-        return subgroupId;
-    }
-
-    public long getWordId() {
-        return wordId;
-    }
-
-    public int getLevelInParentGroup() {
-        return levelInParentGroup;
-    }
-
-    public void setLevelInParentGroup(int levelInParentGroup) {
-        this.levelInParentGroup = levelInParentGroup;
-    }
+@Entity(
+  tableName = "Links",
+  foreignKeys = [ForeignKey(
+    entity = Subgroup::class,
+    parentColumns = ["_id"],
+    childColumns = ["SubgroupId"],
+    onDelete = ForeignKey.CASCADE,
+    onUpdate = ForeignKey.CASCADE
+  ), ForeignKey(
+    entity = Word::class,
+    parentColumns = ["_id"],
+    childColumns = ["WordId"],
+    onDelete = ForeignKey.CASCADE,
+    onUpdate = ForeignKey.CASCADE
+  )],
+  primaryKeys = ["SubgroupId", "WordId"],
+  indices = [Index("WordId"), Index("SubgroupId")]
+)
+class Link(
+  @ColumnInfo(name = "SubgroupId") val subgroupId: Long,
+  @ColumnInfo(name = "WordId") val wordId: Long
+) {
+  @ColumnInfo(name = "LevelInParentGroup", defaultValue = "10")
+  var levelInParentGroup = 0
 }

@@ -1,31 +1,24 @@
-package ru.nikshlykov.englishwordsapp.db.link;
+package ru.nikshlykov.englishwordsapp.db.link
 
-import androidx.room.Dao;
-import androidx.room.Delete;
-import androidx.room.Insert;
-import androidx.room.OnConflictStrategy;
-import androidx.room.Query;
-
-import java.util.List;
+import androidx.room.*
 
 @Dao
-public interface LinkDao {
+interface LinkDao {
+  @Insert(onConflict = OnConflictStrategy.IGNORE)
+  fun insert(link: Link): Long
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    long insert(Link link);
+  @Insert(onConflict = OnConflictStrategy.IGNORE)
+  fun insertMultiple(links: List<Link>): List<Long>
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    List<Long> insertMultiple(List<Link> links);
+  @Delete
+  fun delete(link: Link): Int
 
-    @Delete
-    int delete(Link link);
+  @Delete
+  fun deleteMultiple(links: List<Link>): Int
 
-    @Delete
-    int deleteMultiple(List<Link> links);
+  @Query("SELECT * FROM Links WHERE WordId = :wordId")
+  fun getLinksByWordId(wordId: Long): Array<Link>
 
-    @Query("SELECT * FROM Links WHERE WordId = :wordId")
-    Link[] getLinksByWordId(long wordId);
-
-    @Query("SELECT * FROM Links WHERE WordId = :wordId AND SubgroupId = :subgroupId")
-    Link getLink(long wordId, long subgroupId);
+  @Query("SELECT * FROM Links WHERE WordId = :wordId AND SubgroupId = :subgroupId")
+  fun getLink(wordId: Long, subgroupId: Long): Link
 }

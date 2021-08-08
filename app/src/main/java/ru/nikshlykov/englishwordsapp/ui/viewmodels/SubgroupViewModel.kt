@@ -1,220 +1,195 @@
-package ru.nikshlykov.englishwordsapp.ui.viewmodels;
+package ru.nikshlykov.englishwordsapp.ui.viewmodels
 
-import android.app.Application;
-import android.util.Log;
+import android.app.Application
+import android.util.Log
+import androidx.lifecycle.*
+import androidx.lifecycle.Observer
+import ru.nikshlykov.englishwordsapp.db.GroupsRepository
+import ru.nikshlykov.englishwordsapp.db.GroupsRepository.OnSubgroupsLoadedListener
+import ru.nikshlykov.englishwordsapp.db.WordsRepository
+import ru.nikshlykov.englishwordsapp.db.WordsRepository.OnWordInsertedListener
+import ru.nikshlykov.englishwordsapp.db.link.Link
+import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup
+import ru.nikshlykov.englishwordsapp.db.word.Word
+import ru.nikshlykov.englishwordsapp.ui.fragments.LinkOrDeleteWordDialogFragment
+import ru.nikshlykov.englishwordsapp.ui.fragments.SortWordsDialogFragment
+import ru.nikshlykov.englishwordsapp.ui.viewmodels.SubgroupViewModel
+import java.util.*
 
-import androidx.annotation.NonNull;
-import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MediatorLiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
+class SubgroupViewModel(
+  application: Application, private val groupsRepository: GroupsRepository,
+  private val wordsRepository: WordsRepository
+) : AndroidViewModel(application), OnWordInsertedListener, OnSubgroupsLoadedListener {
+  // Подгруппа
+  lateinit var subgroupLiveData: LiveData<Subgroup>
+    private set
+  private var subgroupId: Long = 0
+  private var newIsStudied = 0
 
-import ru.nikshlykov.englishwordsapp.db.GroupsRepository;
-import ru.nikshlykov.englishwordsapp.db.WordsRepository;
-import ru.nikshlykov.englishwordsapp.db.link.Link;
-import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup;
-import ru.nikshlykov.englishwordsapp.db.word.Word;
-import ru.nikshlykov.englishwordsapp.ui.fragments.SortWordsDialogFragment;
-import ru.nikshlykov.englishwordsapp.ui.fragments.LinkOrDeleteWordDialogFragment;
+  // Слова, залинкованные с подгруппой
+  // Список слов для Activity.
+  val words: MediatorLiveData<List<Word>>
 
-import java.util.ArrayList;
-import java.util.List;
+  // Источники данных для words.
+  private var wordsByAlphabet: LiveData<List<Word>>? = null
+  private var wordsByProgress: LiveData<List<Word>>? = null
 
-public class SubgroupViewModel extends AndroidViewModel
-        implements WordsRepository.OnWordInsertedListener,
-        GroupsRepository.OnSubgroupsLoadedListener {
-
-    private static final String LOG_TAG = "SubgroupViewModel";
-
-    private GroupsRepository groupsRepository;
-
-    private WordsRepository wordsRepository;
-
-    private LiveData<Subgroup> subgroupLiveData;
-    private long subgroupId;
-    private int newIsStudied;
-
-    // Список слов для Activity.
-    private MediatorLiveData<List<Word>> words;
-    // Источники данных для words.
-    private LiveData<List<Word>> wordsByAlphabet;
-    private LiveData<List<Word>> wordsByProgress;
-    // Observer, который сетит список слов в words.
-    private Observer<List<Word>> observer;
-
-    private MutableLiveData<ArrayList<Subgroup>> availableSubgroupToLink;
-
-    public SubgroupViewModel(@NonNull Application application, GroupsRepository groupsRepository,
-                             WordsRepository wordsRepository) {
-        super(application);
-        this.groupsRepository = groupsRepository;
-        this.wordsRepository = wordsRepository;
-
-        //subgroupMutableLiveData = new MutableLiveData<>();
-        words = new MediatorLiveData<>();
-        observer = new Observer<List<Word>>() {
-            @Override
-            public void onChanged(List<Word> words) {
-                SubgroupViewModel.this.words.setValue(words);
-            }
-        };
-        availableSubgroupToLink = new MutableLiveData<>();
+  // Observer, который сетит список слов в words.
+  private val observer: Observer<List<Word>>
+  private val availableSubgroupToLink: MutableLiveData<ArrayList<Subgroup>?>
+  fun setLiveDataSubgroup(subgroupId: Long, sortParam: Int) {
+    this.subgroupId = subgroupId
+    subgroupLiveData = groupsRepository.getLiveDataSubgroupById(subgroupId)
+    // Подгружаем возможные списки слов для words.
+    wordsByAlphabet = wordsRepository.getWordsFromSubgroupByAlphabet(subgroupId)
+    wordsByProgress = wordsRepository.getWordsFromSubgroupByProgress(subgroupId)
+    // Устанавниваем начальный источник для words в зависимости от параметра сортировки.
+    if (sortParam == SortWordsDialogFragment.BY_ALPHABET) {
+      words.addSource(wordsByAlphabet!!, observer)
+    } else {
+      words.addSource(wordsByProgress!!, observer)
     }
+  }
 
-    public void setLiveDataSubgroup(long subgroupId, int sortParam) {
-        this.subgroupId = subgroupId;
-        subgroupLiveData = groupsRepository.getLiveDataSubgroupById(subgroupId);
-        // Подгружаем возможные списки слов для words.
-        wordsByAlphabet = wordsRepository.getWordsFromSubgroupByAlphabet(subgroupId);
-        wordsByProgress = wordsRepository.getWordsFromSubgroupByProgress(subgroupId);
-        // Устанавниваем начальный источник для words в зависимости от параметра сортировки.
-        if (sortParam == SortWordsDialogFragment.BY_ALPHABET) {
-            words.addSource(wordsByAlphabet, observer);
-        } else {
-            words.addSource(wordsByProgress, observer);
-        }
+  /**
+   * Удаляет подгруппу.
+   */
+  fun deleteSubgroup() {
+    val subgroup = subgroupLiveData!!.value
+    if (subgroup != null) groupsRepository.delete(subgroup)
+  }
+
+  /**
+   * Обновляет поле подгруппы в БД.
+   * Обновление необходимо только для параметра изучения (IsStudied).
+   */
+  fun updateSubgroup() {
+    Log.i(LOG_TAG, "updateSubgroup()")
+    val subgroup = subgroupLiveData!!.value
+    if (subgroup != null) {
+      subgroup.isStudied = newIsStudied
+      groupsRepository.update(subgroup)
     }
+  }
 
-
-    // Подгруппа
-
-    public LiveData<Subgroup> getSubgroupLiveData() {
-        return subgroupLiveData;
+  /**
+   * Устанавливает параметр изучения для подгруппы.
+   *
+   * @param isStudied значение параметра isChecked чекбокса.
+   */
+  fun setNewIsStudied(isStudied: Boolean) {
+    newIsStudied = if (isStudied) {
+      1
+    } else {
+      0
     }
+  }
 
-    /**
-     * Удаляет подгруппу.
-     */
-    public void deleteSubgroup() {
-        Subgroup subgroup = subgroupLiveData.getValue();
-        if (subgroup != null)
-            groupsRepository.delete(subgroup);
-
+  /**
+   * Меняет источник данных для words, создавая эффект сортировки.
+   *
+   * @param sortParam параметр сортировки.
+   */
+  fun sortWords(sortParam: Int) {
+    when (sortParam) {
+      SortWordsDialogFragment.BY_ALPHABET -> {
+        words.removeSource(wordsByProgress!!)
+        words.addSource(wordsByAlphabet!!, observer)
+      }
+      SortWordsDialogFragment.BY_PROGRESS -> {
+        words.removeSource(wordsByAlphabet!!)
+        words.addSource(wordsByProgress!!, observer)
+      }
     }
+  }
 
-    /**
-     * Обновляет поле подгруппы в БД.
-     * Обновление необходимо только для параметра изучения (IsStudied).
-     */
-    public void updateSubgroup() {
-        Log.i(LOG_TAG, "updateSubgroup()");
-        Subgroup subgroup = subgroupLiveData.getValue();
-        if (subgroup != null) {
-            subgroup.isStudied = newIsStudied;
-            groupsRepository.update(subgroup);
-        }
+  /**
+   * Сбрасывает прогресс по всем словам, залинкованным с данной подгруппой.
+   */
+  fun resetWordsProgress() {
+    // TODO можно ещё всякие условия для безопасности сделать.
+    wordsRepository.resetWordsProgress(subgroupId)
+  }
+
+  /**
+   * Добавляет новое слово в БД и закидывает SubgroupViewModel в виде слушателя
+   * для последующего приёма id добавленного слова.
+   *
+   * @param word слово, которое необходимо добавить.
+   */
+  fun insert(word: Word) {
+    Log.i(
+      LOG_TAG, """
+   insert():
+   word = ${word.word}; value = ${word.value}
+   """.trimIndent()
+    )
+    wordsRepository.insert(word, this)
+  }
+
+  /**
+   * Добавляет связь добавленого слова с текущей подгруппой.
+   *
+   * @param wordId id добавленного слова.
+   */
+  override fun onInserted(wordId: Long) {
+    Log.i(LOG_TAG, "onInserted():\nwordId = $wordId")
+    groupsRepository.insert(Link(subgroupId, wordId))
+  }
+
+  /**
+   * Удаляет связь между текущей подгруппой и словом.
+   *
+   * @param wordId id слова.
+   */
+  fun deleteLinkWithSubgroup(wordId: Long) {
+    val link = Link(subgroupId, wordId)
+    groupsRepository.delete(link)
+  }
+
+  /**
+   * Добавляет связь между текущей подгруппой и словом, которое из него удалилось.
+   *
+   * @param wordId id слова.
+   */
+  fun insertLinkWithSubgroup(wordId: Long) {
+    val link = Link(subgroupId, wordId)
+    Log.i(
+      "SubgroupViewModel", """
+   link.subgroupId = ${link.subgroupId}.
+   link.wordId = ${link.wordId}
+   """.trimIndent()
+    )
+    groupsRepository.insert(link)
+  }
+
+  fun getAvailableSubgroupsToLink(wordId: Long): MutableLiveData<ArrayList<Subgroup>?> {
+    if (availableSubgroupToLink.value == null) {
+      Log.d(LOG_TAG, "availableSubgroupsTo value = null")
+      groupsRepository.getAvailableSubgroupTo(wordId, LinkOrDeleteWordDialogFragment.TO_LINK, this)
     }
+    return availableSubgroupToLink
+  }
 
-    /**
-     * Устанавливает параметр изучения для подгруппы.
-     *
-     * @param isStudied значение параметра isChecked чекбокса.
-     */
-    public void setNewIsStudied(boolean isStudied) {
-        if (isStudied) {
-            newIsStudied = 1;
-        } else {
-            newIsStudied = 0;
-        }
-    }
+  fun clearAvailableSubgroupsToAndRemoveObserver(observer: Observer<ArrayList<Subgroup>?>) {
+    Log.d(LOG_TAG, "clearAvailableSubgroupsTo()")
+    availableSubgroupToLink.value = null
+    availableSubgroupToLink.removeObserver(observer)
+  }
 
+  override fun onLoaded(subgroups: ArrayList<Subgroup>?) {
+    Log.d(LOG_TAG, "onLoaded()")
+    availableSubgroupToLink.value = subgroups
+  }
 
-    // Слова, залинкованные с подгруппой
+  companion object {
+    private const val LOG_TAG = "SubgroupViewModel"
+  }
 
-    public MediatorLiveData<List<Word>> getWords() {
-        return words;
-    }
-
-    /**
-     * Меняет источник данных для words, создавая эффект сортировки.
-     *
-     * @param sortParam параметр сортировки.
-     */
-    public void sortWords(int sortParam) {
-        switch (sortParam) {
-            case SortWordsDialogFragment.BY_ALPHABET:
-                words.removeSource(wordsByProgress);
-                words.addSource(wordsByAlphabet, observer);
-                break;
-            case SortWordsDialogFragment.BY_PROGRESS:
-                words.removeSource(wordsByAlphabet);
-                words.addSource(wordsByProgress, observer);
-                break;
-        }
-    }
-
-    /**
-     * Сбрасывает прогресс по всем словам, залинкованным с данной подгруппой.
-     */
-    public void resetWordsProgress() {
-        // TODO можно ещё всякие условия для безопасности сделать.
-        wordsRepository.resetWordsProgress(subgroupId);
-    }
-
-    /**
-     * Добавляет новое слово в БД и закидывает SubgroupViewModel в виде слушателя
-     * для последующего приёма id добавленного слова.
-     *
-     * @param word слово, которое необходимо добавить.
-     */
-    public void insert(Word word) {
-        Log.i(LOG_TAG, "insert():\n" +
-                "word = " + word.word + "; value = " + word.value);
-        wordsRepository.insert(word, this);
-    }
-
-    /**
-     * Добавляет связь добавленого слова с текущей подгруппой.
-     *
-     * @param wordId id добавленного слова.
-     */
-    @Override
-    public void onInserted(long wordId) {
-        Log.i(LOG_TAG, "onInserted():\nwordId = " + wordId);
-        groupsRepository.insert(new Link(subgroupId, wordId));
-    }
-
-    /**
-     * Удаляет связь между текущей подгруппой и словом.
-     *
-     * @param wordId id слова.
-     */
-    public void deleteLinkWithSubgroup(long wordId) {
-        Link link = new Link(subgroupId, wordId);
-        groupsRepository.delete(link);
-    }
-
-    /**
-     * Добавляет связь между текущей подгруппой и словом, которое из него удалилось.
-     *
-     * @param wordId id слова.
-     */
-    public void insertLinkWithSubgroup(long wordId) {
-        Link link = new Link(subgroupId, wordId);
-        Log.i("SubgroupViewModel", "link.subgroupId = " + link.getSubgroupId() + ".\n"
-                + "link.wordId = " + link.getWordId());
-        groupsRepository.insert(link);
-    }
-
-
-    public MutableLiveData<ArrayList<Subgroup>> getAvailableSubgroupsToLink(long wordId) {
-        if (availableSubgroupToLink.getValue() == null) {
-            Log.d(LOG_TAG, "availableSubgroupsTo value = null");
-            groupsRepository.getAvailableSubgroupTo(wordId, LinkOrDeleteWordDialogFragment.TO_LINK, this);
-        }
-        return availableSubgroupToLink;
-    }
-
-    public void clearAvailableSubgroupsToAndRemoveObserver(Observer<ArrayList<Subgroup>> observer) {
-        Log.d(LOG_TAG, "clearAvailableSubgroupsTo()");
-        availableSubgroupToLink.setValue(null);
-        availableSubgroupToLink.removeObserver(observer);
-    }
-
-    @Override
-    public void onLoaded(ArrayList<Subgroup> subgroups) {
-        Log.d(LOG_TAG, "onLoaded()");
-        availableSubgroupToLink.setValue(subgroups);
-    }
+  init {
+    //subgroupMutableLiveData = new MutableLiveData<>();
+    words = MediatorLiveData()
+    observer = Observer { words -> this@SubgroupViewModel.words.value = words }
+    availableSubgroupToLink = MutableLiveData()
+  }
 }

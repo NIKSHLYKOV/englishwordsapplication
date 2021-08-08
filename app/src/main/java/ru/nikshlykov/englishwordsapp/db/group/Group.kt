@@ -1,42 +1,33 @@
-package ru.nikshlykov.englishwordsapp.db.group;
+package ru.nikshlykov.englishwordsapp.db.group
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.room.ColumnInfo;
-import androidx.room.Entity;
-import androidx.room.PrimaryKey;
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
 @Entity(tableName = "Groups")
-public class Group {
+class Group {
+  @PrimaryKey
+  @ColumnInfo(name = "_id")
+  var id: Long = 0
 
-    @PrimaryKey()
-    @NonNull
-    @ColumnInfo(name = "_id")
-    public long id;
+  @ColumnInfo(name = "GroupName")
+  var name: String = ""
 
-    @NonNull
-    @ColumnInfo(name = "GroupName")
-    public String name;
+  object GroupsTable {
+    // Названия таблицы групп и её колонок
+    const val TABLE_GROUPS = "Groups"
+    const val TABLE_GROUPS_COLUMN_ID = "_id"
+    const val TABLE_GROUPS_COLUMN_GROUP_NAME = "GroupName"
+  }
 
-    public static class GroupsTable {
-        // Названия таблицы групп и её колонок
-        public static final String TABLE_GROUPS = "Groups";
-        public static final String TABLE_GROUPS_COLUMN_ID = "_id";
-        public static final String TABLE_GROUPS_COLUMN_GROUP_NAME = "GroupName";
+  override fun equals(obj: Any?): Boolean {
+    if (this === obj) {
+      return true
     }
-
-    @Override
-    public boolean equals(@Nullable Object obj) {
-        if (this == obj) {
-            return true;
-        }
-
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-
-        Group comparedGroup = (Group) obj;
-        return id == comparedGroup.id &&
-                name.equals(comparedGroup.name);
+    if (obj == null || javaClass != obj.javaClass) {
+      return false
     }
+    val comparedGroup = obj as Group
+    return id == comparedGroup.id && name == comparedGroup.name
+  }
 }

@@ -1,34 +1,30 @@
-package ru.nikshlykov.englishwordsapp.di;
+package ru.nikshlykov.englishwordsapp.di
 
-import android.app.Application;
-
-import javax.inject.Singleton;
-
-import dagger.Module;
-import dagger.Provides;
-import ru.nikshlykov.englishwordsapp.db.AppDatabase;
-import ru.nikshlykov.englishwordsapp.db.GroupsRepository;
-import ru.nikshlykov.englishwordsapp.db.ModesRepository;
-import ru.nikshlykov.englishwordsapp.db.WordsRepository;
+import dagger.Module
+import dagger.Provides
+import ru.nikshlykov.englishwordsapp.db.AppDatabase
+import ru.nikshlykov.englishwordsapp.db.GroupsRepository
+import ru.nikshlykov.englishwordsapp.db.ModesRepository
+import ru.nikshlykov.englishwordsapp.db.WordsRepository
+import javax.inject.Singleton
 
 @Module
-public class RepositoryModule {
+class RepositoryModule {
+  @Provides
+  @Singleton
+  fun provideModesRepository(appDatabase: AppDatabase): ModesRepository {
+    return ModesRepository(appDatabase)
+  }
 
-    @Provides
-    @Singleton
-    ModesRepository provideModesRepository(AppDatabase appDatabase){
-        return new ModesRepository(appDatabase);
-    }
+  @Provides
+  @Singleton
+  fun provideGroupsRepository(appDatabase: AppDatabase): GroupsRepository {
+    return GroupsRepository(appDatabase)
+  }
 
-    @Provides
-    @Singleton
-    GroupsRepository provideGroupsRepository(AppDatabase appDatabase){
-        return new GroupsRepository(appDatabase);
-    }
-
-    @Provides
-    @Singleton
-    WordsRepository provideWordsRepository(AppDatabase appDatabase){
-        return new WordsRepository(appDatabase);
-    }
+  @Provides
+  @Singleton
+  fun provideWordsRepository(appDatabase: AppDatabase): WordsRepository {
+    return WordsRepository(appDatabase)
+  }
 }

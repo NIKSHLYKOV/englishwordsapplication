@@ -1,15 +1,14 @@
-package ru.nikshlykov.englishwordsapp.di;
+package ru.nikshlykov.englishwordsapp.di
 
-import android.app.Application;
-import android.content.Context;
-
-import dagger.Module;
-import dagger.Provides;
+import android.app.Application
+import android.content.Context
+import dagger.Module
+import dagger.Provides
 
 @Module
-public class ContextModule {
-    @Provides
-    Context provideContext(Application application){
-        return application;
-    }
+class ContextModule {
+  @Provides
+  fun provideContext(application: Application): Context {
+    return application
+  }
 }

@@ -1,60 +1,51 @@
-package ru.nikshlykov.englishwordsapp.ui.viewmodels;
+package ru.nikshlykov.englishwordsapp.ui.viewmodels
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import ru.nikshlykov.englishwordsapp.db.GroupsRepository
+import ru.nikshlykov.englishwordsapp.db.GroupsRepository.OnSubgroupInsertedListener
+import ru.nikshlykov.englishwordsapp.db.GroupsRepository.OnSubgroupUpdatedListener
+import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup
 
-import ru.nikshlykov.englishwordsapp.db.GroupsRepository;
-import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup;
+class SubgroupDataViewModel(private val groupsRepository: GroupsRepository) : ViewModel(),
+  OnSubgroupInsertedListener, OnSubgroupUpdatedListener {
+  var subgroup: LiveData<Subgroup>
+    private set
+  val subgroupIsInsertedOrUpdated: MutableLiveData<Boolean>
 
-public class SubgroupDataViewModel extends ViewModel
-        implements GroupsRepository.OnSubgroupInsertedListener, GroupsRepository.OnSubgroupUpdatedListener {
+  fun setSubgroup(subgroupId: Long) {
+    subgroup = groupsRepository.getLiveDataSubgroupById(subgroupId)
+  }
 
-    private GroupsRepository groupsRepository;
+  fun getSubgroupIsInsertedOrUpdated(): LiveData<Boolean> {
+    return subgroupIsInsertedOrUpdated
+  }
 
-    private LiveData<Subgroup> subgroup;
-
-    private MutableLiveData<Boolean> subgroupIsInsertedOrUpdated;
-
-    public SubgroupDataViewModel(GroupsRepository groupsRepository) {
-        this.groupsRepository = groupsRepository;
-        subgroup = new MutableLiveData<>();
-        subgroupIsInsertedOrUpdated = new MutableLiveData<>();
+  fun insertOrUpdateSubgroup(subgroupName: String?) {
+    val subgroupToUpdate = subgroup.value
+    if (subgroupToUpdate != null) {
+      subgroupToUpdate.name = subgroupName!!
+      groupsRepository.update(subgroupToUpdate, this)
+    } else {
+      groupsRepository.insertSubgroup(subgroupName, this)
     }
+  }
 
-    public void setSubgroup(long subgroupId) {
-        subgroup = groupsRepository.getLiveDataSubgroupById(subgroupId);
+  override fun onSubgroupInserted(subgroupId: Long) {
+    if (subgroupId != 0L) {
+      subgroupIsInsertedOrUpdated.postValue(true)
     }
+  }
 
-    public LiveData<Subgroup> getSubgroup() {
-        return subgroup;
+  override fun onSubgroupUpdated(isSubgroupUpdated: Boolean) {
+    if (isSubgroupUpdated) {
+      subgroupIsInsertedOrUpdated.postValue(true)
     }
+  }
 
-    public LiveData<Boolean> getSubgroupIsInsertedOrUpdated() {
-        return subgroupIsInsertedOrUpdated;
-    }
-
-    public void insertOrUpdateSubgroup(String subgroupName) {
-        Subgroup subgroupToUpdate = this.subgroup.getValue();
-        if (subgroupToUpdate != null) {
-            subgroupToUpdate.name = subgroupName;
-            groupsRepository.update(subgroupToUpdate, this);
-        } else {
-            groupsRepository.insertSubgroup(subgroupName, this);
-        }
-    }
-
-    @Override
-    public void onSubgroupInserted(long subgroupId) {
-        if (subgroupId != 0L) {
-            subgroupIsInsertedOrUpdated.postValue(true);
-        }
-    }
-
-    @Override
-    public void onSubgroupUpdated(boolean isSubgroupUpdated) {
-        if (isSubgroupUpdated) {
-            subgroupIsInsertedOrUpdated.postValue(true);
-        }
-    }
+  init {
+    subgroup = MutableLiveData()
+    subgroupIsInsertedOrUpdated = MutableLiveData()
+  }
 }

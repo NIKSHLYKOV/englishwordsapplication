@@ -1,82 +1,71 @@
-package ru.nikshlykov.englishwordsapp.ui.fragments;
+package ru.nikshlykov.englishwordsapp.ui.fragments
 
-import android.os.Bundle;
-import android.view.View;
-import android.widget.TimePicker;
+import android.os.Bundle
+import android.view.View
+import android.widget.TimePicker
+import androidx.preference.PreferenceDialogFragmentCompat
+import ru.nikshlykov.englishwordsapp.R
+import ru.nikshlykov.englishwordsapp.preferences.NotificationTimePreference
 
-import androidx.preference.DialogPreference;
-import androidx.preference.PreferenceDialogFragmentCompat;
+class NotificationTimePreferenceDialogFragmentCompat : PreferenceDialogFragmentCompat() {
+  private var notificationTimePicker: TimePicker? = null
+  override fun onBindDialogView(view: View) {
+    super.onBindDialogView(view)
 
-import ru.nikshlykov.englishwordsapp.R;
-import ru.nikshlykov.englishwordsapp.preferences.NotificationTimePreference;
-
-public class NotificationTimePreferenceDialogFragmentCompat extends PreferenceDialogFragmentCompat {
-
-    private TimePicker notificationTimePicker;
-
-    public static NotificationTimePreferenceDialogFragmentCompat newInstance(
-            String key) {
-        final NotificationTimePreferenceDialogFragmentCompat
-                fragment = new NotificationTimePreferenceDialogFragmentCompat();
-        final Bundle bundle = new Bundle(1);
-        bundle.putString(ARG_KEY, key);
-        fragment.setArguments(bundle);
-
-        return fragment;
+    // Находим TimePicker.
+    notificationTimePicker = view.findViewById(R.id.notification_time_picker_dialog___time_picker)
+    checkNotNull(notificationTimePicker) {
+      "Dialog view must contain" +
+        " a TimePicker with id 'edit'"
     }
 
-
-
-    @Override
-    protected void onBindDialogView(View view) {
-        super.onBindDialogView(view);
-
-        // Находим TimePicker.
-        notificationTimePicker = view.findViewById(R.id.notification_time_picker_dialog___time_picker);
-        if (notificationTimePicker == null) {
-            throw new IllegalStateException("Dialog view must contain" +
-                    " a TimePicker with id 'edit'");
-        }
-
-        // Получаем время, которое было выставлено (либо default).
-        Integer minutesAfterMidnight = null;
-        DialogPreference preference = getPreference();
-        if (preference instanceof NotificationTimePreference) {
-            minutesAfterMidnight = ((NotificationTimePreference) preference).getTime();
-        }
-
-        // Устанавливаем это время в наш TimePicker.
-        if (minutesAfterMidnight != null) {
-            int hours = minutesAfterMidnight / 60;
-            int minutes = minutesAfterMidnight % 60;
-            //boolean is24hour = DateFormat.is24HourFormat(getContext());
-
-            notificationTimePicker.setIs24HourView(true);
-            notificationTimePicker.setCurrentHour(hours);
-            notificationTimePicker.setCurrentMinute(minutes);
-        }
+    // Получаем время, которое было выставлено (либо default).
+    var minutesAfterMidnight: Int? = null
+    val preference = preference
+    if (preference is NotificationTimePreference) {
+      minutesAfterMidnight = preference.time
     }
 
-
-    @Override
-    public void onDialogClosed(boolean positiveResult) {
-        if (positiveResult) {
-
-            int hours = notificationTimePicker.getCurrentHour();
-            int minutes = notificationTimePicker.getCurrentMinute();
-            int minutesAfterMidnight = (hours * 60) + minutes;
-
-
-            DialogPreference preference = getPreference();
-            if (preference instanceof NotificationTimePreference) {
-                NotificationTimePreference timePreference =
-                        ((NotificationTimePreference) preference);
-                // This allows the client to ignore the user value.
-                if (timePreference.callChangeListener(
-                        minutesAfterMidnight)) {
-                    timePreference.setTime(minutesAfterMidnight);
-                }
-            }
-        }
+    // Устанавливаем это время в наш TimePicker.
+    if (minutesAfterMidnight != null) {
+      val hours = minutesAfterMidnight / 60
+      val minutes = minutesAfterMidnight % 60
+      //boolean is24hour = DateFormat.is24HourFormat(getContext());
+      notificationTimePicker!!.setIs24HourView(true)
+      notificationTimePicker!!.currentHour = hours
+      notificationTimePicker!!.currentMinute = minutes
     }
+  }
+
+  override fun onDialogClosed(positiveResult: Boolean) {
+    if (positiveResult) {
+      val hours = notificationTimePicker!!.currentHour
+      val minutes = notificationTimePicker!!.currentMinute
+      val minutesAfterMidnight = hours * 60 + minutes
+      val preference = preference
+      if (preference is NotificationTimePreference) {
+        val timePreference = preference
+        // This allows the client to ignore the user value.
+        if (timePreference.callChangeListener(
+            minutesAfterMidnight
+          )
+        ) {
+          timePreference.time = minutesAfterMidnight
+        }
+      }
+    }
+  }
+
+  companion object {
+    @JvmStatic
+    fun newInstance(
+      key: String?
+    ): NotificationTimePreferenceDialogFragmentCompat {
+      val fragment = NotificationTimePreferenceDialogFragmentCompat()
+      val bundle = Bundle(1)
+      bundle.putString(ARG_KEY, key)
+      fragment.arguments = bundle
+      return fragment
+    }
+  }
 }

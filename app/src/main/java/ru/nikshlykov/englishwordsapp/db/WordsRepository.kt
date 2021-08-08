@@ -1,71 +1,47 @@
-package ru.nikshlykov.englishwordsapp.db;
+package ru.nikshlykov.englishwordsapp.db
 
-import android.os.AsyncTask;
-import android.util.Log;
+import android.os.AsyncTask
+import android.util.Log
+import androidx.lifecycle.LiveData
+import ru.nikshlykov.englishwordsapp.db.example.Example
+import ru.nikshlykov.englishwordsapp.db.example.ExampleDao
+import ru.nikshlykov.englishwordsapp.db.repeat.Repeat
+import ru.nikshlykov.englishwordsapp.db.repeat.RepeatDao
+import ru.nikshlykov.englishwordsapp.db.word.Word
+import ru.nikshlykov.englishwordsapp.db.word.WordDao
+import java.lang.ref.WeakReference
+import java.util.*
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
-import androidx.lifecycle.LiveData;
+class WordsRepository(database: AppDatabase) {
+  private val exampleDao: ExampleDao = database.exampleDao()
+  private val repeatDao: RepeatDao = database.repeatDao()
+  private val wordDao: WordDao = database.wordDao()
+  private val databaseExecutorService: ExecutorService = Executors.newFixedThreadPool(1)
+  fun execute(runnable: Runnable?) {
+    databaseExecutorService.execute(runnable)
+  }
 
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+  /**
+   * Методы для работы со словами.
+   */
+  fun insert(word: Word, listener: OnWordInsertedListener) {
+    val task = NewInsertWordAsyncTask(wordDao, listener)
+    task.execute(word)
+  }
 
-import ru.nikshlykov.englishwordsapp.db.example.Example;
-import ru.nikshlykov.englishwordsapp.db.example.ExampleDao;
-import ru.nikshlykov.englishwordsapp.db.repeat.Repeat;
-import ru.nikshlykov.englishwordsapp.db.repeat.RepeatDao;
-import ru.nikshlykov.englishwordsapp.db.word.Word;
-import ru.nikshlykov.englishwordsapp.db.word.WordDao;
+  fun update(word: Word, listener: OnWordUpdatedListener?) {
+    UpdateWordAsyncTask(wordDao, listener).execute(word)
+  }
 
-public class WordsRepository {
+  fun delete(word: Word) {
+    DeleteWordAsyncTask(wordDao).execute(word)
+  }
 
-    private static final String LOG_TAG = WordsRepository.class.getCanonicalName();
-
-    private ExampleDao exampleDao;
-    private RepeatDao repeatDao;
-    private WordDao wordDao;
-
-    private ExecutorService databaseExecutorService;
-
-
-    public WordsRepository(AppDatabase database) {
-
-        exampleDao = database.exampleDao();
-        repeatDao = database.repeatDao();
-        wordDao = database.wordDao();
-
-        databaseExecutorService = Executors.newFixedThreadPool(1);
-    }
-
-
-    public void execute(Runnable runnable){
-        databaseExecutorService.execute(runnable);
-    }
-
-
-
-    /**
-     * Методы для работы со словами.
-     */
-    public void insert(Word word, OnWordInsertedListener listener) {
-        NewInsertWordAsyncTask task = new NewInsertWordAsyncTask(wordDao, listener);
-        task.execute(word);
-    }
-
-    public void update(Word word, OnWordUpdatedListener listener) {
-        new UpdateWordAsyncTask(wordDao, listener).execute(word);
-    }
-
-    public void delete(Word word) {
-        new DeleteWordAsyncTask(wordDao).execute(word);
-    }
-
-    // МОЖНО ЛИ ТАК ПИСАТЬ??? (БЕЗ НОВОГО ПОТОКА)
-    public Word getWordById(long id) {
-        /*GetWordByIdAsyncTask task = new GetWordByIdAsyncTask(wordDao);
+  // МОЖНО ЛИ ТАК ПИСАТЬ??? (БЕЗ НОВОГО ПОТОКА)
+  fun getWordById(id: Long): Word {
+    /*GetWordByIdAsyncTask task = new GetWordByIdAsyncTask(wordDao);
         task.execute(id);
         try {
             return task.get();
@@ -73,125 +49,104 @@ public class WordsRepository {
             e.printStackTrace();
         }
         return null;*/
-        return wordDao.getWordById(id);
+    return wordDao.getWordById(id)
+  }
+
+  fun getLiveDataWordById(wordId: Long): LiveData<Word> {
+    return wordDao.getLiveDataWordById(wordId)
+  }
+
+  fun getWord(wordId: Long, listener: OnWordLoadedListener) {
+    val task = GetWordAsyncTask(wordDao, listener)
+    task.execute(wordId)
+  }
+
+  val wordsFromStudiedSubgroups: LiveData<List<Word>>
+    get() {
+      Log.i(LOG_TAG, "getWordsFromStudiedSubgroups")
+      return wordDao.allLiveDataWordsFromStudiedSubgroups()
     }
 
-    public LiveData<Word> getLiveDataWordById(long wordId) {
-        return wordDao.getLiveDataWordById(wordId);
+  fun getWordsFromSubgroupByProgress(subgroupId: Long): LiveData<List<Word>> {
+    return wordDao.getWordsFromSubgroupByProgress(subgroupId)
+  }
+
+  fun getWordsFromSubgroupByAlphabet(subgroupId: Long): LiveData<List<Word>> {
+    return wordDao.getWordsFromSubgroupByAlphabet(subgroupId)
+  }
+
+  fun getAvailableToRepeatWord(withNew: Boolean, listener: OnAvailableToRepeatWordLoadedListener) {
+    val task = GetAvailableToRepeatWordAsyncTask(wordDao, withNew, listener)
+    task.execute()
+  }
+
+  // МОЖНО ЛИ ТАК ПИСАТЬ???
+  fun resetWordsProgress(subgroupId: Long) {
+    execute(Runnable {
+      val words = wordDao.getWordsFromSubgroup(subgroupId)
+      for (word in words) {
+        word.learnProgress = -1
+      }
+      wordDao.update(words)
+    })
+  }
+
+  /**
+   * AsyncTasks для работы со словами.
+   */
+  interface OnWordInsertedListener {
+    fun onInserted(wordId: Long)
+  }
+
+  private class NewInsertWordAsyncTask(
+    private val wordDao: WordDao,
+    listener: OnWordInsertedListener
+  ) : AsyncTask<Word, Void, Long>() {
+    private val listener: WeakReference<OnWordInsertedListener> = WeakReference(listener)
+    override fun doInBackground(vararg words: Word): Long {
+      words[0].id = wordDao.wordWithMinId().id - 1
+      words[0].learnProgress = -1
+      return wordDao.insert(words[0])
     }
 
-    public void getWord(long wordId, OnWordLoadedListener listener) {
-        GetWordAsyncTask task = new GetWordAsyncTask(wordDao, listener);
-        task.execute(wordId);
+    override fun onPostExecute(wordId: Long) {
+      super.onPostExecute(wordId)
+      val listener = listener.get()
+      listener?.onInserted(wordId)
     }
 
-    public LiveData<List<Word>> getWordsFromStudiedSubgroups() {
-        Log.i(LOG_TAG, "getWordsFromStudiedSubgroups");
-        return wordDao.getAllLiveDataWordsFromStudiedSubgroups();
+  }
+
+  interface OnWordUpdatedListener {
+    fun onWordUpdated(isUpdated: Int)
+  }
+
+  private class UpdateWordAsyncTask(
+    private val wordDao: WordDao,
+    listener: OnWordUpdatedListener?
+  ) : AsyncTask<Word, Void, Int>() {
+    private val listener: WeakReference<OnWordUpdatedListener?> = WeakReference(listener)
+    override fun doInBackground(vararg words: Word): Int {
+      return wordDao.update(words[0])
     }
 
-    public LiveData<List<Word>> getWordsFromSubgroupByProgress(long subgroupId) {
-        return wordDao.getWordsFromSubgroupByProgress(subgroupId);
+    override fun onPostExecute(integer: Int) {
+      super.onPostExecute(integer)
+      val listener = listener.get()
+      listener?.onWordUpdated(integer)
     }
 
-    public LiveData<List<Word>> getWordsFromSubgroupByAlphabet(long subgroupId) {
-        return wordDao.getWordsFromSubgroupByAlphabet(subgroupId);
+  }
+
+  private class DeleteWordAsyncTask(private val wordDao: WordDao) :
+    AsyncTask<Word, Void, Void>() {
+    override fun doInBackground(vararg words: Word): Void? {
+      wordDao.delete(words[0])
+      return null
     }
+  }
 
-    public void getAvailableToRepeatWord(boolean withNew, OnAvailableToRepeatWordLoadedListener listener) {
-        GetAvailableToRepeatWordAsyncTask task
-                = new GetAvailableToRepeatWordAsyncTask(wordDao, withNew, listener);
-        task.execute();
-    }
-
-    // МОЖНО ЛИ ТАК ПИСАТЬ???
-    public void resetWordsProgress(final long subgroupId) {
-        execute(new Runnable() {
-            @Override
-            public void run() {
-                List<Word> words = wordDao.getWordsFromSubgroup(subgroupId);
-                for (Word word : words) {
-                    word.learnProgress = -1;
-                }
-                wordDao.update(words);
-            }
-        });
-    }
-
-    /**
-     * AsyncTasks для работы со словами.
-     */
-    public interface OnWordInsertedListener {
-        void onInserted(long wordId);
-    }
-    private static class NewInsertWordAsyncTask extends AsyncTask<Word, Void, Long> {
-        private WordDao wordDao;
-        private WeakReference<OnWordInsertedListener> listener;
-
-        private NewInsertWordAsyncTask(WordDao wordDao,
-                                       OnWordInsertedListener listener) {
-            this.wordDao = wordDao;
-            this.listener = new WeakReference<>(listener);
-        }
-
-        @Override
-        protected Long doInBackground(Word... words) {
-            words[0].id = wordDao.getWordWithMinId().id - 1;
-            words[0].learnProgress = -1;
-            return wordDao.insert(words[0]);
-        }
-
-        @Override
-        protected void onPostExecute(Long wordId) {
-            super.onPostExecute(wordId);
-            OnWordInsertedListener listener = this.listener.get();
-            if (listener != null) {
-                listener.onInserted(wordId);
-            }
-        }
-    }
-
-    public interface OnWordUpdatedListener {
-        void onWordUpdated(int isUpdated);
-    }
-    private static class UpdateWordAsyncTask extends AsyncTask<Word, Void, Integer> {
-        private WordDao wordDao;
-        private WeakReference<OnWordUpdatedListener> listener;
-
-        private UpdateWordAsyncTask(WordDao wordDao, OnWordUpdatedListener listener) {
-            this.wordDao = wordDao;
-            this.listener = new WeakReference<>(listener);
-        }
-
-        @Override
-        protected Integer doInBackground(Word... words) {
-            return wordDao.update(words[0]);
-        }
-
-        @Override
-        protected void onPostExecute(Integer integer) {
-            super.onPostExecute(integer);
-            OnWordUpdatedListener listener = this.listener.get();
-            if (listener != null) {
-                listener.onWordUpdated(integer);
-            }
-        }
-    }
-
-    private static class DeleteWordAsyncTask extends AsyncTask<Word, Void, Void> {
-        private WordDao wordDao;
-
-        private DeleteWordAsyncTask(WordDao wordDao) {
-            this.wordDao = wordDao;
-        }
-
-        @Override
-        protected Void doInBackground(Word... words) {
-            wordDao.delete(words[0]);
-            return null;
-        }
-    }
-    /*private static class GetWordByIdAsyncTask extends AsyncTask<Long, Void, Word> {
+  /*private static class GetWordByIdAsyncTask extends AsyncTask<Long, Void, Word> {
         private WordDao wordDao;
 
         private GetWordByIdAsyncTask(WordDao wordDao) {
@@ -203,92 +158,78 @@ public class WordsRepository {
             return wordDao.getWordById(longs[0]);
         }
     }*/
-    public interface OnWordLoadedListener {
-        void onLoaded(Word word);
-    }
-    private static class GetWordAsyncTask extends AsyncTask<Long, Void, Word> {
-        private WordDao wordDao;
-        private WeakReference<OnWordLoadedListener> listener;
+  interface OnWordLoadedListener {
+    fun onLoaded(word: Word)
+  }
 
-        private GetWordAsyncTask(WordDao wordDao,
-                                 OnWordLoadedListener listener) {
-            this.wordDao = wordDao;
-            this.listener = new WeakReference<>(listener);
-        }
-
-        @Override
-        protected Word doInBackground(Long... longs) {
-            return wordDao.getWordById(longs[0]);
-        }
-
-        @Override
-        protected void onPostExecute(Word word) {
-            super.onPostExecute(word);
-            OnWordLoadedListener listener = this.listener.get();
-            if (listener != null) {
-                listener.onLoaded(word);
-            }
-        }
+  private class GetWordAsyncTask(
+    private val wordDao: WordDao,
+    listener: OnWordLoadedListener
+  ) : AsyncTask<Long, Void, Word>() {
+    private val listener: WeakReference<OnWordLoadedListener> = WeakReference(listener)
+    override fun doInBackground(vararg p0: Long?): Word? {
+      return p0[0]?.let { wordDao.getWordById(it) }
     }
 
-    public interface OnAvailableToRepeatWordLoadedListener {
-        void onAvailableToRepeatWordLoaded(Word word);
+    override fun onPostExecute(word: Word) {
+      super.onPostExecute(word)
+      val listener = listener.get()
+      listener?.onLoaded(word)
     }
-    private static class GetAvailableToRepeatWordAsyncTask extends AsyncTask<Void, Void, Word> {
-        private WordDao wordDao;
-        private boolean withNew;
-        private WeakReference<OnAvailableToRepeatWordLoadedListener> listener;
 
-        private GetAvailableToRepeatWordAsyncTask(WordDao wordDao, boolean withNew, OnAvailableToRepeatWordLoadedListener listener) {
-            this.wordDao = wordDao;
-            this.withNew = withNew;
-            this.listener = new WeakReference<>(listener);
+  }
+
+  interface OnAvailableToRepeatWordLoadedListener {
+    fun onAvailableToRepeatWordLoaded(word: Word)
+  }
+
+  private class GetAvailableToRepeatWordAsyncTask(
+    private val wordDao: WordDao,
+    private val withNew: Boolean,
+    listener: OnAvailableToRepeatWordLoadedListener
+  ) : AsyncTask<Void, Void, Word>() {
+    private val listener: WeakReference<OnAvailableToRepeatWordLoadedListener>
+    override fun doInBackground(vararg voids: Void): Word? {
+      val wordsFromStudiedSubgroups: List<Word>
+      wordsFromStudiedSubgroups = if (withNew) {
+        wordDao.allWordsFromStudiedSubgroups()
+      } else {
+        wordDao.notNewWordsFromStudiedSubgroups()
+      }
+      val currentDate = Date()
+      for (word in wordsFromStudiedSubgroups) {
+        if (word.isAvailableToRepeat(currentDate)) {
+          return word
         }
-
-        @Override
-        protected Word doInBackground(Void... voids) {
-
-            Word[] wordsFromStudiedSubgroups;
-            if (withNew) {
-                wordsFromStudiedSubgroups = wordDao.getAllWordsFromStudiedSubgroups();
-            } else {
-                wordsFromStudiedSubgroups = wordDao.getNotNewWordsFromStudiedSubgroups();
-            }
-            Date currentDate = new Date();
-            for (Word word : wordsFromStudiedSubgroups) {
-                if (word.isAvailableToRepeat(currentDate)) {
-                    return word;
-                }
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Word word) {
-            super.onPostExecute(word);
-            OnAvailableToRepeatWordLoadedListener listener = this.listener.get();
-            if (listener != null) {
-                listener.onAvailableToRepeatWordLoaded(word);
-            }
-        }
+      }
+      return null
     }
 
-
-
-    /**
-     * Методы для работы с повторами.
-     */
-    public void insert(Repeat repeat) {
-        new InsertRepeatAsyncTask(repeatDao).execute(repeat);
+    override fun onPostExecute(word: Word) {
+      super.onPostExecute(word)
+      val listener = listener.get()
+      listener?.onAvailableToRepeatWordLoaded(word)
     }
 
-    public void delete(Repeat repeat) {
-        new DeleteRepeatAsyncTask(repeatDao).execute(repeat);
+    init {
+      this.listener = WeakReference(listener)
     }
+  }
 
-    // МОЖНО ЛИ ТАК ПИСАТЬ?
-    public Repeat getLastRepeatByWord(long wordId) {
-        /*GetLastRepeatByWordAsyncTask task = new GetLastRepeatByWordAsyncTask(repeatDao);
+  /**
+   * Методы для работы с повторами.
+   */
+  fun insert(repeat: Repeat) {
+    InsertRepeatAsyncTask(repeatDao).execute(repeat)
+  }
+
+  fun delete(repeat: Repeat) {
+    DeleteRepeatAsyncTask(repeatDao).execute(repeat)
+  }
+
+  // МОЖНО ЛИ ТАК ПИСАТЬ?
+  fun getLastRepeatByWord(wordId: Long): Repeat {
+    /*GetLastRepeatByWordAsyncTask task = new GetLastRepeatByWordAsyncTask(repeatDao);
         task.execute(wordId);
         try {
             return task.get();
@@ -296,55 +237,41 @@ public class WordsRepository {
             e.printStackTrace();
         }
         return null;*/
-        return repeatDao.getLastRepeatByWord(wordId);
+    return repeatDao.getLastRepeatByWord(wordId)
+  }
+
+  fun getRepeatsCountForToday(listener: OnRepeatsCountForTodayLoadedListener) {
+    val task = GetNewWordsFirstShowRepeatsCountForTodayAsyncTask(repeatDao, listener)
+    task.execute()
+  }
+
+  interface OnRepeatsCountForTodayLoadedListener {
+    fun onRepeatsCountForTodayLoaded(repeatsCount: Int)
+  }
+
+  /**
+   * AsyncTasks для работы с повторами.
+   */
+  private class InsertRepeatAsyncTask(private val repeatDao: RepeatDao) :
+    AsyncTask<Repeat, Void, Long>() {
+    override fun doInBackground(vararg repeats: Repeat): Long {
+      val repeatToInsert = repeats[0]
+      val lastRepeat = repeatDao.repeatWithMaxId()
+      val idForNewRepeat: Long
+      idForNewRepeat = if (lastRepeat != null) lastRepeat.id + 1 else 0L
+      repeatToInsert.id = idForNewRepeat
+      return repeatDao.insert(repeats[0])
     }
+  }
 
-    public void getRepeatsCountForToday(OnRepeatsCountForTodayLoadedListener listener) {
-        GetNewWordsFirstShowRepeatsCountForTodayAsyncTask task = new GetNewWordsFirstShowRepeatsCountForTodayAsyncTask(repeatDao, listener);
-        task.execute();
+  private class DeleteRepeatAsyncTask(private val repeatDao: RepeatDao) :
+    AsyncTask<Repeat, Void, Int>() {
+    override fun doInBackground(vararg repeats: Repeat): Int {
+      return repeatDao.delete(repeats[0])
     }
+  }
 
-    public interface OnRepeatsCountForTodayLoadedListener {
-        void onRepeatsCountForTodayLoaded(int repeatsCount);
-    }
-
-    /**
-     * AsyncTasks для работы с повторами.
-     */
-    private static class InsertRepeatAsyncTask extends AsyncTask<Repeat, Void, Long> {
-        private RepeatDao repeatDao;
-
-        private InsertRepeatAsyncTask(RepeatDao repeatDao) {
-            this.repeatDao = repeatDao;
-        }
-
-        @Override
-        protected Long doInBackground(Repeat... repeats) {
-            Repeat repeatToInsert = repeats[0];
-            Repeat lastRepeat = repeatDao.getRepeatWithMaxId();
-            long idForNewRepeat;
-            if (lastRepeat != null)
-                idForNewRepeat = lastRepeat.getId() + 1;
-            else
-                idForNewRepeat = 0L;
-            repeatToInsert.setId(idForNewRepeat);
-            return repeatDao.insert(repeats[0]);
-        }
-    }
-
-    private static class DeleteRepeatAsyncTask extends AsyncTask<Repeat, Void, Integer> {
-        private RepeatDao repeatDao;
-
-        private DeleteRepeatAsyncTask(RepeatDao repeatDao) {
-            this.repeatDao = repeatDao;
-        }
-
-        @Override
-        protected Integer doInBackground(Repeat... repeats) {
-            return repeatDao.delete(repeats[0]);
-        }
-    }
-    /* private static class GetLastRepeatByWordAsyncTask extends AsyncTask<Long, Void, Repeat> {
+  /* private static class GetLastRepeatByWordAsyncTask extends AsyncTask<Long, Void, Repeat> {
          private RepeatDao repeatDao;
 
          private GetLastRepeatByWordAsyncTask(RepeatDao repeatDao) {
@@ -356,76 +283,67 @@ public class WordsRepository {
              return repeatDao.getLastRepeatByWord(longs[0]);
          }
      }*/
-    private static class GetNewWordsFirstShowRepeatsCountForTodayAsyncTask extends AsyncTask<Void, Void, Integer> {
-        private RepeatDao repeatDao;
-        private WeakReference<OnRepeatsCountForTodayLoadedListener> listener;
-
-        private GetNewWordsFirstShowRepeatsCountForTodayAsyncTask(RepeatDao repeatDao,
-                                                                  OnRepeatsCountForTodayLoadedListener listener) {
-            this.repeatDao = repeatDao;
-            this.listener = new WeakReference<>(listener);
+  private class GetNewWordsFirstShowRepeatsCountForTodayAsyncTask(
+    private val repeatDao: RepeatDao,
+    listener: OnRepeatsCountForTodayLoadedListener
+  ) : AsyncTask<Void, Void, Int>() {
+    private val listener: WeakReference<OnRepeatsCountForTodayLoadedListener>
+    override fun doInBackground(vararg voids: Void): Int {
+      val allRepeats = ArrayList(repeatDao.allRepeats())
+      Log.i(LOG_TAG, "Повторов за всё время: " + allRepeats.size)
+      val now = Calendar.getInstance()
+      var newWordsFirstShowRepeatsCountForToday = 0
+      for (repeat in allRepeats) {
+        if (repeat.sequenceNumber == 0) {
+          val repeatDate = Calendar.getInstance()
+          repeatDate.time = Date(repeat.date)
+          if (repeatDate[Calendar.DATE] == now[Calendar.DATE]) newWordsFirstShowRepeatsCountForToday++
         }
-
-        @Override
-        protected Integer doInBackground(Void... voids) {
-            ArrayList<Repeat> allRepeats = new ArrayList<>(repeatDao.getAllRepeats());
-            Log.i(LOG_TAG, "Повторов за всё время: " + allRepeats.size());
-            Calendar now = Calendar.getInstance();
-            int newWordsFirstShowRepeatsCountForToday = 0;
-            for (Repeat repeat : allRepeats) {
-                if (repeat.getSequenceNumber() == 0) {
-                    Calendar repeatDate = Calendar.getInstance();
-                    repeatDate.setTime(new Date(repeat.getDate()));
-                    if (repeatDate.get(Calendar.DATE) == now.get(Calendar.DATE))
-                        newWordsFirstShowRepeatsCountForToday++;
-                }
-            }
-            return newWordsFirstShowRepeatsCountForToday;
-        }
-
-        @Override
-        protected void onPostExecute(Integer integer) {
-            super.onPostExecute(integer);
-            OnRepeatsCountForTodayLoadedListener listener = this.listener.get();
-            if (listener != null) {
-                listener.onRepeatsCountForTodayLoaded(integer);
-            }
-        }
+      }
+      return newWordsFirstShowRepeatsCountForToday
     }
 
-
-
-    /**
-     * Методы для работы с примерами.
-     */
-    public void getExamplesByWordId(long wordId, OnExamplesLoadedListener listener) {
-        new GetExamplesByWordAsyncTask(exampleDao, listener).execute(wordId);
+    override fun onPostExecute(integer: Int) {
+      super.onPostExecute(integer)
+      val listener = listener.get()
+      listener?.onRepeatsCountForTodayLoaded(integer)
     }
 
-    public interface OnExamplesLoadedListener {
-        void onLoaded(List<Example> examples);
+    init {
+      this.listener = WeakReference(listener)
     }
-    private static class GetExamplesByWordAsyncTask extends AsyncTask<Long, Void, List<Example>> {
-        private ExampleDao exampleDao;
-        private WeakReference<OnExamplesLoadedListener> listener;
+  }
 
-        private GetExamplesByWordAsyncTask(ExampleDao exampleDao, OnExamplesLoadedListener listener) {
-            this.exampleDao = exampleDao;
-            this.listener = new WeakReference<>(listener);
-        }
+  /**
+   * Методы для работы с примерами.
+   */
+  fun getExamplesByWordId(wordId: Long, listener: OnExamplesLoadedListener) {
+    GetExamplesByWordAsyncTask(exampleDao, listener).execute(wordId)
+  }
 
-        @Override
-        protected List<Example> doInBackground(Long... longs) {
-            return exampleDao.getExamplesByWordId(longs[0]);
-        }
+  interface OnExamplesLoadedListener {
+    fun onLoaded(examples: List<Example>)
+  }
 
-        @Override
-        protected void onPostExecute(List<Example> subgroup) {
-            super.onPostExecute(subgroup);
-            OnExamplesLoadedListener listener = this.listener.get();
-            if (listener != null) {
-                listener.onLoaded(subgroup);
-            }
-        }
+  private class GetExamplesByWordAsyncTask(
+    private val exampleDao: ExampleDao,
+    listener: OnExamplesLoadedListener
+  ) : AsyncTask<Long, Void, List<Example>>() {
+    private val listener: WeakReference<OnExamplesLoadedListener> = WeakReference(listener)
+    override fun doInBackground(vararg p0: Long?): List<Example>? {
+      return p0[0]?.let { exampleDao.getExamplesByWordId(it) as List<Example>? }
     }
+
+    override fun onPostExecute(subgroup: List<Example>) {
+      super.onPostExecute(subgroup)
+      val listener = listener.get()
+      listener?.onLoaded(subgroup)
+    }
+
+  }
+
+  companion object {
+    private val LOG_TAG = WordsRepository::class.java.canonicalName
+  }
+
 }

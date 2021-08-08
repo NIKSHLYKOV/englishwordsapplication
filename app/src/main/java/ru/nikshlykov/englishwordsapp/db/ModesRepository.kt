@@ -1,85 +1,62 @@
-package ru.nikshlykov.englishwordsapp.db;
+package ru.nikshlykov.englishwordsapp.db
 
-import android.os.AsyncTask;
+import android.os.AsyncTask
+import androidx.lifecycle.LiveData
+import ru.nikshlykov.englishwordsapp.db.mode.Mode
+import ru.nikshlykov.englishwordsapp.db.mode.ModeDao
+import java.lang.ref.WeakReference
 
-import androidx.lifecycle.LiveData;
+class ModesRepository(database: AppDatabase) {
+  private val modeDao: ModeDao = database.modeDao()
 
-import java.lang.ref.WeakReference;
-import java.util.List;
+  /**
+   * Методы для работы с режимами.
+   */
+  fun update(modes: List<Mode?>?) {
+    UpdateModeAsyncTask(modeDao).execute(modes as List<Mode>?)
+  }
 
-import ru.nikshlykov.englishwordsapp.db.mode.Mode;
-import ru.nikshlykov.englishwordsapp.db.mode.ModeDao;
+  fun newGetSelectedModes(listener: OnSelectedModesLoadedListener) {
+    val task = NewGetSelectedModesAsyncTask(modeDao, listener)
+    task.execute()
+  }
 
-public class ModesRepository {
+  val liveDataModes: LiveData<List<Mode>>
+    get() = modeDao.liveDataModes()
 
-    private static final String LOG_TAG = ModesRepository.class.getCanonicalName();
+  /**
+   * AsyncTasks для работы с режимами.
+   */
+  private class UpdateModeAsyncTask(private val modeDao: ModeDao) :
+    AsyncTask<List<Mode>, Void, Void>() {
+    protected override fun doInBackground(vararg modes: List<Mode>): Void? {
+      modeDao.update(modes[0])
+      return null
+    }
+  }
 
-    private ModeDao modeDao;
+  interface OnSelectedModesLoadedListener {
+    fun onSelectedModesLoaded(selectedModes: List<Mode>?)
+  }
 
-    public ModesRepository(AppDatabase database) {
-
-        modeDao = database.modeDao();
+  private class NewGetSelectedModesAsyncTask(
+    private val modeDao: ModeDao?,
+    listener: OnSelectedModesLoadedListener
+  ) : AsyncTask<Void, Void, List<Mode>>() {
+    private val listener: WeakReference<OnSelectedModesLoadedListener> = WeakReference(listener)
+    override fun doInBackground(vararg voids: Void): List<Mode> {
+      return modeDao!!.newGetSelectedModes()
     }
 
-
-    /**
-     * Методы для работы с режимами.
-     */
-    public void update(List<Mode> modes) {
-        new UpdateModeAsyncTask(modeDao).execute(modes);
+    override fun onPostExecute(modes: List<Mode>) {
+      super.onPostExecute(modes)
+      val listener = listener.get()
+      listener?.onSelectedModesLoaded(modes)
     }
 
-    public void newGetSelectedModes(OnSelectedModesLoadedListener listener) {
-        NewGetSelectedModesAsyncTask task = new NewGetSelectedModesAsyncTask(modeDao, listener);
-        task.execute();
-    }
+  }
 
-    public LiveData<List<Mode>> getLiveDataModes() {
-        return modeDao.getLiveDataModes();
-    }
-
-    /**
-     * AsyncTasks для работы с режимами.
-     */
-    private static class UpdateModeAsyncTask extends AsyncTask<List<Mode>, Void, Void> {
-        private ModeDao modeDao;
-
-        private UpdateModeAsyncTask(ModeDao modeDao) {
-            this.modeDao = modeDao;
-        }
-
-        @Override
-        protected Void doInBackground(List<Mode>... modes) {
-            modeDao.update(modes[0]);
-            return null;
-        }
-    }
-
-    public interface OnSelectedModesLoadedListener {
-        void onSelectedModesLoaded(List<Mode> selectedModes);
-    }
-
-    private static class NewGetSelectedModesAsyncTask extends AsyncTask<Void, Void, List<Mode>> {
-        private ModeDao modeDao;
-        private WeakReference<OnSelectedModesLoadedListener> listener;
-
-        private NewGetSelectedModesAsyncTask(ModeDao modeDao, OnSelectedModesLoadedListener listener) {
-            this.modeDao = modeDao;
-            this.listener = new WeakReference<>(listener);
-        }
-
-        @Override
-        protected List<Mode> doInBackground(Void... voids) {
-            return modeDao.newGetSelectedModes();
-        }
-
-        @Override
-        protected void onPostExecute(List<Mode> modes) {
-            super.onPostExecute(modes);
-            OnSelectedModesLoadedListener listener = this.listener.get();
-            if (listener != null) {
-                listener.onSelectedModesLoaded(modes);
-            }
-        }
-    }
+  companion object {
+    private val LOG_TAG = ModesRepository::class.java.canonicalName
+  }
 }

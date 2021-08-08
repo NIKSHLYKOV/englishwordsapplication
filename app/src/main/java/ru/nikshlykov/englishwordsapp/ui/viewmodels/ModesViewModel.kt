@@ -1,34 +1,15 @@
-package ru.nikshlykov.englishwordsapp.ui.viewmodels;
+package ru.nikshlykov.englishwordsapp.ui.viewmodels
 
-import android.app.Application;
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import ru.nikshlykov.englishwordsapp.db.ModesRepository
+import ru.nikshlykov.englishwordsapp.db.mode.Mode
 
-import androidx.annotation.NonNull;
-import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.LiveData;
-
-import ru.nikshlykov.englishwordsapp.db.ModesRepository;
-import ru.nikshlykov.englishwordsapp.db.mode.Mode;
-
-import java.util.List;
-
-public class ModesViewModel extends AndroidViewModel {
-
-    private ModesRepository modesRepository;
-
-    private LiveData<List<Mode>> liveDataModes;
-
-    public ModesViewModel(@NonNull Application application, ModesRepository modesRepository) {
-        super(application);
-        this.modesRepository = modesRepository;
-
-        liveDataModes = modesRepository.getLiveDataModes();
-    }
-
-    public LiveData<List<Mode>> getLiveDataModes() {
-        return liveDataModes;
-    }
-
-    public void updateModes(List<Mode> modes) {
-        modesRepository.update(modes);
-    }
+class ModesViewModel(application: Application, private val modesRepository: ModesRepository) :
+  AndroidViewModel(application) {
+  val liveDataModes: LiveData<List<Mode>> = modesRepository.liveDataModes
+  fun updateModes(modes: List<Mode?>?) {
+    modesRepository.update(modes)
+  }
 }

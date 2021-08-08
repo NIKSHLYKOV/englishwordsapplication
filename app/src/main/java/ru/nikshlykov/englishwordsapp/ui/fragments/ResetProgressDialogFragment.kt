@@ -1,95 +1,87 @@
-package ru.nikshlykov.englishwordsapp.ui.fragments;
+package ru.nikshlykov.englishwordsapp.ui.fragments
 
-import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.os.Bundle;
-import android.util.Log;
+import android.app.Dialog
+import android.content.Context
+import android.os.Bundle
+import android.util.Log
+import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.DialogFragment
+import ru.nikshlykov.englishwordsapp.R
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.DialogFragment;
+class ResetProgressDialogFragment : DialogFragment() {
+  // Флаг, который отвечает за выводимые заголовок и сообщение (либо только для одного слова,
+  // либо для целой подгруппы).
+  private var flag = 0
 
-import ru.nikshlykov.englishwordsapp.R;
+  // Интерфейс для взаимодействия с Activity.
+  private var resetProgressListener: ResetProgressListener? = null
 
-public class ResetProgressDialogFragment extends DialogFragment {
+  interface ResetProgressListener {
+    fun resetMessage(message: String?)
+  }
 
+  override fun onAttach(context: Context) {
+    super.onAttach(context)
+    // Присваиваем слушатель.
+    resetProgressListener = context as ResetProgressListener
+  }
+
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    getFlag()
+  }
+
+  override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+    return when (flag) {
+      FOR_ONE_WORD -> getResetDialog(
+        R.string.dialog___reset_word_progress___title,
+        R.string.dialog___reset_word_progress___message
+      )
+      FOR_SUBGROUP -> getResetDialog(
+        R.string.dialog___reset_words_progress___title,
+        R.string.dialog___reset_words_progress___message
+      )
+      else         -> errorDialog
+    }
+  }
+
+  private fun getResetDialog(dialogTitle: Int, dialogMessage: Int): AlertDialog {
+    return AlertDialog.Builder(requireContext())
+      .setTitle(dialogTitle)
+      .setMessage(dialogMessage)
+      .setPositiveButton(R.string.yes) { dialog, which -> // Отправляем Activity сообщение о том, что сбрасывание подтверждено.
+        resetProgressListener!!.resetMessage(RESET_MESSAGE)
+      }
+      .setNegativeButton(R.string.no, null)
+      .create()
+  }
+
+  private val errorDialog: AlertDialog
+    private get() = AlertDialog.Builder(requireContext())
+      .setTitle(R.string.sorry_error_happened)
+      .setPositiveButton(R.string.ok, null)
+      .create()
+
+  private fun getFlag() {
+    try {
+      flag = requireArguments().getInt(EXTRA_FLAG)
+    } catch (e: NullPointerException) {
+      Log.e(LOG_TAG, e.message!!)
+    }
+  }
+
+  companion object {
     // Тег для логирования.
-    private static final String LOG_TAG = "ResetWordProgressDF";
+    private const val LOG_TAG = "ResetWordProgressDF"
 
     // Ключи для получения аргументов.
-    public static final String EXTRA_FLAG = "Flag";
+    const val EXTRA_FLAG = "Flag"
 
-    // Флаг, который отвечает за выводимые заголовок и сообщение (либо только для одного слова,
-    // либо для целой подгруппы).
-    private int flag;
     // Возможные значения флага.
-    public static final int FOR_SUBGROUP = 1;
-    public static final int FOR_ONE_WORD = 2;
+    const val FOR_SUBGROUP = 1
+    const val FOR_ONE_WORD = 2
 
     // Сообщение о том, что сбрасывание подтверждено.
-    public static final String RESET_MESSAGE = "Reset";
-
-    // Интерфейс для взаимодействия с Activity.
-    private ResetProgressListener resetProgressListener;
-    public interface ResetProgressListener {
-        void resetMessage(String message);
-    }
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        // Присваиваем слушатель.
-        resetProgressListener = (ResetProgressListener) context;
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        getFlag();
-    }
-
-    @NonNull
-    @Override
-    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        switch (flag) {
-            case FOR_ONE_WORD:
-                return getResetDialog(R.string.dialog___reset_word_progress___title, R.string.dialog___reset_word_progress___message);
-            case FOR_SUBGROUP:
-                return getResetDialog(R.string.dialog___reset_words_progress___title, R.string.dialog___reset_words_progress___message);
-            default:
-                return getErrorDialog();
-        }
-    }
-
-    private AlertDialog getResetDialog(int dialogTitle, int dialogMessage) {
-        return new AlertDialog.Builder(getActivity())
-                .setTitle(dialogTitle)
-                .setMessage(dialogMessage)
-                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // Отправляем Activity сообщение о том, что сбрасывание подтверждено.
-                        resetProgressListener.resetMessage(RESET_MESSAGE);
-                    }
-                })
-                .setNegativeButton(R.string.no, null)
-                .create();
-    }
-
-    private AlertDialog getErrorDialog(){
-        return new AlertDialog.Builder(getActivity())
-                .setTitle(R.string.sorry_error_happened)
-                .setPositiveButton(R.string.ok, null)
-                .create();
-    }
-
-    private void getFlag() {
-        try {
-            flag = getArguments().getInt(EXTRA_FLAG);
-        } catch (NullPointerException e) {
-            Log.e(LOG_TAG, e.getMessage());
-        }
-    }
+    const val RESET_MESSAGE = "Reset"
+  }
 }

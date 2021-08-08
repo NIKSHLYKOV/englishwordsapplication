@@ -1,188 +1,169 @@
-package ru.nikshlykov.englishwordsapp.ui.fragments;
+package ru.nikshlykov.englishwordsapp.ui.fragments
 
-import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.os.Bundle;
-import android.util.Log;
+import android.app.Dialog
+import android.os.Bundle
+import android.util.Log
+import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.ViewModelProvider
+import dagger.android.support.DaggerDialogFragment
+import ru.nikshlykov.englishwordsapp.R
+import ru.nikshlykov.englishwordsapp.ui.viewmodels.WordDialogsViewModel
+import javax.inject.Inject
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.lifecycle.ViewModelProvider;
+class LinkOrDeleteWordDialogFragment : DaggerDialogFragment() {
+  // Флаг, который отвечает за подбираемые подгруппы.
+  private var flag = 0
 
-import javax.inject.Inject;
+  // id слова, для которого вызывается диалог.
+  private var wordId: Long = 0
+  private var availableSubgroupsNames: Array<String>? = null
+  private var availableSubgroupsIds: LongArray? = null
 
-import dagger.android.support.DaggerDialogFragment;
-import ru.nikshlykov.englishwordsapp.R;
-import ru.nikshlykov.englishwordsapp.ui.viewmodels.WordDialogsViewModel;
+  // Массив значений чекбоксов подгрупп.
+  private lateinit var checkedSubgroups: BooleanArray
 
-public class LinkOrDeleteWordDialogFragment extends DaggerDialogFragment {
+  // ViewModel для работы с БД.
+  private var wordDialogsViewModel: WordDialogsViewModel? = null
 
+  @JvmField
+  @Inject
+  var viewModelFactory: ViewModelProvider.Factory? = null
+
+  override fun onCreate(savedInstanceState: Bundle?) {
+    Log.d(LOG_TAG, "onCreate")
+    super.onCreate(savedInstanceState)
+    wordDialogsViewModel = viewModelFactory!!.create(WordDialogsViewModel::class.java)
+    dialogArguments
+    wordDialogsViewModel!!.setWordId(wordId)
+  }
+
+  override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+    Log.d(LOG_TAG, "onCreateDialog")
+    // Получаем названия доступных подгрупп.
+    var availableSubgroupsCount = 0
+    if (availableSubgroupsNames != null) {
+      Log.d(LOG_TAG, "availableSubgroupsNames != null")
+      availableSubgroupsCount = availableSubgroupsNames!!.size
+    }
+    Log.d(LOG_TAG, "availableSubgroupsCount = $availableSubgroupsCount")
+
+    // Выводим dialog в зависимости от того, есть доступные подгруппы или их нет.
+    return if (availableSubgroupsCount != 0) {
+      getAvailableSubgroupsExistDialog(availableSubgroupsCount, availableSubgroupsNames)
+    } else {
+      availableSubgroupsDoNotExistDialog
+    }
+  }
+
+  // Получаем id слова.
+  private val dialogArguments: Unit
+    get() {
+      val arguments = arguments
+      // Получаем id слова.
+      try {
+        wordId = arguments!!.getLong(EXTRA_WORD_ID)
+        Log.d(LOG_TAG, "wordId: $wordId")
+        flag = arguments.getInt(EXTRA_FLAG)
+        Log.d(LOG_TAG, "Flag: $flag")
+        availableSubgroupsNames = arguments.getStringArray(EXTRA_AVAILABLE_SUBGROUPS_NAMES)
+        availableSubgroupsIds = arguments.getLongArray(EXTRA_AVAILABLE_SUBGROUPS_IDS)
+        for (i in availableSubgroupsNames!!.indices) {
+          Log.d(
+            LOG_TAG,
+            "Subgroup " + i + ": id=" + availableSubgroupsIds!![i] + "; name=" + availableSubgroupsNames!![i]
+          )
+        }
+      } catch (e: NullPointerException) {
+        Log.e(LOG_TAG, e.message!!)
+      }
+    }
+
+  private fun getAvailableSubgroupsExistDialog(
+    availableSubgroupsCount: Int,
+    availableSubgroupsNames: Array<String>?
+  ): AlertDialog {
+    checkedSubgroups = BooleanArray(availableSubgroupsCount)
+    return when (flag) {
+      TO_LINK ->                 // Возвращаем диалог с подгруппами, доступными для связывания с ними.
+        AlertDialog.Builder(requireContext())
+          .setTitle(R.string.dialog___link_word___title)
+          .setMultiChoiceItems(
+            availableSubgroupsNames,
+            null
+          ) { _, which, isChecked -> // Меняем значение в массиве значений чекбоксов.
+            checkedSubgroups[which] = isChecked
+          }
+          .setPositiveButton(R.string.dialog___link_word___positive_button) { _, _ -> // Добавляем связь между подгруппой и словом, если чекбокс выставлен.
+            var i = 0
+            while (i < checkedSubgroups.size) {
+              if (checkedSubgroups[i]) {
+                wordDialogsViewModel!!.insertLink(availableSubgroupsIds!![i])
+              }
+              i++
+            }
+          }
+          .setNegativeButton(R.string.cancel, null)
+          .create()
+      TO_DELETE ->                 // Возвращаем диалог с подгруппами, доступными для удаления из них слова.
+        AlertDialog.Builder(requireContext())
+          .setTitle(R.string.dialog___delete_word___title)
+          .setMultiChoiceItems(
+            availableSubgroupsNames,
+            null
+          ) { _, which, isChecked -> // Меняем значение в массиве значений чекбоксов.
+            checkedSubgroups[which] = isChecked
+          }
+          .setPositiveButton(R.string.dialog___delete_word___positive_button) { _, _ -> // Удаляем связь между подгруппой и словом, если чекбокс выставлен.
+            var i = 0
+            while (i < checkedSubgroups.size) {
+              if (checkedSubgroups[i]) {
+                wordDialogsViewModel!!.deleteLink(availableSubgroupsIds!![i])
+              }
+              i++
+            }
+          }
+          .setNegativeButton(R.string.cancel, null)
+          .create()
+      else -> errorDialog
+    }
+  }
+
+  private val availableSubgroupsDoNotExistDialog: AlertDialog
+    get() = when (flag) {
+      TO_DELETE -> AlertDialog.Builder(
+        requireContext()
+      )
+        .setTitle(R.string.dialog___delete_word___title)
+        .setMessage(R.string.dialog___delete_word___error_message)
+        .setPositiveButton(R.string.ok, null)
+        .create()
+      TO_LINK -> AlertDialog.Builder(
+        requireContext()
+      )
+        .setTitle(R.string.dialog___link_word___title)
+        .setMessage(R.string.dialog___link_word___error_message)
+        .setPositiveButton(R.string.ok, null)
+        .create()
+      else      -> errorDialog
+    }
+  private val errorDialog: AlertDialog
+    get() = AlertDialog.Builder(requireContext())
+      .setTitle(R.string.sorry_error_happened)
+      .setPositiveButton(R.string.ok, null)
+      .create()
+
+  companion object {
     // Тег для логирования.
-    private static final String LOG_TAG = "NewLinkOrDeleteWordDF";
+    private const val LOG_TAG = "NewLinkOrDeleteWordDF"
 
     // Ключи для получения аргументов.
-    public static final String EXTRA_FLAG = "Flag";
-    public static final String EXTRA_WORD_ID = "WordId";
-    public static final String EXTRA_AVAILABLE_SUBGROUPS_NAMES = "AvailableSubgroupsNames";
-    public static final String EXTRA_AVAILABLE_SUBGROUPS_IDS = "AvailableSubgroupsIds";
+    const val EXTRA_FLAG = "Flag"
+    const val EXTRA_WORD_ID = "WordId"
+    const val EXTRA_AVAILABLE_SUBGROUPS_NAMES = "AvailableSubgroupsNames"
+    const val EXTRA_AVAILABLE_SUBGROUPS_IDS = "AvailableSubgroupsIds"
 
-    // Флаг, который отвечает за подбираемые подгруппы.
-    private int flag;
     // Возможные значения флага.
-    public static final int TO_LINK = 1;
-    public static final int TO_DELETE = 2;
-
-    // id слова, для которого вызывается диалог.
-    private long wordId;
-
-    private String[] availableSubgroupsNames;
-    private long[] availableSubgroupsIds;
-    // Массив значений чекбоксов подгрупп.
-    private boolean[] checkedSubgroups;
-
-    // ViewModel для работы с БД.
-    private WordDialogsViewModel wordDialogsViewModel;
-
-    @Inject
-    public ViewModelProvider.Factory viewModelFactory;
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        Log.d(LOG_TAG, "onCreate");
-        super.onCreate(savedInstanceState);
-        wordDialogsViewModel = viewModelFactory.create(WordDialogsViewModel.class);
-
-        getDialogArguments();
-
-        wordDialogsViewModel.setWordId(wordId);
-    }
-
-    @NonNull
-    @Override
-    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        Log.d(LOG_TAG, "onCreateDialog");
-        // Получаем названия доступных подгрупп.
-        int availableSubgroupsCount = 0;
-        if (availableSubgroupsNames != null) {
-            Log.d(LOG_TAG, "availableSubgroupsNames != null");
-            availableSubgroupsCount = availableSubgroupsNames.length;
-        }
-        Log.d(LOG_TAG, "availableSubgroupsCount = " + availableSubgroupsCount);
-
-        // Выводим dialog в зависимости от того, есть доступные подгруппы или их нет.
-        if (availableSubgroupsCount != 0) {
-            return getAvailableSubgroupsExistDialog(availableSubgroupsCount, availableSubgroupsNames);
-        } else {
-            return getAvailableSubgroupsDoNotExistDialog();
-        }
-    }
-
-    private void getDialogArguments() {
-        Bundle arguments = getArguments();
-        // Получаем id слова.
-        try {
-            wordId = arguments.getLong(EXTRA_WORD_ID);
-            Log.d(LOG_TAG, "wordId: " + wordId);
-            flag = arguments.getInt(EXTRA_FLAG);
-            Log.d(LOG_TAG, "Flag: " + flag);
-            availableSubgroupsNames = arguments.getStringArray(EXTRA_AVAILABLE_SUBGROUPS_NAMES);
-            availableSubgroupsIds = arguments.getLongArray(EXTRA_AVAILABLE_SUBGROUPS_IDS);
-            for (int i = 0; i < availableSubgroupsNames.length; i++){
-                Log.d(LOG_TAG, "Subgroup " + i + ": id=" + availableSubgroupsIds[i] + "; name=" + availableSubgroupsNames[i]);
-            }
-        } catch (NullPointerException e) {
-            Log.e(LOG_TAG, e.getMessage());
-        }
-    }
-
-    private AlertDialog getAvailableSubgroupsExistDialog(int availableSubgroupsCount,
-                                                         String[] availableSubgroupsNames){
-        checkedSubgroups = new boolean[availableSubgroupsCount];
-        switch (flag) {
-            case TO_LINK:
-                // Возвращаем диалог с подгруппами, доступными для связывания с ними.
-                return new AlertDialog.Builder(getActivity())
-                        .setTitle(R.string.dialog___link_word___title)
-                        .setMultiChoiceItems(availableSubgroupsNames, null, new DialogInterface.OnMultiChoiceClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-                                // Меняем значение в массиве значений чекбоксов.
-                                checkedSubgroups[which] = isChecked;
-                            }
-                        })
-                        .setPositiveButton(R.string.dialog___link_word___positive_button, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                // Добавляем связь между подгруппой и словом, если чекбокс выставлен.
-                                for (int i = 0; i < checkedSubgroups.length; i++) {
-                                    if (checkedSubgroups[i]) {
-                                        wordDialogsViewModel.insertLink(availableSubgroupsIds[i]);
-                                    }
-                                }
-                            }
-                        })
-                        .setNegativeButton(R.string.cancel, null)
-                        .create();
-            case TO_DELETE:
-                // Возвращаем диалог с подгруппами, доступными для удаления из них слова.
-                return new AlertDialog.Builder(getActivity())
-                        .setTitle(R.string.dialog___delete_word___title)
-                        .setMultiChoiceItems(availableSubgroupsNames, null, new DialogInterface.OnMultiChoiceClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-                                // Меняем значение в массиве значений чекбоксов.
-                                checkedSubgroups[which] = isChecked;
-                            }
-                        })
-                        .setPositiveButton(R.string.dialog___delete_word___positive_button, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                // Удаляем связь между подгруппой и словом, если чекбокс выставлен.
-                                for (int i = 0; i < checkedSubgroups.length; i++) {
-                                    if (checkedSubgroups[i]) {
-                                        wordDialogsViewModel.deleteLink(availableSubgroupsIds[i]);
-                                    }
-                                }
-                            }
-                        })
-                        .setNegativeButton(R.string.cancel, null)
-                        .create();
-            default:
-                return getErrorDialog();
-
-        }
-    }
-
-    private AlertDialog getAvailableSubgroupsDoNotExistDialog(){
-        switch (flag) {
-            case TO_DELETE:
-                return new AlertDialog.Builder(getActivity())
-                        .setTitle(R.string.dialog___delete_word___title)
-                        .setMessage(R.string.dialog___delete_word___error_message)
-                        .setPositiveButton(R.string.ok, null)
-                        .create();
-            case TO_LINK:
-                return new AlertDialog.Builder(getActivity())
-                        .setTitle(R.string.dialog___link_word___title)
-                        .setMessage(R.string.dialog___link_word___error_message)
-                        .setPositiveButton(R.string.ok, null)
-                        .create();
-            default:
-                return getErrorDialog();
-        }
-    }
-
-    private AlertDialog getErrorDialog(){
-        return new AlertDialog.Builder(getActivity())
-                .setTitle(R.string.sorry_error_happened)
-                .setPositiveButton(R.string.ok, null)
-                .create();
-    }
+    const val TO_LINK = 1
+    const val TO_DELETE = 2
+  }
 }
