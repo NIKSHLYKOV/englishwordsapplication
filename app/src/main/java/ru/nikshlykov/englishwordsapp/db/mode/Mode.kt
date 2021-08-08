@@ -1,27 +1,21 @@
-package ru.nikshlykov.englishwordsapp.db.mode;
+package ru.nikshlykov.englishwordsapp.db.mode
 
-import androidx.annotation.NonNull;
-import androidx.room.ColumnInfo;
-import androidx.room.Entity;
-import androidx.room.PrimaryKey;
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
 @Entity(tableName = "Modes")
-public class Mode {
+class Mode {
+  @PrimaryKey
+  @ColumnInfo(name = "_id")
+  var id: Long = 0
 
-    @PrimaryKey()
-    @NonNull
-    @ColumnInfo(name = "_id")
-    public long id;
+  @ColumnInfo(name = "ModeName")
+  var name: String = ""
 
-    @NonNull
-    @ColumnInfo(name = "ModeName")
-    public String name;
+  @ColumnInfo(name = "IsSelected", defaultValue = "0")
+  var selected: Int = 0 // Параметр выбора режима изучения слов (1 - выбран, 0 - не выбран).
 
-    @NonNull
-    @ColumnInfo(name = "IsSelected", defaultValue = "0")
-    public int isSelected; // Параметр выбора режима изучения слов (1 - выбран, 0 - не выбран).
-
-    @NonNull
-    @ColumnInfo(name = "ImageResourceId")
-    public String imageResourceId; // id картинки (скрин режима) для вывода в Activity режимов.
+  @ColumnInfo(name = "ImageResourceId")
+  var imageResourceId: String = "" // id картинки (скрин режима) для вывода в Activity режимов.
 }

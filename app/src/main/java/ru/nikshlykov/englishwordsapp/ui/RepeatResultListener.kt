@@ -1,5 +1,5 @@
-package ru.nikshlykov.englishwordsapp.ui;
+package ru.nikshlykov.englishwordsapp.ui
 
-public interface RepeatResultListener {
-    void repeatResult(long wordId, int result);
+interface RepeatResultListener {
+  fun repeatResult(wordId: Long, result: Int)
 }

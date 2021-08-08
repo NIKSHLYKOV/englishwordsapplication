@@ -1,22 +1,19 @@
-package ru.nikshlykov.englishwordsapp.db.setting;
+package ru.nikshlykov.englishwordsapp.db.setting
 
-import androidx.lifecycle.LiveData;
-import androidx.room.Dao;
-import androidx.room.Query;
-import androidx.room.Update;
-
-import java.util.List;
+import androidx.lifecycle.LiveData
+import androidx.room.Dao
+import androidx.room.Query
+import androidx.room.Update
 
 @Dao
-public interface SettingDao {
+interface SettingDao {
+  @Update
+  fun update(setting: Setting?): Int
 
-    @Update
-    int update(Setting setting);
+  @Update
+  fun update(settings: Array<Setting?>?): Int
 
-    @Update
-    int update(Setting[] settings);
-
-    // Получаем все настройки.
-    @Query("SELECT * FROM Settings")
-    LiveData<List<Setting>> getAllSettings();
+  // Получаем все настройки.
+  @Query("SELECT * FROM Settings")
+  fun allSettings(): LiveData<List<Setting?>?>?
 }

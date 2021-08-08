@@ -1,194 +1,145 @@
-package ru.nikshlykov.englishwordsapp.ui.adapters;
+package ru.nikshlykov.englishwordsapp.ui.adapters
 
-import android.content.Context;
-import android.speech.tts.TextToSpeech;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.content.Context
+import android.speech.tts.TextToSpeech
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Button
+import android.widget.LinearLayout
+import android.widget.TextView
+import androidx.cardview.widget.CardView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
+import ru.nikshlykov.englishwordsapp.App
+import ru.nikshlykov.englishwordsapp.R
+import ru.nikshlykov.englishwordsapp.db.word.Word
+import ru.nikshlykov.englishwordsapp.ui.adapters.WordsRecyclerViewAdapter.WordsViewHolder
+import java.util.*
 
+class WordsRecyclerViewAdapter(context: Context) : RecyclerView.Adapter<WordsViewHolder>() {
+  // Слова подгруппы.
+  private var words: List<Word> = ArrayList()
 
-import java.util.ArrayList;
-import java.util.List;
+  // TextToSpeech, который будет воспроизводить слова.
+  private val textToSpeech: TextToSpeech? = (context.applicationContext as App).textToSpeech
 
-import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.DiffUtil;
-import androidx.recyclerview.widget.RecyclerView;
+  // Интерфейс для реагирования на нажатие элемента RecyclerView.
+  interface OnEntryClickListener {
+    fun onEntryClick(view: View?, position: Int)
+  }
 
-import ru.nikshlykov.englishwordsapp.App;
-import ru.nikshlykov.englishwordsapp.R;
-import ru.nikshlykov.englishwordsapp.db.word.Word;
+  private var mOnEntryClickListener: OnEntryClickListener? = null
+  fun setOnEntryClickListener(onEntryClickListener: OnEntryClickListener?) {
+    mOnEntryClickListener = onEntryClickListener
+  }
 
-public class WordsRecyclerViewAdapter
-        extends RecyclerView.Adapter<WordsRecyclerViewAdapter.WordsViewHolder> {
+  override fun getItemCount(): Int {
+    return words.size
+  }
 
-    // Слова подгруппы.
-    private List<Word> words = new ArrayList<>();
-
-    // TextToSpeech, который будет воспроизводить слова.
-    private TextToSpeech textToSpeech;
-    private static final String TTS_ERROR = "Ошибка воспроизведения!";
-
-    // Интерфейс для реагирования на нажатие элемента RecyclerView.
-    public interface OnEntryClickListener {
-        void onEntryClick(View view, int position);
-    }
-    private OnEntryClickListener mOnEntryClickListener;
-    public void setOnEntryClickListener(OnEntryClickListener onEntryClickListener) {
-        mOnEntryClickListener = onEntryClickListener;
-    }
-
-
-    public WordsRecyclerViewAdapter(final Context context) {
-        // Создаём TTS
-        textToSpeech = ((App)context.getApplicationContext()).getTextToSpeech();
-    }
-
-    @Override
-    public int getItemCount() {
-        return words.size();
-    }
-
-
-    class WordsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
-        // View для параметров слова.
-        private TextView word;
-        private TextView transcription;
-        private TextView value;
-        private View progress;
-
-        WordsViewHolder(View itemView) {
-            super(itemView);
-
-            // Находим View, в которые будем устанавливать контент в onBindViewHolder().
-            word = itemView.findViewById(R.id.word_in_subgroup_item___text_view___word);
-            transcription = itemView.findViewById(R.id.word_in_subgroup_item___text_view___transcription);
-            value = itemView.findViewById(R.id.word_in_subgroup_item___text_view___value);
-            progress = itemView.findViewById(R.id.word_in_subgroup_item___view___progress);
-
-            // Находим кнопку для воспроизведения слова и присваиваем ей обработчик нажатия -
-            // сам ViewHolder.
-            Button ttsButton = itemView.findViewById(R.id.word_in_subgroup_item___button___voice);
-            ttsButton.setOnClickListener(this);
-
-            // Находим контейнер, который хранит в себе всё кроме кнопки воспроизведения слова
-            // и присваиваем ей обработчик нажатия.
-            LinearLayout allWithoutVoiceButtonLayout = itemView.findViewById(R.id.word_in_subgroup_item___layout___all_without_voice_button);
-            allWithoutVoiceButtonLayout.setOnClickListener(this);
-        }
-
-        @Override
-        public void onClick(View v) {
-            switch (v.getId()) {
-                case R.id.word_in_subgroup_item___button___voice:
-                    // Воспроизводим слово.
-                    textToSpeech.speak(word.getText().toString(), TextToSpeech.QUEUE_FLUSH, null, "somethingID");
-                    break;
-                case R.id.word_in_subgroup_item___layout___all_without_voice_button:
-                    // Вызываем метод слушателя, который реализован в SubgroupActivity.
-                    // Прежде всего это необходимо для того, чтобы запускать WordActivity
-                    // через startActivityForResult().
-                    if (mOnEntryClickListener != null) {
-                        mOnEntryClickListener.onEntryClick(v, getLayoutPosition());
-                    }
-                    break;
-            }
-        }
-
+  inner class WordsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
+    View.OnClickListener {
+    // View для параметров слова.
+    val word: TextView
+    val transcription: TextView
+    val value: TextView
+    val progress: View
+    override fun onClick(v: View) {
+      when (v.id) {
+        R.id.word_in_subgroup_item___button___voice ->                     // Воспроизводим слово.
+          textToSpeech?.speak(word.text.toString(), TextToSpeech.QUEUE_FLUSH, null, "somethingID")
+        R.id.word_in_subgroup_item___layout___all_without_voice_button ->                     // Вызываем метод слушателя, который реализован в SubgroupActivity.
+          // Прежде всего это необходимо для того, чтобы запускать WordActivity
+          // через startActivityForResult().
+          if (mOnEntryClickListener != null) {
+            mOnEntryClickListener!!.onEntryClick(v, layoutPosition)
+          }
+      }
     }
 
-    @NonNull
-    @Override
-    public WordsRecyclerViewAdapter.WordsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        CardView cardView = (CardView) LayoutInflater.from(parent.getContext()).inflate(R.layout.word_in_subgroup_item, parent, false);
-        return new WordsRecyclerViewAdapter.WordsViewHolder(cardView);
+    init {
+
+      // Находим View, в которые будем устанавливать контент в onBindViewHolder().
+      word = itemView.findViewById(R.id.word_in_subgroup_item___text_view___word)
+      transcription = itemView.findViewById(R.id.word_in_subgroup_item___text_view___transcription)
+      value = itemView.findViewById(R.id.word_in_subgroup_item___text_view___value)
+      progress = itemView.findViewById(R.id.word_in_subgroup_item___view___progress)
+
+      // Находим кнопку для воспроизведения слова и присваиваем ей обработчик нажатия -
+      // сам ViewHolder.
+      val ttsButton = itemView.findViewById<Button>(R.id.word_in_subgroup_item___button___voice)
+      ttsButton.setOnClickListener(this)
+
+      // Находим контейнер, который хранит в себе всё кроме кнопки воспроизведения слова
+      // и присваиваем ей обработчик нажатия.
+      val allWithoutVoiceButtonLayout =
+        itemView.findViewById<LinearLayout>(R.id.word_in_subgroup_item___layout___all_without_voice_button)
+      allWithoutVoiceButtonLayout.setOnClickListener(this)
+    }
+  }
+
+  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WordsViewHolder {
+    val cardView = LayoutInflater.from(parent.context)
+      .inflate(R.layout.word_in_subgroup_item, parent, false) as CardView
+    return WordsViewHolder(cardView)
+  }
+
+  override fun onBindViewHolder(holder: WordsViewHolder, position: Int) {
+    val currentWord = words[position]
+    holder.word.text = currentWord.word
+    holder.transcription.text = currentWord.transcription
+    holder.value.text = currentWord.value
+    when (currentWord.learnProgress) {
+      -1 -> holder.progress.setBackgroundResource(R.drawable.shape_progress)
+      0 -> holder.progress.setBackgroundResource(R.drawable.shape_progress_0)
+      1 -> holder.progress.setBackgroundResource(R.drawable.shape_progress_1)
+      2 -> holder.progress.setBackgroundResource(R.drawable.shape_progress_2)
+      3 -> holder.progress.setBackgroundResource(R.drawable.shape_progress_3)
+      4 -> holder.progress.setBackgroundResource(R.drawable.shape_progress_4)
+      5 -> holder.progress.setBackgroundResource(R.drawable.shape_progress_5)
+      6 -> holder.progress.setBackgroundResource(R.drawable.shape_progress_6)
+      7, 8 -> holder.progress.setBackgroundResource(R.drawable.shape_progress_7)
+    }
+  }
+
+  fun setWords(words: List<Word>) {
+    val diffUtilCallback = WordItemDiffUtilCallback(this.words, words)
+    val diffResult = DiffUtil.calculateDiff(diffUtilCallback)
+    this.words = words
+    diffResult.dispatchUpdatesTo(this)
+  }
+
+  fun getWords(): List<Word> {
+    return words
+  }
+
+  fun getWordAt(position: Int): Word {
+    return words[position]
+  }
+
+  internal inner class WordItemDiffUtilCallback(
+    private val oldWords: List<Word>,
+    private val newWords: List<Word>
+  ) : DiffUtil.Callback() {
+    override fun getOldListSize(): Int {
+      return oldWords.size
     }
 
-    @Override
-    public void onBindViewHolder(@NonNull final WordsRecyclerViewAdapter.WordsViewHolder holder, final int position) {
-        final Word currentWord = words.get(position);
-        holder.word.setText(currentWord.word);
-        holder.transcription.setText(currentWord.transcription);
-        holder.value.setText(currentWord.value);
-        switch (currentWord.learnProgress) {
-            case -1:
-                holder.progress.setBackgroundResource(R.drawable.shape_progress);
-                break;
-            case 0:
-                holder.progress.setBackgroundResource(R.drawable.shape_progress_0);
-                break;
-            case 1:
-                holder.progress.setBackgroundResource(R.drawable.shape_progress_1);
-                break;
-            case 2:
-                holder.progress.setBackgroundResource(R.drawable.shape_progress_2);
-                break;
-            case 3:
-                holder.progress.setBackgroundResource(R.drawable.shape_progress_3);
-                break;
-            case 4:
-                holder.progress.setBackgroundResource(R.drawable.shape_progress_4);
-                break;
-            case 5:
-                holder.progress.setBackgroundResource(R.drawable.shape_progress_5);
-                break;
-            case 6:
-                holder.progress.setBackgroundResource(R.drawable.shape_progress_6);
-                break;
-            case 7:
-            case 8:
-                holder.progress.setBackgroundResource(R.drawable.shape_progress_7);
-                break;
-        }
+    override fun getNewListSize(): Int {
+      return newWords.size
     }
 
-
-    public void setWords(List<Word> words) {
-        WordItemDiffUtilCallback diffUtilCallback = new WordItemDiffUtilCallback(this.words, words);
-        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffUtilCallback);
-        this.words = words;
-        diffResult.dispatchUpdatesTo(this);
+    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+      return oldWords[oldItemPosition].id == newWords[newItemPosition].id
     }
 
-    public List<Word> getWords() {
-        return words;
+    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+      return oldWords[oldItemPosition] == newWords[newItemPosition]
     }
+  }
 
-    public Word getWordAt(int position) {
-        return words.get(position);
-    }
-
-    class WordItemDiffUtilCallback extends DiffUtil.Callback{
-        private List<Word> oldWords;
-        private List<Word> newWords;
-
-        WordItemDiffUtilCallback(List<Word> oldWords, List<Word> newWords){
-            this.oldWords = oldWords;
-            this.newWords = newWords;
-        }
-
-        @Override
-        public int getOldListSize() {
-            return oldWords.size();
-        }
-
-        @Override
-        public int getNewListSize() {
-            return newWords.size();
-        }
-
-        @Override
-        public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-            return oldWords.get(oldItemPosition).id == newWords.get(newItemPosition).id;
-        }
-
-        @Override
-        public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-            return oldWords.get(oldItemPosition).equals(newWords.get(newItemPosition));
-        }
-    }
+  companion object {
+    private const val TTS_ERROR = "Ошибка воспроизведения!"
+  }
 }

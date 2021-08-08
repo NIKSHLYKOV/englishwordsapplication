@@ -1,73 +1,54 @@
-package ru.nikshlykov.englishwordsapp.ui.fragments;
+package ru.nikshlykov.englishwordsapp.ui.fragments
 
-import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.app.Dialog
+import android.content.Context
+import android.os.Bundle
+import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.DialogFragment
+import ru.nikshlykov.englishwordsapp.R
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.DialogFragment;
+class SortWordsDialogFragment : DialogFragment() {
+  // Параметр сортировки.
+  private var sortParam = 0
 
-import ru.nikshlykov.englishwordsapp.R;
+  // Интерфейс для общения с активити.
+  interface SortWordsListener {
+    fun sort(sortParam: Int)
+  }
 
-public class SortWordsDialogFragment extends DialogFragment {
+  private var sortWordsListener: SortWordsListener? = null
+  override fun onAttach(context: Context) {
+    super.onAttach(context)
+    sortWordsListener = context as SortWordsListener
+  }
 
-    // Параметр сортировки.
-    private int sortParam;
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+
+    // Получаем текущий параметр сортировки, переданный из Activity.
+    if (savedInstanceState != null) {
+      sortParam = savedInstanceState.getInt(EXTRA_SORT_PARAM)
+    }
+  }
+
+  override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+    // Массив отображаемых значений сортировки для диалога.
+    val sortParams = resources
+      .getStringArray(R.array.preference_entries___sort_words_in_subgroup)
+    return AlertDialog.Builder(requireContext())
+      .setTitle(R.string.dialog___sort_words___title)
+      .setSingleChoiceItems(sortParams, sortParam) { dialog, which -> sortParam = which }
+      .setPositiveButton(R.string.yes) { _, _ -> sortWordsListener!!.sort(sortParam) }
+      .setNegativeButton(R.string.cancel, null)
+      .create()
+  }
+
+  companion object {
     // Возможные значения параметра сортировки.
-    public static final int BY_ALPHABET = 0;
-    public static final int BY_PROGRESS = 1;
+    const val BY_ALPHABET = 0
+    const val BY_PROGRESS = 1
+
     // Ключ для получения флага.
-    public static final String EXTRA_SORT_PARAM = "SortParam";
-
-    // Интерфейс для общения с активити.
-    public interface SortWordsListener{
-        void sort(int sortParam);
-    }
-    private SortWordsListener sortWordsListener;
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        sortWordsListener = (SortWordsListener) context;
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        // Получаем текущий параметр сортировки, переданный из Activity.
-        sortParam = getArguments().getInt(EXTRA_SORT_PARAM);
-    }
-
-    @NonNull
-    @Override
-    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        // Массив отображаемых значений сортировки для диалога.
-        String[] sortParams = getResources()
-                .getStringArray(R.array.preference_entries___sort_words_in_subgroup);
-
-        return new AlertDialog.Builder(getActivity())
-                .setTitle(R.string.dialog___sort_words___title)
-                .setSingleChoiceItems(sortParams, sortParam, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        sortParam = which;
-                    }
-                })
-                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        sortWordsListener.sort(sortParam);
-                    }
-                })
-                .setNegativeButton(R.string.cancel, null)
-                .create();
-    }
+    const val EXTRA_SORT_PARAM = "SortParam"
+  }
 }

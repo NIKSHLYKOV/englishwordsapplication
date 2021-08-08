@@ -1,36 +1,30 @@
-package ru.nikshlykov.englishwordsapp.di;
+package ru.nikshlykov.englishwordsapp.di
 
-import dagger.Module;
-import dagger.android.ContributesAndroidInjector;
-import ru.nikshlykov.englishwordsapp.ui.flowfragments.StudyFlowFragment;
-import ru.nikshlykov.englishwordsapp.ui.fragments.GroupsFragment;
-import ru.nikshlykov.englishwordsapp.ui.fragments.StatisticsFragment;
-import ru.nikshlykov.englishwordsapp.ui.fragments.LinkOrDeleteWordDialogFragment;
-import ru.nikshlykov.englishwordsapp.ui.fragments.SubgroupDataFragment;
-import ru.nikshlykov.englishwordsapp.ui.fragments.SubgroupFragment;
-import ru.nikshlykov.englishwordsapp.ui.fragments.WordFragment;
+import dagger.Module
+import dagger.android.ContributesAndroidInjector
+import ru.nikshlykov.englishwordsapp.ui.flowfragments.StudyFlowFragment
+import ru.nikshlykov.englishwordsapp.ui.fragments.*
 
 @Module
-public abstract class FragmentModule {
+abstract class FragmentModule {
+  @ContributesAndroidInjector
+  abstract fun contributeGroupsFragment(): GroupsFragment
 
-    @ContributesAndroidInjector
-    abstract GroupsFragment contributeGroupsFragment();
+  @ContributesAndroidInjector
+  abstract fun contributeStatisticsFragment(): StatisticsFragment
 
-    @ContributesAndroidInjector
-    abstract StatisticsFragment contributeStatisticsFragment();
+  @ContributesAndroidInjector
+  abstract fun contributeLinkOrDeleteWordDialogFragment(): LinkOrDeleteWordDialogFragment
 
-    @ContributesAndroidInjector
-    abstract LinkOrDeleteWordDialogFragment contributeLinkOrDeleteWordDialogFragment();
+  @ContributesAndroidInjector
+  abstract fun contributeStudyFlowFragment(): StudyFlowFragment
 
-    @ContributesAndroidInjector
-    abstract StudyFlowFragment contributeStudyFlowFragment();
+  @ContributesAndroidInjector
+  abstract fun contributeSubgroupDataFragment(): SubgroupDataFragment
 
-    @ContributesAndroidInjector
-    abstract SubgroupDataFragment contributeSubgroupDataFragment();
+  @ContributesAndroidInjector
+  abstract fun contributeSubgroupFragment(): SubgroupFragment
 
-    @ContributesAndroidInjector
-    abstract SubgroupFragment contributeSubgroupFragment();
-
-    @ContributesAndroidInjector
-    abstract WordFragment contributeWordFragment();
+  @ContributesAndroidInjector
+  abstract fun contributeWordFragment(): WordFragment
 }

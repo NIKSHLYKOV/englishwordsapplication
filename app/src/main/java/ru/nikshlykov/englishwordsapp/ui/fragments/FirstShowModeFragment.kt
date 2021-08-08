@@ -1,120 +1,111 @@
-package ru.nikshlykov.englishwordsapp.ui.fragments;
+package ru.nikshlykov.englishwordsapp.ui.fragments
 
-import androidx.fragment.app.Fragment;
+import android.content.Context
+import android.os.Bundle
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Button
+import android.widget.TextView
+import androidx.fragment.app.Fragment
+import ru.nikshlykov.englishwordsapp.R
+import ru.nikshlykov.englishwordsapp.db.word.Word
+import ru.nikshlykov.englishwordsapp.ui.flowfragments.StudyFlowFragment
 
-import android.content.Context;
-import android.os.Bundle;
+class FirstShowModeFragment : Fragment() {
+  // View для отображения параметров слова.
+  private var wordTextView: TextView? = null
+  private var transcriptionTextView: TextView? = null
+  private var valueTextView: TextView? = null
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+  //private WordViewModel wordViewModel;
+  private var word: Word? = null
+  private var firstShowModeReportListener: FirstShowModeReportListener? = null
 
-import ru.nikshlykov.englishwordsapp.R;
-import ru.nikshlykov.englishwordsapp.db.word.Word;
-import ru.nikshlykov.englishwordsapp.ui.flowfragments.StudyFlowFragment;
+  interface FirstShowModeReportListener {
+    fun firstShowModeResult(wordId: Long, result: Int)
+  }
 
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
+  override fun onAttach(context: Context) {
+    super.onAttach(context)
+    val parentFlowFragment = requireParentFragment().parentFragment
+    firstShowModeReportListener = if (parentFlowFragment is FirstShowModeReportListener) {
+      parentFlowFragment
+    } else {
+      throw RuntimeException(parentFlowFragment.toString() + " must implement FirstShowModeReportListener")
+    }
+  }
 
-public class FirstShowModeFragment extends Fragment {
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    //wordViewModel = new ViewModelProvider(getActivity()).get(WordViewModel.class);
 
-    private static final String LOG_TAG = "FirstShowModeFragment";
+    // Получаем id слова.
+    //wordId = getArguments().getLong(EXTRA_WORD_ID);
+    // Получаем слово по id из БД.
+    //wordViewModel.setWord(wordId);
+    word = requireArguments().getParcelable(StudyFlowFragment.EXTRA_WORD_OBJECT)
+  }
 
-    public static final String EXTRA_WORD_ID = "WordId";
+  override fun onCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ): View? {
+    Log.d(LOG_TAG, "onCreateView()")
+    val view = inflater.inflate(R.layout.fragment_first_show_mode, null)
+    findViews(view)
 
-    // View для отображения параметров слова.
-    private TextView wordTextView;
-    private TextView transcriptionTextView;
-    private TextView valueTextView;
-
-    //private WordViewModel wordViewModel;
-    private Word word;
-
-    private FirstShowModeReportListener firstShowModeReportListener;
-
-    public interface FirstShowModeReportListener {
-        void firstShowModeResult(long wordId, int result);
+    // Находим кнопку начала изучения слова и присваиваем ей обработчик.
+    val learnButton = view.findViewById<Button>(R.id.fragment_first_show_mode___button___learn)
+    learnButton.setOnClickListener {
+      firstShowModeReportListener!!.firstShowModeResult(
+        word!!.id,
+        1
+      )
     }
 
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        Fragment parentFlowFragment = getParentFragment().getParentFragment();
-        if (parentFlowFragment instanceof FirstShowModeReportListener) {
-            firstShowModeReportListener = (FirstShowModeReportListener) parentFlowFragment;
-        } else {
-            throw new RuntimeException(parentFlowFragment.toString() + " must implement FirstShowModeReportListener");
-        }
+    // Находим кнопку начала изучения слова и присваиваем ей обработчик.
+    val knowButton = view.findViewById<Button>(R.id.fragment_first_show_mode___button___know)
+    knowButton.setOnClickListener {
+      firstShowModeReportListener!!.firstShowModeResult(
+        word!!.id,
+        2
+      )
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        //wordViewModel = new ViewModelProvider(getActivity()).get(WordViewModel.class);
-
-        // Получаем id слова.
-        //wordId = getArguments().getLong(EXTRA_WORD_ID);
-        // Получаем слово по id из БД.
-        //wordViewModel.setWord(wordId);
-        word = getArguments().getParcelable(StudyFlowFragment.EXTRA_WORD_OBJECT);
+    // Находим кнопку знания слова и присваиваем ей обработчик.
+    val skipButton = view.findViewById<Button>(R.id.fragment_first_show_mode___button___skip)
+    skipButton.setOnClickListener {
+      firstShowModeReportListener!!.firstShowModeResult(
+        word!!.id,
+        0
+      )
     }
+    return view
+  }
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.d(LOG_TAG, "onCreateView()");
-        View view = inflater.inflate(R.layout.fragment_first_show_mode, null);
-        findViews(view);
+  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    super.onViewCreated(view, savedInstanceState)
+    setWordParametersToViews(word)
+  }
 
-        // Находим кнопку начала изучения слова и присваиваем ей обработчик.
-        Button learnButton = view.findViewById(R.id.fragment_first_show_mode___button___learn);
-        learnButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                firstShowModeReportListener.firstShowModeResult(word.id, 1);
-            }
-        });
+  private fun findViews(v: View) {
+    wordTextView = v.findViewById(R.id.fragment_first_show_mode___text_view___word)
+    valueTextView = v.findViewById(R.id.fragment_first_show_mode___text_view___value)
+    transcriptionTextView =
+      v.findViewById(R.id.fragment_first_show_mode___text_view___transcription)
+  }
 
-        // Находим кнопку начала изучения слова и присваиваем ей обработчик.
-        Button knowButton = view.findViewById(R.id.fragment_first_show_mode___button___know);
-        knowButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                firstShowModeReportListener.firstShowModeResult(word.id, 2);
-            }
-        });
+  private fun setWordParametersToViews(word: Word?) {
+    transcriptionTextView!!.text = word!!.transcription
+    valueTextView!!.text = word.value
+    wordTextView!!.text = word.word
+  }
 
-        // Находим кнопку знания слова и присваиваем ей обработчик.
-        Button skipButton = view.findViewById(R.id.fragment_first_show_mode___button___skip);
-        skipButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                firstShowModeReportListener.firstShowModeResult(word.id, 0);
-            }
-        });
-
-        return view;
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        setWordParametersToViews(word);
-    }
-
-    private void findViews(View v) {
-        wordTextView = v.findViewById(R.id.fragment_first_show_mode___text_view___word);
-        valueTextView = v.findViewById(R.id.fragment_first_show_mode___text_view___value);
-        transcriptionTextView = v.findViewById(R.id.fragment_first_show_mode___text_view___transcription);
-    }
-
-    private void setWordParametersToViews(Word word) {
-        transcriptionTextView.setText(word.transcription);
-        valueTextView.setText(word.value);
-        wordTextView.setText(word.word);
-    }
+  companion object {
+    private const val LOG_TAG = "FirstShowModeFragment"
+    const val EXTRA_WORD_ID = "WordId"
+  }
 }

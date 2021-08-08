@@ -1,24 +1,18 @@
-package ru.nikshlykov.englishwordsapp.db.setting;
+package ru.nikshlykov.englishwordsapp.db.setting
 
-import androidx.annotation.NonNull;
-import androidx.room.ColumnInfo;
-import androidx.room.Entity;
-import androidx.room.PrimaryKey;
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
 @Entity(tableName = "Settings")
-public class Setting {
+class Setting {
+  @PrimaryKey
+  @ColumnInfo(name = "_id")
+  var id: Long = 0
 
-    @PrimaryKey()
-    @NonNull
-    @ColumnInfo(name = "_id")
-    public long id;
+  @ColumnInfo(name = "Param")
+  var name: String = "" // Имя параметра для вывода в Activity настроек.
 
-    @NonNull
-    @ColumnInfo(name = "Param")
-    public String name; // Имя параметра для вывода в Activity настроек.
-
-    @NonNull
-    @ColumnInfo(name = "Value", defaultValue = "0")
-    public int value; // Значение параметра настроек.
-
+  @ColumnInfo(name = "Value", defaultValue = "0")
+  var value = 0 // Значение параметра настроек.
 }

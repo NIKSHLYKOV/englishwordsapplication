@@ -1,245 +1,218 @@
-package ru.nikshlykov.englishwordsapp.ui.fragments;
+package ru.nikshlykov.englishwordsapp.ui.fragments
 
-import android.content.Context;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.view.ContextThemeWrapper;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.content.Context
+import android.os.Bundle
+import android.os.Handler
+import android.os.Message
+import android.view.ContextThemeWrapper
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.*
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.Fragment
+import androidx.gridlayout.widget.GridLayout
+import ru.nikshlykov.englishwordsapp.R
+import ru.nikshlykov.englishwordsapp.db.word.Word
+import ru.nikshlykov.englishwordsapp.ui.RepeatResultListener
+import ru.nikshlykov.englishwordsapp.ui.flowfragments.StudyFlowFragment
+import ru.nikshlykov.englishwordsapp.ui.fragments.FirstShowModeFragment.FirstShowModeReportListener
+import java.util.*
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.Fragment;
-import androidx.gridlayout.widget.GridLayout;
+class CollectWordByLettersModeFragment : Fragment() {
 
-import java.util.ArrayList;
-import java.util.Random;
+  // View.
+  private var valueTextView: TextView? = null
+  private var removeLetterImageButton: ImageButton? = null
+  private var userVariantTextView: TextView? = null
+  private var lettersGridLayout: GridLayout? = null
+  private var resultImageView: ImageView? = null
 
-import ru.nikshlykov.englishwordsapp.R;
-import ru.nikshlykov.englishwordsapp.db.word.Word;
-import ru.nikshlykov.englishwordsapp.ui.flowfragments.StudyFlowFragment;
-import ru.nikshlykov.englishwordsapp.ui.RepeatResultListener;
+  // ViewModel для работы с БД и словом.
+  //private WordViewModel wordViewModel;
+  private var word: Word? = null
 
-public class CollectWordByLettersModeFragment extends Fragment {
+  // Интерфейс для передачи результата повтора.
+  private var repeatResultListener: RepeatResultListener? = null
+  private var handler: Handler? = null
 
-    private Context context;
+  // Стек, в который помещаются кнопки, чтобы можно было удалять последнюю букву в слове.
+  private var invisibleButtons: ArrayList<View>? = null
+  override fun onAttach(context: Context) {
+    super.onAttach(context)
+    val parentFlowFragment = requireParentFragment().parentFragment
+    repeatResultListener = if (parentFlowFragment is FirstShowModeReportListener) {
+      parentFlowFragment as RepeatResultListener?
+    } else {
+      throw RuntimeException(parentFlowFragment.toString() + " must implement RepeatResultListener")
+    }
+  }
 
-    // View.
-    private TextView valueTextView;
-    private ImageButton removeLetterImageButton;
-    private TextView userVariantTextView;
-    private GridLayout lettersGridLayout;
-    private ImageView resultImageView;
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
 
-    // ViewModel для работы с БД и словом.
-    //private WordViewModel wordViewModel;
-    private Word word;
+    // Получаем id слова.
+    word = requireArguments().getParcelable(StudyFlowFragment.EXTRA_WORD_OBJECT)
+    handler = object : Handler() {
+      override fun handleMessage(msg: Message) {
+        super.handleMessage(msg)
+        repeatResultListener!!.repeatResult(word!!.id, msg.what)
+      }
+    }
+  }
 
-    // Интерфейс для передачи результата повтора.
-    private RepeatResultListener repeatResultListener;
+  override fun onCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ): View? {
+    val view = inflater.inflate(R.layout.fragment_collect_word_by_letters_mode, null)
+    findViews(view)
+    return view
+  }
 
-    private Handler handler;
+  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    super.onViewCreated(view, savedInstanceState)
+    removeLetterImageButton!!.isEnabled = false
 
-    // Стек, в который помещаются кнопки, чтобы можно было удалять последнюю букву в слове.
-    private ArrayList<View> invisibleButtons;
+    // Устанавливаем перевод.
+    valueTextView!!.text = word!!.value
 
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        this.context = context;
-        Fragment parentFlowFragment = getParentFragment().getParentFragment();
-        if (parentFlowFragment instanceof FirstShowModeFragment.FirstShowModeReportListener) {
-            repeatResultListener = (RepeatResultListener) parentFlowFragment;
+    // Получаем слово на английском и находим его длину.
+    val wordOnEnglish = word!!.word
+    val lettersCount = wordOnEnglish.length
+    invisibleButtons = ArrayList(lettersCount)
+    val shuffleLetters = getShuffleCharacters(wordOnEnglish)
+
+    // Закидываем случайно расставленные буквы в кнопки по порядку.
+    for (i in 0 until lettersCount) {
+      val button = initCharButton(word, shuffleLetters[i])
+      lettersGridLayout!!.addView(button)
+    }
+    initRemoveButton()
+  }
+
+  /**
+   * Присваивает обработчик кнопке удаления последнего символа.
+   */
+  private fun initRemoveButton() {
+    removeLetterImageButton!!.setOnClickListener {
+      if (invisibleButtons!!.size != 0) {
+        val currentText = userVariantTextView!!.text.toString()
+        val newText = currentText.substring(0, currentText.length - 1)
+        userVariantTextView!!.text = newText
+        invisibleButtons!!.removeAt(invisibleButtons!!.size - 1).visibility = View.VISIBLE
+        if (invisibleButtons!!.size == 0) {
+          removeLetterImageButton!!.isEnabled = false
+        }
+      }
+    }
+  }
+
+  /**
+   * Создаёт кнопку для символа. Задаёт ей стиль, параметры высоты и ширины, а также отступы.
+   *
+   * @param word   слово, для которого вызвался режим.
+   * @param letter символ, который будет текстом на кнопке (как правило, это буква).
+   * @return кнопку.
+   */
+  private fun initCharButton(word: Word?, letter: Char): Button {
+    val lettersCount = word!!.word.length
+    val button = Button(
+      ContextThemeWrapper(
+        context,
+        R.style.BorderlessButton
+      ), null, 0
+    )
+    button.setBackgroundResource(R.drawable.shape_white_color_primary_15dp)
+    val layoutParams = LinearLayout.LayoutParams(
+      dpToPx(50), dpToPx(50)
+    )
+    layoutParams.setMargins(dpToPx(2), dpToPx(2), dpToPx(2), dpToPx(2))
+    button.layoutParams = layoutParams
+    button.text = letter.toString()
+    button.setOnClickListener { v ->
+      v.visibility = View.INVISIBLE
+      val letter = (v as TextView).text.toString()
+      val currentText = userVariantTextView!!.text.toString()
+      val newText = currentText + letter
+      userVariantTextView!!.text = newText
+      invisibleButtons!!.add(v)
+      if (invisibleButtons!!.size == 1) removeLetterImageButton!!.isEnabled = true
+      if (invisibleButtons!!.size == lettersCount) {
+
+        // Скрывает View элементы.
+        valueTextView!!.visibility = View.GONE
+        removeLetterImageButton!!.visibility = View.GONE
+        userVariantTextView!!.visibility = View.GONE
+        lettersGridLayout!!.visibility = View.GONE
+        val mainLayout = v.getParent().parent
+          .parent as ConstraintLayout
+
+        // Расчитываем результат (верно/не верно). В зависомости от этого выводим
+        // определённый фон и значок.
+        var result = 0
+        val userVariantOfWord = userVariantTextView!!.text.toString()
+        if (userVariantOfWord == word.word) {
+          result = 1
+          resultImageView!!.setImageResource(R.drawable.ic_done_white_48dp)
+          mainLayout.setBackgroundResource(R.color.progress_4)
         } else {
-            throw new RuntimeException(parentFlowFragment.toString() + " must implement RepeatResultListener");
+          resultImageView!!.setImageResource(R.drawable.ic_clear_white_48dp)
+          mainLayout.setBackgroundResource(R.color.progress_1)
         }
+        resultImageView!!.visibility = View.VISIBLE
+
+        // Закидываем handler'у отложенное сообщение, чтобы фон и значок немного повисели.
+        handler!!.sendEmptyMessageDelayed(result, 1000)
+      }
     }
+    return button
+  }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        // Получаем id слова.
-        word = getArguments().getParcelable(StudyFlowFragment.EXTRA_WORD_OBJECT);
-
-        handler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                repeatResultListener.repeatResult(word.id, msg.what);
-            }
-        };
+  /**
+   * Перемешивает символы в строке.
+   *
+   * @param string строка для перемешивания.
+   * @return список из случайно добавленных в него символов.
+   */
+  private fun getShuffleCharacters(string: String): ArrayList<Char> {
+    val lettersCount = string.length
+    // Делаем список букв слова.
+    val letters = ArrayList<Char>(lettersCount)
+    for (i in 0 until lettersCount) {
+      letters.add(string[i])
     }
-
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_collect_word_by_letters_mode, null);
-        findViews(view);
-        return view;
+    // Делаем список случайно расставленных букв слова.
+    val shuffleLetters = ArrayList<Char>(lettersCount)
+    while (letters.size != 0) {
+      val random = Random()
+      val removeLetterIndex = random.nextInt(letters.size)
+      shuffleLetters.add(letters.removeAt(removeLetterIndex))
     }
+    return shuffleLetters
+  }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+  /**
+   * Находит View элементы в разметке.
+   *
+   * @param v корневой элемент разметки.
+   */
+  private fun findViews(v: View) {
+    userVariantTextView =
+      v.findViewById(R.id.fragment_collect_word_by_letters_mode___text_view___user_variant)
+    removeLetterImageButton =
+      v.findViewById(R.id.fragment_collect_word_by_letters_mode___image_button___remove_letter)
+    valueTextView = v.findViewById(R.id.fragment_collect_word_by_letters_mode___text_view___value)
+    lettersGridLayout =
+      v.findViewById(R.id.fragment_collect_word_by_letters_mode___grid_layout___letters)
+    resultImageView =
+      v.findViewById(R.id.fragment_collect_word_by_letters_mode___image_view___result)
+  }
 
-        removeLetterImageButton.setEnabled(false);
-
-        // Устанавливаем перевод.
-        valueTextView.setText(word.value);
-
-        // Получаем слово на английском и находим его длину.
-        String wordOnEnglish = word.word;
-        final int lettersCount = wordOnEnglish.length();
-
-        invisibleButtons = new ArrayList<>(lettersCount);
-
-        ArrayList<Character> shuffleLetters = getShuffleCharacters(wordOnEnglish);
-
-        // Закидываем случайно расставленные буквы в кнопки по порядку.
-        for (int i = 0; i < lettersCount; i++) {
-            Button button = initCharButton(word, shuffleLetters.get(i));
-            lettersGridLayout.addView(button);
-        }
-
-        initRemoveButton();
-    }
-
-    /**
-     * Присваивает обработчик кнопке удаления последнего символа.
-     */
-    private void initRemoveButton() {
-        removeLetterImageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (invisibleButtons.size() != 0) {
-                    String currentText = userVariantTextView.getText().toString();
-                    String newText = currentText.substring(0, currentText.length() - 1);
-                    userVariantTextView.setText(newText);
-
-                    invisibleButtons.remove(invisibleButtons.size() - 1)
-                            .setVisibility(View.VISIBLE);
-
-                    if (invisibleButtons.size() == 0) {
-                        removeLetterImageButton.setEnabled(false);
-                    }
-                }
-            }
-        });
-    }
-
-    /**
-     * Создаёт кнопку для символа. Задаёт ей стиль, параметры высоты и ширины, а также отступы.
-     *
-     * @param word   слово, для которого вызвался режим.
-     * @param letter символ, который будет текстом на кнопке (как правило, это буква).
-     * @return кнопку.
-     */
-    private Button initCharButton(final Word word, Character letter) {
-        final int lettersCount = word.word.length();
-
-        Button button = new Button(new ContextThemeWrapper(context,
-                R.style.BorderlessButton), null, 0);
-        button.setBackgroundResource(R.drawable.shape_white_color_primary_15dp);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                dpToPx(50), dpToPx(50));
-        layoutParams.setMargins(dpToPx(2), dpToPx(2), dpToPx(2), dpToPx(2));
-        button.setLayoutParams(layoutParams);
-        button.setText(letter.toString());
-
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                v.setVisibility(View.INVISIBLE);
-                String letter = ((TextView) v).getText().toString();
-                String currentText = userVariantTextView.getText().toString();
-                String newText = currentText + letter;
-                userVariantTextView.setText(newText);
-
-                invisibleButtons.add(v);
-                if (invisibleButtons.size() == 1)
-                    removeLetterImageButton.setEnabled(true);
-
-                if (invisibleButtons.size() == lettersCount) {
-
-                    // Скрывает View элементы.
-                    valueTextView.setVisibility(View.GONE);
-                    removeLetterImageButton.setVisibility(View.GONE);
-                    userVariantTextView.setVisibility(View.GONE);
-                    lettersGridLayout.setVisibility(View.GONE);
-
-                    ConstraintLayout mainLayout = (ConstraintLayout) v.getParent().getParent()
-                            .getParent();
-
-                    // Расчитываем результат (верно/не верно). В зависомости от этого выводим
-                    // определённый фон и значок.
-                    int result = 0;
-                    String userVariantOfWord = userVariantTextView.getText().toString();
-                    if (userVariantOfWord.equals(word.word)) {
-                        result = 1;
-                        resultImageView.setImageResource(R.drawable.ic_done_white_48dp);
-                        mainLayout.setBackgroundResource(R.color.progress_4);
-                    } else {
-                        resultImageView.setImageResource(R.drawable.ic_clear_white_48dp);
-                        mainLayout.setBackgroundResource(R.color.progress_1);
-                    }
-                    resultImageView.setVisibility(View.VISIBLE);
-
-                    // Закидываем handler'у отложенное сообщение, чтобы фон и значок немного повисели.
-                    handler.sendEmptyMessageDelayed(result, 1000);
-                }
-            }
-        });
-        return button;
-    }
-
-    /**
-     * Перемешивает символы в строке.
-     *
-     * @param string строка для перемешивания.
-     * @return список из случайно добавленных в него символов.
-     */
-    private ArrayList<Character> getShuffleCharacters(String string) {
-        int lettersCount = string.length();
-        // Делаем список букв слова.
-        ArrayList<Character> letters = new ArrayList<>(lettersCount);
-        for (int i = 0; i < lettersCount; i++) {
-            letters.add(string.charAt(i));
-        }
-        // Делаем список случайно расставленных букв слова.
-        ArrayList<Character> shuffleLetters = new ArrayList<>(lettersCount);
-        while (letters.size() != 0) {
-            Random random = new Random();
-            int removeLetterIndex = random.nextInt(letters.size());
-            shuffleLetters.add(letters.remove(removeLetterIndex));
-        }
-        return shuffleLetters;
-    }
-
-    /**
-     * Находит View элементы в разметке.
-     *
-     * @param v корневой элемент разметки.
-     */
-    private void findViews(View v) {
-        userVariantTextView = v.findViewById(R.id.fragment_collect_word_by_letters_mode___text_view___user_variant);
-        removeLetterImageButton = v.findViewById(R.id.fragment_collect_word_by_letters_mode___image_button___remove_letter);
-        valueTextView = v.findViewById(R.id.fragment_collect_word_by_letters_mode___text_view___value);
-        lettersGridLayout = v.findViewById(R.id.fragment_collect_word_by_letters_mode___grid_layout___letters);
-        resultImageView = v.findViewById(R.id.fragment_collect_word_by_letters_mode___image_view___result);
-    }
-
-    // ПОСМОТРЕТЬ, КАК МОЖНО ОТ ЭТОГО ИЗБАВИТЬСЯ
-    public int dpToPx(int dp) {
-        float density = this.getResources().getDisplayMetrics().density;
-        return Math.round((float) dp * density);
-    }
+  // ПОСМОТРЕТЬ, КАК МОЖНО ОТ ЭТОГО ИЗБАВИТЬСЯ
+  fun dpToPx(dp: Int): Int {
+    val density = this.resources.displayMetrics.density
+    return Math.round(dp.toFloat() * density)
+  }
 }

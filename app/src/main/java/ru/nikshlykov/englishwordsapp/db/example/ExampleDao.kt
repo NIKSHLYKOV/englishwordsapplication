@@ -1,37 +1,27 @@
-package ru.nikshlykov.englishwordsapp.db.example;
+package ru.nikshlykov.englishwordsapp.db.example
 
-import androidx.lifecycle.LiveData;
-import androidx.room.Dao;
-import androidx.room.Delete;
-import androidx.room.Insert;
-import androidx.room.OnConflictStrategy;
-import androidx.room.Query;
-import androidx.room.Update;
-
-import java.util.List;
+import androidx.room.*
 
 @Dao
-public interface ExampleDao {
+interface ExampleDao {
+  @Insert(onConflict = OnConflictStrategy.IGNORE)
+  fun insert(example: Example?): Long
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    long insert(Example example);
+  @Insert(onConflict = OnConflictStrategy.IGNORE)
+  fun insertMultiple(examples: List<Example?>?): List<Long?>?
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    List<Long> insertMultiple(List<Example> examples);
+  @Update
+  fun update(example: Example?): Int
 
+  @Update
+  fun updateMultiple(examples: List<Example?>?): Int
 
-    @Update
-    int update(Example example);
+  @Delete
+  fun delete(example: Example?): Int
 
-    @Update
-    int updateMultiple(List<Example> examples);
+  @Delete
+  fun deleteMultiple(examples: List<Example?>?): Int
 
-    @Delete
-    int delete(Example example);
-
-    @Delete
-    int deleteMultiple(List<Example> examples);
-
-    @Query("SELECT * FROM Examples WHERE WordID = :wordId")
-    List<Example> getExamplesByWordId(long wordId);
+  @Query("SELECT * FROM Examples WHERE WordID = :wordId")
+  fun getExamplesByWordId(wordId: Long): List<Example?>?
 }

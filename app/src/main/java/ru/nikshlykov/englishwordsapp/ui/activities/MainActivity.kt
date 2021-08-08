@@ -1,55 +1,26 @@
-package ru.nikshlykov.englishwordsapp.ui.activities;
+package ru.nikshlykov.englishwordsapp.ui.activities
 
-import android.app.Activity;
-import android.content.Intent;
-import android.os.Bundle;
+import android.content.Intent
+import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.NavigationUI
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import dagger.android.support.DaggerAppCompatActivity
+import ru.nikshlykov.englishwordsapp.App
+import ru.nikshlykov.englishwordsapp.R
+import ru.nikshlykov.englishwordsapp.ui.fragments.ProfileFragment.ProfileFragmentReportListener
+import java.util.*
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+class MainActivity : DaggerAppCompatActivity(), ProfileFragmentReportListener {
+  // View элементы.
+  private var bottomNavigationView // Нижнее меню.
+    : BottomNavigationView? = null
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.NavigationUI;
-
-import dagger.android.DaggerActivity;
-import dagger.android.support.DaggerAppCompatActivity;
-import ru.nikshlykov.englishwordsapp.App;
-import ru.nikshlykov.englishwordsapp.R;
-import ru.nikshlykov.englishwordsapp.db.ModesRepository;
-import ru.nikshlykov.englishwordsapp.db.WordsRepository;
-import ru.nikshlykov.englishwordsapp.db.mode.Mode;
-import ru.nikshlykov.englishwordsapp.db.word.Word;
-import ru.nikshlykov.englishwordsapp.ui.fragments.GroupsFragment;
-import ru.nikshlykov.englishwordsapp.ui.fragments.InfoFragment;
-import ru.nikshlykov.englishwordsapp.ui.fragments.ProfileFragment;
-import ru.nikshlykov.englishwordsapp.ui.fragments.FirstShowModeFragment;
-import ru.nikshlykov.englishwordsapp.ui.ModeFragmentsFactory;
-import ru.nikshlykov.englishwordsapp.ui.RepeatResultListener;
-import ru.nikshlykov.englishwordsapp.ui.viewmodels.StudyViewModel;
-
-import android.util.Log;
-import android.widget.Toast;
-
-import java.util.ArrayList;
-
-public class MainActivity extends DaggerAppCompatActivity
-        implements ProfileFragment.ProfileFragmentReportListener {
-
-    // Тег для логирования.
-    private static final String LOG_TAG = "MainActivity";
-
-    // Коды запросов для общения между Activity.
-    private final static int REQUEST_CODE_EDIT_MODES = 1;
-    private final static int REQUEST_CODE_EDIT_SETTINGS = 2;
-
-    // View элементы.
-    private BottomNavigationView bottomNavigationView; // Нижнее меню.
-
-    // Время последнего нажатия на кнопку "Назад" в данном Activity.
-    private static long lastBackPressedTime;
-
-    /*private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
+  /*private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
 =======
     private Fragment lastModeFragment;
 
@@ -110,99 +81,97 @@ public class MainActivity extends DaggerAppCompatActivity
             return false;
         }
     };*/
+  override fun onCreate(savedInstanceState: Bundle?) {
+    setTheme(R.style.AppTheme)
+    super.onCreate(savedInstanceState)
+    setContentView(R.layout.activity_main)
+    findViews()
+    val navHostFragment =
+      supportFragmentManager.findFragmentById(R.id.activity_main___nav_host_fragment) as NavHostFragment
+    val navController: NavController = navHostFragment.navController
+    //val navController = Navigation.findNavController(this, R.id.activity_main___nav_host_fragment)
+    NavigationUI.setupWithNavController(bottomNavigationView!!, navController)
+  }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        setTheme(R.style.AppTheme);
-        super.onCreate(savedInstanceState);
+  override fun onDestroy() {
+    super.onDestroy()
+    (applicationContext as App).textToSpeech!!.shutdown()
+  }
 
-        setContentView(R.layout.activity_main);
-        findViews();
+  /**
+   * Находит View элементы в разметке.
+   */
+  private fun findViews() {
+    bottomNavigationView = findViewById(R.id.navigation)
+  }
+  // TODO Решить, что делать с кодом общения с другими Activity.
+  // Общение с другими Activity и Fragments, находящимися внутри
+  /**
+   * Открывает Activity режимов, чтобы получить от него результат - выбранные режимы.
+   */
+  override fun reportOpenModesActivity() {
+    Log.i(LOG_TAG, "reportOpenModesActivity()")
+    val intent = Intent(this, ModesActivity::class.java)
+    startActivityForResult(intent, REQUEST_CODE_EDIT_MODES)
+  }
 
-        NavController navController = Navigation.findNavController(this, R.id.activity_main___nav_host_fragment);
-        NavigationUI.setupWithNavController(bottomNavigationView, navController);
-    }
+  /**
+   * Открывает Activity настроек, чтобы получить от него результат - максимальное количество
+   * новых слов в день.
+   */
+  override fun reportOpenSettingsActivity() {
+    Log.i(LOG_TAG, "reportOpenSettingsActivity()")
+    val intent = Intent(this, SettingsActivity::class.java)
+    startActivityForResult(intent, REQUEST_CODE_EDIT_SETTINGS)
+  }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        ((App) getApplicationContext()).getTextToSpeech().shutdown();
-    }
+  // TODO проверить использование onActivityResult. Оно вроде сейчас вообще не нужно.
+  override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    super.onActivityResult(requestCode, resultCode, data)
+    if (resultCode == RESULT_OK) {
+      if (requestCode == REQUEST_CODE_EDIT_MODES) {
+        // Достаём пришедший массив id выбранных режимов.
+        val extras = data!!.extras
+        val selectedModesIds = extras!!.getLongArray(ModesActivity.EXTRA_SELECTED_MODES)
 
-    /**
-     * Находит View элементы в разметке.
-     */
-    private void findViews() {
-        bottomNavigationView = findViewById(R.id.navigation);
-    }
-
-    // TODO Решить, что делать с кодом общения с другими Activity.
-
-    // Общение с другими Activity и Fragments, находящимися внутри
-
-    /**
-     * Открывает Activity режимов, чтобы получить от него результат - выбранные режимы.
-     */
-    @Override
-    public void reportOpenModesActivity() {
-        Log.i(LOG_TAG, "reportOpenModesActivity()");
-        Intent intent = new Intent(this, ModesActivity.class);
-        startActivityForResult(intent, REQUEST_CODE_EDIT_MODES);
-    }
-
-    /**
-     * Открывает Activity настроек, чтобы получить от него результат - максимальное количество
-     * новых слов в день.
-     */
-    @Override
-    public void reportOpenSettingsActivity() {
-        Log.i(LOG_TAG, "reportOpenSettingsActivity()");
-        Intent intent = new Intent(this, SettingsActivity.class);
-        startActivityForResult(intent, REQUEST_CODE_EDIT_SETTINGS);
-    }
-
-    // TODO проверить использование onActivityResult. Оно вроде сейчас вообще не нужно.
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            if (requestCode == REQUEST_CODE_EDIT_MODES) {
-                // Достаём пришедший массив id выбранных режимов.
-                Bundle extras = data.getExtras();
-                long[] selectedModesIds = extras.getLongArray(ModesActivity.EXTRA_SELECTED_MODES);
-
-                // Преобразовываем его в ArrayList.
-                ArrayList<Long> selectedModesIdsList = new ArrayList<>();
-                Log.i(LOG_TAG, "selectedModesIds: ");
-                for (int i = 0; i < selectedModesIds.length; i++) {
-                    selectedModesIdsList.add(selectedModesIds[i]);
-                    Log.i(LOG_TAG, "mode id: " + selectedModesIds[i]);
-                }
-
-                // Закидываем в studyViewModel для хранения.
-                //studyViewModel.setSelectedModesIds(selectedModesIdsList);
-            } else if (requestCode == REQUEST_CODE_EDIT_SETTINGS) {
-                // Закидываем в studyViewModel новое количество новых слов в день.
-                //studyViewModel.setNewWordsCount(data.getExtras().getInt(SettingsActivity.EXTRA_MAX_WORD_COUNT));
-            }
+        // Преобразовываем его в ArrayList.
+        val selectedModesIdsList = ArrayList<Long>()
+        Log.i(LOG_TAG, "selectedModesIds: ")
+        for (i in selectedModesIds!!.indices) {
+          selectedModesIdsList.add(selectedModesIds[i])
+          Log.i(LOG_TAG, "mode id: " + selectedModesIds[i])
         }
+
+        // Закидываем в studyViewModel для хранения.
+        //studyViewModel.setSelectedModesIds(selectedModesIdsList);
+      } else if (requestCode == REQUEST_CODE_EDIT_SETTINGS) {
+        // Закидываем в studyViewModel новое количество новых слов в день.
+        //studyViewModel.setNewWordsCount(data.getExtras().getInt(SettingsActivity.EXTRA_MAX_WORD_COUNT));
+      }
     }
+  }
+  // Обработка выхода из приложения.
+  /**
+   * Обрабатывает нажатие кнопки назад и информирует о том, что
+   * необходимо нажать её два раза для выхода из приложения.
+   */
+  override fun onBackPressed() {
+    if (lastBackPressedTime + 2000 > System.currentTimeMillis()) super.onBackPressed() else Toast.makeText(
+      this, "Нажмите ещё раз для выхода!",
+      Toast.LENGTH_SHORT
+    ).show()
+    lastBackPressedTime = System.currentTimeMillis()
+  }
 
+  companion object {
+    // Тег для логирования.
+    private const val LOG_TAG = "MainActivity"
 
-    // Обработка выхода из приложения.
+    // Коды запросов для общения между Activity.
+    private const val REQUEST_CODE_EDIT_MODES = 1
+    private const val REQUEST_CODE_EDIT_SETTINGS = 2
 
-    /**
-     * Обрабатывает нажатие кнопки назад и информирует о том, что
-     * необходимо нажать её два раза для выхода из приложения.
-     */
-    @Override
-    public void onBackPressed() {
-        if (lastBackPressedTime + 2000 > System.currentTimeMillis())
-            super.onBackPressed();
-        else
-            Toast.makeText(this, "Нажмите ещё раз для выхода!",
-                    Toast.LENGTH_SHORT).show();
-        lastBackPressedTime = System.currentTimeMillis();
-    }
+    // Время последнего нажатия на кнопку "Назад" в данном Activity.
+    private var lastBackPressedTime: Long = 0
+  }
 }

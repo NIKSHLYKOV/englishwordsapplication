@@ -1,27 +1,25 @@
-package ru.nikshlykov.englishwordsapp.di;
+package ru.nikshlykov.englishwordsapp.di
 
-import android.content.Context;
-
-import androidx.room.Room;
-
-import javax.inject.Singleton;
-
-import dagger.Module;
-import dagger.Provides;
-import ru.nikshlykov.englishwordsapp.db.AppDatabase;
+import android.content.Context
+import androidx.room.Room
+import dagger.Module
+import dagger.Provides
+import ru.nikshlykov.englishwordsapp.db.AppDatabase
+import javax.inject.Singleton
 
 @Module
-public class DatabaseModule {
+class DatabaseModule {
+  @Provides
+  @Singleton
+  fun provideAppDatabase(context: Context): AppDatabase {
+    return Room
+      .databaseBuilder(context, AppDatabase::class.java, DATABASE_NAME)
+      .createFromAsset(DATABASE_DIR)
+      .build()
+  }
 
-    private final static String DATABASE_NAME = "words.db";
-    private final static String DATABASE_DIR = "words.db";
-
-    @Provides
-    @Singleton
-    AppDatabase provideAppDatabase(Context context){
-        return Room
-                .databaseBuilder(context, AppDatabase.class, DATABASE_NAME)
-                .createFromAsset(DATABASE_DIR)
-                .build();
-    }
+  companion object {
+    private const val DATABASE_NAME = "words.db"
+    private const val DATABASE_DIR = "words.db"
+  }
 }

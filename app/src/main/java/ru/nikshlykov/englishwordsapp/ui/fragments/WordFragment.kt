@@ -1,529 +1,493 @@
-package ru.nikshlykov.englishwordsapp.ui.fragments;
+package ru.nikshlykov.englishwordsapp.ui.fragments
 
-import android.content.Context;
-import android.os.Bundle;
-import android.speech.tts.TextToSpeech;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.content.Context
+import android.os.Bundle
+import android.speech.tts.TextToSpeech
+import android.util.Log
+import android.view.*
+import android.widget.Button
+import android.widget.LinearLayout
+import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavDirections
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
+import dagger.android.support.DaggerFragment
+import ru.nikshlykov.englishwordsapp.App
+import ru.nikshlykov.englishwordsapp.R
+import ru.nikshlykov.englishwordsapp.db.WordsRepository.OnExamplesLoadedListener
+import ru.nikshlykov.englishwordsapp.db.example.Example
+import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup
+import ru.nikshlykov.englishwordsapp.db.word.Word
+import ru.nikshlykov.englishwordsapp.ui.adapters.ExamplesRecyclerViewAdapter
+import ru.nikshlykov.englishwordsapp.ui.flowfragments.OnChildFragmentInteractionListener
+import ru.nikshlykov.englishwordsapp.ui.fragments.ResetProgressDialogFragment.ResetProgressListener
+import ru.nikshlykov.englishwordsapp.ui.viewmodels.WordViewModel
+import java.util.*
+import javax.inject.Inject
 
-import java.util.ArrayList;
-import java.util.List;
+class WordFragment : DaggerFragment(), ResetProgressListener, OnExamplesLoadedListener {
+  // View элементы.
+  private var wordTextInputLayout: TextInputLayout? = null
+  private var valueTextInputLayout: TextInputLayout? = null
+  private var transcriptionTextInputLayout: TextInputLayout? = null
+  private var wordTextInputEditText: TextInputEditText? = null
+  private var valueTextInputEditText: TextInputEditText? = null
+  private var transcriptionTextInputEditText: TextInputEditText? = null
+  private var partOfSpeechTextView: TextView? = null
+  private var saveButton: Button? = null
+  private var ttsButton: Button? = null
+  private var toolbar: Toolbar? = null
+  private var progressLinearLayout: LinearLayout? = null
+  private var progressTextView: TextView? = null
+  private var examplesTextView: TextView? = null
+  private var addExampleButton: Button? = null
+  private var examplesRecyclerView: RecyclerView? = null
+  private val examplesRecyclerViewAdapter: ExamplesRecyclerViewAdapter? = null
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavDirections;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
-
-import javax.inject.Inject;
-
-import dagger.android.support.DaggerFragment;
-import ru.nikshlykov.englishwordsapp.App;
-import ru.nikshlykov.englishwordsapp.R;
-import ru.nikshlykov.englishwordsapp.db.WordsRepository;
-import ru.nikshlykov.englishwordsapp.db.example.Example;
-import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup;
-import ru.nikshlykov.englishwordsapp.db.word.Word;
-import ru.nikshlykov.englishwordsapp.ui.adapters.ExamplesRecyclerViewAdapter;
-import ru.nikshlykov.englishwordsapp.ui.flowfragments.OnChildFragmentInteractionListener;
-import ru.nikshlykov.englishwordsapp.ui.viewmodels.WordViewModel;
-
-import static ru.nikshlykov.englishwordsapp.ui.fragments.LinkOrDeleteWordDialogFragment.TO_DELETE;
-
-public class WordFragment extends DaggerFragment
-        implements ResetProgressDialogFragment.ResetProgressListener,
-        WordsRepository.OnExamplesLoadedListener {
-
-    // Тег для логирования.
-    private static final String LOG_TAG = "WordFragment";
-
-    // Extras для получения данных из интента.
-    public static final String EXTRA_WORD_ID = "WordId";
-    public static final String EXTRA_WORD = "word";
-    public static final String EXTRA_TRANSCRIPTION = "Transcription";
-    public static final String EXTRA_VALUE = "Value";
-
-    // Возможные цели старта Fragment.
-    public static final int START_TO_CREATE_WORD = 0;
-    public static final int START_TO_EDIT_WORD = 1;
-
-    // Теги для диалоговых фрагментов.
-    private static final String DIALOG_RESET_WORD_PROGRESS = "ResetWordProgressDialogFragment";
-    private static final String DIALOG_LINK_WORD = "LinkWordDialogFragment";
-    private static final String DIALOG_DELETE_WORD = "DeleteWordDialogFragment";
-
-    // View элементы.
-    private TextInputLayout wordTextInputLayout;
-    private TextInputLayout valueTextInputLayout;
-    private TextInputLayout transcriptionTextInputLayout;
-    private TextInputEditText wordTextInputEditText;
-    private TextInputEditText valueTextInputEditText;
-    private TextInputEditText transcriptionTextInputEditText;
-    private TextView partOfSpeechTextView;
-    private Button saveButton;
-    private Button ttsButton;
-    private Toolbar toolbar;
-    private LinearLayout progressLinearLayout;
-    private TextView progressTextView;
-    private TextView examplesTextView;
-
-    private Button addExampleButton;
-    private RecyclerView examplesRecyclerView;
-    private ExamplesRecyclerViewAdapter examplesRecyclerViewAdapter;
-
-    /*// id слова, для которого открылось Activity.
+  /*// id слова, для которого открылось Activity.
     // Будет равно 0, если открыто для создания нового слова.
     private long wordId = 0L;*/
+  // ViewModel для работы с БД.
+  private var wordViewModel: WordViewModel? = null
 
-    // ViewModel для работы с БД.
-    private WordViewModel wordViewModel;
+  @JvmField
+  @Inject
+  var viewModelFactory: ViewModelProvider.Factory? = null
+  private var onChildFragmentInteractionListener: OnChildFragmentInteractionListener? = null
 
-    @Inject
-    public ViewModelProvider.Factory viewModelFactory;
+  // Observer отвечающий за обработку подгруженных подгрупп для связывания или удаления.
+  lateinit var availableSubgroupsObserver: Observer<ArrayList<Subgroup>?>
 
-    private OnChildFragmentInteractionListener onChildFragmentInteractionListener;
+  // Флаг, который будет передаваться observer'ом в LinkOrDeleteDialogFragment.
+  private var linkOrDeleteFlag = 0
 
-    // Observer отвечающий за обработку подгруженных подгрупп для связывания или удаления.
-    public Observer<ArrayList<Subgroup>> availableSubgroupsObserver;
-    // Флаг, который будет передаваться observer'ом в LinkOrDeleteDialogFragment.
-    private int linkOrDeleteFlag;
+  // Синтезатор речи.
+  private var textToSpeech: TextToSpeech? = null
+  override fun onAttach(context: Context) {
+    super.onAttach(context)
+    onChildFragmentInteractionListener =
+      if (requireParentFragment().parentFragment is OnChildFragmentInteractionListener) {
+        requireParentFragment().parentFragment as OnChildFragmentInteractionListener?
+      } else {
+        throw RuntimeException(requireParentFragment().parentFragment.toString() + " must implement OnChildFragmentInteractionListener")
+      }
+  }
 
-    // Синтезатор речи.
-    private TextToSpeech textToSpeech;
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    wordViewModel = viewModelFactory!!.create(WordViewModel::class.java)
+    textToSpeech = (requireActivity().applicationContext as App).textToSpeech
+  }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
+  override fun onCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ): View? {
+    val v = inflater.inflate(R.layout.fragment_word, container, false)
+    setHasOptionsMenu(true)
+    return v
+  }
 
-        if (getParentFragment().getParentFragment() instanceof OnChildFragmentInteractionListener) {
-            onChildFragmentInteractionListener =
-                    (OnChildFragmentInteractionListener) getParentFragment().getParentFragment();
-        } else {
-            throw new RuntimeException(getParentFragment().getParentFragment().toString() + " must implement OnChildFragmentInteractionListener");
-        }
-    }
+  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    super.onViewCreated(view, savedInstanceState)
+    findViews(view)
+    initToolbar()
+    dataAndPrepareInterface
+    initSaveButtonClick()
+    initAvailableSubgroupsObserver()
+  }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        wordViewModel = viewModelFactory.create(WordViewModel.class);
+  /**
+   * Находит View элементы в разметке.
+   */
+  private fun findViews(v: View) {
+    wordTextInputEditText = v.findViewById(R.id.fragment_word___text_input_edit_text___word)
+    valueTextInputEditText = v.findViewById(R.id.fragment_word___text_input_edit_text___value)
+    transcriptionTextInputEditText =
+      v.findViewById(R.id.fragment_word___text_input_edit_text___transcription)
+    saveButton = v.findViewById(R.id.fragment_word___button___save_word)
+    ttsButton = v.findViewById(R.id.fragment_word___button___tts)
+    partOfSpeechTextView = v.findViewById(R.id.fragment_word___text_view___part_of_speech)
+    toolbar = v.findViewById(R.id.fragment_word___toolbar)
+    progressLinearLayout =
+      v.findViewById(R.id.fragment_word___linear_layout___progress_view_background)
+    examplesRecyclerView = v.findViewById(R.id.fragment_word___recycler_view___examples)
+    addExampleButton = v.findViewById(R.id.fragment_word___button___add_example)
+    wordTextInputLayout = v.findViewById(R.id.fragment_word___text_input_layout___word)
+    transcriptionTextInputLayout =
+      v.findViewById(R.id.fragment_word___text_input_layout___transcription)
+    valueTextInputLayout = v.findViewById(R.id.fragment_word___text_input_layout___value)
+    progressTextView = v.findViewById(R.id.fragment_word___text_view___progress)
+    examplesTextView = v.findViewById(R.id.fragment_word___text_view___examples)
+  }
 
-        textToSpeech = ((App) getActivity().getApplicationContext()).getTextToSpeech();
-    }
+  /**
+   * Устанавливает toolbar и его title.
+   */
+  private fun initToolbar() {
+    // Устанавливаем тулбар.
+    (activity as AppCompatActivity?)!!.setSupportActionBar(toolbar)
+    (activity as AppCompatActivity?)!!.supportActionBar!!.title = ""
+  }// Делаем доступными для редактирования поля с параметрами слова.
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_word, container, false);
-        setHasOptionsMenu(true);
-        return v;
-    }
+  /*wordViewModel.getExamples(WordActivity.this);*/
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        findViews(view);
-
-        initToolbar();
-
-        getDataAndPrepareInterface();
-
-        initSaveButtonClick();
-
-        initAvailableSubgroupsObserver();
-    }
-
-    /**
-     * Находит View элементы в разметке.
-     */
-    private void findViews(View v) {
-        wordTextInputEditText = v.findViewById(R.id.fragment_word___text_input_edit_text___word);
-        valueTextInputEditText = v.findViewById(R.id.fragment_word___text_input_edit_text___value);
-        transcriptionTextInputEditText = v.findViewById(R.id.fragment_word___text_input_edit_text___transcription);
-        saveButton = v.findViewById(R.id.fragment_word___button___save_word);
-        ttsButton = v.findViewById(R.id.fragment_word___button___tts);
-        partOfSpeechTextView = v.findViewById(R.id.fragment_word___text_view___part_of_speech);
-        toolbar = v.findViewById(R.id.fragment_word___toolbar);
-        progressLinearLayout = v.findViewById(R.id.fragment_word___linear_layout___progress_view_background);
-        examplesRecyclerView = v.findViewById(R.id.fragment_word___recycler_view___examples);
-        addExampleButton = v.findViewById(R.id.fragment_word___button___add_example);
-        wordTextInputLayout = v.findViewById(R.id.fragment_word___text_input_layout___word);
-        transcriptionTextInputLayout = v.findViewById(R.id.fragment_word___text_input_layout___transcription);
-        valueTextInputLayout = v.findViewById(R.id.fragment_word___text_input_layout___value);
-        progressTextView = v.findViewById(R.id.fragment_word___text_view___progress);
-        examplesTextView = v.findViewById(R.id.fragment_word___text_view___examples);
-    }
-
-    /**
-     * Устанавливает toolbar и его title.
-     */
-    private void initToolbar() {
-        // Устанавливаем тулбар.
-        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("");
-    }
-
-
-    /**
-     * Получает id слова из Extras и, в зависимости от него, либо скрывает некоторые элементы,
-     * чтобы создать новое слово, либо устанавливает параметры уже существующего слова в наши View.
-     */
-    private void getDataAndPrepareInterface() {
-        Bundle arguments = getArguments();
-        if (arguments != null) {
-            // Получаем id слова, которое было выбрано.
-            int startTo = WordFragmentArgs.fromBundle(getArguments()).getStartTo();
-            Log.i(LOG_TAG, "startTo = " + startTo);
-
-            switch (startTo) {
-                case START_TO_CREATE_WORD:
-                    prepareInterfaceForNewWordCreating();
-                    break;
-
-                case START_TO_EDIT_WORD:
-                    /*RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(
+  // Присваиваем обработчик нажатия на кнопку воспроизведения слова.
+/*RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(
                         WordActivity.this);
                 examplesRecyclerView.setLayoutManager(layoutManager);
                 examplesRecyclerViewAdapter = new ExamplesRecyclerViewAdapter(WordActivity.this);
                 examplesRecyclerView.setAdapter(examplesRecyclerViewAdapter);*/
-                /*addExampleButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        examplesRecyclerViewAdapter.addExample();
-                        examplesRecyclerView.smoothScrollToPosition(examplesRecyclerViewAdapter
-                                .getItemCount() - 1);
-                    }
-                });*/
+  /*addExampleButton.setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View v) {
+             examplesRecyclerViewAdapter.addExample();
+             examplesRecyclerView.smoothScrollToPosition(examplesRecyclerViewAdapter
+                     .getItemCount() - 1);
+         }
+     });*/// Получаем id слова, которое было выбрано.
+  /**
+   * Получает id слова из Extras и, в зависимости от него, либо скрывает некоторые элементы,
+   * чтобы создать новое слово, либо устанавливает параметры уже существующего слова в наши View.
+   */
+  private val dataAndPrepareInterface: Unit
+    private get() {
+      val arguments = arguments
+      if (arguments != null) {
+        // Получаем id слова, которое было выбрано.
+        val startTo = WordFragmentArgs.fromBundle(requireArguments()).startTo
+        Log.i(LOG_TAG, "startTo = $startTo")
+        when (startTo) {
+          START_TO_CREATE_WORD -> prepareInterfaceForNewWordCreating()
+          START_TO_EDIT_WORD -> {
+            /*RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(
+WordActivity.this);
+examplesRecyclerView.setLayoutManager(layoutManager);
+examplesRecyclerViewAdapter = new ExamplesRecyclerViewAdapter(WordActivity.this);
+examplesRecyclerView.setAdapter(examplesRecyclerViewAdapter);*/
+            /*addExampleButton.setOnClickListener(new View.OnClickListener() {
+                   @Override
+                   public void onClick(View v) {
+                       examplesRecyclerViewAdapter.addExample();
+                       examplesRecyclerView.smoothScrollToPosition(examplesRecyclerViewAdapter
+                               .getItemCount() - 1);
+                   }
+               });*/
+            val word = WordFragmentArgs.fromBundle(requireArguments()).word
+            wordViewModel!!.setWord(word)
+            wordViewModel!!.wordMutableLiveData.observe(viewLifecycleOwner, Observer { word ->
+              Log.d(LOG_TAG, "word onChanged()")
+              if (word != null) {
+                setWordToViews(word)
 
-                    Word word = WordFragmentArgs.fromBundle(getArguments()).getWord();
-
-                    wordViewModel.setWord(word);
-                    wordViewModel.getWordMutableLiveData().observe(getViewLifecycleOwner(), new Observer<Word>() {
-                        @Override
-                        public void onChanged(Word word) {
-                            Log.d(LOG_TAG, "word onChanged()");
-                            if (word != null) {
-                                setWordToViews(word);
-
-                                // Делаем доступными для редактирования поля с параметрами слова.
-                                if (word.createdByUser == 1) {
-                                    saveButton.setVisibility(View.VISIBLE);
-                                    wordTextInputLayout.setEnabled(true);
-                                    transcriptionTextInputLayout.setEnabled(true);
-                                    valueTextInputLayout.setEnabled(true);
-                                }
-
-                                /*wordViewModel.getExamples(WordActivity.this);*/
-                            }
-                        }
-                    });
-
-                    // Присваиваем обработчик нажатия на кнопку воспроизведения слова.
-                    ttsButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            textToSpeech.speak(wordTextInputEditText.getText().toString(),
-                                    TextToSpeech.QUEUE_ADD, null, "1");
-                        }
-                    });
-                    break;
-                default:
-                    errorProcessing();
-            }
-        } else {
-            errorProcessing();
-        }
-    }
-
-    /**
-     * Выводит сообщение об ошибке и закрывает fragment.
-     */
-    private void errorProcessing() {
-        Log.e(LOG_TAG, "Error happened!");
-        // TODO Сделать потом, наверное, через нажатие кнопки назад программно.
-        NavDirections navDirections = WordFragmentDirections
-                .actionWordDestToSubgroupDest(new Subgroup(0L, "a", 0L, 0, "a"));
-        onChildFragmentInteractionListener.onChildFragmentInteraction(navDirections);
-    }
-
-    /**
-     * Присваивает обработчик нажатия на кнопку сохранения слова.
-     */
-    private void initSaveButtonClick() {
-        // Присваиваем обработчик нажатия на кнопку сохранения слова.
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Получаем строки из EditText'ов.
-                String word = wordTextInputEditText.getText().toString();
-                String value = valueTextInputEditText.getText().toString();
-                String transcription = transcriptionTextInputEditText.getText().toString();
-
-                // Проверяем, что поля слова и перевода не пустые
-                if (!word.isEmpty() && !value.isEmpty()) {
-                    /*if (wordId != 0) {
-                        wordViewModel.update(wordId, word, transcription, value);
-                    } else {*/
-
-                    // Считываем данные из EditText'ов и отправляем их обратно в SubgroupActivity.
-                    /*Intent wordData = new Intent();
-                    wordData.putExtra(EXTRA_WORD_ID, wordId);
-                    wordData.putExtra(EXTRA_WORD, word);
-                    wordData.putExtra(EXTRA_TRANSCRIPTION, transcription);
-                    wordData.putExtra(EXTRA_VALUE, value);*/
-
-                    //wordData.putExtra(EXTRA_WORD_OBJECT, )
-                    //setResult(RESULT_OK, wordData);
-
-                    // TODO сделать обработку добавления нового слова.
-                    wordViewModel.setWordParameters(word, transcription, value);
-                    wordViewModel.updateWordInDB();
-                    //
-                    /*}*/
-
-                    // Закрываем fragment.
-                    NavDirections navDirections = WordFragmentDirections
-                            .actionWordDestToSubgroupDest(new Subgroup(0L, "a", 0L, 0, "a"));
-                    onChildFragmentInteractionListener.onChildFragmentInteraction(navDirections);
+                // Делаем доступными для редактирования поля с параметрами слова.
+                if (word.createdByUser == 1) {
+                  saveButton!!.visibility = View.VISIBLE
+                  wordTextInputLayout!!.isEnabled = true
+                  transcriptionTextInputLayout!!.isEnabled = true
+                  valueTextInputLayout!!.isEnabled = true
                 }
-                // Выводим Toast о том, что они должны быть заполнены.
-                else {
-                    Toast.makeText(getContext(),
-                            R.string.error_word_saving, Toast.LENGTH_LONG).show();
-                }
+
+                /*wordViewModel.getExamples(WordActivity.this);*/
+              }
+            })
+
+            // Присваиваем обработчик нажатия на кнопку воспроизведения слова.
+            ttsButton!!.setOnClickListener {
+              textToSpeech!!.speak(
+                wordTextInputEditText!!.text.toString(),
+                TextToSpeech.QUEUE_ADD, null, "1"
+              )
             }
-        });
-    }
-
-    // TODO Что делать с сохранением прогресса, если пользователь не нажал сохранить
-    // Наверное, просто апдейтить его в самом диалоге сбрасывания прогресса.
-
-    /**
-     * Инициализирует availableSubgroupsObserver.
-     */
-    private void initAvailableSubgroupsObserver() {
-        availableSubgroupsObserver = new Observer<ArrayList<Subgroup>>() {
-            @Override
-            public void onChanged(ArrayList<Subgroup> subgroups) {
-                Log.d(LOG_TAG, "availableSubgroups onChanged()");
-                if (subgroups != null) {
-                    Log.d(LOG_TAG, "availableSubgroups onChanged() value != null");
-                    LinkOrDeleteWordDialogFragment linkOrDeleteWordDialogFragment =
-                            new LinkOrDeleteWordDialogFragment();
-                    Bundle arguments = new Bundle();
-
-                    long wordId = wordViewModel.getWordId();
-                    if (wordId != 0L) {
-                        arguments.putLong(LinkOrDeleteWordDialogFragment.EXTRA_WORD_ID,
-                                wordId);
-
-                        arguments.putInt(LinkOrDeleteWordDialogFragment.EXTRA_FLAG,
-                                linkOrDeleteFlag);
-
-                        long[] subgroupsIds = new long[subgroups.size()];
-                        String[] subgroupsNames = new String[subgroups.size()];
-                        for (int i = 0; i < subgroups.size(); i++) {
-                            Subgroup subgroup = subgroups.get(i);
-                            subgroupsNames[i] = subgroup.name;
-                            subgroupsIds[i] = subgroup.id;
-                        }
-                        arguments.putStringArray(LinkOrDeleteWordDialogFragment.EXTRA_AVAILABLE_SUBGROUPS_NAMES,
-                                subgroupsNames);
-                        arguments.putLongArray(LinkOrDeleteWordDialogFragment.EXTRA_AVAILABLE_SUBGROUPS_IDS,
-                                subgroupsIds);
-
-                        linkOrDeleteWordDialogFragment.setArguments(arguments);
-
-                        linkOrDeleteWordDialogFragment.show(getActivity().getSupportFragmentManager(), "some tag");
-
-                        wordViewModel.clearAvailableSubgroupsToAndRemoveObserver(availableSubgroupsObserver);
-                    }
-                } else {
-                    Log.d(LOG_TAG, "availableSubgroups onChanged() value = null");
-                }
-            }
-        };
-    }
-
-    /**
-     * Устанавливаем параметры слова (слово, транскрипция, перевод, часть речи, прогресс в разные View.
-     */
-    private void setWordToViews(Word word) {
-        // Устанавливаем параметры слова в EditText'ы.
-        wordTextInputEditText.setText(word.word);
-        valueTextInputEditText.setText(word.value);
-        transcriptionTextInputEditText.setText(word.transcription);
-
-        // Устанавливаем часть речи, если она указана.
-        if (word.partOfSpeech != null) {
-            partOfSpeechTextView.setText(word.partOfSpeech);
-        } else {
-            partOfSpeechTextView.setVisibility(View.GONE);
+          }
+          else                 -> errorProcessing()
         }
+      } else {
+        errorProcessing()
+      }
+    }
 
-        // Устанавливаем прогресс.
-        View learnProgressView = new View(getContext());
-        int progressViewIndex = 0;
-        switch (word.learnProgress) {
-            case -1:
-                learnProgressView.setBackgroundResource(R.drawable.shape_progress);
-                learnProgressView.setLayoutParams(new LinearLayout.LayoutParams(dpToPx(0), dpToPx(10)));
-                break;
-            case 0:
-                learnProgressView.setBackgroundResource(R.drawable.shape_progress_0);
-                learnProgressView.setLayoutParams(new LinearLayout.LayoutParams(dpToPx(25), dpToPx(10)));
-                break;
-            case 1:
-                learnProgressView.setBackgroundResource(R.drawable.shape_progress_1);
-                learnProgressView.setLayoutParams(new LinearLayout.LayoutParams(dpToPx(50), dpToPx(10)));
-                break;
-            case 2:
-                learnProgressView.setBackgroundResource(R.drawable.shape_progress_2);
-                learnProgressView.setLayoutParams(new LinearLayout.LayoutParams(dpToPx(75), dpToPx(10)));
-                break;
-            case 3:
-                learnProgressView.setBackgroundResource(R.drawable.shape_progress_3);
-                learnProgressView.setLayoutParams(new LinearLayout.LayoutParams(dpToPx(100), dpToPx(10)));
-                break;
-            case 4:
-                learnProgressView.setBackgroundResource(R.drawable.shape_progress_4);
-                learnProgressView.setLayoutParams(new LinearLayout.LayoutParams(dpToPx(125), dpToPx(10)));
-                break;
-            case 5:
-                learnProgressView.setBackgroundResource(R.drawable.shape_progress_5);
-                learnProgressView.setLayoutParams(new LinearLayout.LayoutParams(dpToPx(150), dpToPx(10)));
-                break;
-            case 6:
-                learnProgressView.setBackgroundResource(R.drawable.shape_progress_6);
-                learnProgressView.setLayoutParams(new LinearLayout.LayoutParams(dpToPx(175), dpToPx(10)));
-                break;
-            case 7:
-            case 8:
-                learnProgressView.setBackgroundResource(R.drawable.shape_progress_7);
-                learnProgressView.setLayoutParams(new LinearLayout.LayoutParams(dpToPx(200), dpToPx(10)));
-                break;
+  /**
+   * Выводит сообщение об ошибке и закрывает fragment.
+   */
+  private fun errorProcessing() {
+    Log.e(LOG_TAG, "Error happened!")
+    // TODO Сделать потом, наверное, через нажатие кнопки назад программно.
+    val navDirections: NavDirections = WordFragmentDirections
+      .actionWordDestToSubgroupDest(Subgroup(0L, "a", 0L, 0, "a"))
+    onChildFragmentInteractionListener!!.onChildFragmentInteraction(navDirections)
+  }
+
+  /**
+   * Присваивает обработчик нажатия на кнопку сохранения слова.
+   */
+  private fun initSaveButtonClick() {
+    // Присваиваем обработчик нажатия на кнопку сохранения слова.
+    saveButton!!.setOnClickListener {
+      // Получаем строки из EditText'ов.
+      val word = wordTextInputEditText!!.text.toString()
+      val value = valueTextInputEditText!!.text.toString()
+      val transcription = transcriptionTextInputEditText!!.text.toString()
+
+      // Проверяем, что поля слова и перевода не пустые
+      if (!word.isEmpty() && !value.isEmpty()) {
+        /*if (wordId != 0) {
+                          wordViewModel.update(wordId, word, transcription, value);
+                      } else {*/
+
+        // Считываем данные из EditText'ов и отправляем их обратно в SubgroupActivity.
+        /*Intent wordData = new Intent();
+                      wordData.putExtra(EXTRA_WORD_ID, wordId);
+                      wordData.putExtra(EXTRA_WORD, word);
+                      wordData.putExtra(EXTRA_TRANSCRIPTION, transcription);
+                      wordData.putExtra(EXTRA_VALUE, value);*/
+
+        //wordData.putExtra(EXTRA_WORD_OBJECT, )
+        //setResult(RESULT_OK, wordData);
+
+        // TODO сделать обработку добавления нового слова.
+        wordViewModel!!.setWordParameters(word, transcription, value)
+        wordViewModel!!.updateWordInDB()
+        //
+        /*}*/
+
+        // Закрываем fragment.
+        val navDirections: NavDirections = WordFragmentDirections
+          .actionWordDestToSubgroupDest(Subgroup(0L, "a", 0L, 0, "a"))
+        onChildFragmentInteractionListener!!.onChildFragmentInteraction(navDirections)
+      } else {
+        Toast.makeText(
+          context,
+          R.string.error_word_saving, Toast.LENGTH_LONG
+        ).show()
+      }
+    }
+  }
+  // TODO Что делать с сохранением прогресса, если пользователь не нажал сохранить
+  // Наверное, просто апдейтить его в самом диалоге сбрасывания прогресса.
+  /**
+   * Инициализирует availableSubgroupsObserver.
+   */
+  private fun initAvailableSubgroupsObserver() {
+    availableSubgroupsObserver = Observer { subgroups ->
+      Log.d(LOG_TAG, "availableSubgroups onChanged()")
+      if (subgroups != null) {
+        Log.d(LOG_TAG, "availableSubgroups onChanged() value != null")
+        val linkOrDeleteWordDialogFragment = LinkOrDeleteWordDialogFragment()
+        val arguments = Bundle()
+        val wordId = wordViewModel!!.wordId
+        if (wordId != 0L) {
+          arguments.putLong(
+            LinkOrDeleteWordDialogFragment.EXTRA_WORD_ID,
+            wordId
+          )
+          arguments.putInt(
+            LinkOrDeleteWordDialogFragment.EXTRA_FLAG,
+            linkOrDeleteFlag
+          )
+          val subgroupsIds = LongArray(subgroups.size)
+          val subgroupsNames = arrayOfNulls<String>(subgroups.size)
+          for (i in subgroups.indices) {
+            val subgroup = subgroups[i]
+            subgroupsNames[i] = subgroup.name
+            subgroupsIds[i] = subgroup.id
+          }
+          arguments.putStringArray(
+            LinkOrDeleteWordDialogFragment.EXTRA_AVAILABLE_SUBGROUPS_NAMES,
+            subgroupsNames
+          )
+          arguments.putLongArray(
+            LinkOrDeleteWordDialogFragment.EXTRA_AVAILABLE_SUBGROUPS_IDS,
+            subgroupsIds
+          )
+          linkOrDeleteWordDialogFragment.arguments = arguments
+          linkOrDeleteWordDialogFragment.show(requireActivity().supportFragmentManager, "some tag")
+          wordViewModel!!.clearAvailableSubgroupsToAndRemoveObserver(availableSubgroupsObserver)
         }
-        if (progressLinearLayout.getChildAt(progressViewIndex) != null) {
-            progressLinearLayout.removeViewAt(progressViewIndex);
-        }
-        progressLinearLayout.addView(learnProgressView, progressViewIndex);
+      } else {
+        Log.d(LOG_TAG, "availableSubgroups onChanged() value = null")
+      }
+    }
+  }
+
+  /**
+   * Устанавливаем параметры слова (слово, транскрипция, перевод, часть речи, прогресс в разные View.
+   */
+  private fun setWordToViews(word: Word) {
+    // Устанавливаем параметры слова в EditText'ы.
+    wordTextInputEditText!!.setText(word.word)
+    valueTextInputEditText!!.setText(word.value)
+    transcriptionTextInputEditText!!.setText(word.transcription)
+
+    // Устанавливаем часть речи, если она указана.
+    if (word.partOfSpeech != null) {
+      partOfSpeechTextView!!.text = word.partOfSpeech
+    } else {
+      partOfSpeechTextView!!.visibility = View.GONE
     }
 
-    /**
-     * Скрывает некоторые View при создании нового слова.
-     */
-    private void prepareInterfaceForNewWordCreating() {
-        progressTextView.setVisibility(View.GONE);
-        ttsButton.setVisibility(View.GONE);
-        partOfSpeechTextView.setVisibility(View.GONE);
-        toolbar.setVisibility(View.GONE);
-        progressLinearLayout.setVisibility(View.GONE);
-        examplesTextView.setVisibility(View.GONE);
-        examplesRecyclerView.setVisibility(View.GONE);
-        addExampleButton.setVisibility(View.GONE);
-
-        wordTextInputLayout.setEnabled(true);
-        transcriptionTextInputLayout.setEnabled(true);
-        valueTextInputLayout.setEnabled(true);
-
-        saveButton.setVisibility(View.VISIBLE);
+    // Устанавливаем прогресс.
+    val learnProgressView = View(context)
+    val progressViewIndex = 0
+    when (word.learnProgress) {
+      -1 -> {
+        learnProgressView.setBackgroundResource(R.drawable.shape_progress)
+        learnProgressView.layoutParams = LinearLayout.LayoutParams(dpToPx(0), dpToPx(10))
+      }
+      0 -> {
+        learnProgressView.setBackgroundResource(R.drawable.shape_progress_0)
+        learnProgressView.layoutParams = LinearLayout.LayoutParams(dpToPx(25), dpToPx(10))
+      }
+      1 -> {
+        learnProgressView.setBackgroundResource(R.drawable.shape_progress_1)
+        learnProgressView.layoutParams = LinearLayout.LayoutParams(dpToPx(50), dpToPx(10))
+      }
+      2 -> {
+        learnProgressView.setBackgroundResource(R.drawable.shape_progress_2)
+        learnProgressView.layoutParams = LinearLayout.LayoutParams(dpToPx(75), dpToPx(10))
+      }
+      3 -> {
+        learnProgressView.setBackgroundResource(R.drawable.shape_progress_3)
+        learnProgressView.layoutParams = LinearLayout.LayoutParams(dpToPx(100), dpToPx(10))
+      }
+      4 -> {
+        learnProgressView.setBackgroundResource(R.drawable.shape_progress_4)
+        learnProgressView.layoutParams = LinearLayout.LayoutParams(dpToPx(125), dpToPx(10))
+      }
+      5 -> {
+        learnProgressView.setBackgroundResource(R.drawable.shape_progress_5)
+        learnProgressView.layoutParams = LinearLayout.LayoutParams(dpToPx(150), dpToPx(10))
+      }
+      6 -> {
+        learnProgressView.setBackgroundResource(R.drawable.shape_progress_6)
+        learnProgressView.layoutParams = LinearLayout.LayoutParams(dpToPx(175), dpToPx(10))
+      }
+      7, 8 -> {
+        learnProgressView.setBackgroundResource(R.drawable.shape_progress_7)
+        learnProgressView.layoutParams = LinearLayout.LayoutParams(dpToPx(200), dpToPx(10))
+      }
     }
-
-
-    /**
-     * Создаёт меню для тулбара.
-     */
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.fragment_word_toolbar_menu, menu);
+    if (progressLinearLayout!!.getChildAt(progressViewIndex) != null) {
+      progressLinearLayout!!.removeViewAt(progressViewIndex)
     }
+    progressLinearLayout!!.addView(learnProgressView, progressViewIndex)
+  }
 
-    /**
-     * Обрабатывает нажатия на пункты тулбара.
-     */
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        final FragmentManager manager = getActivity().getSupportFragmentManager();
+  /**
+   * Скрывает некоторые View при создании нового слова.
+   */
+  private fun prepareInterfaceForNewWordCreating() {
+    progressTextView!!.visibility = View.GONE
+    ttsButton!!.visibility = View.GONE
+    partOfSpeechTextView!!.visibility = View.GONE
+    toolbar!!.visibility = View.GONE
+    progressLinearLayout!!.visibility = View.GONE
+    examplesTextView!!.visibility = View.GONE
+    examplesRecyclerView!!.visibility = View.GONE
+    addExampleButton!!.visibility = View.GONE
+    wordTextInputLayout!!.isEnabled = true
+    transcriptionTextInputLayout!!.isEnabled = true
+    valueTextInputLayout!!.isEnabled = true
+    saveButton!!.visibility = View.VISIBLE
+  }
 
-        // Bundle для передачи id слова в диалоговый фрагмент, который вызовется.
-        final Bundle arguments = new Bundle();
-        switch (item.getItemId()) {
+  /**
+   * Создаёт меню для тулбара.
+   */
+  override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+    super.onCreateOptionsMenu(menu, inflater)
+    inflater.inflate(R.menu.fragment_word_toolbar_menu, menu)
+  }
 
-            // Связывание слова с другой подгруппой.
-            case R.id.fragment_word___action___link_word:
-                Log.d(LOG_TAG, "Link word");
-                linkOrDeleteFlag = LinkOrDeleteWordDialogFragment.TO_LINK;
-                // Подписываемся на изменение доступных для связывания подгрупп.
-                wordViewModel.getAvailableSubgroupsTo(linkOrDeleteFlag).observe(this,
-                        availableSubgroupsObserver);
-                return true;
+  /**
+   * Обрабатывает нажатия на пункты тулбара.
+   */
+  override fun onOptionsItemSelected(item: MenuItem): Boolean {
+    val manager = requireActivity().supportFragmentManager
 
-            // Сбрасывание прогресса слова
-            case R.id.fragment_word___action___reset_word_progress:
-                Log.d(LOG_TAG, "Reset word progress");
-                ResetProgressDialogFragment resetProgressDialogFragment =
-                        new ResetProgressDialogFragment();
-                arguments.putInt(ResetProgressDialogFragment.EXTRA_FLAG, ResetProgressDialogFragment.FOR_ONE_WORD);
-                resetProgressDialogFragment.setArguments(arguments);
-                resetProgressDialogFragment.show(manager, DIALOG_RESET_WORD_PROGRESS);
-                return true;
-
-            // Удаление слова из подгруппы / из всех подгрупп.
-            case R.id.fragment_word___action___delete_word:
-                Log.d(LOG_TAG, "Delete word");
-                linkOrDeleteFlag = TO_DELETE;
-                // Подписываемся на изменение доступных для связывания подгрупп.
-                wordViewModel.getAvailableSubgroupsTo(linkOrDeleteFlag).observe(this,
-                        availableSubgroupsObserver);
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-
+    // Bundle для передачи id слова в диалоговый фрагмент, который вызовется.
+    val arguments = Bundle()
+    return when (item.itemId) {
+      R.id.fragment_word___action___link_word -> {
+        Log.d(LOG_TAG, "Link word")
+        linkOrDeleteFlag = LinkOrDeleteWordDialogFragment.TO_LINK
+        // Подписываемся на изменение доступных для связывания подгрупп.
+        wordViewModel!!.getAvailableSubgroupsTo(linkOrDeleteFlag).observe(
+          this,
+          availableSubgroupsObserver!!
+        )
+        true
+      }
+      R.id.fragment_word___action___reset_word_progress -> {
+        Log.d(LOG_TAG, "Reset word progress")
+        val resetProgressDialogFragment = ResetProgressDialogFragment()
+        arguments.putInt(
+          ResetProgressDialogFragment.EXTRA_FLAG,
+          ResetProgressDialogFragment.FOR_ONE_WORD
+        )
+        resetProgressDialogFragment.arguments = arguments
+        resetProgressDialogFragment.show(manager, DIALOG_RESET_WORD_PROGRESS)
+        true
+      }
+      R.id.fragment_word___action___delete_word -> {
+        Log.d(LOG_TAG, "Delete word")
+        linkOrDeleteFlag = LinkOrDeleteWordDialogFragment.TO_DELETE
+        // Подписываемся на изменение доступных для связывания подгрупп.
+        wordViewModel!!.getAvailableSubgroupsTo(linkOrDeleteFlag).observe(
+          this,
+          availableSubgroupsObserver!!
+        )
+        true
+      }
+      else                                              -> super.onOptionsItemSelected(item)
     }
+  }
 
-
-    /**
-     * Принимает сообщение от ResetWordProgressDialogFragment.
-     *
-     * @param message представляет из себя сообщение.
-     */
-    @Override
-    public void resetMessage(String message) {
-        if (message.equals(ResetProgressDialogFragment.RESET_MESSAGE)) {
-            wordViewModel.resetProgress();
-        }
+  /**
+   * Принимает сообщение от ResetWordProgressDialogFragment.
+   *
+   * @param message представляет из себя сообщение.
+   */
+  override fun resetMessage(message: String?) {
+    if (message == ResetProgressDialogFragment.RESET_MESSAGE) {
+      wordViewModel!!.resetProgress()
     }
+  }
 
+  // ПОСМОТРЕТЬ, КАК МОЖНО ОТ ЭТОГО ИЗБАВИТЬСЯ
+  fun dpToPx(dp: Int): Int {
+    val density = this.resources.displayMetrics.density
+    return Math.round(dp.toFloat() * density)
+  }
 
-    // ПОСМОТРЕТЬ, КАК МОЖНО ОТ ЭТОГО ИЗБАВИТЬСЯ
-    public int dpToPx(int dp) {
-        float density = this.getResources().getDisplayMetrics().density;
-        return Math.round((float) dp * density);
-    }
+  override fun onLoaded(examples: List<Example>) {
+    examplesRecyclerViewAdapter!!.setExamples(examples)
+  }
 
+  companion object {
+    // Тег для логирования.
+    private const val LOG_TAG = "WordFragment"
 
-    @Override
-    public void onLoaded(List<Example> examples) {
-        examplesRecyclerViewAdapter.setExamples(examples);
-    }
+    // Extras для получения данных из интента.
+    const val EXTRA_WORD_ID = "WordId"
+    const val EXTRA_WORD = "word"
+    const val EXTRA_TRANSCRIPTION = "Transcription"
+    const val EXTRA_VALUE = "Value"
+
+    // Возможные цели старта Fragment.
+    const val START_TO_CREATE_WORD = 0
+    const val START_TO_EDIT_WORD = 1
+
+    // Теги для диалоговых фрагментов.
+    private const val DIALOG_RESET_WORD_PROGRESS = "ResetWordProgressDialogFragment"
+    private const val DIALOG_LINK_WORD = "LinkWordDialogFragment"
+    private const val DIALOG_DELETE_WORD = "DeleteWordDialogFragment"
+  }
 }

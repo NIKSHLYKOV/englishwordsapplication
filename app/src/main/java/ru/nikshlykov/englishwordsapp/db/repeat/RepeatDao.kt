@@ -1,33 +1,30 @@
-package ru.nikshlykov.englishwordsapp.db.repeat;
+package ru.nikshlykov.englishwordsapp.db.repeat
 
-import androidx.room.Dao;
-import androidx.room.Delete;
-import androidx.room.Insert;
-import androidx.room.Query;
-
-import java.util.List;
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.Query
 
 @Dao
-public interface RepeatDao {
+interface RepeatDao {
+  @Delete
+  fun delete(repeat: Repeat): Int
 
-    @Delete
-    int delete(Repeat repeat);
+  @Delete
+  fun delete(repeat: Array<Repeat>): Int
 
-    @Delete
-    int delete(Repeat[] repeat);
+  @Insert
+  fun insert(repeat: Repeat): Long
 
-    @Insert
-    long insert(Repeat repeat);
+  @Query("SELECT * FROM Repeats WHERE WordId = :wordId")
+  fun getRepeatsByWord(wordId: Long): Array<Repeat>
 
-    @Query("SELECT * FROM Repeats WHERE WordId = :wordId")
-    Repeat[] getRepeatsByWord(long wordId);
+  @Query("SELECT * FROM Repeats WHERE WordId = :wordId ORDER BY Date DESC LIMIT 1")
+  fun getLastRepeatByWord(wordId: Long): Repeat
 
-    @Query("SELECT * FROM Repeats WHERE WordId = :wordId ORDER BY Date DESC LIMIT 1")
-    Repeat getLastRepeatByWord(long wordId);
+  @Query("SELECT * FROM Repeats ORDER BY _id DESC LIMIT 1")
+  fun repeatWithMaxId(): Repeat
 
-    @Query("SELECT * FROM Repeats ORDER BY _id DESC LIMIT 1")
-    Repeat getRepeatWithMaxId();
-
-    @Query("SELECT * FROM Repeats")
-    List<Repeat> getAllRepeats();
+  @Query("SELECT * FROM Repeats")
+  fun allRepeats(): List<Repeat>
 }

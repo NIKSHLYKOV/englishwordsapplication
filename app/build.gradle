@@ -1,12 +1,14 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 apply plugin: "androidx.navigation.safeargs"
+apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
     defaultConfig {
         applicationId "ru.nikshlykov.englishwordsapp"
-        minSdkVersion 21
-        targetSdkVersion 29
+        minSdkVersion 26
+        targetSdkVersion 30
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -16,6 +18,13 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
     }
     sourceSets {
         main {
@@ -46,8 +55,8 @@ dependencies {
     implementation "androidx.recyclerview:recyclerview:1.1.0"
 
     // Room
-    implementation "androidx.room:room-runtime:2.2.5"
-    annotationProcessor "androidx.room:room-compiler:2.2.5"
+    implementation "androidx.room:room-runtime:2.3.0"
+    kapt "androidx.room:room-compiler:2.3.0"
 
     def lifecycle_version = "2.2.0"
 
@@ -64,14 +73,13 @@ dependencies {
 
 
     // DI (Dagger 2)
-    def dagger_version = "2.28.3"
+    def dagger_version = "2.37"
     implementation "com.google.dagger:dagger:$dagger_version"
-    annotationProcessor "com.google.dagger:dagger-compiler:$dagger_version"
+    kapt "com.google.dagger:dagger-compiler:$dagger_version"
 
-    api "com.google.dagger:dagger-android:$dagger_version"
-    api "com.google.dagger:dagger-android-support:$dagger_version" // if you use the support libraries
-    annotationProcessor "com.google.dagger:dagger-android-processor:$dagger_version"
-
+    implementation "com.google.dagger:dagger-android:$dagger_version"
+    implementation "com.google.dagger:dagger-android-support:$dagger_version"
+    kapt "com.google.dagger:dagger-android-processor:$dagger_version"
 
     def work_version = "2.3.4"
     implementation "androidx.work:work-runtime:$work_version"
@@ -81,4 +89,10 @@ dependencies {
     def nav_version = "2.3.0"
     implementation "androidx.navigation:navigation-fragment:$nav_version"
     implementation "androidx.navigation:navigation-ui:$nav_version"
+    implementation "androidx.core:core-ktx:+"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+}
+repositories {
+    mavenCentral()
 }

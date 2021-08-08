@@ -1,200 +1,180 @@
-package ru.nikshlykov.englishwordsapp.ui.flowfragments;
+package ru.nikshlykov.englishwordsapp.ui.flowfragments
 
-import android.content.Context;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Toast;
+import android.os.Bundle
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
+import dagger.android.support.DaggerFragment
+import ru.nikshlykov.englishwordsapp.R
+import ru.nikshlykov.englishwordsapp.db.ModesRepository.OnSelectedModesLoadedListener
+import ru.nikshlykov.englishwordsapp.db.WordsRepository.OnAvailableToRepeatWordLoadedListener
+import ru.nikshlykov.englishwordsapp.db.WordsRepository.OnWordUpdatedListener
+import ru.nikshlykov.englishwordsapp.db.mode.Mode
+import ru.nikshlykov.englishwordsapp.db.word.Word
+import ru.nikshlykov.englishwordsapp.ui.RepeatResultListener
+import ru.nikshlykov.englishwordsapp.ui.fragments.FirstShowModeFragment.FirstShowModeReportListener
+import ru.nikshlykov.englishwordsapp.ui.fragments.InfoFragment
+import ru.nikshlykov.englishwordsapp.ui.viewmodels.StudyViewModel
+import ru.nikshlykov.englishwordsapp.utils.Navigation
+import java.util.*
+import javax.inject.Inject
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController;
-import androidx.navigation.fragment.NavHostFragment;
+class StudyFlowFragment : DaggerFragment(), OnSelectedModesLoadedListener,
+  OnAvailableToRepeatWordLoadedListener, OnWordUpdatedListener, RepeatResultListener,
+  FirstShowModeReportListener {
+  // ViewModel для работы с БД.
+  @JvmField
+  @Inject
+  var viewModelFactory: ViewModelProvider.Factory? = null
+  private var studyViewModel: StudyViewModel? = null
+  private var navController: NavController? = null
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    // Создаём ViewModel для работы с БД.
+    studyViewModel = viewModelFactory!!.create(StudyViewModel::class.java)
 
-import java.util.ArrayList;
-import java.util.List;
+    // Получаем выбранные пользователем режимы.
+    studyViewModel!!.getSelectedModes(this)
+  }
 
-import javax.inject.Inject;
+  override fun onCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ): View? {
+    return inflater.inflate(R.layout.flow_fragment_study, container, false)
+  }
 
-import dagger.android.support.DaggerFragment;
-import ru.nikshlykov.englishwordsapp.App;
-import ru.nikshlykov.englishwordsapp.R;
-import ru.nikshlykov.englishwordsapp.db.ModesRepository;
-import ru.nikshlykov.englishwordsapp.db.WordsRepository;
-import ru.nikshlykov.englishwordsapp.db.mode.Mode;
-import ru.nikshlykov.englishwordsapp.db.word.Word;
-import ru.nikshlykov.englishwordsapp.ui.RepeatResultListener;
-import ru.nikshlykov.englishwordsapp.ui.ViewModelFactory;
-import ru.nikshlykov.englishwordsapp.ui.fragments.FirstShowModeFragment;
-import ru.nikshlykov.englishwordsapp.ui.fragments.InfoFragment;
-import ru.nikshlykov.englishwordsapp.ui.viewmodels.StudyViewModel;
-import ru.nikshlykov.englishwordsapp.utils.Navigation;
+  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    super.onViewCreated(view, savedInstanceState)
+    val navHostFragment =
+      childFragmentManager.findFragmentById(R.id.flow_fragment_study___nav_host) as NavHostFragment?
+    navController = navHostFragment!!.navController
+  }
 
-public class StudyFlowFragment extends DaggerFragment implements ModesRepository.OnSelectedModesLoadedListener,
-        WordsRepository.OnAvailableToRepeatWordLoadedListener,
-        WordsRepository.OnWordUpdatedListener, RepeatResultListener,
-        FirstShowModeFragment.FirstShowModeReportListener {
+  // Процесс обучения
+  override fun onSelectedModesLoaded(selectedModes: List<Mode>?) {
+    Log.i(LOG_TAG, "onSelectedModesLoaded")
+    if (selectedModes != null) {
+      if (selectedModes.isNotEmpty()) {
+        // Создаём список выбранных режимов.
+        val selectedModesIds = ArrayList<Long>(selectedModes.size)
+        for (mode in selectedModes) {
+          selectedModesIds.add(mode.id)
+        }
 
+        // Сетим режимы в StudyViewModel для хранения.
+        studyViewModel!!.setSelectedModesIds(selectedModesIds)
+
+        // Запрашиваем следующее для повтора слово.
+        nextAvailableToRepeatWord
+      } else {
+        displayInfoFragment(InfoFragment.FLAG_MODES_ARE_NOT_CHOSEN)
+      }
+    } else {
+      displayInfoFragment(InfoFragment.FLAG_MODES_ARE_NOT_CHOSEN)
+    }
+  }
+
+  /**
+   * Запускает информационный фрагмент, если не выбраны группы слов или режимы.
+   */
+  private fun displayInfoFragment(flag: Int) {
+    if (flag == InfoFragment.FLAG_AVAILABLE_WORDS_ARE_NOT_EXISTING ||
+      flag == InfoFragment.FLAG_MODES_ARE_NOT_CHOSEN
+    ) {
+      val arguments = Bundle()
+      arguments.putInt(InfoFragment.KEY_INFO_FLAG, flag)
+      navController!!.navigate(R.id.action_global_info_dest, arguments)
+    }
+  }
+
+  /**
+   * Запрашивает следующее слово для повтора.
+   */
+  private val nextAvailableToRepeatWord: Unit
+    get() {
+      studyViewModel!!.getNextAvailableToRepeatWord(this)
+    }
+
+  /**
+   * Показывает пришедшее для повтора слово либо в режиме первого просмотра,
+   * либо в выбранном пользователем режиме.
+   *
+   * @param word слово для повтора/первого показа.
+   */
+  override fun onAvailableToRepeatWordLoaded(word: Word) {
+    Log.i(
+      LOG_TAG, "word = " + word.word + "; learnProgress = " + word.learnProgress +
+        "; lastRepetitionDate = " + word.lastRepetitionDate
+    )
+
+    // Создаём Bundle для отправки id слова фрагменту.
+    val arguments = Bundle()
+    arguments.putParcelable(EXTRA_WORD_OBJECT, word)
+
+    // В зависимости от прогресса по слову показываем для него FirstShowModeFragment или
+    // другой ModeFragment.
+    if (word.learnProgress == -1) {
+      // Показываем фрагмент режима.
+      navController!!.navigate(R.id.action_global_first_show_mode_dest, arguments)
+    } else {
+      // Получаем id рандомного режимы из выбранных, если слово показывается не первый раз.
+      val randomModeId = studyViewModel!!.randomSelectedModeId()
+      Log.i(LOG_TAG, "randomModeId = $randomModeId")
+      val destinationId = Navigation.getModeDestinationId(randomModeId)
+      navController!!.navigate(destinationId, arguments)
+    }
+  }
+
+  /**
+   * Запрашивает следующее слово для повтора, если предыдущее обновилось.
+   *
+   * @param isUpdated показывает, обновилось ли слово.
+   */
+  override fun onWordUpdated(isUpdated: Int) {
+    if (isUpdated == 1) {
+      // Делаем проверку на то, что пользователь ещё находится во вкладке изучение,
+      // т.к. ответ может прийти позже, чем пользователь сменит вкладку.
+
+      //TODO Если и тут делать проверку, то уже на navController из MainActivity.
+      /* if (navController.findFragmentByTag(TAG_STUDY_OR_INFO_FRAGMENT) != null)*/
+      nextAvailableToRepeatWord
+    } else {
+      Toast.makeText(context, R.string.sorry_error_happened, Toast.LENGTH_SHORT).show()
+    }
+  }
+
+  /**
+   * Обрабатывает результат первого показа слова.
+   *
+   * @param wordId id слова, которое показывалось.
+   * @param result результат (0 - пропусить, 1 - изучать, 2 - знаю).
+   */
+  override fun firstShowModeResult(wordId: Long, result: Int) {
+    Log.i(LOG_TAG, "firstShowModeResult()")
+    Log.i(LOG_TAG, "result = $result")
+    studyViewModel!!.firstShowProcessing(wordId, result, this)
+  }
+
+  /**
+   * Обрабытывает результаты повторов (кроме первого показа).
+   *
+   * @param wordId id повторяемого слова.
+   * @param result результат повтора (0 - неверно, 1 - верно).
+   */
+  override fun repeatResult(wordId: Long, result: Int) {
+    studyViewModel!!.repeatProcessing(wordId, result, this)
+  }
+
+  companion object {
     // Тег для логирования.
-    private static final String LOG_TAG = StudyFlowFragment.class.getCanonicalName();
-
-    public static final String EXTRA_WORD_OBJECT = "WordObject";
-
-    // ViewModel для работы с БД.
-    @Inject
-    public ViewModelProvider.Factory viewModelFactory;
-    private StudyViewModel studyViewModel;
-
-    private NavController navController;
-
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // Создаём ViewModel для работы с БД.
-        studyViewModel = viewModelFactory.create(StudyViewModel.class);
-
-        // Получаем выбранные пользователем режимы.
-        studyViewModel.getSelectedModes(this);
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.flow_fragment_study, container, false);
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        NavHostFragment navHostFragment =
-                (NavHostFragment) getChildFragmentManager().findFragmentById(R.id.flow_fragment_study___nav_host);
-        navController = navHostFragment.getNavController();
-    }
-
-
-    // Процесс обучения
-
-    @Override
-    public void onSelectedModesLoaded(List<Mode> selectedModes) {
-        Log.i(LOG_TAG, "onSelectedModesLoaded");
-        if (selectedModes != null) {
-            if (selectedModes.size() != 0) {
-                // Создаём список выбранных режимов.
-                ArrayList<Long> selectedModesIds = new ArrayList<>(selectedModes.size());
-                for (Mode mode : selectedModes) {
-                    selectedModesIds.add(mode.id);
-                }
-
-                // Сетим режимы в StudyViewModel для хранения.
-                studyViewModel.setSelectedModesIds(selectedModesIds);
-
-                // Запрашиваем следующее для повтора слово.
-                getNextAvailableToRepeatWord();
-            } else {
-                displayInfoFragment(InfoFragment.FLAG_MODES_ARE_NOT_CHOSEN);
-            }
-        } else {
-            displayInfoFragment(InfoFragment.FLAG_MODES_ARE_NOT_CHOSEN);
-        }
-    }
-
-    /**
-     * Запускает информационный фрагмент, если не выбраны группы слов или режимы.
-     */
-    private void displayInfoFragment(int flag) {
-        if (flag == InfoFragment.FLAG_AVAILABLE_WORDS_ARE_NOT_EXISTING ||
-                flag == InfoFragment.FLAG_MODES_ARE_NOT_CHOSEN) {
-            Bundle arguments = new Bundle();
-            arguments.putInt(InfoFragment.KEY_INFO_FLAG, flag);
-            navController.navigate(R.id.action_global_info_dest, arguments);
-        }
-    }
-
-    /**
-     * Запрашивает следующее слово для повтора.
-     */
-    private void getNextAvailableToRepeatWord() {
-        studyViewModel.getNextAvailableToRepeatWord(this);
-    }
-
-    /**
-     * Показывает пришедшее для повтора слово либо в режиме первого просмотра,
-     * либо в выбранном пользователем режиме.
-     *
-     * @param word слово для повтора/первого показа.
-     */
-    @Override
-    public void onAvailableToRepeatWordLoaded(Word word) {
-        if (word != null) {
-            Log.i(LOG_TAG, "word = " + word.word + "; learnProgress = " + word.learnProgress +
-                    "; lastRepetitionDate = " + word.lastRepetitionDate);
-
-            // Создаём Bundle для отправки id слова фрагменту.
-            Bundle arguments = new Bundle();
-            arguments.putParcelable(EXTRA_WORD_OBJECT, word);
-
-            // В зависимости от прогресса по слову показываем для него FirstShowModeFragment или
-            // другой ModeFragment.
-            if (word.learnProgress == -1) {
-                // Показываем фрагмент режима.
-                navController.navigate(R.id.action_global_first_show_mode_dest, arguments);
-            } else {
-                // Получаем id рандомного режимы из выбранных, если слово показывается не первый раз.
-                long randomModeId = studyViewModel.randomSelectedModeId();
-                Log.i(LOG_TAG, "randomModeId = " + randomModeId);
-                int destinationId = Navigation.getModeDestinationId(randomModeId);
-                navController.navigate(destinationId, arguments);
-            }
-        } else {
-            displayInfoFragment(InfoFragment.FLAG_AVAILABLE_WORDS_ARE_NOT_EXISTING);
-        }
-    }
-
-    /**
-     * Запрашивает следующее слово для повтора, если предыдущее обновилось.
-     *
-     * @param isUpdated показывает, обновилось ли слово.
-     */
-    @Override
-    public void onWordUpdated(int isUpdated) {
-        if (isUpdated == 1) {
-            // Делаем проверку на то, что пользователь ещё находится во вкладке изучение,
-            // т.к. ответ может прийти позже, чем пользователь сменит вкладку.
-
-            //TODO Если и тут делать проверку, то уже на navController из MainActivity.
-            /* if (navController.findFragmentByTag(TAG_STUDY_OR_INFO_FRAGMENT) != null)*/
-            getNextAvailableToRepeatWord();
-        } else {
-            Toast.makeText(getContext(), R.string.sorry_error_happened, Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    /**
-     * Обрабатывает результат первого показа слова.
-     *
-     * @param wordId id слова, которое показывалось.
-     * @param result результат (0 - пропусить, 1 - изучать, 2 - знаю).
-     */
-    @Override
-    public void firstShowModeResult(long wordId, int result) {
-        Log.i(LOG_TAG, "firstShowModeResult()");
-        Log.i(LOG_TAG, "result = " + result);
-        studyViewModel.firstShowProcessing(wordId, result, this);
-    }
-
-    /**
-     * Обрабытывает результаты повторов (кроме первого показа).
-     *
-     * @param wordId id повторяемого слова.
-     * @param result результат повтора (0 - неверно, 1 - верно).
-     */
-    @Override
-    public void repeatResult(long wordId, int result) {
-        studyViewModel.repeatProcessing(wordId, result, this);
-    }
+    private val LOG_TAG = StudyFlowFragment::class.java.canonicalName
+    const val EXTRA_WORD_OBJECT = "WordObject"
+  }
 }

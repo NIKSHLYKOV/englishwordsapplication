@@ -1,66 +1,39 @@
-package ru.nikshlykov.englishwordsapp.ui.viewmodels;
+package ru.nikshlykov.englishwordsapp.ui.viewmodels
 
-import android.app.Application;
-import android.util.Log;
+import android.app.Application
+import android.util.Log
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
+import ru.nikshlykov.englishwordsapp.db.GroupsRepository
+import ru.nikshlykov.englishwordsapp.db.GroupsRepository.OnSubgroupsLoadedListener
+import ru.nikshlykov.englishwordsapp.db.WordsRepository
+import ru.nikshlykov.englishwordsapp.db.WordsRepository.OnExamplesLoadedListener
+import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup
+import ru.nikshlykov.englishwordsapp.db.word.Word
+import java.util.*
 
-import androidx.annotation.NonNull;
-import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
+class WordViewModel(
+  application: Application, private val wordsRepository: WordsRepository,
+  private val groupsRepository: GroupsRepository
+) : AndroidViewModel(application), OnSubgroupsLoadedListener {
+  val wordMutableLiveData: MutableLiveData<Word> = MutableLiveData()
 
-import java.util.ArrayList;
+  // Список подгрупп для добавления или удаления связи с ними.
+  private val availableSubgroupsTo: MutableLiveData<ArrayList<Subgroup>?> = MutableLiveData()
 
+  // Слово
+  fun setWord(word: Word) {
+    wordMutableLiveData.value = word
+  }
 
-import ru.nikshlykov.englishwordsapp.db.GroupsRepository;
-import ru.nikshlykov.englishwordsapp.db.WordsRepository;
-import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup;
-import ru.nikshlykov.englishwordsapp.db.word.Word;
-
-public class WordViewModel extends AndroidViewModel
-        implements GroupsRepository.OnSubgroupsLoadedListener {
-
-    private static final String LOG_TAG = "WordViewModel";
-
-    private WordsRepository wordsRepository;
-
-    private GroupsRepository groupsRepository;
-
-    private MutableLiveData<Word> wordMutableLiveData;
-
-    // Список подгрупп для добавления или удаления связи с ними.
-    private MutableLiveData<ArrayList<Subgroup>> availableSubgroupsTo;
-
-    public WordViewModel(@NonNull Application application, WordsRepository wordsRepository,
-                         GroupsRepository groupsRepository) {
-        super(application);
-        this.wordsRepository = wordsRepository;
-        this.groupsRepository = groupsRepository;
-
-        availableSubgroupsTo = new MutableLiveData<>();
-        wordMutableLiveData = new MutableLiveData<>();
+  val wordId: Long
+    get() {
+      val word = wordMutableLiveData.value
+      return word?.id ?: 0L
     }
 
-
-
-    // Слово
-
-    public void setWord(Word word) {
-        wordMutableLiveData.setValue(word);
-    }
-
-    public MutableLiveData<Word> getWordMutableLiveData() {
-        return wordMutableLiveData;
-    }
-
-    public long getWordId(){
-        Word word = wordMutableLiveData.getValue();
-        if (word != null){
-            return word.id;
-        }
-        return 0L;
-    }
-
-    /*public void update(final long wordId, final String word, final String transcription,
+  /*public void update(final long wordId, final String word, final String transcription,
                        final String value) {
         ((MyApplication) getApplication()).executeWithDatabase(new Runnable() {
             @Override
@@ -73,81 +46,71 @@ public class WordViewModel extends AndroidViewModel
             }
         });
     }*/
-
-    public void setWordParameters(String word, String transcription, String value) {
-        Word currentWord = wordMutableLiveData.getValue();
-        if (currentWord != null){
-            currentWord.word = word;
-            currentWord.value = value;
-            currentWord.transcription = transcription;
-            wordMutableLiveData.setValue(currentWord);
-        }
+  fun setWordParameters(word: String?, transcription: String?, value: String?) {
+    val currentWord = wordMutableLiveData.value
+    if (currentWord != null) {
+      currentWord.word = word!!
+      currentWord.value = value!!
+      currentWord.transcription = transcription
+      wordMutableLiveData.value = currentWord
     }
+  }
 
-    public void updateWordInDB(){
-        wordsRepository.execute(new Runnable() {
-            @Override
-            public void run() {
-                Word word = wordMutableLiveData.getValue();
-                if (word != null){
-                    wordsRepository.update(word, null);
-                }
-            }
-        });
-    }
+  fun updateWordInDB() {
+    wordsRepository.execute(Runnable {
+      val word = wordMutableLiveData.value
+      if (word != null) {
+        wordsRepository.update(word, null)
+      }
+    })
+  }
 
-    /**
-     * Сбрасывает прогресс по слову.
-     */
-    public void resetProgress() {
-        Word word = wordMutableLiveData.getValue();
-        if (word != null) {
-            /* удалить все предыдущие повторы по слову,
+  /**
+   * Сбрасывает прогресс по слову.
+   */
+  fun resetProgress() {
+    val word = wordMutableLiveData.value
+    if (word != null) {
+      /* удалить все предыдущие повторы по слову,
             если будет необходимо.*/
-
-            word.learnProgress = -1;
-            wordsRepository.update(word, null);
-            wordMutableLiveData.setValue(word);
-        }
+      word.learnProgress = -1
+      wordsRepository.update(word, null)
+      wordMutableLiveData.value = word
     }
+  }
 
-
-
-    // Связывание с пользовательскими подгруппами
-
-    public MutableLiveData<ArrayList<Subgroup>> getAvailableSubgroupsTo(int flag) {
-        if (availableSubgroupsTo.getValue() == null) {
-            Log.d(LOG_TAG, "availableSubgroupsTo value = null");
-            Word word = wordMutableLiveData.getValue();
-            if (word != null) {
-                groupsRepository.getAvailableSubgroupTo(word.id, flag, this);
-            }
-        }
-        return availableSubgroupsTo;
+  // Связывание с пользовательскими подгруппами
+  fun getAvailableSubgroupsTo(flag: Int): MutableLiveData<ArrayList<Subgroup>?> {
+    if (availableSubgroupsTo.value == null) {
+      Log.d(LOG_TAG, "availableSubgroupsTo value = null")
+      val word = wordMutableLiveData.value
+      if (word != null) {
+        groupsRepository.getAvailableSubgroupTo(word.id, flag, this)
+      }
     }
+    return availableSubgroupsTo
+  }
 
-    public void clearAvailableSubgroupsToAndRemoveObserver(Observer<ArrayList<Subgroup>> observer) {
-        Log.d(LOG_TAG, "clearAvailableSubgroupsTo()");
-        availableSubgroupsTo.setValue(null);
-        availableSubgroupsTo.removeObserver(observer);
+  fun clearAvailableSubgroupsToAndRemoveObserver(observer: Observer<ArrayList<Subgroup>?>) {
+    Log.d(LOG_TAG, "clearAvailableSubgroupsTo()")
+    availableSubgroupsTo.value = null
+    availableSubgroupsTo.removeObserver(observer!!)
+  }
+
+  override fun onLoaded(subgroups: ArrayList<Subgroup>?) {
+    Log.d(LOG_TAG, "onLoaded()")
+    availableSubgroupsTo.value = subgroups
+  }
+
+  // Примеры
+  fun getExamples(listener: OnExamplesLoadedListener?) {
+    val word = wordMutableLiveData.value
+    if (word != null) {
+      wordsRepository.getExamplesByWordId(word.id, listener!!)
     }
+  }
 
-    @Override
-    public void onLoaded(ArrayList<Subgroup> subgroups) {
-        Log.d(LOG_TAG, "onLoaded()");
-        availableSubgroupsTo.setValue(subgroups);
-    }
-
-
-
-    // Примеры
-
-    public void getExamples(WordsRepository.OnExamplesLoadedListener listener) {
-        Word word = wordMutableLiveData.getValue();
-        if (word != null) {
-            wordsRepository.getExamplesByWordId(word.id, listener);
-        }
-    }
-
-
+  companion object {
+    private const val LOG_TAG = "WordViewModel"
+  }
 }

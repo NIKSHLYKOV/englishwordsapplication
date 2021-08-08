@@ -1,62 +1,37 @@
-package ru.nikshlykov.englishwordsapp.ui;
+package ru.nikshlykov.englishwordsapp.ui
 
-import android.app.Application;
+import android.app.Application
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import ru.nikshlykov.englishwordsapp.db.GroupsRepository
+import ru.nikshlykov.englishwordsapp.db.ModesRepository
+import ru.nikshlykov.englishwordsapp.db.WordsRepository
+import ru.nikshlykov.englishwordsapp.ui.viewmodels.*
+import javax.inject.Inject
 
-import androidx.annotation.NonNull;
-import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider;
-
-import javax.inject.Inject;
-
-import ru.nikshlykov.englishwordsapp.db.GroupsRepository;
-import ru.nikshlykov.englishwordsapp.db.ModesRepository;
-import ru.nikshlykov.englishwordsapp.db.WordsRepository;
-import ru.nikshlykov.englishwordsapp.ui.viewmodels.GroupsViewModel;
-import ru.nikshlykov.englishwordsapp.ui.viewmodels.ModesViewModel;
-import ru.nikshlykov.englishwordsapp.ui.viewmodels.StatisticsViewModel;
-import ru.nikshlykov.englishwordsapp.ui.viewmodels.StudyViewModel;
-import ru.nikshlykov.englishwordsapp.ui.viewmodels.SubgroupDataViewModel;
-import ru.nikshlykov.englishwordsapp.ui.viewmodels.SubgroupViewModel;
-import ru.nikshlykov.englishwordsapp.ui.viewmodels.WordDialogsViewModel;
-import ru.nikshlykov.englishwordsapp.ui.viewmodels.WordViewModel;
-
-public class ViewModelFactory implements ViewModelProvider.Factory {
-
-    private Application application;
-    private GroupsRepository groupsRepository;
-    private ModesRepository modesRepository;
-    private WordsRepository wordsRepository;
-
-    @Inject
-    public ViewModelFactory(Application application, GroupsRepository groupsRepository,
-                            ModesRepository modesRepository, WordsRepository wordsRepository) {
-        this.application = application;
-        this.groupsRepository = groupsRepository;
-        this.modesRepository = modesRepository;
-        this.wordsRepository = wordsRepository;
+class ViewModelFactory @Inject constructor(
+  private val application: Application, private val groupsRepository: GroupsRepository,
+  private val modesRepository: ModesRepository, private val wordsRepository: WordsRepository
+) : ViewModelProvider.Factory {
+  override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    return if (modelClass == StudyViewModel::class.java) {
+      StudyViewModel(application, wordsRepository, modesRepository) as T
+    } else if (modelClass == GroupsViewModel::class.java) {
+      GroupsViewModel(application, groupsRepository) as T
+    } else if (modelClass == SubgroupViewModel::class.java) {
+      SubgroupViewModel(application, groupsRepository, wordsRepository) as T
+    } else if (modelClass == WordDialogsViewModel::class.java) {
+      WordDialogsViewModel(application, groupsRepository) as T
+    } else if (modelClass == WordViewModel::class.java) {
+      WordViewModel(application, wordsRepository, groupsRepository) as T
+    } else if (modelClass == StatisticsViewModel::class.java) {
+      StatisticsViewModel(application, wordsRepository) as T
+    } else if (modelClass == ModesViewModel::class.java) {
+      ModesViewModel(application, modesRepository) as T
+    } else if (modelClass == SubgroupDataViewModel::class.java) {
+      SubgroupDataViewModel(groupsRepository) as T
+    } else {
+      throw IllegalArgumentException("ViewModel Not Found")
     }
-
-    @NonNull
-    @Override
-    public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        if (modelClass == StudyViewModel.class) {
-            return (T) new StudyViewModel(application, wordsRepository, modesRepository);
-        } else if (modelClass == GroupsViewModel.class) {
-            return (T) new GroupsViewModel(application, groupsRepository);
-        } else if (modelClass == SubgroupViewModel.class) {
-            return (T) new SubgroupViewModel(application, groupsRepository, wordsRepository);
-        } else if (modelClass == WordDialogsViewModel.class) {
-            return (T) new WordDialogsViewModel(application, groupsRepository);
-        } else if (modelClass == WordViewModel.class) {
-            return (T) new WordViewModel(application, wordsRepository, groupsRepository);
-        } else if (modelClass == StatisticsViewModel.class) {
-            return (T) new StatisticsViewModel(application, wordsRepository);
-        } else if (modelClass == ModesViewModel.class) {
-            return (T) new ModesViewModel(application, modesRepository);
-        } else if (modelClass == SubgroupDataViewModel.class) {
-            return (T) new SubgroupDataViewModel(groupsRepository);
-        } else {
-            throw new IllegalArgumentException("ViewModel Not Found");
-        }
-    }
+  }
 }
