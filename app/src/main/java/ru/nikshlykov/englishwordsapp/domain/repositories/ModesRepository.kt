@@ -4,7 +4,7 @@ import ru.nikshlykov.englishwordsapp.db.mode.Mode
 
 interface ModesRepository {
 
-  suspend fun updateModes(modes: List<Mode>)
+  suspend fun updateModes(modes: List<Mode>): Int
 
   suspend fun getSelectedModes(): List<Mode>
 
