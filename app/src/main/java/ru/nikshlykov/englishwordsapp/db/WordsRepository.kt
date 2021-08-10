@@ -187,7 +187,7 @@ class WordsRepository(database: AppDatabase) {
     private val wordDao: WordDao,
     private val withNew: Boolean,
     listener: OnAvailableToRepeatWordLoadedListener
-  ) : AsyncTask<Void, Void, Word>() {
+  ) : AsyncTask<Void, Void, Word?>() {
     private val listener: WeakReference<OnAvailableToRepeatWordLoadedListener>
     override fun doInBackground(vararg voids: Void): Word? {
       val wordsFromStudiedSubgroups: List<Word>
@@ -205,10 +205,12 @@ class WordsRepository(database: AppDatabase) {
       return null
     }
 
-    override fun onPostExecute(word: Word) {
+    override fun onPostExecute(word: Word?) {
       super.onPostExecute(word)
       val listener = listener.get()
-      listener?.onAvailableToRepeatWordLoaded(word)
+      if (word != null) {
+        listener?.onAvailableToRepeatWordLoaded(word)
+      }
     }
 
     init {

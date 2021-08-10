@@ -53,7 +53,7 @@ class ModesActivity : DaggerAppCompatActivity() {
       val modes = adapter!!.getModes()
 
       // Обновляем режимы в БД.
-      modesViewModel!!.updateModes(modes)
+      modes?.let { modesViewModel!!.updateModes(modes) }
 
       // Подготавливаем массив id выбранных режимов.
       val selectedModes = ArrayList<Mode>()
