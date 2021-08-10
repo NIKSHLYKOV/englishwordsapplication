@@ -8,7 +8,7 @@ import javax.inject.Inject
 class ModesRepositoryImpl @Inject constructor(private val modeDao: ModeDao) : ModesRepository {
 
   override suspend fun updateModes(modes: List<Mode>): Int {
-    TODO("Not yet implemented")
+    return modeDao.update(modes)
   }
 
   override suspend fun getSelectedModes(): List<Mode> {

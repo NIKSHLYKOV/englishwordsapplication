@@ -9,10 +9,12 @@ import kotlinx.coroutines.launch
 import ru.nikshlykov.englishwordsapp.db.ModesRepository
 import ru.nikshlykov.englishwordsapp.db.mode.Mode
 import ru.nikshlykov.englishwordsapp.domain.interactors.GetAllModesInteractor
+import ru.nikshlykov.englishwordsapp.domain.interactors.UpdateModesInteractor
 
 class ModesViewModel(
   application: Application, private val modesRepository: ModesRepository,
-  private val getAllModesInteractor: GetAllModesInteractor
+  private val getAllModesInteractor: GetAllModesInteractor,
+  private val updateModesInteractor: UpdateModesInteractor
 ) :
   AndroidViewModel(application) {
 
@@ -26,7 +28,9 @@ class ModesViewModel(
     }
   }
 
-  fun updateModes(modes: List<Mode?>?) {
-    modesRepository.update(modes)
+  fun updateModes(modes: List<Mode>) {
+    viewModelScope.launch {
+      updateModesInteractor.updateModes(modes)
+    }
   }
 }

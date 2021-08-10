@@ -2,10 +2,7 @@ package ru.nikshlykov.englishwordsapp.di
 
 import dagger.Module
 import dagger.Provides
-import ru.nikshlykov.englishwordsapp.domain.interactors.GetAllModesInteractor
-import ru.nikshlykov.englishwordsapp.domain.interactors.GetGroupsInteractor
-import ru.nikshlykov.englishwordsapp.domain.interactors.GetGroupsWithSubgroupsInteractor
-import ru.nikshlykov.englishwordsapp.domain.interactors.GetSubgroupsFromGroupInteractor
+import ru.nikshlykov.englishwordsapp.domain.interactors.*
 import ru.nikshlykov.englishwordsapp.domain.repositories.GroupsRepository
 import ru.nikshlykov.englishwordsapp.domain.repositories.ModesRepository
 import ru.nikshlykov.englishwordsapp.domain.repositories.SubgroupsRepository
@@ -34,7 +31,12 @@ class InteractorModule {
   }
 
   @Provides
-  fun provideGetAllModesInteractor(modesRepository: ModesRepository): GetAllModesInteractor{
+  fun provideGetAllModesInteractor(modesRepository: ModesRepository): GetAllModesInteractor {
     return GetAllModesInteractor(modesRepository)
+  }
+
+  @Provides
+  fun provideUpdateModesInteractor(modesRepository: ModesRepository): UpdateModesInteractor {
+    return UpdateModesInteractor(modesRepository)
   }
 }
