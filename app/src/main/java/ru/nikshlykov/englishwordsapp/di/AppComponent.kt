@@ -14,8 +14,11 @@ import ru.nikshlykov.englishwordsapp.ui.fragments.LinkOrDeleteWordDialogFragment
 import ru.nikshlykov.englishwordsapp.ui.fragments.StatisticsFragment
 import javax.inject.Singleton
 
-@Component(modules = [AndroidInjectionModule::class, RepositoryModule::class, ContextModule::class,
-  DatabaseModule::class, ViewModelModule::class, ActivityModule::class, FragmentModule::class])
+@Component(
+  modules = [AndroidInjectionModule::class, RepositoryModule::class, ContextModule::class,
+    DatabaseModule::class, ViewModelModule::class, ActivityModule::class, FragmentModule::class,
+    DomainRepositoryModule::class, InteractorModule::class]
+)
 @Singleton
 interface AppComponent : AndroidInjector<App> {
   @Component.Factory

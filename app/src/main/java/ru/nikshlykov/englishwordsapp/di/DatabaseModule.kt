@@ -5,6 +5,8 @@ import androidx.room.Room
 import dagger.Module
 import dagger.Provides
 import ru.nikshlykov.englishwordsapp.db.AppDatabase
+import ru.nikshlykov.englishwordsapp.db.group.GroupDao
+import ru.nikshlykov.englishwordsapp.db.subgroup.SubgroupDao
 import javax.inject.Singleton
 
 @Module
@@ -16,6 +18,18 @@ class DatabaseModule {
       .databaseBuilder(context, AppDatabase::class.java, DATABASE_NAME)
       .createFromAsset(DATABASE_DIR)
       .build()
+  }
+
+  @Provides
+  @Singleton
+  fun provideSubgroupDao(appDatabase: AppDatabase): SubgroupDao {
+    return appDatabase.subgroupDao()
+  }
+
+  @Provides
+  @Singleton
+  fun provideGroupDao(appDatabase: AppDatabase): GroupDao {
+    return appDatabase.groupDao()
   }
 
   companion object {

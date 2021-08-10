@@ -5,6 +5,7 @@ import androidx.room.Query
 
 @Dao
 interface GroupDao {
+
   @Query("SELECT * FROM Groups")
-  fun groups(): List<Group>
+  suspend fun getAllGroups(): List<Group>
 }
