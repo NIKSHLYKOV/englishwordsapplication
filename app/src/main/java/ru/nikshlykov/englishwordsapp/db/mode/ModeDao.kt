@@ -14,5 +14,5 @@ interface ModeDao {
   fun newGetSelectedModes(): List<Mode>
 
   @Query("SELECT * FROM Modes")
-  fun liveDataModes(): LiveData<List<Mode>>
+  suspend fun getAllModes(): List<Mode>
 }

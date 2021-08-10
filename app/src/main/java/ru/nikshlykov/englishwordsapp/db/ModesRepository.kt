@@ -21,9 +21,6 @@ class ModesRepository(database: AppDatabase) {
     task.execute()
   }
 
-  val liveDataModes: LiveData<List<Mode>>
-    get() = modeDao.liveDataModes()
-
   /**
    * AsyncTasks для работы с режимами.
    */
@@ -54,9 +51,5 @@ class ModesRepository(database: AppDatabase) {
       listener?.onSelectedModesLoaded(modes)
     }
 
-  }
-
-  companion object {
-    private val LOG_TAG = ModesRepository::class.java.canonicalName
   }
 }

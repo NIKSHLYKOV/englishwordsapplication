@@ -3,7 +3,6 @@ package ru.nikshlykov.englishwordsapp.ui.activities
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -31,6 +30,7 @@ class ModesActivity : DaggerAppCompatActivity() {
     setContentView(R.layout.activity_modes)
     initRecyclerViewWithAdapter()
     initSaveButton()
+    modesViewModel!!.loadModes()
   }
 
   private fun initRecyclerViewWithAdapter() {
@@ -39,7 +39,7 @@ class ModesActivity : DaggerAppCompatActivity() {
     modesRecyclerView.layoutManager = LinearLayoutManager(this)
     adapter = ModesRecyclerViewAdapter(this)
     modesRecyclerView.adapter = adapter
-    modesViewModel!!.liveDataModes.observe(this, Observer { modes ->
+    modesViewModel!!.modes.observe(this, { modes ->
       if (modes != null) {
         adapter!!.setModes(modes)
       }

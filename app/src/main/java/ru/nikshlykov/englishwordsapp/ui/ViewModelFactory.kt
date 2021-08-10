@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import ru.nikshlykov.englishwordsapp.db.GroupsRepository
 import ru.nikshlykov.englishwordsapp.db.ModesRepository
 import ru.nikshlykov.englishwordsapp.db.WordsRepository
+import ru.nikshlykov.englishwordsapp.domain.interactors.GetAllModesInteractor
 import ru.nikshlykov.englishwordsapp.domain.interactors.GetGroupsWithSubgroupsInteractor
 import ru.nikshlykov.englishwordsapp.ui.viewmodels.*
 import javax.inject.Inject
@@ -13,7 +14,8 @@ import javax.inject.Inject
 class ViewModelFactory @Inject constructor(
   private val application: Application, private val groupsRepository: GroupsRepository,
   private val modesRepository: ModesRepository, private val wordsRepository: WordsRepository,
-  private val getGroupsWithSubgroupsInteractor: GetGroupsWithSubgroupsInteractor
+  private val getGroupsWithSubgroupsInteractor: GetGroupsWithSubgroupsInteractor,
+  private val getAllModesInteractor: GetAllModesInteractor
 ) : ViewModelProvider.Factory {
   override fun <T : ViewModel?> create(modelClass: Class<T>): T {
     return if (modelClass == StudyViewModel::class.java) {
@@ -29,7 +31,7 @@ class ViewModelFactory @Inject constructor(
     } else if (modelClass == StatisticsViewModel::class.java) {
       StatisticsViewModel(application, wordsRepository) as T
     } else if (modelClass == ModesViewModel::class.java) {
-      ModesViewModel(application, modesRepository) as T
+      ModesViewModel(application, modesRepository, getAllModesInteractor) as T
     } else if (modelClass == SubgroupDataViewModel::class.java) {
       SubgroupDataViewModel(groupsRepository) as T
     } else {

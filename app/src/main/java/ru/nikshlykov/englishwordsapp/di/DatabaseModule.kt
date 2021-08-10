@@ -6,6 +6,7 @@ import dagger.Module
 import dagger.Provides
 import ru.nikshlykov.englishwordsapp.db.AppDatabase
 import ru.nikshlykov.englishwordsapp.db.group.GroupDao
+import ru.nikshlykov.englishwordsapp.db.mode.ModeDao
 import ru.nikshlykov.englishwordsapp.db.subgroup.SubgroupDao
 import javax.inject.Singleton
 
@@ -30,6 +31,12 @@ class DatabaseModule {
   @Singleton
   fun provideGroupDao(appDatabase: AppDatabase): GroupDao {
     return appDatabase.groupDao()
+  }
+
+  @Provides
+  @Singleton
+  fun provideModeDao(appDatabase: AppDatabase): ModeDao {
+    return appDatabase.modeDao()
   }
 
   companion object {
