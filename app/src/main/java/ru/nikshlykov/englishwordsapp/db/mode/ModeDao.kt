@@ -10,7 +10,7 @@ interface ModeDao {
   suspend fun update(modes: List<Mode>): Int
 
   @Query("SELECT * FROM Modes WHERE isSelected = 1")
-  fun newGetSelectedModes(): List<Mode>
+  suspend fun getSelectedModes(): List<Mode>
 
   @Query("SELECT * FROM Modes")
   suspend fun getAllModes(): List<Mode>

@@ -208,6 +208,7 @@ class WordsRepository(database: AppDatabase) {
     override fun onPostExecute(word: Word?) {
       super.onPostExecute(word)
       val listener = listener.get()
+      // TODO разобраться, почему тут приходит null. Это крашит весь процесс обучения.
       if (word != null) {
         listener?.onAvailableToRepeatWordLoaded(word)
       }

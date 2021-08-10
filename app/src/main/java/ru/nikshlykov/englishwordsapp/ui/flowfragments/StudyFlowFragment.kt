@@ -11,20 +11,16 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import dagger.android.support.DaggerFragment
 import ru.nikshlykov.englishwordsapp.R
-import ru.nikshlykov.englishwordsapp.db.ModesRepository.OnSelectedModesLoadedListener
 import ru.nikshlykov.englishwordsapp.db.WordsRepository.OnAvailableToRepeatWordLoadedListener
 import ru.nikshlykov.englishwordsapp.db.WordsRepository.OnWordUpdatedListener
-import ru.nikshlykov.englishwordsapp.db.mode.Mode
 import ru.nikshlykov.englishwordsapp.db.word.Word
 import ru.nikshlykov.englishwordsapp.ui.RepeatResultListener
 import ru.nikshlykov.englishwordsapp.ui.fragments.FirstShowModeFragment.FirstShowModeReportListener
-import ru.nikshlykov.englishwordsapp.ui.fragments.InfoFragment
 import ru.nikshlykov.englishwordsapp.ui.viewmodels.StudyViewModel
 import ru.nikshlykov.englishwordsapp.utils.Navigation
-import java.util.*
 import javax.inject.Inject
 
-class StudyFlowFragment : DaggerFragment(), OnSelectedModesLoadedListener,
+class StudyFlowFragment : DaggerFragment(),
   OnAvailableToRepeatWordLoadedListener, OnWordUpdatedListener, RepeatResultListener,
   FirstShowModeReportListener {
   // ViewModel для работы с БД.
@@ -57,51 +53,6 @@ class StudyFlowFragment : DaggerFragment(), OnSelectedModesLoadedListener,
     navController = navHostFragment!!.navController
   }
 
-  // Процесс обучения
-  override fun onSelectedModesLoaded(selectedModes: List<Mode>?) {
-    Log.i(LOG_TAG, "onSelectedModesLoaded")
-    if (selectedModes != null) {
-      if (selectedModes.isNotEmpty()) {
-        // Создаём список выбранных режимов.
-        val selectedModesIds = ArrayList<Long>(selectedModes.size)
-        for (mode in selectedModes) {
-          selectedModesIds.add(mode.id)
-        }
-
-        // Сетим режимы в StudyViewModel для хранения.
-        studyViewModel!!.setSelectedModesIds(selectedModesIds)
-
-        // Запрашиваем следующее для повтора слово.
-        nextAvailableToRepeatWord
-      } else {
-        displayInfoFragment(InfoFragment.FLAG_MODES_ARE_NOT_CHOSEN)
-      }
-    } else {
-      displayInfoFragment(InfoFragment.FLAG_MODES_ARE_NOT_CHOSEN)
-    }
-  }
-
-  /**
-   * Запускает информационный фрагмент, если не выбраны группы слов или режимы.
-   */
-  private fun displayInfoFragment(flag: Int) {
-    if (flag == InfoFragment.FLAG_AVAILABLE_WORDS_ARE_NOT_EXISTING ||
-      flag == InfoFragment.FLAG_MODES_ARE_NOT_CHOSEN
-    ) {
-      val arguments = Bundle()
-      arguments.putInt(InfoFragment.KEY_INFO_FLAG, flag)
-      navController!!.navigate(R.id.action_global_info_dest, arguments)
-    }
-  }
-
-  /**
-   * Запрашивает следующее слово для повтора.
-   */
-  private val nextAvailableToRepeatWord: Unit
-    get() {
-      studyViewModel!!.getNextAvailableToRepeatWord(this)
-    }
-
   /**
    * Показывает пришедшее для повтора слово либо в режиме первого просмотра,
    * либо в выбранном пользователем режиме.
@@ -123,11 +74,13 @@ class StudyFlowFragment : DaggerFragment(), OnSelectedModesLoadedListener,
     if (word.learnProgress == -1) {
       // Показываем фрагмент режима.
       navController!!.navigate(R.id.action_global_first_show_mode_dest, arguments)
+      Log.i("StudyFlowFragment", "Я тут 2")
     } else {
       // Получаем id рандомного режимы из выбранных, если слово показывается не первый раз.
       val randomModeId = studyViewModel!!.randomSelectedModeId()
       Log.i(LOG_TAG, "randomModeId = $randomModeId")
       val destinationId = Navigation.getModeDestinationId(randomModeId)
+      Log.i("StudyFlowFragment", "Я тут 3")
       navController!!.navigate(destinationId, arguments)
     }
   }
@@ -144,7 +97,7 @@ class StudyFlowFragment : DaggerFragment(), OnSelectedModesLoadedListener,
 
       //TODO Если и тут делать проверку, то уже на navController из MainActivity.
       /* if (navController.findFragmentByTag(TAG_STUDY_OR_INFO_FRAGMENT) != null)*/
-      nextAvailableToRepeatWord
+      studyViewModel!!.getNextAvailableToRepeatWord(this)
     } else {
       Toast.makeText(context, R.string.sorry_error_happened, Toast.LENGTH_SHORT).show()
     }
