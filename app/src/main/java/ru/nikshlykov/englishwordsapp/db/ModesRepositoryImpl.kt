@@ -12,7 +12,7 @@ class ModesRepositoryImpl @Inject constructor(private val modeDao: ModeDao) : Mo
   }
 
   override suspend fun getSelectedModes(): List<Mode> {
-    TODO("Not yet implemented")
+    return modeDao.getSelectedModes()
   }
 
   override suspend fun getAllModes(): List<Mode> {

@@ -3,19 +3,22 @@ package ru.nikshlykov.englishwordsapp.ui.viewmodels
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.preference.PreferenceManager
+import kotlinx.coroutines.launch
 import ru.nikshlykov.englishwordsapp.R
 import ru.nikshlykov.englishwordsapp.db.ModesRepository
-import ru.nikshlykov.englishwordsapp.db.ModesRepository.OnSelectedModesLoadedListener
 import ru.nikshlykov.englishwordsapp.db.WordsRepository
 import ru.nikshlykov.englishwordsapp.db.WordsRepository.*
 import ru.nikshlykov.englishwordsapp.db.repeat.Repeat
+import ru.nikshlykov.englishwordsapp.domain.interactors.GetSelectedModesInteractor
 import ru.nikshlykov.englishwordsapp.preferences.NewWordsCountPreference
 import java.util.*
 
 class StudyViewModel(
   application: Application, private val wordsRepository: WordsRepository,
-  private val modesRepository: ModesRepository
+  private val modesRepository: ModesRepository,
+  private val getSelectedModesInteractor: GetSelectedModesInteractor
 ) : AndroidViewModel(application), OnRepeatsCountForTodayLoadedListener {
   private var listener: OnAvailableToRepeatWordLoadedListener? = null
   private var withNew = true
@@ -50,11 +53,32 @@ class StudyViewModel(
         return wordsFromStudiedSubgroups;
     }*/
   // Выбранные режимы.
-  fun getSelectedModes(listener: OnSelectedModesLoadedListener?) {
-    modesRepository.newGetSelectedModes(listener!!)
+
+  fun getSelectedModes(listener: OnAvailableToRepeatWordLoadedListener) {
+    viewModelScope.launch {
+      val selectedModes = getSelectedModesInteractor.getSelectedModes()
+
+      if (selectedModes.isNotEmpty()) {
+        // Создаём список выбранных режимов.
+        val selectedModesIds = ArrayList<Long>(selectedModes.size)
+        for (mode in selectedModes) {
+          selectedModesIds.add(mode.id)
+        }
+
+        // Сетим режимы в StudyViewModel для хранения.
+        setSelectedModesIds(selectedModesIds)
+
+        // Запрашиваем следующее для повтора слово.
+        getNextAvailableToRepeatWord(listener)
+      } else {
+        Log.i("StudyFlowFragment", "Я тута 3")
+        //displayInfoFragment(InfoFragment.FLAG_MODES_ARE_NOT_CHOSEN)
+        // TODO сделать LiveData, чтобы можно было выводить сообщение об ошибке/невыбранных режимах.
+      }
+    }
   }
 
-  fun setSelectedModesIds(selectedModesIds: ArrayList<Long>?) {
+  private fun setSelectedModesIds(selectedModesIds: ArrayList<Long>?) {
     this.selectedModesIds = selectedModesIds
   }
 
