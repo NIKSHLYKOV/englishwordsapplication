@@ -16,9 +16,9 @@ class GroupsViewModel(
   private val getGroupsWithSubgroupsInteractor: GetGroupsWithSubgroupsInteractor
 ) :
   AndroidViewModel(application) {
-  private val mutableLiveDataGroupItems: MutableLiveData<ArrayList<GroupItem>?> = MutableLiveData()
+  private val _groupItems: MutableLiveData<ArrayList<GroupItem>?> = MutableLiveData()
 
-  val groupItems: LiveData<ArrayList<GroupItem>?> = mutableLiveDataGroupItems
+  val groupItems: LiveData<ArrayList<GroupItem>?> = _groupItems
 
   fun updateSubgroup(subgroup: Subgroup?) {
     groupsRepository.update(subgroup)
@@ -26,7 +26,7 @@ class GroupsViewModel(
 
   fun loadGroupItems() {
     viewModelScope.launch {
-      mutableLiveDataGroupItems.value =
+      _groupItems.value =
         getGroupsWithSubgroupsInteractor.getAllGroupsWithSubgroups()
     }
   }
