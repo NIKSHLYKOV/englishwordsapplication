@@ -3,42 +3,24 @@ package ru.nikshlykov.englishwordsapp.db
 import android.os.AsyncTask
 import android.util.Log
 import androidx.lifecycle.LiveData
-import ru.nikshlykov.englishwordsapp.db.group.GroupDao
 import ru.nikshlykov.englishwordsapp.db.link.Link
 import ru.nikshlykov.englishwordsapp.db.link.LinkDao
 import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup
 import ru.nikshlykov.englishwordsapp.db.subgroup.SubgroupDao
-import ru.nikshlykov.englishwordsapp.ui.GroupItem
 import ru.nikshlykov.englishwordsapp.ui.fragments.LinkOrDeleteWordDialogFragment
 import java.lang.ref.WeakReference
 import java.util.*
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
 import kotlin.collections.HashSet
 
 class GroupsRepository(database: AppDatabase) {
-  private val groupDao: GroupDao = database.groupDao()
   private val linkDao: LinkDao = database.linkDao()
   private val subgroupDao: SubgroupDao = database.subgroupDao()
-  private val databaseExecutorService: ExecutorService = Executors.newFixedThreadPool(1)
-  fun execute(runnable: Runnable?) {
-    databaseExecutorService.execute(runnable)
-  }
 
   /**
    * Методы для работы с подгруппами.
    */
-  fun getMinSubgroupId(listener: OnMinSubgroupIdLoadedListener) {
-    val task = GetMinSubgroupIdAsyncTask(subgroupDao, listener)
-    task.execute()
-  }
-
   fun insertSubgroup(subgroupName: String?, listener: OnSubgroupInsertedListener) {
     InsertSubgroupAsyncTask(subgroupDao, listener).execute(subgroupName)
-  }
-
-  fun insert(subgroup: Subgroup?, listener: OnSubgroupInsertedListener?) {
-    //new InsertSubgroupAsyncTask(subgroupDao, listener).execute(subgroup);
   }
 
   fun update(subgroup: Subgroup?) {
@@ -57,11 +39,6 @@ class GroupsRepository(database: AppDatabase) {
     return subgroupDao!!.getLiveDataSubgroupById(subgroupId)
   }
 
-  fun getSubgroupById(subgroupId: Long, listener: OnSubgroupLoadedListener) {
-    val task = GetSubgroupByIdAsyncTask(subgroupDao, listener)
-    task.execute(subgroupId)
-  }
-
   fun getAvailableSubgroupTo(wordId: Long, flagTo: Int, listener: OnSubgroupsLoadedListener) {
     Log.d(LOG_TAG, "getAvailableSubgroupsTo()")
     val task = GetAvailableSubgroupsToAsyncTask(
@@ -74,27 +51,6 @@ class GroupsRepository(database: AppDatabase) {
   /**
    * AsyncTasks для работы с подгруппами.
    */
-  interface OnMinSubgroupIdLoadedListener {
-    fun onMinSubgroupIdLoaded(minSubgroupId: Long?)
-  }
-
-  private class GetMinSubgroupIdAsyncTask(
-    private val subgroupDao: SubgroupDao?,
-    listener: OnMinSubgroupIdLoadedListener
-  ) : AsyncTask<Void, Void, Long>() {
-    private val listener: WeakReference<OnMinSubgroupIdLoadedListener> = WeakReference(listener)
-
-    override fun onPostExecute(aLong: Long) {
-      super.onPostExecute(aLong)
-      val listener = listener.get()
-      listener?.onMinSubgroupIdLoaded(aLong)
-    }
-
-    override fun doInBackground(vararg p0: Void?): Long? {
-      return subgroupDao!!.subgroupWithMinId()?.id
-    }
-  }
-
   interface OnSubgroupInsertedListener {
     fun onSubgroupInserted(subgroupId: Long)
   }
@@ -154,28 +110,6 @@ class GroupsRepository(database: AppDatabase) {
       subgroupDao!!.delete(subgroups[0])
       return null
     }
-  }
-
-  interface OnSubgroupLoadedListener {
-    fun onSubgroupLoaded(subgroup: Subgroup?)
-  }
-
-  private class GetSubgroupByIdAsyncTask(
-    private val subgroupDao: SubgroupDao?,
-    listener: OnSubgroupLoadedListener
-  ) : AsyncTask<Long, Void, Subgroup>() {
-    private val listener: WeakReference<OnSubgroupLoadedListener> = WeakReference(listener)
-
-    override fun doInBackground(vararg p0: Long?): Subgroup? {
-      return p0[0]?.let { subgroupDao!!.getSubgroupById(it) }
-    }
-
-    override fun onPostExecute(subgroup: Subgroup) {
-      super.onPostExecute(subgroup)
-      val listener = listener.get()
-      listener?.onSubgroupLoaded(subgroup)
-    }
-
   }
 
   interface OnSubgroupsLoadedListener {
@@ -247,51 +181,6 @@ class GroupsRepository(database: AppDatabase) {
 
   }
 
-  /**
-   * Методы для работы с группами.
-   */
-  fun getGroupItems(listener: OnGroupItemsLoadedListener) {
-    val task = GetGroupItemsAsyncTask(groupDao, subgroupDao, listener)
-    task.execute()
-  }
-
-  /**
-   * AsyncTasks для работы с группами.
-   */
-  interface OnGroupItemsLoadedListener {
-    fun onGroupItemsLoaded(groupItems: ArrayList<GroupItem>?)
-  }
-
-  private class GetGroupItemsAsyncTask(
-    private val groupDao: GroupDao?, private val subgroupDao: SubgroupDao?,
-    listener: OnGroupItemsLoadedListener
-  ) : AsyncTask<Void, Void, ArrayList<GroupItem>>() {
-    private val listener: WeakReference<OnGroupItemsLoadedListener>
-    protected override fun doInBackground(vararg voids: Void): ArrayList<GroupItem> {
-      val groups = groupDao!!.groups()
-      val groupItems = ArrayList<GroupItem>(groups.size)
-      for (group in groups) {
-        val subgroupsList = subgroupDao!!.getSubgroupsFromGroup(group.id)
-        val subgroups = ArrayList<Subgroup>(subgroupsList.size)
-        subgroups.addAll(subgroupsList)
-        if (subgroups.size != 0) {
-          val groupItem = GroupItem(group, subgroups)
-          groupItems.add(groupItem)
-        }
-      }
-      return groupItems
-    }
-
-    override fun onPostExecute(subgroup: ArrayList<GroupItem>) {
-      super.onPostExecute(subgroup)
-      val listener = listener.get()
-      listener?.onGroupItemsLoaded(subgroup)
-    }
-
-    init {
-      this.listener = WeakReference(listener)
-    }
-  }
 
   /**
    * Методы для работы со связями.

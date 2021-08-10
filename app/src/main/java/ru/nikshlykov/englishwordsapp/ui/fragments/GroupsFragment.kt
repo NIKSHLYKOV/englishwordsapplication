@@ -17,13 +17,11 @@ import com.google.android.material.floatingactionbutton.ExtendedFloatingActionBu
 import dagger.android.support.DaggerFragment
 import ru.nikshlykov.englishwordsapp.R
 import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup
-import ru.nikshlykov.englishwordsapp.ui.GroupItem
 import ru.nikshlykov.englishwordsapp.ui.adapters.GroupItemsRecyclerViewAdapter
 import ru.nikshlykov.englishwordsapp.ui.adapters.SubgroupsRecyclerViewAdapter.OnSubgroupCheckedListener
 import ru.nikshlykov.englishwordsapp.ui.adapters.SubgroupsRecyclerViewAdapter.OnSubgroupClickListener
 import ru.nikshlykov.englishwordsapp.ui.flowfragments.OnChildFragmentInteractionListener
 import ru.nikshlykov.englishwordsapp.ui.viewmodels.GroupsViewModel
-import java.util.*
 import javax.inject.Inject
 
 class GroupsFragment : DaggerFragment(), OnSubgroupClickListener, OnSubgroupCheckedListener {
@@ -85,7 +83,7 @@ class GroupsFragment : DaggerFragment(), OnSubgroupClickListener, OnSubgroupChec
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     Log.i(LOG_TAG, "onViewCreated()")
     super.onViewCreated(view, savedInstanceState)
-    groupsViewModel!!.mutableLiveDataGroupItems.observe(
+    groupsViewModel!!.groupItems.observe(
       viewLifecycleOwner,
       Observer { groupItems ->
         Log.i(LOG_TAG, "groupItems onChanged()")

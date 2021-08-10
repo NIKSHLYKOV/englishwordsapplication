@@ -4,7 +4,7 @@ import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup
 import ru.nikshlykov.englishwordsapp.ui.GroupItem
 import java.util.*
 
-class GetAllGroupsWithSubgroups(
+class GetGroupsWithSubgroupsInteractor(
   private val getGroupsInteractor: GetGroupsInteractor,
   private val getSubgroupsFromGroupInteractor: GetSubgroupsFromGroupInteractor
 ) {
