@@ -11,10 +11,7 @@ import ru.nikshlykov.englishwordsapp.db.GroupsRepository.OnSubgroupsLoadedListen
 import ru.nikshlykov.englishwordsapp.db.WordsRepository
 import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup
 import ru.nikshlykov.englishwordsapp.db.word.Word
-import ru.nikshlykov.englishwordsapp.domain.interactors.AddWordToSubgroupInteractor
-import ru.nikshlykov.englishwordsapp.domain.interactors.DeleteWordFromSubgroupInteractor
-import ru.nikshlykov.englishwordsapp.domain.interactors.GetSubgroupInteractor
-import ru.nikshlykov.englishwordsapp.domain.interactors.UpdateSubgroupInteractor
+import ru.nikshlykov.englishwordsapp.domain.interactors.*
 import ru.nikshlykov.englishwordsapp.ui.fragments.LinkOrDeleteWordDialogFragment
 import ru.nikshlykov.englishwordsapp.ui.fragments.SortWordsDialogFragment
 import java.util.*
@@ -26,7 +23,8 @@ class SubgroupViewModel(
   private val getSubgroupInteractor: GetSubgroupInteractor,
   private val addWordToSubgroupInteractor: AddWordToSubgroupInteractor,
   private val deleteWordFromSubgroupInteractor: DeleteWordFromSubgroupInteractor,
-  private val updateSubgroupInteractor: UpdateSubgroupInteractor
+  private val updateSubgroupInteractor: UpdateSubgroupInteractor,
+  private val deleteSubgroupInteractor: DeleteSubgroupInteractor
 ) : AndroidViewModel(application),
   OnSubgroupsLoadedListener {
 
@@ -65,12 +63,24 @@ class SubgroupViewModel(
     }
   }
 
+  fun subgroupIsCreatedByUser(): Boolean {
+    val sub = _subgroup.value
+    if (sub != null) {
+      return subgroupIsCreatedByUser()
+    }
+    throw NullPointerException()
+  }
+
   /**
    * Удаляет подгруппу.
    */
   fun deleteSubgroup() {
     val subgroup = _subgroup.value
-    if (subgroup != null) groupsRepository.delete(subgroup)
+    if (subgroup != null && subgroup.isCreatedByUser) {
+      GlobalScope.launch {
+        deleteSubgroupInteractor.deleteSubgroup(subgroup)
+      }
+    }
   }
 
   /**

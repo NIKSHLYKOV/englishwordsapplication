@@ -18,10 +18,6 @@ class GroupsRepository(database: AppDatabase) {
    * Методы для работы с подгруппами.
    */
 
-  fun delete(subgroup: Subgroup?) {
-    DeleteSubgroupAsyncTask(subgroupDao).execute(subgroup)
-  }
-
   fun getAvailableSubgroupTo(wordId: Long, flagTo: Int, listener: OnSubgroupsLoadedListener) {
     Log.d(LOG_TAG, "getAvailableSubgroupsTo()")
     val task = GetAvailableSubgroupsToAsyncTask(
@@ -34,14 +30,6 @@ class GroupsRepository(database: AppDatabase) {
   /**
    * AsyncTasks для работы с подгруппами.
    */
-
-  private class DeleteSubgroupAsyncTask(private val subgroupDao: SubgroupDao?) :
-    AsyncTask<Subgroup, Void, Void>() {
-    protected override fun doInBackground(vararg subgroups: Subgroup): Void? {
-      subgroupDao!!.delete(subgroups[0])
-      return null
-    }
-  }
 
   interface OnSubgroupsLoadedListener {
     fun onLoaded(subgroups: ArrayList<Subgroup>?)
