@@ -19,10 +19,6 @@ class GroupsRepository(database: AppDatabase) {
    * Методы для работы с подгруппами.
    */
 
-  fun update(subgroup: Subgroup?) {
-    UpdateSubgroupAsyncTask(subgroupDao, null).execute(subgroup)
-  }
-
   fun delete(subgroup: Subgroup?) {
     DeleteSubgroupAsyncTask(subgroupDao).execute(subgroup)
   }
@@ -43,31 +39,6 @@ class GroupsRepository(database: AppDatabase) {
   /**
    * AsyncTasks для работы с подгруппами.
    */
-
-  interface OnSubgroupUpdatedListener {
-    fun onSubgroupUpdated(isSubgroupUpdated: Boolean)
-  }
-
-  private class UpdateSubgroupAsyncTask(
-    private val subgroupDao: SubgroupDao?,
-    listener: OnSubgroupUpdatedListener?
-  ) : AsyncTask<Subgroup, Void, Boolean>() {
-    private val listener: WeakReference<OnSubgroupUpdatedListener?>
-    protected override fun doInBackground(vararg subgroups: Subgroup): Boolean {
-      Log.i(LOG_TAG, "UpdateSubgroupAsyncTask: subgroup.isStudied = " + subgroups[0].studied)
-      return subgroupDao!!.update(subgroups[0]) == 1
-    }
-
-    override fun onPostExecute(aBoolean: Boolean) {
-      super.onPostExecute(aBoolean)
-      val listener = listener.get()
-      listener?.onSubgroupUpdated(aBoolean)
-    }
-
-    init {
-      this.listener = WeakReference(listener)
-    }
-  }
 
   private class DeleteSubgroupAsyncTask(private val subgroupDao: SubgroupDao?) :
     AsyncTask<Subgroup, Void, Void>() {
