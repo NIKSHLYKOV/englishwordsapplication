@@ -13,6 +13,9 @@ interface SubgroupDao {
   @Update
   fun update(subgroup: Subgroup): Int
 
+  @Update
+  suspend fun updateSuspend(subgroup: Subgroup): Int
+
   @Delete
   fun delete(subgroup: Subgroup): Int
 
@@ -23,10 +26,7 @@ interface SubgroupDao {
   fun getLiveDataSubgroupById(id: Long): LiveData<Subgroup>
 
   @Query("SELECT * FROM Subgroups WHERE groupId = :groupId")
-  fun getSubgroupsFromGroup(groupId: Long): List<Subgroup>
-
-  @Query("SELECT * FROM Subgroups WHERE groupId = :groupId")
-  suspend fun getSubgroupsFromGroupSuspend(groupId: Long): List<Subgroup>
+  suspend fun getSubgroupsFromGroup(groupId: Long): List<Subgroup>
 
   @Query("SELECT * FROM Subgroups ORDER BY _id LIMIT 1")
   suspend fun subgroupWithMinId(): Subgroup

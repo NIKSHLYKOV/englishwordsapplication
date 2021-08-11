@@ -16,9 +16,11 @@ import ru.nikshlykov.englishwordsapp.ui.fragments.SortWordsDialogFragment
 import java.util.*
 
 class SubgroupViewModel(
-  application: Application, private val groupsRepository: GroupsRepository,
-  private val wordsRepository: WordsRepository
-) : AndroidViewModel(application), OnWordInsertedListener, OnSubgroupsLoadedListener {
+  application: Application,
+  private val groupsRepository: GroupsRepository,
+  private val wordsRepository: WordsRepository,
+) : AndroidViewModel(application),
+  OnWordInsertedListener, OnSubgroupsLoadedListener {
   // Подгруппа
   lateinit var subgroupLiveData: LiveData<Subgroup>
     private set
@@ -68,6 +70,9 @@ class SubgroupViewModel(
     if (subgroup != null) {
       subgroup.studied = newIsStudied
       groupsRepository.update(subgroup)
+      // TODO заменить на корутину. Подумать, когда обновлять в БД.
+      //  Каждый раз при нажатии или при выходе. Надо ли тогда делать свой скоуп?
+      //  Или можно каждый раз обновлять, но при этому группу запрашивать только один раз.
     }
   }
 

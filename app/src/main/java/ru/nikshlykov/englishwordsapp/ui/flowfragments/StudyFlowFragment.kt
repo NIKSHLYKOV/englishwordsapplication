@@ -73,15 +73,14 @@ class StudyFlowFragment : DaggerFragment(),
     // другой ModeFragment.
     if (word.learnProgress == -1) {
       // Показываем фрагмент режима.
-      navController!!.navigate(R.id.action_global_first_show_mode_dest, arguments)
-      Log.i("StudyFlowFragment", "Я тут 2")
+      //navController!!.navigate(R.id.action_global_first_show_mode_dest, arguments)
     } else {
       // Получаем id рандомного режимы из выбранных, если слово показывается не первый раз.
       val randomModeId = studyViewModel!!.randomSelectedModeId()
       Log.i(LOG_TAG, "randomModeId = $randomModeId")
       val destinationId = Navigation.getModeDestinationId(randomModeId)
-      Log.i("StudyFlowFragment", "Я тут 3")
-      navController!!.navigate(destinationId, arguments)
+      //navController!!.navigate(destinationId, arguments)
+      // TODO РАЗОБРАТЬСЯ, ПОЧЕМУ В MODESFRAGMENTS получаем word null, и раскоментить навигацию.
     }
   }
 

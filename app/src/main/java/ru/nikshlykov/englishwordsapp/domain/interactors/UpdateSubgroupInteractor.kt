@@ -5,7 +5,7 @@ import ru.nikshlykov.englishwordsapp.domain.repositories.SubgroupsRepository
 
 class UpdateSubgroupInteractor(private val subgroupsRepository: SubgroupsRepository) {
 
-  suspend fun updateSubgroup(subgroup: Subgroup) {
-    subgroupsRepository.updateSubgroup(subgroup)
+  suspend fun updateSubgroup(subgroup: Subgroup): Int {
+    return subgroupsRepository.updateSubgroup(subgroup)
   }
 }

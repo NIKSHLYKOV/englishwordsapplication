@@ -69,7 +69,6 @@ class StudyViewModel(
         // Запрашиваем следующее для повтора слово.
         getNextAvailableToRepeatWord(listener)
       } else {
-        Log.i("StudyFlowFragment", "Я тута 3")
         //displayInfoFragment(InfoFragment.FLAG_MODES_ARE_NOT_CHOSEN)
         // TODO сделать LiveData, чтобы можно было выводить сообщение об ошибке/невыбранных режимах.
       }
