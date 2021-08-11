@@ -17,16 +17,24 @@ import ru.nikshlykov.englishwordsapp.db.group.Group
   indices = [Index("groupId")]
 )
 class Subgroup : Parcelable {
-  constructor(
+  private constructor(
     id: Long, name: String, groupId: Long, isStudied: Int,
     imageURL: String
   ) {
     this.id = id
     this.name = name
     this.groupId = groupId
-    this.isStudied = isStudied
+    this.studied = isStudied
     this.imageURL = imageURL
   }
+
+  constructor(name: String) : this(
+    0L,
+    name,
+    Group.GROUP_FOR_NEW_SUBGROUPS_ID,
+    0,
+    "subgroup_chemistry.jpg"
+  )
 
   @PrimaryKey
   @ColumnInfo(name = "_id")
@@ -42,14 +50,15 @@ class Subgroup : Parcelable {
     : Long
 
   @ColumnInfo(name = "IsStudied")
-  var isStudied // Флаг изучения слов данной подгруппа (1 - изучается; 0 - не изучается).
+  var studied // Флаг изучения слов данной подгруппа (1 - изучается; 0 - не изучается).
     : Int
 
   @ColumnInfo(name = "ImageResourceId")
   var imageURL // id картинки для вывода в GroupsFragment.
     : String
+
   val isCreatedByUser: Boolean
-    get() = groupId == SubgroupDao.Companion.GROUP_FOR_NEW_SUBGROUPS_ID
+    get() = groupId == Group.GROUP_FOR_NEW_SUBGROUPS_ID
 
   /*public static class SubgroupsTable {
         // Названия таблицы подгрупп и её колонок
@@ -67,7 +76,7 @@ class Subgroup : Parcelable {
       return false
     }
     val comparedSubgroup = obj as Subgroup
-    return id == comparedSubgroup.id && name == comparedSubgroup.name && groupId == comparedSubgroup.groupId && isStudied == comparedSubgroup.isStudied && imageURL == comparedSubgroup.imageURL
+    return id == comparedSubgroup.id && name == comparedSubgroup.name && groupId == comparedSubgroup.groupId && studied == comparedSubgroup.studied && imageURL == comparedSubgroup.imageURL
   }
 
   // Parcelable
@@ -75,7 +84,7 @@ class Subgroup : Parcelable {
     id = `in`.readLong()
     name = `in`.readString()!!
     groupId = `in`.readLong()
-    isStudied = `in`.readInt()
+    studied = `in`.readInt()
     imageURL = `in`.readString()!!
   }
 
@@ -87,12 +96,13 @@ class Subgroup : Parcelable {
     dest.writeLong(id)
     dest.writeString(name)
     dest.writeLong(groupId)
-    dest.writeInt(isStudied)
+    dest.writeInt(studied)
     dest.writeString(imageURL)
   }
 
   companion object {
-    @JvmField val CREATOR: Parcelable.Creator<Subgroup?> = object : Parcelable.Creator<Subgroup?> {
+    @JvmField
+    val CREATOR: Parcelable.Creator<Subgroup?> = object : Parcelable.Creator<Subgroup?> {
       override fun createFromParcel(`in`: Parcel): Subgroup {
         return Subgroup(`in`)
       }

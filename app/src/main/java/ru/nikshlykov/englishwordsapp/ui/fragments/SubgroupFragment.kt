@@ -353,7 +353,7 @@ class SubgroupFragment : DaggerFragment(), SortWordsListener, ResetProgressListe
         val subgroup = SubgroupFragmentArgs.fromBundle(requireArguments()).subgroup
         subgroupIsCreatedByUser = subgroup.isCreatedByUser
         subgroupId = subgroup.id
-        subgroupIsStudied = subgroup.isStudied == 1
+        subgroupIsStudied = subgroup.studied == 1
       } else {
         val navDirections = SubgroupFragmentDirections.actionSubgroupDestToGroupsDest()
         onChildFragmentInteractionListener!!.onChildFragmentInteraction(navDirections)

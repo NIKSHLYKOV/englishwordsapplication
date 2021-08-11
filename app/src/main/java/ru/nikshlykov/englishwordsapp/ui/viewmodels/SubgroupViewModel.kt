@@ -13,7 +13,6 @@ import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup
 import ru.nikshlykov.englishwordsapp.db.word.Word
 import ru.nikshlykov.englishwordsapp.ui.fragments.LinkOrDeleteWordDialogFragment
 import ru.nikshlykov.englishwordsapp.ui.fragments.SortWordsDialogFragment
-import ru.nikshlykov.englishwordsapp.ui.viewmodels.SubgroupViewModel
 import java.util.*
 
 class SubgroupViewModel(
@@ -67,7 +66,7 @@ class SubgroupViewModel(
     Log.i(LOG_TAG, "updateSubgroup()")
     val subgroup = subgroupLiveData!!.value
     if (subgroup != null) {
-      subgroup.isStudied = newIsStudied
+      subgroup.studied = newIsStudied
       groupsRepository.update(subgroup)
     }
   }

@@ -2,12 +2,13 @@ package ru.nikshlykov.englishwordsapp.db.subgroup
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import ru.nikshlykov.englishwordsapp.db.group.Group
 
 @Dao
 interface SubgroupDao {
 
   @Insert(onConflict = OnConflictStrategy.IGNORE)
-  fun insert(subgroup: Subgroup): Long
+  suspend fun insert(subgroup: Subgroup): Long
 
   @Update
   fun update(subgroup: Subgroup): Int
@@ -28,12 +29,8 @@ interface SubgroupDao {
   suspend fun getSubgroupsFromGroupSuspend(groupId: Long): List<Subgroup>
 
   @Query("SELECT * FROM Subgroups ORDER BY _id LIMIT 1")
-  fun subgroupWithMinId(): Subgroup
+  suspend fun subgroupWithMinId(): Subgroup
 
-  @Query("SELECT * FROM Subgroups WHERE groupId = $GROUP_FOR_NEW_SUBGROUPS_ID")
+  @Query("SELECT * FROM Subgroups WHERE groupId = ${Group.GROUP_FOR_NEW_SUBGROUPS_ID}")
   fun createdByUserSubgroups(): Array<Subgroup>
-
-  companion object {
-    const val GROUP_FOR_NEW_SUBGROUPS_ID = -1L
-  }
 }
