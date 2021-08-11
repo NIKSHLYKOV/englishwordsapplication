@@ -4,6 +4,7 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
 import androidx.lifecycle.Observer
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import ru.nikshlykov.englishwordsapp.db.GroupsRepository
 import ru.nikshlykov.englishwordsapp.db.GroupsRepository.OnSubgroupsLoadedListener
@@ -12,6 +13,7 @@ import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup
 import ru.nikshlykov.englishwordsapp.db.word.Word
 import ru.nikshlykov.englishwordsapp.domain.interactors.AddWordToSubgroupInteractor
 import ru.nikshlykov.englishwordsapp.domain.interactors.DeleteWordFromSubgroupInteractor
+import ru.nikshlykov.englishwordsapp.domain.interactors.UpdateSubgroupInteractor
 import ru.nikshlykov.englishwordsapp.ui.fragments.LinkOrDeleteWordDialogFragment
 import ru.nikshlykov.englishwordsapp.ui.fragments.SortWordsDialogFragment
 import java.util.*
@@ -21,7 +23,8 @@ class SubgroupViewModel(
   private val groupsRepository: GroupsRepository,
   private val wordsRepository: WordsRepository,
   private val addWordToSubgroupInteractor: AddWordToSubgroupInteractor,
-  private val deleteWordFromSubgroupInteractor: DeleteWordFromSubgroupInteractor
+  private val deleteWordFromSubgroupInteractor: DeleteWordFromSubgroupInteractor,
+  private val updateSubgroupInteractor: UpdateSubgroupInteractor
 ) : AndroidViewModel(application),
   OnSubgroupsLoadedListener {
   // Подгруппа
@@ -65,15 +68,18 @@ class SubgroupViewModel(
 
   /**
    * Обновляет поле подгруппы в БД.
-   * Обновление необходимо только для параметра изучения (IsStudied).
+   * Обновление необходимо только для параметра изучения (studied).
    */
   fun updateSubgroup() {
     Log.i(LOG_TAG, "updateSubgroup()")
-    val subgroup = subgroupLiveData!!.value
+    val subgroup = subgroupLiveData.value
     if (subgroup != null) {
       subgroup.studied = newIsStudied
-      groupsRepository.update(subgroup)
-      // TODO заменить на корутину. Подумать, когда обновлять в БД.
+      GlobalScope.launch {
+        updateSubgroupInteractor.updateSubgroup(subgroup)
+      }
+      // TODO заменить на корутину (заменил, но оставил пока global scope).
+      //  Подумать, когда обновлять в БД.
       //  Каждый раз при нажатии или при выходе. Надо ли тогда делать свой скоуп?
       //  Или можно каждый раз обновлять, но при этому группу запрашивать только один раз.
     }

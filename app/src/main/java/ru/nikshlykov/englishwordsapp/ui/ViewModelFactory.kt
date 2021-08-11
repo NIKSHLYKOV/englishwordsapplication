@@ -32,7 +32,7 @@ class ViewModelFactory @Inject constructor(
         groupsRepository,
         wordsRepository,
         addWordToSubgroupInteractor,
-        deleteWordFromSubgroupInteractor
+        deleteWordFromSubgroupInteractor, updateSubgroupInteractor
       ) as T
     } else if (modelClass == WordDialogsViewModel::class.java) {
       WordDialogsViewModel(

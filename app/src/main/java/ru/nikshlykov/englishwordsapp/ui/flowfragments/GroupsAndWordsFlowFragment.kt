@@ -11,6 +11,7 @@ import androidx.navigation.fragment.NavHostFragment
 import ru.nikshlykov.englishwordsapp.R
 
 class GroupsAndWordsFlowFragment : Fragment(), OnChildFragmentInteractionListener {
+  // TODO сделать проверку на корневой фрагмент (чтобы groupsFragment не пересоздавался)
   private var navController: NavController? = null
   override fun onCreateView(
     inflater: LayoutInflater,

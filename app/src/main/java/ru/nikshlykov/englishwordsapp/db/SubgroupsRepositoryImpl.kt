@@ -13,7 +13,7 @@ class SubgroupsRepositoryImpl @Inject constructor(private val subgroupDao: Subgr
   }
 
   override suspend fun updateSubgroup(subgroup: Subgroup): Int {
-    return subgroupDao.updateSuspend(subgroup)
+    return subgroupDao.update(subgroup)
   }
 
   override suspend fun deleteSubgroup(subgroup: Subgroup): Int {

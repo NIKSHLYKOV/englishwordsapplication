@@ -11,10 +11,7 @@ interface SubgroupDao {
   suspend fun insert(subgroup: Subgroup): Long
 
   @Update
-  fun update(subgroup: Subgroup): Int
-
-  @Update
-  suspend fun updateSuspend(subgroup: Subgroup): Int
+  suspend fun update(subgroup: Subgroup): Int
 
   @Delete
   fun delete(subgroup: Subgroup): Int
