@@ -20,7 +20,7 @@ interface SubgroupDao {
   fun getSubgroupById(id: Long): Subgroup
 
   @Query("SELECT * FROM Subgroups WHERE _id = :id")
-  fun getLiveDataSubgroupById(id: Long): LiveData<Subgroup>
+  suspend fun getSubgroupByIdSuspend(id: Long): Subgroup
 
   @Query("SELECT * FROM Subgroups WHERE groupId = :groupId")
   suspend fun getSubgroupsFromGroup(groupId: Long): List<Subgroup>

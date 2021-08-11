@@ -84,7 +84,7 @@ class SubgroupFragment : DaggerFragment(), SortWordsListener, ResetProgressListe
     // Получаем id подгруппы из Intent.
     bundleArguments
     sortParam = getSortParam()
-    subgroupViewModel!!.setLiveDataSubgroup(subgroupId, sortParam)
+    subgroupViewModel!!.loadSubgroupAndWords(subgroupId, sortParam)
   }
 
   override fun onCreateView(
@@ -106,7 +106,7 @@ class SubgroupFragment : DaggerFragment(), SortWordsListener, ResetProgressListe
     // Устанавливаем наш toolbar.
     (activity as DaggerAppCompatActivity?)!!.setSupportActionBar(toolbar)
     initCreateWordFAB()
-    subgroupViewModel!!.subgroupLiveData.observe(viewLifecycleOwner, Observer { subgroup ->
+    subgroupViewModel!!.subgroup.observe(viewLifecycleOwner, Observer { subgroup ->
       if (subgroup != null) {
         Log.i(LOG_TAG, "subgroup onChanged()")
         val toolbarLayout: CollapsingToolbarLayout = view.findViewById(
@@ -602,7 +602,7 @@ class SubgroupFragment : DaggerFragment(), SortWordsListener, ResetProgressListe
    */
   override fun deleteMessage(message: String?) {
     if (message == DeleteSubgroupDialogFragment.DELETE_MESSAGE) {
-      val currentSubgroup = subgroupViewModel!!.subgroupLiveData.value
+      val currentSubgroup = subgroupViewModel!!.subgroup.value
       if (currentSubgroup != null) {
         if (currentSubgroup.isCreatedByUser) {
           subgroupViewModel!!.deleteSubgroup()

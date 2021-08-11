@@ -66,4 +66,10 @@ class InteractorModule {
     : DeleteWordFromSubgroupInteractor {
     return DeleteWordFromSubgroupInteractor(linksRepository)
   }
+
+  @Provides
+  fun provideGetSubgroupInteractor(subgroupsRepository: SubgroupsRepository)
+    : GetSubgroupInteractor {
+    return GetSubgroupInteractor(subgroupsRepository)
+  }
 }
