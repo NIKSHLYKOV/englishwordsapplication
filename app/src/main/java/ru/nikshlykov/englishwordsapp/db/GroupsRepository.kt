@@ -2,7 +2,6 @@ package ru.nikshlykov.englishwordsapp.db
 
 import android.os.AsyncTask
 import android.util.Log
-import androidx.lifecycle.LiveData
 import ru.nikshlykov.englishwordsapp.db.link.LinkDao
 import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup
 import ru.nikshlykov.englishwordsapp.db.subgroup.SubgroupDao
@@ -21,10 +20,6 @@ class GroupsRepository(database: AppDatabase) {
 
   fun delete(subgroup: Subgroup?) {
     DeleteSubgroupAsyncTask(subgroupDao).execute(subgroup)
-  }
-
-  fun getLiveDataSubgroupById(subgroupId: Long): LiveData<Subgroup> {
-    return subgroupDao!!.getLiveDataSubgroupById(subgroupId)
   }
 
   fun getAvailableSubgroupTo(wordId: Long, flagTo: Int, listener: OnSubgroupsLoadedListener) {

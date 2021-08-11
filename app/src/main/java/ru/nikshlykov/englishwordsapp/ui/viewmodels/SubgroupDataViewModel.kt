@@ -5,22 +5,27 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
-import ru.nikshlykov.englishwordsapp.db.GroupsRepository
 import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup
 import ru.nikshlykov.englishwordsapp.domain.interactors.AddSubgroupInteractor
+import ru.nikshlykov.englishwordsapp.domain.interactors.GetSubgroupInteractor
 import ru.nikshlykov.englishwordsapp.domain.interactors.UpdateSubgroupInteractor
 
 class SubgroupDataViewModel(
-  private val groupsRepository: GroupsRepository,
+  private val getSubgroupInteractor: GetSubgroupInteractor,
   private val addSubgroupInteractor: AddSubgroupInteractor,
   private val updateSubgroupInteractor: UpdateSubgroupInteractor
 ) : ViewModel() {
-  var subgroup: LiveData<Subgroup>
-    private set
-  val subgroupIsInsertedOrUpdated: MutableLiveData<Boolean>
+  private val _subgroup: MutableLiveData<Subgroup> = MutableLiveData()
 
-  fun setSubgroup(subgroupId: Long) {
-    subgroup = groupsRepository.getLiveDataSubgroupById(subgroupId)
+  val subgroup: LiveData<Subgroup> = _subgroup
+
+  val subgroupIsInsertedOrUpdated: MutableLiveData<Boolean> = MutableLiveData()
+
+
+  fun loadSubgroup(subgroupId: Long) {
+    viewModelScope.launch {
+      _subgroup.value = getSubgroupInteractor.getSubgroupById(subgroupId)
+    }
   }
 
   fun getSubgroupIsInsertedOrUpdated(): LiveData<Boolean> {
@@ -30,7 +35,6 @@ class SubgroupDataViewModel(
   fun addOrUpdateSubgroup(subgroupName: String?) {
     val subgroupToUpdate = subgroup.value
     if (subgroupToUpdate != null) {
-      //groupsRepository.update(subgroupToUpdate, this)
       if (subgroupName != null) {
         subgroupToUpdate.name = subgroupName
         viewModelScope.launch {
@@ -44,7 +48,6 @@ class SubgroupDataViewModel(
       }
     } else {
       if (subgroupName != null) {
-        //groupsRepository.insertSubgroup(subgroupName, this)
         viewModelScope.launch {
           val newSubgroupId = addSubgroupInteractor.addSubgroup(subgroupName)
           if (newSubgroupId != 0L) {
@@ -56,10 +59,5 @@ class SubgroupDataViewModel(
         //  Или заставить это обрабатывать Вьюху.
       }
     }
-  }
-
-  init {
-    subgroup = MutableLiveData()
-    subgroupIsInsertedOrUpdated = MutableLiveData()
   }
 }

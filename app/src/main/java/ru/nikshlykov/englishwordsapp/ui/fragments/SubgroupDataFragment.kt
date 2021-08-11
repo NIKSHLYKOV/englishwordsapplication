@@ -45,7 +45,7 @@ class SubgroupDataFragment : DaggerFragment() {
     if (extras != null) {
       subgroupId = SubgroupDataFragmentArgs.fromBundle(extras).subgroupId
       if (subgroupId != 0L) {
-        subgroupDataViewModel!!.setSubgroup(subgroupId)
+        subgroupDataViewModel!!.loadSubgroup(subgroupId)
       }
     }
   }
@@ -92,6 +92,7 @@ class SubgroupDataFragment : DaggerFragment() {
               onChildFragmentInteractionListener!!.onChildFragmentInteraction(navDirections)
             }
           })
+        // TODO проверить сохранение. там какой-то косяк, название не меняется.
         subgroupDataViewModel!!.addOrUpdateSubgroup(subgroupName)
       } else {
         Toast.makeText(

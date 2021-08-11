@@ -13,6 +13,7 @@ import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup
 import ru.nikshlykov.englishwordsapp.db.word.Word
 import ru.nikshlykov.englishwordsapp.domain.interactors.AddWordToSubgroupInteractor
 import ru.nikshlykov.englishwordsapp.domain.interactors.DeleteWordFromSubgroupInteractor
+import ru.nikshlykov.englishwordsapp.domain.interactors.GetSubgroupInteractor
 import ru.nikshlykov.englishwordsapp.domain.interactors.UpdateSubgroupInteractor
 import ru.nikshlykov.englishwordsapp.ui.fragments.LinkOrDeleteWordDialogFragment
 import ru.nikshlykov.englishwordsapp.ui.fragments.SortWordsDialogFragment
@@ -22,14 +23,16 @@ class SubgroupViewModel(
   application: Application,
   private val groupsRepository: GroupsRepository,
   private val wordsRepository: WordsRepository,
+  private val getSubgroupInteractor: GetSubgroupInteractor,
   private val addWordToSubgroupInteractor: AddWordToSubgroupInteractor,
   private val deleteWordFromSubgroupInteractor: DeleteWordFromSubgroupInteractor,
   private val updateSubgroupInteractor: UpdateSubgroupInteractor
 ) : AndroidViewModel(application),
   OnSubgroupsLoadedListener {
+
   // Подгруппа
-  lateinit var subgroupLiveData: LiveData<Subgroup>
-    private set
+  private val _subgroup: MutableLiveData<Subgroup> = MutableLiveData()
+  val subgroup: LiveData<Subgroup> = _subgroup
   private var subgroupId: Long = 0
   private var newIsStudied = 0
 
@@ -44,9 +47,13 @@ class SubgroupViewModel(
   // Observer, который сетит список слов в words.
   private val observer: Observer<List<Word>>
   private val availableSubgroupToLink: MutableLiveData<ArrayList<Subgroup>?>
-  fun setLiveDataSubgroup(subgroupId: Long, sortParam: Int) {
+
+  fun loadSubgroupAndWords(subgroupId: Long, sortParam: Int) {
     this.subgroupId = subgroupId
-    subgroupLiveData = groupsRepository.getLiveDataSubgroupById(subgroupId)
+    //subgroupLiveData = groupsRepository.getLiveDataSubgroupById(subgroupId)
+    viewModelScope.launch {
+      _subgroup.value = getSubgroupInteractor.getSubgroupById(subgroupId)
+    }
     // Подгружаем возможные списки слов для words.
     wordsByAlphabet = wordsRepository.getWordsFromSubgroupByAlphabet(subgroupId)
     wordsByProgress = wordsRepository.getWordsFromSubgroupByProgress(subgroupId)
@@ -62,7 +69,7 @@ class SubgroupViewModel(
    * Удаляет подгруппу.
    */
   fun deleteSubgroup() {
-    val subgroup = subgroupLiveData!!.value
+    val subgroup = _subgroup.value
     if (subgroup != null) groupsRepository.delete(subgroup)
   }
 
@@ -72,7 +79,7 @@ class SubgroupViewModel(
    */
   fun updateSubgroup() {
     Log.i(LOG_TAG, "updateSubgroup()")
-    val subgroup = subgroupLiveData.value
+    val subgroup = _subgroup.value
     if (subgroup != null) {
       subgroup.studied = newIsStudied
       GlobalScope.launch {
