@@ -21,6 +21,9 @@ class StudyViewModel(
   private var withNew = true
   private var newWordsCount = 0
 
+  // TODO подумать над тем, чтобы получать слова для повтора прямо из интерактора, который
+  //  будет комбинировать новые и уже начатые.
+
   /*private MediatorLiveData<List<Word>> availableToRepeatWords;
     private LiveData<List<Word>> wordsFromStudiedSubgroups;
     private Observer<List<Word>> observer;*/
