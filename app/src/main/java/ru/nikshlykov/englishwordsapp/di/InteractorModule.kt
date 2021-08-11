@@ -60,4 +60,10 @@ class InteractorModule {
   fun provideAddWordToSubgroupInteractor(linksRepository: LinksRepository): AddWordToSubgroupInteractor {
     return AddWordToSubgroupInteractor(linksRepository)
   }
+
+  @Provides
+  fun provideDeleteWordFromSubgroupInteractor(linksRepository: LinksRepository)
+    : DeleteWordFromSubgroupInteractor {
+    return DeleteWordFromSubgroupInteractor(linksRepository)
+  }
 }

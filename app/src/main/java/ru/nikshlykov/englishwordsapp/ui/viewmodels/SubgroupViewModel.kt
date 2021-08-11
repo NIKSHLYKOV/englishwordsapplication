@@ -8,10 +8,10 @@ import kotlinx.coroutines.launch
 import ru.nikshlykov.englishwordsapp.db.GroupsRepository
 import ru.nikshlykov.englishwordsapp.db.GroupsRepository.OnSubgroupsLoadedListener
 import ru.nikshlykov.englishwordsapp.db.WordsRepository
-import ru.nikshlykov.englishwordsapp.db.link.Link
 import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup
 import ru.nikshlykov.englishwordsapp.db.word.Word
 import ru.nikshlykov.englishwordsapp.domain.interactors.AddWordToSubgroupInteractor
+import ru.nikshlykov.englishwordsapp.domain.interactors.DeleteWordFromSubgroupInteractor
 import ru.nikshlykov.englishwordsapp.ui.fragments.LinkOrDeleteWordDialogFragment
 import ru.nikshlykov.englishwordsapp.ui.fragments.SortWordsDialogFragment
 import java.util.*
@@ -20,7 +20,8 @@ class SubgroupViewModel(
   application: Application,
   private val groupsRepository: GroupsRepository,
   private val wordsRepository: WordsRepository,
-  private val addWordToSubgroupInteractor: AddWordToSubgroupInteractor
+  private val addWordToSubgroupInteractor: AddWordToSubgroupInteractor,
+  private val deleteWordFromSubgroupInteractor: DeleteWordFromSubgroupInteractor
 ) : AndroidViewModel(application),
   OnSubgroupsLoadedListener {
   // Подгруппа
@@ -122,9 +123,11 @@ class SubgroupViewModel(
    *
    * @param wordId id слова.
    */
-  fun deleteLinkWithSubgroup(wordId: Long) {
-    val link = Link(subgroupId, wordId)
-    groupsRepository.delete(link)
+  fun deleteWordFromSubgroup(wordId: Long) {
+    viewModelScope.launch {
+      // TODO сделать выведение snackbar уже после удаления слова.
+      deleteWordFromSubgroupInteractor.deleteLinkBetweenWordAndSubgroup(wordId, subgroupId)
+    }
   }
 
   /**
@@ -132,7 +135,7 @@ class SubgroupViewModel(
    *
    * @param wordId id слова.
    */
-  fun insertLinkWithSubgroup(wordId: Long) {
+  fun addWordToSubgroup(wordId: Long) {
     viewModelScope.launch {
       addWordToSubgroupInteractor.addLinkBetweenWordAndSubgroup(wordId, subgroupId)
     }

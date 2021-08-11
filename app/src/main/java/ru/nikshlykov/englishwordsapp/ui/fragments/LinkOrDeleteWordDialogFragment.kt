@@ -117,14 +117,14 @@ class LinkOrDeleteWordDialogFragment : DaggerDialogFragment() {
             var i = 0
             while (i < checkedSubgroups.size) {
               if (checkedSubgroups[i]) {
-                wordDialogsViewModel!!.deleteLink(availableSubgroupsIds!![i])
+                wordDialogsViewModel!!.deleteWordFromSubgroup(availableSubgroupsIds!![i])
               }
               i++
             }
           }
           .setNegativeButton(R.string.cancel, null)
           .create()
-      else -> errorDialog
+      else      -> errorDialog
     }
   }
 
