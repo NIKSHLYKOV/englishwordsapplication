@@ -11,7 +11,7 @@ class LinksRepositoryImpl @Inject constructor(private val linkDao: LinkDao) : Li
   }
 
   override suspend fun deleteLink(link: Link): Int {
-    TODO("Not yet implemented")
+    return linkDao.delete(link)
   }
 
   override suspend fun getLinksByWordId(wordId: Long): List<Link> {

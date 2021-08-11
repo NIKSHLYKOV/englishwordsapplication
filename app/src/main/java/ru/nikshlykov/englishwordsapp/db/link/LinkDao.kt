@@ -9,7 +9,7 @@ interface LinkDao {
   suspend fun insert(link: Link): Long
 
   @Delete
-  fun delete(link: Link): Int
+  suspend fun delete(link: Link): Int
 
   @Delete
   fun deleteMultiple(links: List<Link>): Int

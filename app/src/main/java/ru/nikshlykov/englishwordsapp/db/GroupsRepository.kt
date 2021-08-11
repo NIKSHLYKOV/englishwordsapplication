@@ -3,7 +3,6 @@ package ru.nikshlykov.englishwordsapp.db
 import android.os.AsyncTask
 import android.util.Log
 import androidx.lifecycle.LiveData
-import ru.nikshlykov.englishwordsapp.db.link.Link
 import ru.nikshlykov.englishwordsapp.db.link.LinkDao
 import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup
 import ru.nikshlykov.englishwordsapp.db.subgroup.SubgroupDao
@@ -145,27 +144,6 @@ class GroupsRepository(database: AppDatabase) {
       listener?.onLoaded(subgroup)
     }
 
-  }
-
-
-  /**
-   * Методы для работы со связями.
-   */
-
-  fun delete(link: Link?) {
-    DeleteLinkAsyncTask(linkDao).execute(link)
-  }
-
-  /**
-   * AsyncTasks для работы со связями.
-   */
-
-  private class DeleteLinkAsyncTask(private val linkDao: LinkDao?) :
-    AsyncTask<Link, Void, Void>() {
-    protected override fun doInBackground(vararg links: Link): Void? {
-      linkDao!!.delete(links[0])
-      return null
-    }
   }
 
   companion object {

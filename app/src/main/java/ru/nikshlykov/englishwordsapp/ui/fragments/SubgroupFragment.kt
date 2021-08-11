@@ -471,9 +471,9 @@ class SubgroupFragment : DaggerFragment(), SortWordsListener, ResetProgressListe
       val wordId = adapter!!.getWordAt(viewHolder.adapterPosition).id
       when (direction) {
         ItemTouchHelper.LEFT -> {
-          subgroupViewModel!!.deleteLinkWithSubgroup(wordId)
+          subgroupViewModel!!.deleteWordFromSubgroup(wordId)
           Snackbar.make(viewHolder.itemView, R.string.word_deleted, Snackbar.LENGTH_LONG)
-            .setAction(R.string.to_cancel) { subgroupViewModel!!.insertLinkWithSubgroup(wordId) }
+            .setAction(R.string.to_cancel) { subgroupViewModel!!.addWordToSubgroup(wordId) }
             .show()
         }
         ItemTouchHelper.RIGHT -> {
