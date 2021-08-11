@@ -151,15 +151,6 @@ class GroupsRepository(database: AppDatabase) {
   /**
    * Методы для работы со связями.
    */
-  fun insert(link: Link) {
-    Log.i(
-      LOG_TAG, """
-   insert(link):
-   subgroupId = ${link.subgroupId}; wordId = ${link.wordId}
-   """.trimIndent()
-    )
-    InsertLinkAsyncTask(linkDao).execute(link)
-  }
 
   fun delete(link: Link?) {
     DeleteLinkAsyncTask(linkDao).execute(link)
@@ -168,12 +159,6 @@ class GroupsRepository(database: AppDatabase) {
   /**
    * AsyncTasks для работы со связями.
    */
-  private class InsertLinkAsyncTask(private val linkDao: LinkDao?) :
-    AsyncTask<Link, Void, Long>() {
-    protected override fun doInBackground(vararg links: Link): Long {
-      return linkDao!!.insert(links[0])
-    }
-  }
 
   private class DeleteLinkAsyncTask(private val linkDao: LinkDao?) :
     AsyncTask<Link, Void, Void>() {

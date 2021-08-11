@@ -4,11 +4,9 @@ import androidx.room.*
 
 @Dao
 interface LinkDao {
-  @Insert(onConflict = OnConflictStrategy.IGNORE)
-  fun insert(link: Link): Long
 
   @Insert(onConflict = OnConflictStrategy.IGNORE)
-  fun insertMultiple(links: List<Link>): List<Long>
+  suspend fun insert(link: Link): Long
 
   @Delete
   fun delete(link: Link): Int

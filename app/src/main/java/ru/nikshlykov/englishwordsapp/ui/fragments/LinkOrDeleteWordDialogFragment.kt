@@ -97,7 +97,7 @@ class LinkOrDeleteWordDialogFragment : DaggerDialogFragment() {
             var i = 0
             while (i < checkedSubgroups.size) {
               if (checkedSubgroups[i]) {
-                wordDialogsViewModel!!.insertLink(availableSubgroupsIds!![i])
+                wordDialogsViewModel!!.addWordToSubgroup(availableSubgroupsIds!![i])
               }
               i++
             }

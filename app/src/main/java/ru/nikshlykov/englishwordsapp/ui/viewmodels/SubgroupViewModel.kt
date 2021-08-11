@@ -4,13 +4,14 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
 import androidx.lifecycle.Observer
+import kotlinx.coroutines.launch
 import ru.nikshlykov.englishwordsapp.db.GroupsRepository
 import ru.nikshlykov.englishwordsapp.db.GroupsRepository.OnSubgroupsLoadedListener
 import ru.nikshlykov.englishwordsapp.db.WordsRepository
-import ru.nikshlykov.englishwordsapp.db.WordsRepository.OnWordInsertedListener
 import ru.nikshlykov.englishwordsapp.db.link.Link
 import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup
 import ru.nikshlykov.englishwordsapp.db.word.Word
+import ru.nikshlykov.englishwordsapp.domain.interactors.AddWordToSubgroupInteractor
 import ru.nikshlykov.englishwordsapp.ui.fragments.LinkOrDeleteWordDialogFragment
 import ru.nikshlykov.englishwordsapp.ui.fragments.SortWordsDialogFragment
 import java.util.*
@@ -19,8 +20,9 @@ class SubgroupViewModel(
   application: Application,
   private val groupsRepository: GroupsRepository,
   private val wordsRepository: WordsRepository,
+  private val addWordToSubgroupInteractor: AddWordToSubgroupInteractor
 ) : AndroidViewModel(application),
-  OnWordInsertedListener, OnSubgroupsLoadedListener {
+  OnSubgroupsLoadedListener {
   // Подгруппа
   lateinit var subgroupLiveData: LiveData<Subgroup>
     private set
@@ -116,32 +118,6 @@ class SubgroupViewModel(
   }
 
   /**
-   * Добавляет новое слово в БД и закидывает SubgroupViewModel в виде слушателя
-   * для последующего приёма id добавленного слова.
-   *
-   * @param word слово, которое необходимо добавить.
-   */
-  fun insert(word: Word) {
-    Log.i(
-      LOG_TAG, """
-   insert():
-   word = ${word.word}; value = ${word.value}
-   """.trimIndent()
-    )
-    wordsRepository.insert(word, this)
-  }
-
-  /**
-   * Добавляет связь добавленого слова с текущей подгруппой.
-   *
-   * @param wordId id добавленного слова.
-   */
-  override fun onInserted(wordId: Long) {
-    Log.i(LOG_TAG, "onInserted():\nwordId = $wordId")
-    groupsRepository.insert(Link(subgroupId, wordId))
-  }
-
-  /**
    * Удаляет связь между текущей подгруппой и словом.
    *
    * @param wordId id слова.
@@ -157,14 +133,9 @@ class SubgroupViewModel(
    * @param wordId id слова.
    */
   fun insertLinkWithSubgroup(wordId: Long) {
-    val link = Link(subgroupId, wordId)
-    Log.i(
-      "SubgroupViewModel", """
-   link.subgroupId = ${link.subgroupId}.
-   link.wordId = ${link.wordId}
-   """.trimIndent()
-    )
-    groupsRepository.insert(link)
+    viewModelScope.launch {
+      addWordToSubgroupInteractor.addLinkBetweenWordAndSubgroup(wordId, subgroupId)
+    }
   }
 
   fun getAvailableSubgroupsToLink(wordId: Long): MutableLiveData<ArrayList<Subgroup>?> {

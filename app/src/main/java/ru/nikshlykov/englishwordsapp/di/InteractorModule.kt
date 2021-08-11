@@ -4,6 +4,7 @@ import dagger.Module
 import dagger.Provides
 import ru.nikshlykov.englishwordsapp.domain.interactors.*
 import ru.nikshlykov.englishwordsapp.domain.repositories.GroupsRepository
+import ru.nikshlykov.englishwordsapp.domain.repositories.LinksRepository
 import ru.nikshlykov.englishwordsapp.domain.repositories.ModesRepository
 import ru.nikshlykov.englishwordsapp.domain.repositories.SubgroupsRepository
 
@@ -53,5 +54,10 @@ class InteractorModule {
   @Provides
   fun provideUpdateSubgroupInteractor(subgroupsRepository: SubgroupsRepository): UpdateSubgroupInteractor {
     return UpdateSubgroupInteractor(subgroupsRepository)
+  }
+
+  @Provides
+  fun provideAddWordToSubgroupInteractor(linksRepository: LinksRepository): AddWordToSubgroupInteractor {
+    return AddWordToSubgroupInteractor(linksRepository)
   }
 }
