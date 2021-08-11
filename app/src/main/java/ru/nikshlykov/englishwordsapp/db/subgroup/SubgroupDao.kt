@@ -14,7 +14,7 @@ interface SubgroupDao {
   suspend fun update(subgroup: Subgroup): Int
 
   @Delete
-  fun delete(subgroup: Subgroup): Int
+  suspend fun delete(subgroup: Subgroup): Int
 
   @Query("SELECT * FROM Subgroups WHERE _id = :id")
   fun getSubgroupById(id: Long): Subgroup

@@ -72,4 +72,10 @@ class InteractorModule {
     : GetSubgroupInteractor {
     return GetSubgroupInteractor(subgroupsRepository)
   }
+
+  @Provides
+  fun provideDeleteSubgroupInteractor(subgroupsRepository: SubgroupsRepository)
+    : DeleteSubgroupInteractor {
+    return DeleteSubgroupInteractor(subgroupsRepository)
+  }
 }

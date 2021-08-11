@@ -1,27 +1,23 @@
 package ru.nikshlykov.englishwordsapp.ui.fragments
 
 import android.app.Dialog
-import android.content.Context
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import ru.nikshlykov.englishwordsapp.R
 
 class DeleteSubgroupDialogFragment : DialogFragment() {
-  // Интерфейс для взаимодействия с Activity.
-  private val deleteSubgroupListener: DeleteSubgroupListener? = null
+
+  private var deleteSubgroupListener: DeleteSubgroupListener? = null
 
   interface DeleteSubgroupListener {
     fun deleteMessage(message: String?)
   }
 
-  override fun onAttach(context: Context) {
-    super.onAttach(context)
-    // Присваиваем слушатель.
-    // TODO разобраться с удалением подгруппы. Т.к. этот слушатель больше не работает.
-    // deleteSubgroupListener = (DeleteSubgroupListener) context;
-
-    // TODO просмотреть ещё диалоговые фрагменты, в которых могут быть слушатели.
+  // TODO просмотреть ещё диалоговые фрагменты, в которых могут быть слушатели.
+  //  Т.к. раньше были acitivity, которые их обрабатывали. А сейчас всё перешло на фрагменты.
+  fun setDeleteSubgroupListener(deleteSubgroupListener: DeleteSubgroupListener) {
+    this.deleteSubgroupListener = deleteSubgroupListener
   }
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

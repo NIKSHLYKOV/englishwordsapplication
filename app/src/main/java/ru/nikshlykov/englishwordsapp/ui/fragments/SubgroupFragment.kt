@@ -275,6 +275,7 @@ class SubgroupFragment : DaggerFragment(), SortWordsListener, ResetProgressListe
       R.id.activity_subgroup___action___delete_subgroup -> {
         Log.d(LOG_TAG, "Delete subgroup")
         val deleteSubgroupDialogFragment = DeleteSubgroupDialogFragment()
+        deleteSubgroupDialogFragment.setDeleteSubgroupListener(this)
         deleteSubgroupDialogFragment.show(manager, DIALOG_DELETE_SUBGROUP)
         true
       }
@@ -602,17 +603,13 @@ class SubgroupFragment : DaggerFragment(), SortWordsListener, ResetProgressListe
    */
   override fun deleteMessage(message: String?) {
     if (message == DeleteSubgroupDialogFragment.DELETE_MESSAGE) {
-      val currentSubgroup = subgroupViewModel!!.subgroup.value
-      if (currentSubgroup != null) {
-        if (currentSubgroup.isCreatedByUser) {
-          subgroupViewModel!!.deleteSubgroup()
-          deleteFlag = true
-          val navDirections = SubgroupFragmentDirections.actionSubgroupDestToGroupsDest()
-          onChildFragmentInteractionListener!!.onChildFragmentInteraction(navDirections)
-        }
-      }
+      subgroupViewModel!!.deleteSubgroup()
+      deleteFlag = true
+      val navDirections = SubgroupFragmentDirections.actionSubgroupDestToGroupsDest()
+      onChildFragmentInteractionListener!!.onChildFragmentInteraction(navDirections)
     }
   }
+
 
   companion object {
     // TODO сделать свою view для отображения прогресса по слову.
