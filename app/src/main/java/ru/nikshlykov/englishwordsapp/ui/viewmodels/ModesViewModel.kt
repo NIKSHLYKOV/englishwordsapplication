@@ -6,13 +6,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
-import ru.nikshlykov.englishwordsapp.db.ModesRepository
 import ru.nikshlykov.englishwordsapp.db.mode.Mode
 import ru.nikshlykov.englishwordsapp.domain.interactors.GetAllModesInteractor
 import ru.nikshlykov.englishwordsapp.domain.interactors.UpdateModesInteractor
 
 class ModesViewModel(
-  application: Application, private val modesRepository: ModesRepository,
+  application: Application,
   private val getAllModesInteractor: GetAllModesInteractor,
   private val updateModesInteractor: UpdateModesInteractor
 ) :

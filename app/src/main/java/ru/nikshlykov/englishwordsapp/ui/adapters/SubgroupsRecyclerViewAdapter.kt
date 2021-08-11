@@ -50,7 +50,7 @@ class SubgroupsRecyclerViewAdapter(
         .error(R.drawable.shape_load_picture)
         .into(holder.subgroupImageView)
     }
-    holder.learnSubgroupToggleButton.isChecked = currentSubgroup.isStudied == 1
+    holder.learnSubgroupToggleButton.isChecked = currentSubgroup.studied == 1
   }
 
   override fun getItemCount(): Int {
@@ -85,7 +85,7 @@ class SubgroupsRecyclerViewAdapter(
         if (onSubgroupCheckedListener != null) {
           val subgroup = getSubgroupAt(layoutPosition)
           if (subgroup != null) {
-            subgroup.isStudied = if (isChecked) 1 else 0
+            subgroup.studied = if (isChecked) 1 else 0
             onSubgroupCheckedListener.onSubgroupChecked(buttonView, subgroup)
           }
         }

@@ -92,7 +92,7 @@ class SubgroupDataFragment : DaggerFragment() {
               onChildFragmentInteractionListener!!.onChildFragmentInteraction(navDirections)
             }
           })
-        subgroupDataViewModel!!.insertOrUpdateSubgroup(subgroupName)
+        subgroupDataViewModel!!.addOrUpdateSubgroup(subgroupName)
       } else {
         Toast.makeText(
           context, R.string.error_new_subgroup_empty_name,

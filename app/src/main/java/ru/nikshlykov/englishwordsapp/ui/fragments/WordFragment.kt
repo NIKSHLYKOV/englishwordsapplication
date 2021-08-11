@@ -221,7 +221,7 @@ examplesRecyclerView.setAdapter(examplesRecyclerViewAdapter);*/
     Log.e(LOG_TAG, "Error happened!")
     // TODO Сделать потом, наверное, через нажатие кнопки назад программно.
     val navDirections: NavDirections = WordFragmentDirections
-      .actionWordDestToSubgroupDest(Subgroup(0L, "a", 0L, 0, "a"))
+      .actionWordDestToSubgroupDest(Subgroup("Testing subgroup"))
     onChildFragmentInteractionListener!!.onChildFragmentInteraction(navDirections)
   }
 
@@ -260,7 +260,7 @@ examplesRecyclerView.setAdapter(examplesRecyclerViewAdapter);*/
 
         // Закрываем fragment.
         val navDirections: NavDirections = WordFragmentDirections
-          .actionWordDestToSubgroupDest(Subgroup(0L, "a", 0L, 0, "a"))
+          .actionWordDestToSubgroupDest(Subgroup("Testing subgroup"))
         onChildFragmentInteractionListener!!.onChildFragmentInteraction(navDirections)
       } else {
         Toast.makeText(

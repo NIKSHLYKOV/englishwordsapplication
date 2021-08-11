@@ -188,7 +188,7 @@ class GroupsFragment : DaggerFragment(), OnSubgroupClickListener, OnSubgroupChec
     groupsViewModel!!.updateSubgroup(subgroup)
     Log.i(
       LOG_TAG, "Subgroup (id:" + subgroup!!.id + ") update query: new isStudied = "
-        + subgroup.isStudied
+        + subgroup.studied
     )
   }
 

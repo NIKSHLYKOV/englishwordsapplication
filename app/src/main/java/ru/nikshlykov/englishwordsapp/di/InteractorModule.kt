@@ -44,4 +44,9 @@ class InteractorModule {
   fun provideGetSelectedModesInteractor(modesRepository: ModesRepository): GetSelectedModesInteractor {
     return GetSelectedModesInteractor(modesRepository)
   }
+
+  @Provides
+  fun provideAddSubgroupInteractor(subgroupsRepository: SubgroupsRepository): AddSubgroupInteractor {
+    return AddSubgroupInteractor(subgroupsRepository)
+  }
 }

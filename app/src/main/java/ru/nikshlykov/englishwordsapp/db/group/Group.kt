@@ -13,6 +13,7 @@ class Group {
   @ColumnInfo(name = "GroupName")
   var name: String = ""
 
+  // TODO подумать, как лучше передавать имена столбцов
   object GroupsTable {
     // Названия таблицы групп и её колонок
     const val TABLE_GROUPS = "Groups"
@@ -29,5 +30,9 @@ class Group {
     }
     val comparedGroup = obj as Group
     return id == comparedGroup.id && name == comparedGroup.name
+  }
+
+  companion object {
+    const val GROUP_FOR_NEW_SUBGROUPS_ID = -1L
   }
 }

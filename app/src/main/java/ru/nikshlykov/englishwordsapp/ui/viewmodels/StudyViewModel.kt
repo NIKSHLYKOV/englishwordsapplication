@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.preference.PreferenceManager
 import kotlinx.coroutines.launch
 import ru.nikshlykov.englishwordsapp.R
-import ru.nikshlykov.englishwordsapp.db.ModesRepository
 import ru.nikshlykov.englishwordsapp.db.WordsRepository
 import ru.nikshlykov.englishwordsapp.db.WordsRepository.*
 import ru.nikshlykov.englishwordsapp.db.repeat.Repeat
@@ -17,7 +16,6 @@ import java.util.*
 
 class StudyViewModel(
   application: Application, private val wordsRepository: WordsRepository,
-  private val modesRepository: ModesRepository,
   private val getSelectedModesInteractor: GetSelectedModesInteractor
 ) : AndroidViewModel(application), OnRepeatsCountForTodayLoadedListener {
   private var listener: OnAvailableToRepeatWordLoadedListener? = null

@@ -8,7 +8,8 @@ import javax.inject.Inject
 class SubgroupsRepositoryImpl @Inject constructor(private val subgroupDao: SubgroupDao) :
   SubgroupsRepository {
   override suspend fun insertSubgroup(subgroup: Subgroup): Long {
-    TODO("Not yet implemented")
+    subgroup.id = subgroupDao.subgroupWithMinId().id - 1
+    return subgroupDao.insert(subgroup)
   }
 
   override suspend fun updateSubgroup(subgroup: Subgroup): Int {

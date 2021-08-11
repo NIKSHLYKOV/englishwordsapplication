@@ -4,17 +4,11 @@ import dagger.Module
 import dagger.Provides
 import ru.nikshlykov.englishwordsapp.db.AppDatabase
 import ru.nikshlykov.englishwordsapp.db.GroupsRepository
-import ru.nikshlykov.englishwordsapp.db.ModesRepository
 import ru.nikshlykov.englishwordsapp.db.WordsRepository
 import javax.inject.Singleton
 
 @Module
 class RepositoryModule {
-  @Provides
-  @Singleton
-  fun provideModesRepository(appDatabase: AppDatabase): ModesRepository {
-    return ModesRepository(appDatabase)
-  }
 
   @Provides
   @Singleton

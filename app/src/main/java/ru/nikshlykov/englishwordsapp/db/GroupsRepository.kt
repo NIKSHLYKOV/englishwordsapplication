@@ -19,9 +19,6 @@ class GroupsRepository(database: AppDatabase) {
   /**
    * Методы для работы с подгруппами.
    */
-  fun insertSubgroup(subgroupName: String?, listener: OnSubgroupInsertedListener) {
-    InsertSubgroupAsyncTask(subgroupDao, listener).execute(subgroupName)
-  }
 
   fun update(subgroup: Subgroup?) {
     UpdateSubgroupAsyncTask(subgroupDao, null).execute(subgroup)
@@ -51,33 +48,6 @@ class GroupsRepository(database: AppDatabase) {
   /**
    * AsyncTasks для работы с подгруппами.
    */
-  interface OnSubgroupInsertedListener {
-    fun onSubgroupInserted(subgroupId: Long)
-  }
-
-  private class InsertSubgroupAsyncTask(
-    private val subgroupDao: SubgroupDao?,
-    listener: OnSubgroupInsertedListener
-  ) : AsyncTask<String, Void, Long>() {
-    private val listener: WeakReference<OnSubgroupInsertedListener> = WeakReference(listener)
-    override fun doInBackground(vararg p0: String): Long {
-      val newSubgroupId = subgroupDao!!.subgroupWithMinId().id.minus(1)
-      return Subgroup(
-        newSubgroupId, p0[0],
-        SubgroupDao.GROUP_FOR_NEW_SUBGROUPS_ID, 0, "subgroup_chemistry.jpg"
-      ).let {
-        subgroupDao.insert(
-          it
-        )
-      }
-    }
-
-    override fun onPostExecute(aLong: Long) {
-      super.onPostExecute(aLong)
-      val listener = listener.get()
-      listener?.onSubgroupInserted(aLong)
-    }
-  }
 
   interface OnSubgroupUpdatedListener {
     fun onSubgroupUpdated(isSubgroupUpdated: Boolean)
@@ -89,7 +59,7 @@ class GroupsRepository(database: AppDatabase) {
   ) : AsyncTask<Subgroup, Void, Boolean>() {
     private val listener: WeakReference<OnSubgroupUpdatedListener?>
     protected override fun doInBackground(vararg subgroups: Subgroup): Boolean {
-      Log.i(LOG_TAG, "UpdateSubgroupAsyncTask: subgroup.isStudied = " + subgroups[0].isStudied)
+      Log.i(LOG_TAG, "UpdateSubgroupAsyncTask: subgroup.isStudied = " + subgroups[0].studied)
       return subgroupDao!!.update(subgroups[0]) == 1
     }
 
