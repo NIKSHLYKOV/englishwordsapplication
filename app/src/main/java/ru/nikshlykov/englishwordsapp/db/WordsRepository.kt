@@ -41,31 +41,8 @@ class WordsRepository(database: AppDatabase) {
 
   // МОЖНО ЛИ ТАК ПИСАТЬ??? (БЕЗ НОВОГО ПОТОКА)
   fun getWordById(id: Long): Word {
-    /*GetWordByIdAsyncTask task = new GetWordByIdAsyncTask(wordDao);
-        task.execute(id);
-        try {
-            return task.get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
-        return null;*/
     return wordDao.getWordById(id)
   }
-
-  fun getLiveDataWordById(wordId: Long): LiveData<Word> {
-    return wordDao.getLiveDataWordById(wordId)
-  }
-
-  fun getWord(wordId: Long, listener: OnWordLoadedListener) {
-    val task = GetWordAsyncTask(wordDao, listener)
-    task.execute(wordId)
-  }
-
-  val wordsFromStudiedSubgroups: LiveData<List<Word>>
-    get() {
-      Log.i(LOG_TAG, "getWordsFromStudiedSubgroups")
-      return wordDao.allLiveDataWordsFromStudiedSubgroups()
-    }
 
   fun getWordsFromSubgroupByProgress(subgroupId: Long): LiveData<List<Word>> {
     return wordDao.getWordsFromSubgroupByProgress(subgroupId)
@@ -144,39 +121,6 @@ class WordsRepository(database: AppDatabase) {
       wordDao.delete(words[0])
       return null
     }
-  }
-
-  /*private static class GetWordByIdAsyncTask extends AsyncTask<Long, Void, Word> {
-        private WordDao wordDao;
-
-        private GetWordByIdAsyncTask(WordDao wordDao) {
-            this.wordDao = wordDao;
-        }
-
-        @Override
-        protected Word doInBackground(Long... longs) {
-            return wordDao.getWordById(longs[0]);
-        }
-    }*/
-  interface OnWordLoadedListener {
-    fun onLoaded(word: Word)
-  }
-
-  private class GetWordAsyncTask(
-    private val wordDao: WordDao,
-    listener: OnWordLoadedListener
-  ) : AsyncTask<Long, Void, Word>() {
-    private val listener: WeakReference<OnWordLoadedListener> = WeakReference(listener)
-    override fun doInBackground(vararg p0: Long?): Word? {
-      return p0[0]?.let { wordDao.getWordById(it) }
-    }
-
-    override fun onPostExecute(word: Word) {
-      super.onPostExecute(word)
-      val listener = listener.get()
-      listener?.onLoaded(word)
-    }
-
   }
 
   interface OnAvailableToRepeatWordLoadedListener {

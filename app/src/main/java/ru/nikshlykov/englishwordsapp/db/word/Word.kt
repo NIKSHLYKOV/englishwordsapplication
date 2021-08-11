@@ -134,7 +134,8 @@ class Word : Parcelable {
   }
 
   companion object {
-    @JvmField val CREATOR: Parcelable.Creator<Word?> = object : Parcelable.Creator<Word?> {
+    @JvmField
+    val CREATOR: Parcelable.Creator<Word?> = object : Parcelable.Creator<Word?> {
       override fun createFromParcel(`in`: Parcel): Word {
         return Word(`in`)
       }
