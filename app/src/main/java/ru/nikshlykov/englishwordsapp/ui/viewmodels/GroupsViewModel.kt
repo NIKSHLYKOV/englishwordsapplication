@@ -6,14 +6,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
-import ru.nikshlykov.englishwordsapp.db.GroupsRepository
 import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup
 import ru.nikshlykov.englishwordsapp.domain.interactors.GetGroupsWithSubgroupsInteractor
+import ru.nikshlykov.englishwordsapp.domain.interactors.UpdateSubgroupInteractor
 import ru.nikshlykov.englishwordsapp.ui.GroupItem
 
 class GroupsViewModel(
-  application: Application, private val groupsRepository: GroupsRepository,
-  private val getGroupsWithSubgroupsInteractor: GetGroupsWithSubgroupsInteractor
+  application: Application,
+  private val getGroupsWithSubgroupsInteractor: GetGroupsWithSubgroupsInteractor,
+  private val updateSubgroupInteractor: UpdateSubgroupInteractor
 ) :
   AndroidViewModel(application) {
   private val _groupItems: MutableLiveData<ArrayList<GroupItem>?> = MutableLiveData()
@@ -21,7 +22,13 @@ class GroupsViewModel(
   val groupItems: LiveData<ArrayList<GroupItem>?> = _groupItems
 
   fun updateSubgroup(subgroup: Subgroup?) {
-    groupsRepository.update(subgroup)
+    //groupsRepository.update(subgroup)
+    viewModelScope.launch {
+      // TODO убрать потом проверку на null
+      if (subgroup != null) {
+        updateSubgroupInteractor.updateSubgroup(subgroup)
+      }
+    }
   }
 
   fun loadGroupItems() {

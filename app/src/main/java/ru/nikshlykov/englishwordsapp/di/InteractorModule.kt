@@ -49,4 +49,9 @@ class InteractorModule {
   fun provideAddSubgroupInteractor(subgroupsRepository: SubgroupsRepository): AddSubgroupInteractor {
     return AddSubgroupInteractor(subgroupsRepository)
   }
+
+  @Provides
+  fun provideUpdateSubgroupInteractor(subgroupsRepository: SubgroupsRepository): UpdateSubgroupInteractor {
+    return UpdateSubgroupInteractor(subgroupsRepository)
+  }
 }

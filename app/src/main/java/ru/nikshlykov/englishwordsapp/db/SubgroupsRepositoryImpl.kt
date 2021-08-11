@@ -13,7 +13,7 @@ class SubgroupsRepositoryImpl @Inject constructor(private val subgroupDao: Subgr
   }
 
   override suspend fun updateSubgroup(subgroup: Subgroup): Int {
-    TODO("Not yet implemented")
+    return subgroupDao.updateSuspend(subgroup)
   }
 
   override suspend fun deleteSubgroup(subgroup: Subgroup): Int {
@@ -25,7 +25,7 @@ class SubgroupsRepositoryImpl @Inject constructor(private val subgroupDao: Subgr
   }
 
   override suspend fun getSubgroupsFromGroup(groupId: Long): List<Subgroup> {
-    return subgroupDao.getSubgroupsFromGroupSuspend(groupId)
+    return subgroupDao.getSubgroupsFromGroup(groupId)
   }
 
   override suspend fun getSubgroupWithMinId(): Subgroup {

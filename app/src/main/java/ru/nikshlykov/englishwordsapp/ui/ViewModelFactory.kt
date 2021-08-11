@@ -16,13 +16,14 @@ class ViewModelFactory @Inject constructor(
   private val getAllModesInteractor: GetAllModesInteractor,
   private val updateModesInteractor: UpdateModesInteractor,
   private val getSelectedModesInteractor: GetSelectedModesInteractor,
-  private val addSubgroupInteractor: AddSubgroupInteractor
+  private val addSubgroupInteractor: AddSubgroupInteractor,
+  private val updateSubgroupInteractor: UpdateSubgroupInteractor
 ) : ViewModelProvider.Factory {
   override fun <T : ViewModel?> create(modelClass: Class<T>): T {
     return if (modelClass == StudyViewModel::class.java) {
       StudyViewModel(application, wordsRepository, getSelectedModesInteractor) as T
     } else if (modelClass == GroupsViewModel::class.java) {
-      GroupsViewModel(application, groupsRepository, getGroupsWithSubgroupsInteractor) as T
+      GroupsViewModel(application, getGroupsWithSubgroupsInteractor, updateSubgroupInteractor) as T
     } else if (modelClass == SubgroupViewModel::class.java) {
       SubgroupViewModel(application, groupsRepository, wordsRepository) as T
     } else if (modelClass == WordDialogsViewModel::class.java) {
@@ -34,7 +35,7 @@ class ViewModelFactory @Inject constructor(
     } else if (modelClass == ModesViewModel::class.java) {
       ModesViewModel(application, getAllModesInteractor, updateModesInteractor) as T
     } else if (modelClass == SubgroupDataViewModel::class.java) {
-      SubgroupDataViewModel(groupsRepository, addSubgroupInteractor) as T
+      SubgroupDataViewModel(groupsRepository, addSubgroupInteractor, updateSubgroupInteractor) as T
     } else {
       throw IllegalArgumentException("ViewModel Not Found")
     }

@@ -79,8 +79,8 @@ class SubgroupDataFragment : DaggerFragment() {
       if (subgroupName.isNotEmpty()) {
         subgroupDataViewModel!!.subgroupIsInsertedOrUpdated.observe(
           viewLifecycleOwner,
-          Observer { subgroupIsInserted ->
-            if (subgroupIsInserted) {
+          { subgroupIsInsertedOrUpdated ->
+            if (subgroupIsInsertedOrUpdated) {
               Toast.makeText(context, "Группа сохранена", Toast.LENGTH_SHORT).show()
               // TODO есть проблема в том, что мы используем NavDirections для
               //  popBackStack(), но, как я понимаю, можно это просто делать по

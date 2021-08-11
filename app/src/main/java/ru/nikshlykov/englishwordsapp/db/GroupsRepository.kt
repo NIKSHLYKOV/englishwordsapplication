@@ -24,10 +24,6 @@ class GroupsRepository(database: AppDatabase) {
     UpdateSubgroupAsyncTask(subgroupDao, null).execute(subgroup)
   }
 
-  fun update(subgroup: Subgroup?, listener: OnSubgroupUpdatedListener?) {
-    UpdateSubgroupAsyncTask(subgroupDao, listener).execute(subgroup)
-  }
-
   fun delete(subgroup: Subgroup?) {
     DeleteSubgroupAsyncTask(subgroupDao).execute(subgroup)
   }
