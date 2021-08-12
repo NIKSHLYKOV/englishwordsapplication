@@ -104,7 +104,8 @@ class StudyFlowFragment : DaggerFragment(),
       // Делаем проверку на то, что пользователь ещё находится во вкладке изучение,
       // т.к. ответ может прийти позже, чем пользователь сменит вкладку.
 
-      //TODO Если и тут делать проверку, то уже на navController из MainActivity.
+      //TODO Если и тут делать проверку, то уже на navController из MainActivity. Её же можно
+      // сделать и в колбэке от уже полученного слова.
       /* if (navController.findFragmentByTag(TAG_STUDY_OR_INFO_FRAGMENT) != null)*/
       studyViewModel!!.getNextAvailableToRepeatWord(this)
     } else {

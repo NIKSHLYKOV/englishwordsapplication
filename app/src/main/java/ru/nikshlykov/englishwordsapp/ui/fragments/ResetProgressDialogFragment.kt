@@ -1,7 +1,6 @@
 package ru.nikshlykov.englishwordsapp.ui.fragments
 
 import android.app.Dialog
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AlertDialog
@@ -13,17 +12,15 @@ class ResetProgressDialogFragment : DialogFragment() {
   // либо для целой подгруппы).
   private var flag = 0
 
-  // Интерфейс для взаимодействия с Activity.
-  private var resetProgressListener: ResetProgressListener? = null
-
   interface ResetProgressListener {
     fun resetMessage(message: String?)
   }
 
-  override fun onAttach(context: Context) {
-    super.onAttach(context)
-    // Присваиваем слушатель.
-    resetProgressListener = context as ResetProgressListener
+  // Интерфейс для взаимодействия.
+  private var resetProgressListener: ResetProgressListener? = null
+
+  fun setResetProgressListener(resetProgressListener: ResetProgressListener) {
+    this.resetProgressListener = resetProgressListener
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {

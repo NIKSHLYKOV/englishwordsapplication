@@ -12,6 +12,9 @@ interface WordDao {
   fun update(word: Word): Int
 
   @Update
+  suspend fun updateSuspend(word: Word): Int
+
+  @Update
   fun update(word: List<Word>): Int
 
   @Delete

@@ -5,17 +5,22 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import ru.nikshlykov.englishwordsapp.db.GroupsRepository
 import ru.nikshlykov.englishwordsapp.db.GroupsRepository.OnSubgroupsLoadedListener
 import ru.nikshlykov.englishwordsapp.db.WordsRepository
 import ru.nikshlykov.englishwordsapp.db.WordsRepository.OnExamplesLoadedListener
 import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup
 import ru.nikshlykov.englishwordsapp.db.word.Word
+import ru.nikshlykov.englishwordsapp.domain.interactors.UpdateWordInteractor
 import java.util.*
 
 class WordViewModel(
   application: Application, private val wordsRepository: WordsRepository,
-  private val groupsRepository: GroupsRepository
+  private val groupsRepository: GroupsRepository,
+  private val updateWordInteractor: UpdateWordInteractor
 ) : AndroidViewModel(application), OnSubgroupsLoadedListener {
   val wordMutableLiveData: MutableLiveData<Word> = MutableLiveData()
 
@@ -33,19 +38,6 @@ class WordViewModel(
       return word?.id ?: 0L
     }
 
-  /*public void update(final long wordId, final String word, final String transcription,
-                       final String value) {
-        ((MyApplication) getApplication()).executeWithDatabase(new Runnable() {
-            @Override
-            public void run() {
-                Word editWord = repository.getWordById(wordId);
-                editWord.word = word;
-                editWord.transcription = transcription;
-                editWord.value = value;
-                repository.update(editWord, null);
-            }
-        });
-    }*/
   fun setWordParameters(word: String?, transcription: String?, value: String?) {
     val currentWord = wordMutableLiveData.value
     if (currentWord != null) {
@@ -57,25 +49,26 @@ class WordViewModel(
   }
 
   fun updateWordInDB() {
-    wordsRepository.execute(Runnable {
+    // TODO проверить работу, т.к. нужны свои слова для этого
+    GlobalScope.launch {
       val word = wordMutableLiveData.value
       if (word != null) {
-        wordsRepository.update(word, null)
+        updateWordInteractor.updateWord(word)
       }
-    })
+    }
   }
 
   /**
    * Сбрасывает прогресс по слову.
    */
   fun resetProgress() {
-    val word = wordMutableLiveData.value
-    if (word != null) {
-      /* удалить все предыдущие повторы по слову,
-            если будет необходимо.*/
-      word.learnProgress = -1
-      wordsRepository.update(word, null)
-      wordMutableLiveData.value = word
+    viewModelScope.launch {
+      val word = wordMutableLiveData.value
+      if (word != null) {
+        word.learnProgress = -1
+        updateWordInteractor.updateWord(word)
+        wordMutableLiveData.value = word
+      }
     }
   }
 

@@ -253,6 +253,7 @@ examplesRecyclerView.setAdapter(examplesRecyclerViewAdapter);*/
         //setResult(RESULT_OK, wordData);
 
         // TODO сделать обработку добавления нового слова.
+        //  Скорее всего, надо разнести код на отдельные фрагменты для слова и для его добавления.
         wordViewModel!!.setWordParameters(word, transcription, value)
         wordViewModel!!.updateWordInDB()
         //
@@ -428,6 +429,7 @@ examplesRecyclerView.setAdapter(examplesRecyclerViewAdapter);*/
       R.id.fragment_word___action___reset_word_progress -> {
         Log.d(LOG_TAG, "Reset word progress")
         val resetProgressDialogFragment = ResetProgressDialogFragment()
+        resetProgressDialogFragment.setResetProgressListener(this)
         arguments.putInt(
           ResetProgressDialogFragment.EXTRA_FLAG,
           ResetProgressDialogFragment.FOR_ONE_WORD

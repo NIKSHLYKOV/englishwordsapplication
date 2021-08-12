@@ -12,7 +12,7 @@ class WordsRepositoryImpl @Inject constructor(private val wordDao: WordDao) : Wo
   }
 
   override suspend fun updateWord(word: Word): Int {
-    TODO("Not yet implemented")
+    return wordDao.updateSuspend(word)
   }
 
   override suspend fun updateWords(words: List<Word>): Int {
