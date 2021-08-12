@@ -24,7 +24,8 @@ class SubgroupViewModel(
   private val addWordToSubgroupInteractor: AddWordToSubgroupInteractor,
   private val deleteWordFromSubgroupInteractor: DeleteWordFromSubgroupInteractor,
   private val updateSubgroupInteractor: UpdateSubgroupInteractor,
-  private val deleteSubgroupInteractor: DeleteSubgroupInteractor
+  private val deleteSubgroupInteractor: DeleteSubgroupInteractor,
+  private val getWordsFromSubgroupInteractor: GetWordsFromSubgroupInteractor
 ) : AndroidViewModel(application),
   OnSubgroupsLoadedListener {
 
@@ -53,8 +54,8 @@ class SubgroupViewModel(
       _subgroup.value = getSubgroupInteractor.getSubgroupById(subgroupId)
     }
     // Подгружаем возможные списки слов для words.
-    wordsByAlphabet = wordsRepository.getWordsFromSubgroupByAlphabet(subgroupId)
-    wordsByProgress = wordsRepository.getWordsFromSubgroupByProgress(subgroupId)
+    wordsByAlphabet = getWordsFromSubgroupInteractor.getWordsFromSubgroupByAlphabet(subgroupId)
+    wordsByProgress = getWordsFromSubgroupInteractor.getWordsFromSubgroupByProgress(subgroupId)
     // Устанавниваем начальный источник для words в зависимости от параметра сортировки.
     if (sortParam == SortWordsDialogFragment.BY_ALPHABET) {
       words.addSource(wordsByAlphabet!!, observer)
