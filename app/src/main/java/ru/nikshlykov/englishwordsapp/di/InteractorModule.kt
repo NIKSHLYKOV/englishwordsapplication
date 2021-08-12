@@ -93,4 +93,12 @@ class InteractorModule {
     : UpdateWordInteractor {
     return UpdateWordInteractor(wordsRepository)
   }
+
+  @Provides
+  fun provideStudyWordsInteractor(
+    wordsRepository: WordsRepository,
+    repeatsRepository: RepeatsRepository
+  ): StudyWordsInteractor {
+    return StudyWordsInteractor(wordsRepository, repeatsRepository)
+  }
 }

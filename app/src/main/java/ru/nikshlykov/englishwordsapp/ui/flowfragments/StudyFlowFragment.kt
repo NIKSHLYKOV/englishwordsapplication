@@ -5,7 +5,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -13,7 +12,6 @@ import dagger.android.support.DaggerFragment
 import ru.nikshlykov.englishwordsapp.NavigationStudyDirections
 import ru.nikshlykov.englishwordsapp.R
 import ru.nikshlykov.englishwordsapp.db.WordsRepository.OnAvailableToRepeatWordLoadedListener
-import ru.nikshlykov.englishwordsapp.db.WordsRepository.OnWordUpdatedListener
 import ru.nikshlykov.englishwordsapp.db.word.Word
 import ru.nikshlykov.englishwordsapp.ui.RepeatResultListener
 import ru.nikshlykov.englishwordsapp.ui.fragments.InfoFragment
@@ -23,8 +21,10 @@ import ru.nikshlykov.englishwordsapp.utils.ModesNavigation
 import javax.inject.Inject
 
 class StudyFlowFragment : DaggerFragment(),
-  OnAvailableToRepeatWordLoadedListener, OnWordUpdatedListener, RepeatResultListener,
+  OnAvailableToRepeatWordLoadedListener, RepeatResultListener,
   FirstShowModeReportListener {
+  // TODO при изначальной установке не показывается никакое сообщение (вроде).
+  //  О режимах предупреждения точно нет.
   // ViewModel для работы с БД.
   @JvmField
   @Inject
@@ -91,25 +91,6 @@ class StudyFlowFragment : DaggerFragment(),
         navController!!.navigate(navDirections)
         // TODO РАЗОБРАТЬСЯ, ПОЧЕМУ В MODESFRAGMENTS получаем word null, и раскоментить навигацию.
       }
-    }
-  }
-
-  /**
-   * Запрашивает следующее слово для повтора, если предыдущее обновилось.
-   *
-   * @param isUpdated показывает, обновилось ли слово.
-   */
-  override fun onWordUpdated(isUpdated: Int) {
-    if (isUpdated == 1) {
-      // Делаем проверку на то, что пользователь ещё находится во вкладке изучение,
-      // т.к. ответ может прийти позже, чем пользователь сменит вкладку.
-
-      //TODO Если и тут делать проверку, то уже на navController из MainActivity. Её же можно
-      // сделать и в колбэке от уже полученного слова.
-      /* if (navController.findFragmentByTag(TAG_STUDY_OR_INFO_FRAGMENT) != null)*/
-      studyViewModel!!.getNextAvailableToRepeatWord(this)
-    } else {
-      Toast.makeText(context, R.string.sorry_error_happened, Toast.LENGTH_SHORT).show()
     }
   }
 

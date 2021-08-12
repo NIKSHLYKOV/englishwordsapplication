@@ -9,10 +9,7 @@ interface WordDao {
   fun insert(word: Word): Long
 
   @Update
-  fun update(word: Word): Int
-
-  @Update
-  suspend fun updateSuspend(word: Word): Int
+  suspend fun update(word: Word): Int
 
   @Update
   fun update(word: List<Word>): Int
@@ -21,10 +18,7 @@ interface WordDao {
   fun delete(word: Word): Int
 
   @Query("SELECT * FROM Words WHERE _id = :wordId")
-  fun getWordById(wordId: Long): Word
-
-  @Query("SELECT * FROM Words WHERE _id = :wordId")
-  suspend fun getWordByIdSuspend(wordId: Long): Word
+  suspend fun getWordById(wordId: Long): Word
 
   @Query(
     "SELECT Words.* FROM Words, Links " +

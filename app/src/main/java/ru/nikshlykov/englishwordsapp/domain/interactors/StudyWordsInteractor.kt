@@ -19,7 +19,7 @@ class StudyWordsInteractor(
    * @param wordId id слова, которое было показано.
    * @param result Результат показа (0 - пропуск, 1 - изучение, 2 - знание).
    */
-  suspend fun firstShowProcessing(wordId: Long, result: Int) {
+  suspend fun firstShowProcessing(wordId: Long, result: Int): Int {
     when (result) {
       0 -> {
         // получаем слово из БД.
@@ -27,11 +27,11 @@ class StudyWordsInteractor(
         // Увеличиваем столбец приоритетности - слово с меньшей вероятностью будет появляться.
         skippedWord.priority++
         // Обновляем словов в БД.
-        wordsRepository.updateWord(skippedWord)
+        return wordsRepository.updateWord(skippedWord)
       }
       1 -> {
         // Добавляем нулевой повтор для слова.
-        addRepeatAndUpdateWord(wordId, result)
+        return addRepeatAndUpdateWord(wordId, result)
       }
       2 -> {
         // Получаем слово из БД, выставляем прогресс на 8 и обновляем слово.
@@ -39,9 +39,10 @@ class StudyWordsInteractor(
         // которые он выучил с помощью приложения (они будут иметь прогресс равный 7).
         val word = wordsRepository.getWordById(wordId)
         word.learnProgress = 8
-        wordsRepository.updateWord(word)
+        return wordsRepository.updateWord(word)
       }
     }
+    throw IllegalArgumentException()
   }
 
   /**
@@ -52,7 +53,7 @@ class StudyWordsInteractor(
    * @param wordId id повторяемого слова.
    * @param result результат повтора (0 - неверно, 1 - верно).
    */
-  suspend fun repeatProcessing(wordId: Long, result: Int) {
+  suspend fun repeatProcessing(wordId: Long, result: Int): Int {
     // Определяем порядковый номер данного повтора.
     var newRepeatSequenceNumber = 0
     // Получаем последний повтор по данному слову.
@@ -73,7 +74,7 @@ class StudyWordsInteractor(
       }
     }
 
-    addRepeatAndUpdateWord(wordId, result, newRepeatSequenceNumber)
+    return addRepeatAndUpdateWord(wordId, result, newRepeatSequenceNumber)
   }
 
   /**
@@ -87,7 +88,7 @@ class StudyWordsInteractor(
     wordId: Long,
     result: Int,
     newRepeatSequenceNumber: Int = 0
-  ) {
+  ): Int {
     // Получаем текущую дату.
     val currentTime = Date().time
 
@@ -104,6 +105,8 @@ class StudyWordsInteractor(
       if (word.learnProgress > 0) word.learnProgress--
     } else if (result == 1) {
       if (word.learnProgress < 7) word.learnProgress++
+    } else {
+      throw IllegalArgumentException()
     }
     Log.i(
       this.javaClass.canonicalName,
@@ -112,6 +115,6 @@ class StudyWordsInteractor(
         "; lastRepetitionDate = " + word.lastRepetitionDate
     )
     // Обновляем слово.
-    wordsRepository.updateWord(word)
+    return wordsRepository.updateWord(word)
   }
 }

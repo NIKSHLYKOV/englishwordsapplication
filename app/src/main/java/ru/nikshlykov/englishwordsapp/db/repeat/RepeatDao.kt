@@ -14,13 +14,13 @@ interface RepeatDao {
   fun delete(repeat: Array<Repeat>): Int
 
   @Insert
-  fun insert(repeat: Repeat): Long
+  suspend fun insert(repeat: Repeat): Long
 
   @Query("SELECT * FROM Repeats WHERE WordId = :wordId")
   fun getRepeatsByWord(wordId: Long): Array<Repeat>
 
   @Query("SELECT * FROM Repeats WHERE WordId = :wordId ORDER BY Date DESC LIMIT 1")
-  fun getLastRepeatByWord(wordId: Long): Repeat
+  suspend fun getLastRepeatByWord(wordId: Long): Repeat
 
   @Query("SELECT * FROM Repeats ORDER BY _id DESC LIMIT 1")
   fun repeatWithMaxId(): Repeat

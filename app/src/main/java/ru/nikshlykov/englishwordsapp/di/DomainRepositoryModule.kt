@@ -30,4 +30,8 @@ abstract class DomainRepositoryModule {
   @Binds
   @Singleton
   abstract fun bindWordsRepository(wordsRepositoryImpl: WordsRepositoryImpl): WordsRepository
+
+  @Binds
+  @Singleton
+  abstract fun bindRepeatsRepository(repeatsRepositoryImpl: RepeatsRepositoryImpl): RepeatsRepository
 }
