@@ -5,20 +5,21 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.preference.PreferenceManager
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import ru.nikshlykov.englishwordsapp.R
 import ru.nikshlykov.englishwordsapp.db.WordsRepository
-import ru.nikshlykov.englishwordsapp.db.WordsRepository.*
-import ru.nikshlykov.englishwordsapp.db.repeat.Repeat
+import ru.nikshlykov.englishwordsapp.db.WordsRepository.OnAvailableToRepeatWordLoadedListener
+import ru.nikshlykov.englishwordsapp.db.WordsRepository.OnRepeatsCountForTodayLoadedListener
 import ru.nikshlykov.englishwordsapp.domain.interactors.GetSelectedModesInteractor
-import ru.nikshlykov.englishwordsapp.domain.interactors.GetWordInteractor
+import ru.nikshlykov.englishwordsapp.domain.interactors.StudyWordsInteractor
 import ru.nikshlykov.englishwordsapp.preferences.NewWordsCountPreference
 import java.util.*
 
 class StudyViewModel(
   application: Application, private val wordsRepository: WordsRepository,
   private val getSelectedModesInteractor: GetSelectedModesInteractor,
-  private val getWordInteractor: GetWordInteractor
+  private val studyWordsInteractor: StudyWordsInteractor
 ) : AndroidViewModel(application), OnRepeatsCountForTodayLoadedListener {
   private var listener: OnAvailableToRepeatWordLoadedListener? = null
   private var withNew = true
@@ -84,10 +85,6 @@ class StudyViewModel(
     this.selectedModesIds = selectedModesIds
   }
 
-  fun selectedModesExist(): Boolean {
-    return if (selectedModesIds == null) false else selectedModesIds!!.size != 0
-  }
-
   fun randomSelectedModeId(): Long {
     val random = Random()
     val index = random.nextInt(selectedModesIds!!.size)
@@ -95,7 +92,7 @@ class StudyViewModel(
   }
 
   // Слова, доступные к повтору или началу изучения.
-  fun getNextAvailableToRepeatWord(
+  private fun getNextAvailableToRepeatWord(
     listener: OnAvailableToRepeatWordLoadedListener?
   ) {
     this.listener = listener
@@ -128,7 +125,6 @@ class StudyViewModel(
       }
     }
     wordsRepository.getAvailableToRepeatWord(withNew, listener!!)
-    //listener = null;
   }
   // Обработка результатов повторов.
   /**
@@ -137,30 +133,26 @@ class StudyViewModel(
    * @param wordId id показанного слова.
    * @param result результат повтора (0 - пропустить, 1 - изучать, 2 - знаю).
    */
-  fun firstShowProcessing(wordId: Long, result: Int, listener: OnWordUpdatedListener) {
-    when (result) {
-      0 -> {
-        viewModelScope.launch {
-          val skippedWord = getWordInteractor.getWordById(wordId)
-          // Увеличиваем столбец приоритетности - слово с меньшей вероятностью будет появляться.
-          skippedWord.priority++
-          wordsRepository.update(skippedWord, listener)
-        }
-      }
-      1 -> insertRepeatAndUpdateWord(wordId, result, listener)
-      2 -> {
-        viewModelScope.launch {
-          // Если пользователь при первом показе слова указал, что он его знает.
-          // Получаем слово и выставляем прогресс на 8.
-          // С помощью этого можно будет отличать слова, которые пользователь уже знает, от тех,
-          // которые он выучил с помощью приложения (они будут иметь прогресс равный 7).
-          val word = getWordInteractor.getWordById(wordId)
-          word.learnProgress = 8
-          wordsRepository.update(word, listener)
-        }
+  fun firstShowProcessing(
+    wordId: Long,
+    result: Int,
+    listener: OnAvailableToRepeatWordLoadedListener
+  ) {
+    GlobalScope.launch {
+      val processingResult = studyWordsInteractor.firstShowProcessing(wordId, result)
+      if (processingResult == 1) {
+        // Делаем проверку на то, что пользователь ещё находится во вкладке изучение,
+        // т.к. ответ может прийти позже, чем пользователь сменит вкладку.
+        //TODO Если и тут делать проверку, то уже на navController из MainActivity. Её же можно
+        // сделать и в колбэке от уже полученного слова.
+        /* if (navController.findFragmentByTag(TAG_STUDY_OR_INFO_FRAGMENT) != null)*/
+        getNextAvailableToRepeatWord(listener)
+      } else {
+        // TODO сделать вывод сообщения об ошибке.
       }
     }
   }
+
 
   /**
    * Обрабатывает результат повтора слова.
@@ -168,70 +160,15 @@ class StudyViewModel(
    * @param wordId id повторяемого слова.
    * @param result результат повтора (0 - неверно, 1 - верно).
    */
-  fun repeatProcessing(wordId: Long, result: Int, listener: OnWordUpdatedListener) {
-    insertRepeatAndUpdateWord(wordId, result, listener)
-  }
-
-  /**
-   * Вставляет новый последний повтор по слову и обновляет запись слова в БД.
-   *
-   * @param wordId         id повторяемого слова.
-   * @param result         результат повтора (0 - неверно, 1 - верно).
-   * @param listener       слушатель для обновления слова, который реализован в MainActivity.
-   */
-  private fun insertRepeatAndUpdateWord(
-    wordId: Long, result: Int,
-    listener: OnWordUpdatedListener
-  ) {
-    // TODO переделать с интерактором. уже можно, т.к. наладили режимы.
-    wordsRepository.execute(Runnable { // Находим порядковый номер данного повтора.
-      var newRepeatSequenceNumber = 0
-      // Получаем последний повтор по данному слову.
-      // Он должен обязательно быть, т.к. этот метод для повторов без первого показа.
-      val lastRepeat = wordsRepository.getLastRepeatByWord(wordId)
-      // Проверяем то, что есть последний повтор.
-      if (lastRepeat != null) {
-        if (lastRepeat.result == 1) {
-          // Устанавливаем номер на один больше, если последний повтор был успешным.
-          newRepeatSequenceNumber = lastRepeat.sequenceNumber + 1
-        } else if (lastRepeat.result == 0) {
-          newRepeatSequenceNumber = if (lastRepeat.sequenceNumber == 1) {
-            // Устанавливаем тот же номер, если последний повтор имел порядковый номер 1 и был неуспешным.
-            lastRepeat.sequenceNumber
-          } else {
-            // Устанавливаем номер на один меньше, если последний повтор имел порядковый номер не 1 и был неуспешным.
-            lastRepeat.sequenceNumber - 1
-          }
-        }
+  fun repeatProcessing(wordId: Long, result: Int, listener: OnAvailableToRepeatWordLoadedListener) {
+    GlobalScope.launch {
+      val processingResult = studyWordsInteractor.repeatProcessing(wordId, result)
+      if (processingResult == 1) {
+        getNextAvailableToRepeatWord(listener)
+      } else {
+        // TODO сделать вывод сообщения об ошибке.
       }
-
-
-      // Получаем текущую дату.
-      val currentTime = Date().time
-      // Создаём повтор и вставляем его в БД.
-      val newRepeat = Repeat(wordId, newRepeatSequenceNumber, currentTime, result)
-      wordsRepository.insert(newRepeat)
-
-
-      // Получаем слово по id.
-      val word = wordsRepository.getWordById(wordId)
-      // Устанавливаем дату последнего повтора.
-      word.lastRepetitionDate = currentTime
-      // Устанавливаем ему новый прогресс в зависимости от результата повтора.
-      if (result == 0) {
-        if (word.learnProgress > 0) word.learnProgress--
-      } else if (result == 1) {
-        if (word.learnProgress < 7) word.learnProgress++
-      }
-      Log.i(
-        LOG_TAG,
-        "word = " + word.word +
-          "; learnProgress = " + word.learnProgress +
-          "; lastRepetitionDate = " + word.lastRepetitionDate
-      )
-      // Обновляем слово.
-      wordsRepository.update(word, listener)
-    })
+    }
   }
 
   companion object {

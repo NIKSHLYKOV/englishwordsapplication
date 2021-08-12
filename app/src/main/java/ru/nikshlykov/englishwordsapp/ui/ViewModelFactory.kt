@@ -22,9 +22,9 @@ class ViewModelFactory @Inject constructor(
   private val deleteWordFromSubgroupInteractor: DeleteWordFromSubgroupInteractor,
   private val getSubgroupInteractor: GetSubgroupInteractor,
   private val deleteSubgroupInteractor: DeleteSubgroupInteractor,
-  private val getWordInteractor: GetWordInteractor,
   private val getWordsFromSubgroupInteractor: GetWordsFromSubgroupInteractor,
-  private val updateWordInteractor: UpdateWordInteractor
+  private val updateWordInteractor: UpdateWordInteractor,
+  private val studyWordsInteractor: StudyWordsInteractor
 ) : ViewModelProvider.Factory {
   override fun <T : ViewModel?> create(modelClass: Class<T>): T {
     return if (modelClass == StudyViewModel::class.java) {
@@ -32,7 +32,7 @@ class ViewModelFactory @Inject constructor(
         application,
         wordsRepository,
         getSelectedModesInteractor,
-        getWordInteractor
+        studyWordsInteractor
       ) as T
     } else if (modelClass == GroupsViewModel::class.java) {
       GroupsViewModel(application, getGroupsWithSubgroupsInteractor, updateSubgroupInteractor) as T

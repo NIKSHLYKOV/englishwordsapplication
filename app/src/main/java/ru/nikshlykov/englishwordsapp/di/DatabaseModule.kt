@@ -8,6 +8,7 @@ import ru.nikshlykov.englishwordsapp.db.AppDatabase
 import ru.nikshlykov.englishwordsapp.db.group.GroupDao
 import ru.nikshlykov.englishwordsapp.db.link.LinkDao
 import ru.nikshlykov.englishwordsapp.db.mode.ModeDao
+import ru.nikshlykov.englishwordsapp.db.repeat.RepeatDao
 import ru.nikshlykov.englishwordsapp.db.subgroup.SubgroupDao
 import ru.nikshlykov.englishwordsapp.db.word.WordDao
 import javax.inject.Singleton
@@ -51,6 +52,12 @@ class DatabaseModule {
   @Singleton
   fun provideWordDao(appDatabase: AppDatabase): WordDao {
     return appDatabase.wordDao()
+  }
+
+  @Provides
+  @Singleton
+  fun provideRepeatDao(appDatabase: AppDatabase): RepeatDao {
+    return appDatabase.repeatDao()
   }
 
   companion object {
