@@ -1,4 +1,4 @@
-package ru.nikshlykov.englishwordsapp.ui.fragments
+package ru.nikshlykov.englishwordsapp.ui.fragments.modesfragments
 
 import android.content.Context
 import android.os.Bundle
@@ -15,8 +15,6 @@ import androidx.gridlayout.widget.GridLayout
 import ru.nikshlykov.englishwordsapp.R
 import ru.nikshlykov.englishwordsapp.db.word.Word
 import ru.nikshlykov.englishwordsapp.ui.RepeatResultListener
-import ru.nikshlykov.englishwordsapp.ui.flowfragments.StudyFlowFragment
-import ru.nikshlykov.englishwordsapp.ui.fragments.FirstShowModeFragment.FirstShowModeReportListener
 import java.util.*
 
 class CollectWordByLettersModeFragment : Fragment() {
@@ -41,8 +39,8 @@ class CollectWordByLettersModeFragment : Fragment() {
   override fun onAttach(context: Context) {
     super.onAttach(context)
     val parentFlowFragment = requireParentFragment().parentFragment
-    repeatResultListener = if (parentFlowFragment is FirstShowModeReportListener) {
-      parentFlowFragment as RepeatResultListener?
+    repeatResultListener = if (parentFlowFragment is RepeatResultListener) {
+      parentFlowFragment
     } else {
       throw RuntimeException(parentFlowFragment.toString() + " must implement RepeatResultListener")
     }
@@ -52,7 +50,8 @@ class CollectWordByLettersModeFragment : Fragment() {
     super.onCreate(savedInstanceState)
 
     // Получаем id слова.
-    word = requireArguments().getParcelable(StudyFlowFragment.EXTRA_WORD_OBJECT)
+    word = CollectWordByLettersModeFragmentArgs.fromBundle(requireArguments()).word
+
     handler = object : Handler() {
       override fun handleMessage(msg: Message) {
         super.handleMessage(msg)

@@ -1,4 +1,4 @@
-package ru.nikshlykov.englishwordsapp.ui.fragments
+package ru.nikshlykov.englishwordsapp.ui.fragments.modesfragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import ru.nikshlykov.englishwordsapp.R
 
 class ChooseFromFourVariantsModeFragment : Fragment() {
+  // TODO сделать фичу
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,

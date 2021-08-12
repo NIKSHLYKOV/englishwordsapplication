@@ -89,6 +89,10 @@ class Word : Parcelable {
     return false
   }
 
+  override fun toString(): String {
+    return "Word(id=$id, word=$word, value=$value)"
+  }
+
   // Parcelable
   constructor(`in`: Parcel) {
     id = `in`.readLong()

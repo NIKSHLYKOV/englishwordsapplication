@@ -17,29 +17,49 @@
     </fragment>
     <fragment
         android:id="@+id/collect_word_by_letters_mode_dest"
-        android:name="ru.nikshlykov.englishwordsapp.ui.fragments.CollectWordByLettersModeFragment"
+        android:name="ru.nikshlykov.englishwordsapp.ui.fragments.modesfragments.CollectWordByLettersModeFragment"
         android:label="CollectWordByLettersModeFragment"
-        tools:layout="@layout/fragment_collect_word_by_letters_mode"/>
+        tools:layout="@layout/fragment_collect_word_by_letters_mode">
+        <argument
+            android:name="word"
+            app:argType="ru.nikshlykov.englishwordsapp.db.word.Word" />
+    </fragment>
     <fragment
         android:id="@+id/dictionary_cards_mode_dest"
-        android:name="ru.nikshlykov.englishwordsapp.ui.fragments.DictionaryCardsModeFragment"
+        android:name="ru.nikshlykov.englishwordsapp.ui.fragments.modesfragments.DictionaryCardsModeFragment"
         android:label="DictionaryCardsModeFragment"
-        tools:layout="@layout/fragment_dictionary_cards_eng_to_rus"/>
+        tools:layout="@layout/fragment_dictionary_cards_eng_to_rus">
+        <argument
+            android:name="word"
+            app:argType="ru.nikshlykov.englishwordsapp.db.word.Word" />
+    </fragment>
     <fragment
         android:id="@+id/first_show_mode_dest"
-        android:name="ru.nikshlykov.englishwordsapp.ui.fragments.FirstShowModeFragment"
+        android:name="ru.nikshlykov.englishwordsapp.ui.fragments.modesfragments.FirstShowModeFragment"
         android:label="FirstShowModeFragment"
-        tools:layout="@layout/fragment_first_show_mode"/>
+        tools:layout="@layout/fragment_first_show_mode">
+        <argument
+            android:name="word"
+            app:argType="ru.nikshlykov.englishwordsapp.db.word.Word" />
+    </fragment>
     <fragment
         android:id="@+id/write_word_by_voice_mode_dest"
-        android:name="ru.nikshlykov.englishwordsapp.ui.fragments.WriteWordByVoiceModeFragment"
+        android:name="ru.nikshlykov.englishwordsapp.ui.fragments.modesfragments.WriteWordByVoiceModeFragment"
         android:label="WriteWordByVoiceModeFragment"
-        tools:layout="@layout/fragment_write_word_by_voice_mode"/>
+        tools:layout="@layout/fragment_write_word_by_voice_mode">
+        <argument
+            android:name="word"
+            app:argType="ru.nikshlykov.englishwordsapp.db.word.Word" />
+    </fragment>
     <fragment
         android:id="@+id/write_word_by_value_mode_dest"
-        android:name="ru.nikshlykov.englishwordsapp.ui.fragments.WriteWordByValueModeFragment"
+        android:name="ru.nikshlykov.englishwordsapp.ui.fragments.modesfragments.WriteWordByValueModeFragment"
         android:label="WriteWordByValueModeFragment"
-        tools:layout="@layout/fragment_write_word_by_value_mode"/>
+        tools:layout="@layout/fragment_write_word_by_value_mode">
+        <argument
+            android:name="word"
+            app:argType="ru.nikshlykov.englishwordsapp.db.word.Word" />
+    </fragment>
     <action android:id="@+id/action_global_info_dest" app:destination="@id/info_dest" />
     <action android:id="@+id/action_global_collect_word_by_letters_mode_dest" app:destination="@id/collect_word_by_letters_mode_dest" />
     <action android:id="@+id/action_global_first_show_mode_dest" app:destination="@id/first_show_mode_dest" />

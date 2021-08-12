@@ -10,14 +10,16 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import dagger.android.support.DaggerFragment
+import ru.nikshlykov.englishwordsapp.NavigationStudyDirections
 import ru.nikshlykov.englishwordsapp.R
 import ru.nikshlykov.englishwordsapp.db.WordsRepository.OnAvailableToRepeatWordLoadedListener
 import ru.nikshlykov.englishwordsapp.db.WordsRepository.OnWordUpdatedListener
 import ru.nikshlykov.englishwordsapp.db.word.Word
 import ru.nikshlykov.englishwordsapp.ui.RepeatResultListener
-import ru.nikshlykov.englishwordsapp.ui.fragments.FirstShowModeFragment.FirstShowModeReportListener
+import ru.nikshlykov.englishwordsapp.ui.fragments.InfoFragment
+import ru.nikshlykov.englishwordsapp.ui.fragments.modesfragments.FirstShowModeFragment.FirstShowModeReportListener
 import ru.nikshlykov.englishwordsapp.ui.viewmodels.StudyViewModel
-import ru.nikshlykov.englishwordsapp.utils.Navigation
+import ru.nikshlykov.englishwordsapp.utils.ModesNavigation
 import javax.inject.Inject
 
 class StudyFlowFragment : DaggerFragment(),
@@ -59,28 +61,36 @@ class StudyFlowFragment : DaggerFragment(),
    *
    * @param word слово для повтора/первого показа.
    */
-  override fun onAvailableToRepeatWordLoaded(word: Word) {
-    Log.i(
-      LOG_TAG, "word = " + word.word + "; learnProgress = " + word.learnProgress +
-        "; lastRepetitionDate = " + word.lastRepetitionDate
-    )
-
-    // Создаём Bundle для отправки id слова фрагменту.
-    val arguments = Bundle()
-    arguments.putParcelable(EXTRA_WORD_OBJECT, word)
-
-    // В зависимости от прогресса по слову показываем для него FirstShowModeFragment или
-    // другой ModeFragment.
-    if (word.learnProgress == -1) {
-      // Показываем фрагмент режима.
-      //navController!!.navigate(R.id.action_global_first_show_mode_dest, arguments)
+  override fun onAvailableToRepeatWordLoaded(word: Word?) {
+    if (word == null) {
+      val navDirections = NavigationStudyDirections.actionGlobalInfoDest()
+        .setInfoFlag(InfoFragment.FLAG_AVAILABLE_WORDS_ARE_NOT_EXISTING)
+      navController!!.navigate(navDirections)
     } else {
-      // Получаем id рандомного режимы из выбранных, если слово показывается не первый раз.
-      val randomModeId = studyViewModel!!.randomSelectedModeId()
-      Log.i(LOG_TAG, "randomModeId = $randomModeId")
-      val destinationId = Navigation.getModeDestinationId(randomModeId)
-      //navController!!.navigate(destinationId, arguments)
-      // TODO РАЗОБРАТЬСЯ, ПОЧЕМУ В MODESFRAGMENTS получаем word null, и раскоментить навигацию.
+      Log.i(
+        LOG_TAG, "word = " + word.word + "; learnProgress = " + word.learnProgress +
+          "; lastRepetitionDate = " + word.lastRepetitionDate
+      )
+
+      // Создаём Bundle для отправки id слова фрагменту.
+      val arguments = Bundle()
+      arguments.putParcelable(EXTRA_WORD_OBJECT, word)
+
+      // В зависимости от прогресса по слову показываем для него FirstShowModeFragment или
+      // другой ModeFragment.
+      if (word.learnProgress == -1) {
+        // Показываем фрагмент режима.
+        val navDirections = NavigationStudyDirections.actionGlobalFirstShowModeDest(word)
+        navController!!.navigate(navDirections)
+      } else {
+        // Получаем id рандомного режимы из выбранных, если слово показывается не первый раз.
+        val randomModeId = studyViewModel!!.randomSelectedModeId()
+        Log.i(LOG_TAG, "randomModeId = $randomModeId")
+        // Переходим к рандомно выбранному режиму
+        val navDirections = ModesNavigation.getRandomModeNavDirections(randomModeId, word)
+        navController!!.navigate(navDirections)
+        // TODO РАЗОБРАТЬСЯ, ПОЧЕМУ В MODESFRAGMENTS получаем word null, и раскоментить навигацию.
+      }
     }
   }
 

@@ -1,4 +1,4 @@
-package ru.nikshlykov.englishwordsapp.ui.fragments
+package ru.nikshlykov.englishwordsapp.ui.fragments.modesfragments
 
 import android.content.Context
 import android.os.Bundle
@@ -20,8 +20,6 @@ import ru.nikshlykov.englishwordsapp.App
 import ru.nikshlykov.englishwordsapp.R
 import ru.nikshlykov.englishwordsapp.db.word.Word
 import ru.nikshlykov.englishwordsapp.ui.RepeatResultListener
-import ru.nikshlykov.englishwordsapp.ui.flowfragments.StudyFlowFragment
-import ru.nikshlykov.englishwordsapp.ui.fragments.FirstShowModeFragment.FirstShowModeReportListener
 
 class WriteWordByVoiceModeFragment : Fragment() {
 
@@ -45,8 +43,8 @@ class WriteWordByVoiceModeFragment : Fragment() {
   override fun onAttach(context: Context) {
     super.onAttach(context)
     val parentFlowFragment = requireParentFragment().parentFragment
-    repeatResultListener = if (parentFlowFragment is FirstShowModeReportListener) {
-      parentFlowFragment as RepeatResultListener?
+    repeatResultListener = if (parentFlowFragment is RepeatResultListener) {
+      parentFlowFragment
     } else {
       throw RuntimeException(parentFlowFragment.toString() + " must implement RepeatResultListener")
     }
@@ -54,7 +52,7 @@ class WriteWordByVoiceModeFragment : Fragment() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    word = savedInstanceState?.getParcelable(StudyFlowFragment.EXTRA_WORD_OBJECT)
+    word = WriteWordByVoiceModeFragmentArgs.fromBundle(requireArguments()).word
     textToSpeech = (activity?.applicationContext as App).textToSpeech
     handler = object : Handler() {
       override fun handleMessage(msg: Message) {

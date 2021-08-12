@@ -2,14 +2,10 @@ package ru.nikshlykov.englishwordsapp.di
 
 import dagger.Binds
 import dagger.Module
-import ru.nikshlykov.englishwordsapp.db.GroupsRepositoryImpl
-import ru.nikshlykov.englishwordsapp.db.LinksRepositoryImpl
-import ru.nikshlykov.englishwordsapp.db.ModesRepositoryImpl
-import ru.nikshlykov.englishwordsapp.db.SubgroupsRepositoryImpl
+import ru.nikshlykov.englishwordsapp.db.*
+import ru.nikshlykov.englishwordsapp.domain.repositories.*
 import ru.nikshlykov.englishwordsapp.domain.repositories.GroupsRepository
-import ru.nikshlykov.englishwordsapp.domain.repositories.LinksRepository
-import ru.nikshlykov.englishwordsapp.domain.repositories.ModesRepository
-import ru.nikshlykov.englishwordsapp.domain.repositories.SubgroupsRepository
+import ru.nikshlykov.englishwordsapp.domain.repositories.WordsRepository
 import javax.inject.Singleton
 
 @Module
@@ -30,4 +26,8 @@ abstract class DomainRepositoryModule {
   @Binds
   @Singleton
   abstract fun bindLinksRepository(linksRepositoryImpl: LinksRepositoryImpl): LinksRepository
+
+  @Binds
+  @Singleton
+  abstract fun bindWordsRepository(wordsRepositoryImpl: WordsRepositoryImpl): WordsRepository
 }

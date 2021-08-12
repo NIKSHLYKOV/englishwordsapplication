@@ -1,4 +1,4 @@
-package ru.nikshlykov.englishwordsapp.ui.fragments
+package ru.nikshlykov.englishwordsapp.ui.fragments.modesfragments
 
 import android.content.Context
 import android.os.Bundle
@@ -11,7 +11,6 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import ru.nikshlykov.englishwordsapp.R
 import ru.nikshlykov.englishwordsapp.db.word.Word
-import ru.nikshlykov.englishwordsapp.ui.flowfragments.StudyFlowFragment
 
 class FirstShowModeFragment : Fragment() {
   // View для отображения параметров слова.
@@ -45,7 +44,7 @@ class FirstShowModeFragment : Fragment() {
     //wordId = getArguments().getLong(EXTRA_WORD_ID);
     // Получаем слово по id из БД.
     //wordViewModel.setWord(wordId);
-    word = requireArguments().getParcelable(StudyFlowFragment.EXTRA_WORD_OBJECT)
+    word = FirstShowModeFragmentArgs.fromBundle(requireArguments()).word
   }
 
   override fun onCreateView(

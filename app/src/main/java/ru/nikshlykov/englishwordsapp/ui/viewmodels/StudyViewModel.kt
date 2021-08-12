@@ -11,12 +11,14 @@ import ru.nikshlykov.englishwordsapp.db.WordsRepository
 import ru.nikshlykov.englishwordsapp.db.WordsRepository.*
 import ru.nikshlykov.englishwordsapp.db.repeat.Repeat
 import ru.nikshlykov.englishwordsapp.domain.interactors.GetSelectedModesInteractor
+import ru.nikshlykov.englishwordsapp.domain.interactors.GetWordInteractor
 import ru.nikshlykov.englishwordsapp.preferences.NewWordsCountPreference
 import java.util.*
 
 class StudyViewModel(
   application: Application, private val wordsRepository: WordsRepository,
-  private val getSelectedModesInteractor: GetSelectedModesInteractor
+  private val getSelectedModesInteractor: GetSelectedModesInteractor,
+  private val getWordInteractor: GetWordInteractor
 ) : AndroidViewModel(application), OnRepeatsCountForTodayLoadedListener {
   private var listener: OnAvailableToRepeatWordLoadedListener? = null
   private var withNew = true
@@ -137,22 +139,26 @@ class StudyViewModel(
    */
   fun firstShowProcessing(wordId: Long, result: Int, listener: OnWordUpdatedListener) {
     when (result) {
-      0 -> wordsRepository.execute(Runnable { // Увеличиваем столбец приоритетности - слово с меньшей вероятностью будет появляться.
-        val skippedWord = wordsRepository.getWordById(wordId)
-        if (skippedWord != null) {
+      0 -> {
+        viewModelScope.launch {
+          val skippedWord = getWordInteractor.getWordById(wordId)
+          // Увеличиваем столбец приоритетности - слово с меньшей вероятностью будет появляться.
           skippedWord.priority++
           wordsRepository.update(skippedWord, listener)
         }
-      })
+      }
       1 -> insertRepeatAndUpdateWord(wordId, result, listener)
-      2 -> wordsRepository.execute(Runnable { // Если пользователь при первом показе слова указал, что он его знает.
-        // Получаем слово и выставляем прогресс на 8.
-        // С помощью этого можно будет отличать слова, которые пользователь уже знает, от тех,
-        // которые он выучил с помощью приложения (они будут иметь прогресс равный 7).
-        val word = wordsRepository.getWordById(wordId)
-        word.learnProgress = 8
-        wordsRepository.update(word, listener)
-      })
+      2 -> {
+        viewModelScope.launch {
+          // Если пользователь при первом показе слова указал, что он его знает.
+          // Получаем слово и выставляем прогресс на 8.
+          // С помощью этого можно будет отличать слова, которые пользователь уже знает, от тех,
+          // которые он выучил с помощью приложения (они будут иметь прогресс равный 7).
+          val word = getWordInteractor.getWordById(wordId)
+          word.learnProgress = 8
+          wordsRepository.update(word, listener)
+        }
+      }
     }
   }
 
@@ -177,6 +183,7 @@ class StudyViewModel(
     wordId: Long, result: Int,
     listener: OnWordUpdatedListener
   ) {
+    // TODO переделать с интерактором. уже можно, т.к. наладили режимы.
     wordsRepository.execute(Runnable { // Находим порядковый номер данного повтора.
       var newRepeatSequenceNumber = 0
       // Получаем последний повтор по данному слову.

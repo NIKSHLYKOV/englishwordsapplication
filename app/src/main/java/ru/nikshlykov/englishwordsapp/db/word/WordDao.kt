@@ -20,6 +20,9 @@ interface WordDao {
   @Query("SELECT * FROM Words WHERE _id = :wordId")
   fun getWordById(wordId: Long): Word
 
+  @Query("SELECT * FROM Words WHERE _id = :wordId")
+  suspend fun getWordByIdSuspend(wordId: Long): Word
+
   @Query(
     "SELECT Words.* FROM Words, Links " +
       "WHERE Words._id = Links.WordId and Links.SubgroupId = :subgroupId " +
