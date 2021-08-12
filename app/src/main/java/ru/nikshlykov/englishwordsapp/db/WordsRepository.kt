@@ -124,7 +124,7 @@ class WordsRepository(database: AppDatabase) {
   }
 
   interface OnAvailableToRepeatWordLoadedListener {
-    fun onAvailableToRepeatWordLoaded(word: Word)
+    fun onAvailableToRepeatWordLoaded(word: Word?)
   }
 
   private class GetAvailableToRepeatWordAsyncTask(
@@ -136,13 +136,17 @@ class WordsRepository(database: AppDatabase) {
     override fun doInBackground(vararg voids: Void): Word? {
       val wordsFromStudiedSubgroups: List<Word>
       wordsFromStudiedSubgroups = if (withNew) {
+        Log.d("WordsRepository", "С новыми словами")
         wordDao.allWordsFromStudiedSubgroups()
       } else {
+        Log.d("WordsRepository", "Без новых слов")
         wordDao.notNewWordsFromStudiedSubgroups()
       }
       val currentDate = Date()
       for (word in wordsFromStudiedSubgroups) {
+        Log.d("WordsRepository", word.toString())
         if (word.isAvailableToRepeat(currentDate)) {
+          Log.d("WordsRepository", "Слово ${word.word} доступно для повторения")
           return word
         }
       }
@@ -153,9 +157,8 @@ class WordsRepository(database: AppDatabase) {
       super.onPostExecute(word)
       val listener = listener.get()
       // TODO разобраться, почему тут приходит null. Это крашит весь процесс обучения.
-      if (word != null) {
-        listener?.onAvailableToRepeatWordLoaded(word)
-      }
+      word?.let { Log.d("WordsRepository", "Слово ${word.word} отдаётся через callback") }
+      listener?.onAvailableToRepeatWordLoaded(word)
     }
 
     init {

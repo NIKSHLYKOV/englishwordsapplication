@@ -3,10 +3,7 @@ package ru.nikshlykov.englishwordsapp.di
 import dagger.Module
 import dagger.Provides
 import ru.nikshlykov.englishwordsapp.domain.interactors.*
-import ru.nikshlykov.englishwordsapp.domain.repositories.GroupsRepository
-import ru.nikshlykov.englishwordsapp.domain.repositories.LinksRepository
-import ru.nikshlykov.englishwordsapp.domain.repositories.ModesRepository
-import ru.nikshlykov.englishwordsapp.domain.repositories.SubgroupsRepository
+import ru.nikshlykov.englishwordsapp.domain.repositories.*
 
 @Module
 class InteractorModule {
@@ -77,5 +74,11 @@ class InteractorModule {
   fun provideDeleteSubgroupInteractor(subgroupsRepository: SubgroupsRepository)
     : DeleteSubgroupInteractor {
     return DeleteSubgroupInteractor(subgroupsRepository)
+  }
+
+  @Provides
+  fun provideGetWordInteractor(wordsRepository: WordsRepository)
+    : GetWordInteractor {
+    return GetWordInteractor(wordsRepository)
   }
 }

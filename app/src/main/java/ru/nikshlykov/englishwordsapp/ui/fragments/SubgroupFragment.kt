@@ -42,6 +42,10 @@ import javax.inject.Inject
 
 class SubgroupFragment : DaggerFragment(), SortWordsListener, ResetProgressListener,
   DeleteSubgroupListener {
+  // TODO проверить баг с отменой изучения подгруппы.
+  //  Выставляешь на изучение во вкладе со всеми подгруппами, заходишь сюда, выходишь,
+  //  и она уже не изучается почему-то. Видимо, какой-то баг с toolbar. проверить во ViewModel
+  //  сущность отвечающую за это
   // View элементы.
   private var createWordFAB: FloatingActionButton? = null
   private var toolbar: Toolbar? = null

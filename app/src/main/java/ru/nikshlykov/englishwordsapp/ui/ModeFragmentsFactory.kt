@@ -2,7 +2,7 @@ package ru.nikshlykov.englishwordsapp.ui
 
 import android.content.Context
 import androidx.fragment.app.Fragment
-import ru.nikshlykov.englishwordsapp.ui.fragments.*
+import ru.nikshlykov.englishwordsapp.ui.fragments.modesfragments.*
 
 // Перечисление режимов.
 // Необходимо для того, чтобы возвращать определённый вновь созданный фрагмент по id режима.
