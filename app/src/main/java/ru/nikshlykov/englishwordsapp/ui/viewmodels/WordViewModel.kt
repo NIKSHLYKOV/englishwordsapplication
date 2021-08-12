@@ -10,15 +10,13 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import ru.nikshlykov.englishwordsapp.db.GroupsRepository
 import ru.nikshlykov.englishwordsapp.db.GroupsRepository.OnSubgroupsLoadedListener
-import ru.nikshlykov.englishwordsapp.db.WordsRepository
-import ru.nikshlykov.englishwordsapp.db.WordsRepository.OnExamplesLoadedListener
 import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup
 import ru.nikshlykov.englishwordsapp.db.word.Word
 import ru.nikshlykov.englishwordsapp.domain.interactors.UpdateWordInteractor
 import java.util.*
 
 class WordViewModel(
-  application: Application, private val wordsRepository: WordsRepository,
+  application: Application,
   private val groupsRepository: GroupsRepository,
   private val updateWordInteractor: UpdateWordInteractor
 ) : AndroidViewModel(application), OnSubgroupsLoadedListener {
@@ -93,14 +91,6 @@ class WordViewModel(
   override fun onLoaded(subgroups: ArrayList<Subgroup>?) {
     Log.d(LOG_TAG, "onLoaded()")
     availableSubgroupsTo.value = subgroups
-  }
-
-  // Примеры
-  fun getExamples(listener: OnExamplesLoadedListener?) {
-    val word = wordMutableLiveData.value
-    if (word != null) {
-      wordsRepository.getExamplesByWordId(word.id, listener!!)
-    }
   }
 
   companion object {

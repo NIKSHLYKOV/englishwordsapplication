@@ -132,34 +132,6 @@ class WordsRepository(database: AppDatabase) {
     }
   }
 
-  /**
-   * Методы для работы с примерами.
-   */
-  fun getExamplesByWordId(wordId: Long, listener: OnExamplesLoadedListener) {
-    GetExamplesByWordAsyncTask(exampleDao, listener).execute(wordId)
-  }
-
-  interface OnExamplesLoadedListener {
-    fun onLoaded(examples: List<Example>)
-  }
-
-  private class GetExamplesByWordAsyncTask(
-    private val exampleDao: ExampleDao,
-    listener: OnExamplesLoadedListener
-  ) : AsyncTask<Long, Void, List<Example>>() {
-    private val listener: WeakReference<OnExamplesLoadedListener> = WeakReference(listener)
-    override fun doInBackground(vararg p0: Long?): List<Example>? {
-      return p0[0]?.let { exampleDao.getExamplesByWordId(it) as List<Example>? }
-    }
-
-    override fun onPostExecute(subgroup: List<Example>) {
-      super.onPostExecute(subgroup)
-      val listener = listener.get()
-      listener?.onLoaded(subgroup)
-    }
-
-  }
-
   companion object {
     private val LOG_TAG = WordsRepository::class.java.canonicalName
   }

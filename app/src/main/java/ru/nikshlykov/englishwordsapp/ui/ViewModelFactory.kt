@@ -55,7 +55,7 @@ class ViewModelFactory @Inject constructor(
         deleteWordFromSubgroupInteractor
       ) as T
     } else if (modelClass == WordViewModel::class.java) {
-      WordViewModel(application, wordsRepository, groupsRepository, updateWordInteractor) as T
+      WordViewModel(application, groupsRepository, updateWordInteractor) as T
     } else if (modelClass == StatisticsViewModel::class.java) {
       StatisticsViewModel(application, wordsRepository) as T
     } else if (modelClass == ModesViewModel::class.java) {

@@ -20,8 +20,6 @@ import com.google.android.material.textfield.TextInputLayout
 import dagger.android.support.DaggerFragment
 import ru.nikshlykov.englishwordsapp.App
 import ru.nikshlykov.englishwordsapp.R
-import ru.nikshlykov.englishwordsapp.db.WordsRepository.OnExamplesLoadedListener
-import ru.nikshlykov.englishwordsapp.db.example.Example
 import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup
 import ru.nikshlykov.englishwordsapp.db.word.Word
 import ru.nikshlykov.englishwordsapp.ui.adapters.ExamplesRecyclerViewAdapter
@@ -31,7 +29,7 @@ import ru.nikshlykov.englishwordsapp.ui.viewmodels.WordViewModel
 import java.util.*
 import javax.inject.Inject
 
-class WordFragment : DaggerFragment(), ResetProgressListener, OnExamplesLoadedListener {
+class WordFragment : DaggerFragment(), ResetProgressListener {
   // View элементы.
   private var wordTextInputLayout: TextInputLayout? = null
   private var valueTextInputLayout: TextInputLayout? = null
@@ -467,10 +465,6 @@ examplesRecyclerView.setAdapter(examplesRecyclerViewAdapter);*/
   fun dpToPx(dp: Int): Int {
     val density = this.resources.displayMetrics.density
     return Math.round(dp.toFloat() * density)
-  }
-
-  override fun onLoaded(examples: List<Example>) {
-    examplesRecyclerViewAdapter!!.setExamples(examples)
   }
 
   companion object {
