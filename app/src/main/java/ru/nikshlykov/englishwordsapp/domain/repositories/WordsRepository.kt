@@ -1,5 +1,6 @@
 package ru.nikshlykov.englishwordsapp.domain.repositories
 
+import androidx.lifecycle.LiveData
 import ru.nikshlykov.englishwordsapp.db.word.Word
 
 interface WordsRepository {
@@ -14,9 +15,9 @@ interface WordsRepository {
 
   suspend fun getWordById(wordId: Long): Word
 
-  suspend fun getWordsFromSubgroupByProgress(subgroupId: Long): List<Word>
+  fun getWordsFromSubgroupByProgress(subgroupId: Long): LiveData<List<Word>>
 
-  suspend fun getWordsFromSubgroupByAlphabet(subgroupId: Long): List<Word>
+  fun getWordsFromSubgroupByAlphabet(subgroupId: Long): LiveData<List<Word>>
 
   suspend fun getWordsFromSubgroup(subgroupId: Long): List<Word>
 

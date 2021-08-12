@@ -1,8 +1,8 @@
 package ru.nikshlykov.englishwordsapp.ui.fragments
 
 import android.app.Dialog
-import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import ru.nikshlykov.englishwordsapp.R
@@ -11,24 +11,23 @@ class SortWordsDialogFragment : DialogFragment() {
   // Параметр сортировки.
   private var sortParam = 0
 
-  // Интерфейс для общения с активити.
+  // Интерфейс для общения.
   interface SortWordsListener {
     fun sort(sortParam: Int)
   }
 
   private var sortWordsListener: SortWordsListener? = null
-  override fun onAttach(context: Context) {
-    super.onAttach(context)
-    sortWordsListener = context as SortWordsListener
+
+  fun setSortWordsListener(sortWordsListener: SortWordsListener) {
+    this.sortWordsListener = sortWordsListener
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
-    // Получаем текущий параметр сортировки, переданный из Activity.
-    if (savedInstanceState != null) {
-      sortParam = savedInstanceState.getInt(EXTRA_SORT_PARAM)
-    }
+    // Получаем текущий параметр сортировки.
+    sortParam = arguments?.getInt(EXTRA_SORT_PARAM)!!
+    Log.d("SortWordsDialogFragment", "sortParam from bundle = $sortParam")
   }
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

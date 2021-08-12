@@ -2,7 +2,6 @@ package ru.nikshlykov.englishwordsapp.db
 
 import android.os.AsyncTask
 import android.util.Log
-import androidx.lifecycle.LiveData
 import ru.nikshlykov.englishwordsapp.db.example.Example
 import ru.nikshlykov.englishwordsapp.db.example.ExampleDao
 import ru.nikshlykov.englishwordsapp.db.repeat.Repeat
@@ -42,14 +41,6 @@ class WordsRepository(database: AppDatabase) {
   // МОЖНО ЛИ ТАК ПИСАТЬ??? (БЕЗ НОВОГО ПОТОКА)
   fun getWordById(id: Long): Word {
     return wordDao.getWordById(id)
-  }
-
-  fun getWordsFromSubgroupByProgress(subgroupId: Long): LiveData<List<Word>> {
-    return wordDao.getWordsFromSubgroupByProgress(subgroupId)
-  }
-
-  fun getWordsFromSubgroupByAlphabet(subgroupId: Long): LiveData<List<Word>> {
-    return wordDao.getWordsFromSubgroupByAlphabet(subgroupId)
   }
 
   fun getAvailableToRepeatWord(withNew: Boolean, listener: OnAvailableToRepeatWordLoadedListener) {

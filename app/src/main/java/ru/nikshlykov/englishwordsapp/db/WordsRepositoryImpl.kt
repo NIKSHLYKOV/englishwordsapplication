@@ -1,5 +1,6 @@
 package ru.nikshlykov.englishwordsapp.db
 
+import androidx.lifecycle.LiveData
 import ru.nikshlykov.englishwordsapp.db.word.Word
 import ru.nikshlykov.englishwordsapp.db.word.WordDao
 import ru.nikshlykov.englishwordsapp.domain.repositories.WordsRepository
@@ -26,12 +27,12 @@ class WordsRepositoryImpl @Inject constructor(private val wordDao: WordDao) : Wo
     return wordDao.getWordByIdSuspend(wordId)
   }
 
-  override suspend fun getWordsFromSubgroupByProgress(subgroupId: Long): List<Word> {
-    TODO("Not yet implemented")
+  override fun getWordsFromSubgroupByProgress(subgroupId: Long): LiveData<List<Word>> {
+    return wordDao.getWordsFromSubgroupByProgress(subgroupId)
   }
 
-  override suspend fun getWordsFromSubgroupByAlphabet(subgroupId: Long): List<Word> {
-    TODO("Not yet implemented")
+  override fun getWordsFromSubgroupByAlphabet(subgroupId: Long): LiveData<List<Word>> {
+    return wordDao.getWordsFromSubgroupByAlphabet(subgroupId)
   }
 
   override suspend fun getWordsFromSubgroup(subgroupId: Long): List<Word> {

@@ -247,6 +247,7 @@ class SubgroupFragment : DaggerFragment(), SortWordsListener, ResetProgressListe
       R.id.activity_subgroup___action___sort -> {
         Log.d(LOG_TAG, "sort words")
         val sortWordsDialogFragment = SortWordsDialogFragment()
+        sortWordsDialogFragment.setSortWordsListener(this)
         val sortWordsDialogArguments = Bundle()
         sortWordsDialogArguments.putInt(SortWordsDialogFragment.EXTRA_SORT_PARAM, sortParam)
         sortWordsDialogFragment.arguments = sortWordsDialogArguments

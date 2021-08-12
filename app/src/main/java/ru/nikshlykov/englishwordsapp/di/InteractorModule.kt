@@ -81,4 +81,10 @@ class InteractorModule {
     : GetWordInteractor {
     return GetWordInteractor(wordsRepository)
   }
+
+  @Provides
+  fun provideGetWordsFromSubgroupInteractor(wordsRepository: WordsRepository)
+    : GetWordsFromSubgroupInteractor {
+    return GetWordsFromSubgroupInteractor(wordsRepository)
+  }
 }
