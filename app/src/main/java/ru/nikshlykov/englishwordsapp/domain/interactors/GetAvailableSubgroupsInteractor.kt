@@ -19,7 +19,7 @@ class GetAvailableSubgroupsInteractor(
    *
    * @return доступные подгруппы или пустой список, если таковых нет.
    */
-  suspend fun getAvailabeSubgroups(wordId: Long, flagTo: Int): List<Subgroup> {
+  suspend fun getAvailableSubgroups(wordId: Long, flagTo: Int): List<Subgroup> {
     // Получаем подгруппы, созданные пользователем и проверяем, что они вообще есть.
     val createdByUserSubgroups = subgroupsRepository.getSubgroupsCreatedByUser()
     return if (createdByUserSubgroups.isNotEmpty()) {

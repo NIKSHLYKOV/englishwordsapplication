@@ -6,27 +6,23 @@ import androidx.lifecycle.*
 import androidx.lifecycle.Observer
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import ru.nikshlykov.englishwordsapp.db.GroupsRepository
-import ru.nikshlykov.englishwordsapp.db.GroupsRepository.OnSubgroupsLoadedListener
 import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup
 import ru.nikshlykov.englishwordsapp.db.word.Word
 import ru.nikshlykov.englishwordsapp.domain.interactors.*
-import ru.nikshlykov.englishwordsapp.ui.fragments.LinkOrDeleteWordDialogFragment
 import ru.nikshlykov.englishwordsapp.ui.fragments.SortWordsDialogFragment
 import java.util.*
 
 class SubgroupViewModel(
   application: Application,
-  private val groupsRepository: GroupsRepository,
   private val getSubgroupInteractor: GetSubgroupInteractor,
   private val addWordToSubgroupInteractor: AddWordToSubgroupInteractor,
   private val deleteWordFromSubgroupInteractor: DeleteWordFromSubgroupInteractor,
   private val updateSubgroupInteractor: UpdateSubgroupInteractor,
   private val deleteSubgroupInteractor: DeleteSubgroupInteractor,
   private val getWordsFromSubgroupInteractor: GetWordsFromSubgroupInteractor,
-  private val resetWordsProgressFromSubgroupInteractor: ResetWordsProgressFromSubgroupInteractor
-) : AndroidViewModel(application),
-  OnSubgroupsLoadedListener {
+  private val resetWordsProgressFromSubgroupInteractor: ResetWordsProgressFromSubgroupInteractor,
+  private val getAvailableSubgroupsInteractor: GetAvailableSubgroupsInteractor
+) : AndroidViewModel(application) {
 
   // Подгруппа
   private val _subgroup: MutableLiveData<Subgroup> = MutableLiveData()
@@ -169,7 +165,15 @@ class SubgroupViewModel(
   fun getAvailableSubgroupsToLink(wordId: Long): MutableLiveData<ArrayList<Subgroup>?> {
     if (availableSubgroupToLink.value == null) {
       Log.d(LOG_TAG, "availableSubgroupsTo value = null")
-      groupsRepository.getAvailableSubgroupTo(wordId, LinkOrDeleteWordDialogFragment.TO_LINK, this)
+      viewModelScope.launch {
+        val availableSubgroups = ArrayList(
+          getAvailableSubgroupsInteractor.getAvailableSubgroups(
+            wordId,
+            GetAvailableSubgroupsInteractor.TO_LINK
+          )
+        )
+        availableSubgroupToLink.value = availableSubgroups
+      }
     }
     return availableSubgroupToLink
   }
@@ -178,11 +182,6 @@ class SubgroupViewModel(
     Log.d(LOG_TAG, "clearAvailableSubgroupsTo()")
     availableSubgroupToLink.value = null
     availableSubgroupToLink.removeObserver(observer)
-  }
-
-  override fun onLoaded(subgroups: ArrayList<Subgroup>?) {
-    Log.d(LOG_TAG, "onLoaded()")
-    availableSubgroupToLink.value = subgroups
   }
 
   companion object {
