@@ -26,6 +26,7 @@ import ru.nikshlykov.englishwordsapp.db.word.WordDao
   exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
+  // TODO подумать над тем, чтобы больше писать в аннотации Query в Dao.
   abstract fun exampleDao(): ExampleDao
   abstract fun groupDao(): GroupDao
   abstract fun linkDao(): LinkDao

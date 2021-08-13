@@ -101,4 +101,16 @@ class InteractorModule {
   ): StudyWordsInteractor {
     return StudyWordsInteractor(wordsRepository, repeatsRepository)
   }
+
+  @Provides
+  fun provideResetWordProgressInteractor(updateWordInteractor: UpdateWordInteractor)
+    : ResetWordProgressInteractor {
+    return ResetWordProgressInteractor(updateWordInteractor)
+  }
+
+  @Provides
+  fun provideResetWordsProgressFromSubgroupInteractor(wordsRepository: WordsRepository)
+    : ResetWordsProgressFromSubgroupInteractor {
+    return ResetWordsProgressFromSubgroupInteractor(wordsRepository)
+  }
 }

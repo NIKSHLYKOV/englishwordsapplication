@@ -54,4 +54,8 @@ class WordsRepositoryImpl @Inject constructor(private val wordDao: WordDao) : Wo
   override suspend fun getNotNewWordsFromStudiedSubgroups(): List<Word> {
     TODO("Not yet implemented")
   }
+
+  override suspend fun resetWordsProgressFromSubgroup(subgroupId: Long): Int {
+    return wordDao.resetWordsProgressFromSubgroup(subgroupId)
+  }
 }
