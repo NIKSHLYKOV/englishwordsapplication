@@ -113,4 +113,10 @@ class InteractorModule {
     : ResetWordsProgressFromSubgroupInteractor {
     return ResetWordsProgressFromSubgroupInteractor(wordsRepository)
   }
+
+  @Provides
+  fun provideGetFirstShowRepeatsCountForTodayInteractor(repeatsRepository: RepeatsRepository)
+    : GetFirstShowRepeatsCountForTodayInteractor {
+    return GetFirstShowRepeatsCountForTodayInteractor(repeatsRepository)
+  }
 }

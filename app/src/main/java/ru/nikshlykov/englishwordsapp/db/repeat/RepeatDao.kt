@@ -26,5 +26,5 @@ interface RepeatDao {
   fun repeatWithMaxId(): Repeat
 
   @Query("SELECT * FROM Repeats")
-  fun allRepeats(): List<Repeat>
+  suspend fun getAllRepeats(): List<Repeat>
 }

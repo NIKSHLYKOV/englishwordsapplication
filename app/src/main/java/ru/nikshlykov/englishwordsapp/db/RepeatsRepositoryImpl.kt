@@ -28,6 +28,6 @@ class RepeatsRepositoryImpl @Inject constructor(private val repeatDao: RepeatDao
   }
 
   override suspend fun getAllRepeats(): List<Repeat> {
-    TODO("Not yet implemented")
+    return repeatDao.getAllRepeats()
   }
 }
