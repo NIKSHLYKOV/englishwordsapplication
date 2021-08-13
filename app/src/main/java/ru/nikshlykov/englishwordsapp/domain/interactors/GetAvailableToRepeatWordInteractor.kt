@@ -6,6 +6,10 @@ import java.util.*
 
 class GetAvailableToRepeatWordInteractor(private val wordsRepository: WordsRepository) {
 
+  interface OnAvailableToRepeatWordLoadedListener {
+    fun onAvailableToRepeatWordLoaded(word: Word?)
+  }
+
   suspend fun getAvailableToRepeatWord(withNew: Boolean): Word? {
     val wordsFromStudiedSubgroups: List<Word> = if (withNew) {
       wordsRepository.getWordsFromStudiedSubgroups()
