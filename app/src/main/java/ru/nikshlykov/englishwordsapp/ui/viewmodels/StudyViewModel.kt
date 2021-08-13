@@ -5,11 +5,13 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.preference.PreferenceManager
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import ru.nikshlykov.englishwordsapp.R
-import ru.nikshlykov.englishwordsapp.db.WordsRepository
-import ru.nikshlykov.englishwordsapp.db.WordsRepository.OnAvailableToRepeatWordLoadedListener
+import ru.nikshlykov.englishwordsapp.domain.interactors.GetAvailableToRepeatWordInteractor
+import ru.nikshlykov.englishwordsapp.domain.interactors.GetAvailableToRepeatWordInteractor.OnAvailableToRepeatWordLoadedListener
 import ru.nikshlykov.englishwordsapp.domain.interactors.GetFirstShowRepeatsCountForTodayInteractor
 import ru.nikshlykov.englishwordsapp.domain.interactors.GetSelectedModesInteractor
 import ru.nikshlykov.englishwordsapp.domain.interactors.StudyWordsInteractor
@@ -17,9 +19,10 @@ import ru.nikshlykov.englishwordsapp.preferences.NewWordsCountPreference
 import java.util.*
 
 class StudyViewModel(
-  application: Application, private val wordsRepository: WordsRepository,
+  application: Application,
   private val getSelectedModesInteractor: GetSelectedModesInteractor,
   private val getFirstShowRepeatsCountForTodayInteractor: GetFirstShowRepeatsCountForTodayInteractor,
+  private val getAvailableToRepeatWordInteractor: GetAvailableToRepeatWordInteractor,
   private val studyWordsInteractor: StudyWordsInteractor
 ) : AndroidViewModel(application) {
   // TODO подумать над тем, чтобы логику работы с количеством начатых за слов день перенести
@@ -60,7 +63,7 @@ class StudyViewModel(
     }*/
   // Выбранные режимы.
 
-  fun getSelectedModes(listener: OnAvailableToRepeatWordLoadedListener) {
+  fun startStudying(listener: OnAvailableToRepeatWordLoadedListener) {
     viewModelScope.launch {
       val selectedModes = getSelectedModesInteractor.getSelectedModes()
 
@@ -112,7 +115,11 @@ class StudyViewModel(
           withNew = true
         }
       }
-      wordsRepository.getAvailableToRepeatWord(withNew, listener!!)
+
+      val wordForStudying = getAvailableToRepeatWordInteractor.getAvailableToRepeatWord(withNew)
+      withContext(Dispatchers.Main) {
+        listener!!.onAvailableToRepeatWordLoaded(wordForStudying)
+      }
     }
   }
 

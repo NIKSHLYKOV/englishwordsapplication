@@ -45,14 +45,14 @@ interface WordDao {
       "WHERE Words._id = Links.WordId AND Subgroups._id = Links.SubgroupId " +
       "AND Subgroups.IsStudied = 1 ORDER BY Words.LearnProgress DESC, Words.Priority"
   )
-  fun allWordsFromStudiedSubgroups(): List<Word>
+  suspend fun getWordsFromStudiedSubgroups(): List<Word>
 
   @Query(
     "SELECT DISTINCT Words.* FROM Words, Links, Subgroups " +
       "WHERE Words._id = Links.WordId AND Subgroups._id = Links.SubgroupId " +
       "AND Subgroups.IsStudied = 1 AND Words.LearnProgress >= 0 ORDER BY Words.LearnProgress DESC, Words.Priority"
   )
-  fun notNewWordsFromStudiedSubgroups(): List<Word>
+  suspend fun getNotNewWordsFromStudiedSubgroups(): List<Word>
 
   @Query(
     "SELECT DISTINCT Words.* FROM Words, Links, Subgroups " +

@@ -119,4 +119,10 @@ class InteractorModule {
     : GetFirstShowRepeatsCountForTodayInteractor {
     return GetFirstShowRepeatsCountForTodayInteractor(repeatsRepository)
   }
+
+  @Provides
+  fun provideGetAvailableToRepeatWordInteractor(wordsRepository: WordsRepository)
+    : GetAvailableToRepeatWordInteractor {
+    return GetAvailableToRepeatWordInteractor(wordsRepository)
+  }
 }
