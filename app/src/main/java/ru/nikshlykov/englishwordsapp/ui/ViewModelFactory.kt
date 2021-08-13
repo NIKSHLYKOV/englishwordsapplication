@@ -27,7 +27,8 @@ class ViewModelFactory @Inject constructor(
   private val studyWordsInteractor: StudyWordsInteractor,
   private val resetWordProgressInteractor: ResetWordProgressInteractor,
   private val resetWordsProgressFromSubgroupInteractor: ResetWordsProgressFromSubgroupInteractor,
-  private val getWordInteractor: GetWordInteractor
+  private val getWordInteractor: GetWordInteractor,
+  private val getFirstShowRepeatsCountForTodayInteractor: GetFirstShowRepeatsCountForTodayInteractor
 ) : ViewModelProvider.Factory {
   override fun <T : ViewModel?> create(modelClass: Class<T>): T {
     return if (modelClass == StudyViewModel::class.java) {
@@ -35,6 +36,7 @@ class ViewModelFactory @Inject constructor(
         application,
         wordsRepository,
         getSelectedModesInteractor,
+        getFirstShowRepeatsCountForTodayInteractor,
         studyWordsInteractor
       ) as T
     } else if (modelClass == GroupsViewModel::class.java) {

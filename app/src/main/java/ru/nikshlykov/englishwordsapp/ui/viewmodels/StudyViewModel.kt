@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 import ru.nikshlykov.englishwordsapp.R
 import ru.nikshlykov.englishwordsapp.db.WordsRepository
 import ru.nikshlykov.englishwordsapp.db.WordsRepository.OnAvailableToRepeatWordLoadedListener
-import ru.nikshlykov.englishwordsapp.db.WordsRepository.OnRepeatsCountForTodayLoadedListener
+import ru.nikshlykov.englishwordsapp.domain.interactors.GetFirstShowRepeatsCountForTodayInteractor
 import ru.nikshlykov.englishwordsapp.domain.interactors.GetSelectedModesInteractor
 import ru.nikshlykov.englishwordsapp.domain.interactors.StudyWordsInteractor
 import ru.nikshlykov.englishwordsapp.preferences.NewWordsCountPreference
@@ -19,9 +19,11 @@ import java.util.*
 class StudyViewModel(
   application: Application, private val wordsRepository: WordsRepository,
   private val getSelectedModesInteractor: GetSelectedModesInteractor,
+  private val getFirstShowRepeatsCountForTodayInteractor: GetFirstShowRepeatsCountForTodayInteractor,
   private val studyWordsInteractor: StudyWordsInteractor
-) : AndroidViewModel(application), OnRepeatsCountForTodayLoadedListener {
-  private var listener: OnAvailableToRepeatWordLoadedListener? = null
+) : AndroidViewModel(application) {
+  // TODO подумать над тем, чтобы логику работы с количеством начатых за слов день перенести
+  //  на слой interactor'ов.
   private var withNew = true
   private var newWordsCount = 0
 
@@ -95,8 +97,23 @@ class StudyViewModel(
   private fun getNextAvailableToRepeatWord(
     listener: OnAvailableToRepeatWordLoadedListener?
   ) {
-    this.listener = listener
-    wordsRepository.getRepeatsCountForToday(this)
+    //wordsRepository.getRepeatsCountForToday(this)
+    GlobalScope.launch {
+      val repeatsCount =
+        getFirstShowRepeatsCountForTodayInteractor.getFirstShowRepeatsCountForToday()
+      Log.d(LOG_TAG, "Начатых за сегодня слов: $repeatsCount")
+      if (repeatsCount >= newWordsCount) {
+        if (withNew) {
+          Log.d(LOG_TAG, "Достигнут предел по количеству новых слов за день")
+        }
+        withNew = false
+      } else {
+        if (!withNew) {
+          withNew = true
+        }
+      }
+      wordsRepository.getAvailableToRepeatWord(withNew, listener!!)
+    }
   }
 
   fun setNewWordsCount(newWordsCount: Int) {
@@ -112,20 +129,6 @@ class StudyViewModel(
     Log.i(LOG_TAG, "loadNewWordsCount(): newWordsCount = $newWordsCount")
   }
 
-  override fun onRepeatsCountForTodayLoaded(repeatsCount: Int) {
-    Log.i(LOG_TAG, "Начатых за сегодня слов: $repeatsCount")
-    if (repeatsCount >= newWordsCount) {
-      if (withNew) {
-        Log.i(LOG_TAG, "Достигнут предел по количеству новых слов за день")
-      }
-      withNew = false
-    } else {
-      if (!withNew) {
-        withNew = true
-      }
-    }
-    wordsRepository.getAvailableToRepeatWord(withNew, listener!!)
-  }
   // Обработка результатов повторов.
   /**
    * Обрабатывает результат первого показа слова пользователю.
