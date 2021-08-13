@@ -266,6 +266,7 @@ class SubgroupFragment : DaggerFragment(), SortWordsListener, ResetProgressListe
         Log.d(LOG_TAG, "Reset words progress")
         val resetProgressDialogFragment = ResetProgressDialogFragment()
         val resetProgressDialogArguments = Bundle()
+        resetProgressDialogFragment.setResetProgressListener(this)
         resetProgressDialogArguments.putInt(
           ResetProgressDialogFragment.EXTRA_FLAG,
           ResetProgressDialogFragment.FOR_SUBGROUP

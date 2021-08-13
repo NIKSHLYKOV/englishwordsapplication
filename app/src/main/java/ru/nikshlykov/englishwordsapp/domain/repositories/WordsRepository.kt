@@ -27,4 +27,6 @@ interface WordsRepository {
   suspend fun getWordsFromStudiedSubgroups(): List<Word>
 
   suspend fun getNotNewWordsFromStudiedSubgroups(): List<Word>
+
+  suspend fun resetWordsProgressFromSubgroup(subgroupId: Long): Int
 }

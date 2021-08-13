@@ -8,7 +8,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import ru.nikshlykov.englishwordsapp.db.GroupsRepository
 import ru.nikshlykov.englishwordsapp.db.GroupsRepository.OnSubgroupsLoadedListener
-import ru.nikshlykov.englishwordsapp.db.WordsRepository
 import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup
 import ru.nikshlykov.englishwordsapp.db.word.Word
 import ru.nikshlykov.englishwordsapp.domain.interactors.*
@@ -19,13 +18,13 @@ import java.util.*
 class SubgroupViewModel(
   application: Application,
   private val groupsRepository: GroupsRepository,
-  private val wordsRepository: WordsRepository,
   private val getSubgroupInteractor: GetSubgroupInteractor,
   private val addWordToSubgroupInteractor: AddWordToSubgroupInteractor,
   private val deleteWordFromSubgroupInteractor: DeleteWordFromSubgroupInteractor,
   private val updateSubgroupInteractor: UpdateSubgroupInteractor,
   private val deleteSubgroupInteractor: DeleteSubgroupInteractor,
-  private val getWordsFromSubgroupInteractor: GetWordsFromSubgroupInteractor
+  private val getWordsFromSubgroupInteractor: GetWordsFromSubgroupInteractor,
+  private val resetWordsProgressFromSubgroupInteractor: ResetWordsProgressFromSubgroupInteractor
 ) : AndroidViewModel(application),
   OnSubgroupsLoadedListener {
 
@@ -139,7 +138,9 @@ class SubgroupViewModel(
    */
   fun resetWordsProgress() {
     // TODO можно ещё всякие условия для безопасности сделать.
-    wordsRepository.resetWordsProgress(subgroupId)
+    viewModelScope.launch {
+      resetWordsProgressFromSubgroupInteractor.resetWordsProgressFromSubgroup(subgroupId)
+    }
   }
 
   /**

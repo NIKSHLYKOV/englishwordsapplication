@@ -12,13 +12,17 @@ import ru.nikshlykov.englishwordsapp.db.GroupsRepository
 import ru.nikshlykov.englishwordsapp.db.GroupsRepository.OnSubgroupsLoadedListener
 import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup
 import ru.nikshlykov.englishwordsapp.db.word.Word
+import ru.nikshlykov.englishwordsapp.domain.interactors.GetWordInteractor
+import ru.nikshlykov.englishwordsapp.domain.interactors.ResetWordProgressInteractor
 import ru.nikshlykov.englishwordsapp.domain.interactors.UpdateWordInteractor
 import java.util.*
 
 class WordViewModel(
   application: Application,
   private val groupsRepository: GroupsRepository,
-  private val updateWordInteractor: UpdateWordInteractor
+  private val getWordInteractor: GetWordInteractor,
+  private val updateWordInteractor: UpdateWordInteractor,
+  private val resetWordProgressInteractor: ResetWordProgressInteractor
 ) : AndroidViewModel(application), OnSubgroupsLoadedListener {
   val wordMutableLiveData: MutableLiveData<Word> = MutableLiveData()
 
@@ -46,6 +50,12 @@ class WordViewModel(
     }
   }
 
+  private fun loadWord(wordId: Long) {
+    viewModelScope.launch {
+      wordMutableLiveData.value = getWordInteractor.getWordById(wordId)
+    }
+  }
+
   fun updateWordInDB() {
     // TODO проверить работу, т.к. нужны свои слова для этого
     GlobalScope.launch {
@@ -63,9 +73,13 @@ class WordViewModel(
     viewModelScope.launch {
       val word = wordMutableLiveData.value
       if (word != null) {
-        word.learnProgress = -1
-        updateWordInteractor.updateWord(word)
-        wordMutableLiveData.value = word
+        val resetResult = resetWordProgressInteractor.resetWordProgress(word)
+        if (resetResult == 1) {
+          // TODO сделать потом что-нибудь получше. подумать, как убрать модель слова из фрагмента.
+          wordMutableLiveData.value?.id?.let { loadWord(it) }
+        }
+        // TODO решить, что делать с LiveData слова после сброса прогресса.
+        //  До этого обновляли прям тут прогресс.
       }
     }
   }

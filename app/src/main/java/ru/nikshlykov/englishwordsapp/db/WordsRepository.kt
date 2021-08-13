@@ -2,8 +2,6 @@ package ru.nikshlykov.englishwordsapp.db
 
 import android.os.AsyncTask
 import android.util.Log
-import ru.nikshlykov.englishwordsapp.db.example.Example
-import ru.nikshlykov.englishwordsapp.db.example.ExampleDao
 import ru.nikshlykov.englishwordsapp.db.repeat.RepeatDao
 import ru.nikshlykov.englishwordsapp.db.word.Word
 import ru.nikshlykov.englishwordsapp.db.word.WordDao
@@ -13,7 +11,6 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 class WordsRepository(database: AppDatabase) {
-  private val exampleDao: ExampleDao = database.exampleDao()
   private val repeatDao: RepeatDao = database.repeatDao()
   private val wordDao: WordDao = database.wordDao()
   private val databaseExecutorService: ExecutorService = Executors.newFixedThreadPool(1)
@@ -27,17 +24,6 @@ class WordsRepository(database: AppDatabase) {
   fun getAvailableToRepeatWord(withNew: Boolean, listener: OnAvailableToRepeatWordLoadedListener) {
     val task = GetAvailableToRepeatWordAsyncTask(wordDao, withNew, listener)
     task.execute()
-  }
-
-  // МОЖНО ЛИ ТАК ПИСАТЬ???
-  fun resetWordsProgress(subgroupId: Long) {
-    execute(Runnable {
-      val words = wordDao.getWordsFromSubgroup(subgroupId)
-      for (word in words) {
-        word.learnProgress = -1
-      }
-      wordDao.update(words)
-    })
   }
 
   /**

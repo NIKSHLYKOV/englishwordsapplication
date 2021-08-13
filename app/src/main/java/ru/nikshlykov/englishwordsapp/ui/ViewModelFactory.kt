@@ -24,7 +24,10 @@ class ViewModelFactory @Inject constructor(
   private val deleteSubgroupInteractor: DeleteSubgroupInteractor,
   private val getWordsFromSubgroupInteractor: GetWordsFromSubgroupInteractor,
   private val updateWordInteractor: UpdateWordInteractor,
-  private val studyWordsInteractor: StudyWordsInteractor
+  private val studyWordsInteractor: StudyWordsInteractor,
+  private val resetWordProgressInteractor: ResetWordProgressInteractor,
+  private val resetWordsProgressFromSubgroupInteractor: ResetWordsProgressFromSubgroupInteractor,
+  private val getWordInteractor: GetWordInteractor
 ) : ViewModelProvider.Factory {
   override fun <T : ViewModel?> create(modelClass: Class<T>): T {
     return if (modelClass == StudyViewModel::class.java) {
@@ -40,13 +43,13 @@ class ViewModelFactory @Inject constructor(
       SubgroupViewModel(
         application,
         groupsRepository,
-        wordsRepository,
         getSubgroupInteractor,
         addWordToSubgroupInteractor,
         deleteWordFromSubgroupInteractor,
         updateSubgroupInteractor,
         deleteSubgroupInteractor,
-        getWordsFromSubgroupInteractor
+        getWordsFromSubgroupInteractor,
+        resetWordsProgressFromSubgroupInteractor
       ) as T
     } else if (modelClass == WordDialogsViewModel::class.java) {
       WordDialogsViewModel(
@@ -55,7 +58,13 @@ class ViewModelFactory @Inject constructor(
         deleteWordFromSubgroupInteractor
       ) as T
     } else if (modelClass == WordViewModel::class.java) {
-      WordViewModel(application, groupsRepository, updateWordInteractor) as T
+      WordViewModel(
+        application,
+        groupsRepository,
+        getWordInteractor,
+        updateWordInteractor,
+        resetWordProgressInteractor
+      ) as T
     } else if (modelClass == StatisticsViewModel::class.java) {
       StatisticsViewModel(application, wordsRepository) as T
     } else if (modelClass == ModesViewModel::class.java) {
