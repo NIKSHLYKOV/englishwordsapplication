@@ -15,6 +15,6 @@ class LinksRepositoryImpl @Inject constructor(private val linkDao: LinkDao) : Li
   }
 
   override suspend fun getLinksByWordId(wordId: Long): List<Link> {
-    TODO("Not yet implemented")
+    return linkDao.getLinksByWordId(wordId)
   }
 }

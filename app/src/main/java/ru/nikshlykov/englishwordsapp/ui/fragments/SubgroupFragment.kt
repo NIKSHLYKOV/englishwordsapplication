@@ -27,7 +27,6 @@ import com.google.android.material.snackbar.Snackbar
 import dagger.android.support.DaggerAppCompatActivity
 import dagger.android.support.DaggerFragment
 import ru.nikshlykov.englishwordsapp.R
-import ru.nikshlykov.englishwordsapp.db.GroupsRepository
 import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup
 import ru.nikshlykov.englishwordsapp.db.word.Word
 import ru.nikshlykov.englishwordsapp.ui.adapters.WordsRecyclerViewAdapter
@@ -37,6 +36,7 @@ import ru.nikshlykov.englishwordsapp.ui.fragments.DeleteSubgroupDialogFragment.D
 import ru.nikshlykov.englishwordsapp.ui.fragments.ResetProgressDialogFragment.ResetProgressListener
 import ru.nikshlykov.englishwordsapp.ui.fragments.SortWordsDialogFragment.SortWordsListener
 import ru.nikshlykov.englishwordsapp.ui.viewmodels.SubgroupViewModel
+import ru.nikshlykov.englishwordsapp.utils.SubgroupImages
 import java.util.*
 import javax.inject.Inject
 
@@ -296,9 +296,9 @@ class SubgroupFragment : DaggerFragment(), SortWordsListener, ResetProgressListe
       subgroupImageView!!.setImageDrawable(imageColor)
     } else {
       Glide.with(this)
-        .load(GroupsRepository.PATH_TO_HIGH_SUBGROUP_IMAGES + imageResourceId)
+        .load(SubgroupImages.PATH_TO_HIGH_SUBGROUP_IMAGES + imageResourceId)
         .placeholder(R.drawable.shape_load_picture)
-        .error(Glide.with(this).load(GroupsRepository.PATH_TO_SUBGROUP_IMAGES + imageResourceId))
+        .error(Glide.with(this).load(SubgroupImages.PATH_TO_SUBGROUP_IMAGES + imageResourceId))
         .into(subgroupImageView!!)
     }
   }

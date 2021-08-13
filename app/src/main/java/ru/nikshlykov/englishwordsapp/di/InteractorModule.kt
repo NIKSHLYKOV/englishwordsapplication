@@ -125,4 +125,13 @@ class InteractorModule {
     : GetAvailableToRepeatWordInteractor {
     return GetAvailableToRepeatWordInteractor(wordsRepository)
   }
+
+  @Provides
+  fun provideGetAvailableSubgroupsInteractor(
+    subgroupsRepository: SubgroupsRepository,
+    linksRepository: LinksRepository
+  )
+    : GetAvailableSubgroupsInteractor {
+    return GetAvailableSubgroupsInteractor(subgroupsRepository, linksRepository)
+  }
 }

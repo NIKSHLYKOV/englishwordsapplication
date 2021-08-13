@@ -8,22 +8,20 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import ru.nikshlykov.englishwordsapp.db.GroupsRepository
-import ru.nikshlykov.englishwordsapp.db.GroupsRepository.OnSubgroupsLoadedListener
 import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup
 import ru.nikshlykov.englishwordsapp.db.word.Word
+import ru.nikshlykov.englishwordsapp.domain.interactors.GetAvailableSubgroupsInteractor
 import ru.nikshlykov.englishwordsapp.domain.interactors.GetWordInteractor
 import ru.nikshlykov.englishwordsapp.domain.interactors.ResetWordProgressInteractor
 import ru.nikshlykov.englishwordsapp.domain.interactors.UpdateWordInteractor
-import java.util.*
 
 class WordViewModel(
   application: Application,
-  private val groupsRepository: GroupsRepository,
   private val getWordInteractor: GetWordInteractor,
   private val updateWordInteractor: UpdateWordInteractor,
-  private val resetWordProgressInteractor: ResetWordProgressInteractor
-) : AndroidViewModel(application), OnSubgroupsLoadedListener {
+  private val resetWordProgressInteractor: ResetWordProgressInteractor,
+  private val getAvailableSubgroupsInteractor: GetAvailableSubgroupsInteractor
+) : AndroidViewModel(application) {
   val wordMutableLiveData: MutableLiveData<Word> = MutableLiveData()
 
   // Список подгрупп для добавления или удаления связи с ними.
@@ -90,7 +88,11 @@ class WordViewModel(
       Log.d(LOG_TAG, "availableSubgroupsTo value = null")
       val word = wordMutableLiveData.value
       if (word != null) {
-        groupsRepository.getAvailableSubgroupTo(word.id, flag, this)
+        viewModelScope.launch {
+          // TODO порабоать над флагом, значения должны быть в одном месте.
+          availableSubgroupsTo.value =
+            ArrayList(getAvailableSubgroupsInteractor.getAvailableSubgroups(wordId, flag))
+        }
       }
     }
     return availableSubgroupsTo
@@ -100,11 +102,6 @@ class WordViewModel(
     Log.d(LOG_TAG, "clearAvailableSubgroupsTo()")
     availableSubgroupsTo.value = null
     availableSubgroupsTo.removeObserver(observer!!)
-  }
-
-  override fun onLoaded(subgroups: ArrayList<Subgroup>?) {
-    Log.d(LOG_TAG, "onLoaded()")
-    availableSubgroupsTo.value = subgroups
   }
 
   companion object {

@@ -3,13 +3,12 @@ package ru.nikshlykov.englishwordsapp.ui
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import ru.nikshlykov.englishwordsapp.db.GroupsRepository
 import ru.nikshlykov.englishwordsapp.domain.interactors.*
 import ru.nikshlykov.englishwordsapp.ui.viewmodels.*
 import javax.inject.Inject
 
 class ViewModelFactory @Inject constructor(
-  private val application: Application, private val groupsRepository: GroupsRepository,
+  private val application: Application,
   private val getGroupsWithSubgroupsInteractor: GetGroupsWithSubgroupsInteractor,
   private val getAllModesInteractor: GetAllModesInteractor,
   private val updateModesInteractor: UpdateModesInteractor,
@@ -27,7 +26,8 @@ class ViewModelFactory @Inject constructor(
   private val resetWordsProgressFromSubgroupInteractor: ResetWordsProgressFromSubgroupInteractor,
   private val getWordInteractor: GetWordInteractor,
   private val getFirstShowRepeatsCountForTodayInteractor: GetFirstShowRepeatsCountForTodayInteractor,
-  private val getAvailableToRepeatWordInteractor: GetAvailableToRepeatWordInteractor
+  private val getAvailableToRepeatWordInteractor: GetAvailableToRepeatWordInteractor,
+  private val getAvailableSubgroupsInteractor: GetAvailableSubgroupsInteractor
 ) : ViewModelProvider.Factory {
   override fun <T : ViewModel?> create(modelClass: Class<T>): T {
     return if (modelClass == StudyViewModel::class.java) {
@@ -43,14 +43,14 @@ class ViewModelFactory @Inject constructor(
     } else if (modelClass == SubgroupViewModel::class.java) {
       SubgroupViewModel(
         application,
-        groupsRepository,
         getSubgroupInteractor,
         addWordToSubgroupInteractor,
         deleteWordFromSubgroupInteractor,
         updateSubgroupInteractor,
         deleteSubgroupInteractor,
         getWordsFromSubgroupInteractor,
-        resetWordsProgressFromSubgroupInteractor
+        resetWordsProgressFromSubgroupInteractor,
+        getAvailableSubgroupsInteractor
       ) as T
     } else if (modelClass == WordDialogsViewModel::class.java) {
       WordDialogsViewModel(
@@ -61,10 +61,10 @@ class ViewModelFactory @Inject constructor(
     } else if (modelClass == WordViewModel::class.java) {
       WordViewModel(
         application,
-        groupsRepository,
         getWordInteractor,
         updateWordInteractor,
-        resetWordProgressInteractor
+        resetWordProgressInteractor,
+        getAvailableSubgroupsInteractor
       ) as T
     } else if (modelClass == StatisticsViewModel::class.java) {
       StatisticsViewModel(application) as T

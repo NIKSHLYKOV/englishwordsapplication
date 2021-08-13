@@ -13,9 +13,9 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import ru.nikshlykov.englishwordsapp.R
-import ru.nikshlykov.englishwordsapp.db.GroupsRepository
 import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup
 import ru.nikshlykov.englishwordsapp.ui.adapters.SubgroupsRecyclerViewAdapter.SubgroupViewHolder
+import ru.nikshlykov.englishwordsapp.utils.SubgroupImages
 import java.util.*
 
 class SubgroupsRecyclerViewAdapter(
@@ -45,7 +45,7 @@ class SubgroupsRecyclerViewAdapter(
       holder.subgroupImageView.setImageDrawable(imageColor)
     } else {
       Glide.with(context)
-        .load(GroupsRepository.PATH_TO_SUBGROUP_IMAGES + currentSubgroup.imageURL)
+        .load(SubgroupImages.PATH_TO_SUBGROUP_IMAGES + currentSubgroup.imageURL)
         .placeholder(R.drawable.shape_load_picture)
         .error(R.drawable.shape_load_picture)
         .into(holder.subgroupImageView)

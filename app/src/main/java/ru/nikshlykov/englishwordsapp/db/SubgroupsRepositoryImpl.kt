@@ -21,7 +21,7 @@ class SubgroupsRepositoryImpl @Inject constructor(private val subgroupDao: Subgr
   }
 
   override suspend fun getSubgroupById(id: Long): Subgroup {
-    return subgroupDao.getSubgroupByIdSuspend(id)
+    return subgroupDao.getSubgroupById(id)
   }
 
   override suspend fun getSubgroupsFromGroup(groupId: Long): List<Subgroup> {
@@ -33,6 +33,6 @@ class SubgroupsRepositoryImpl @Inject constructor(private val subgroupDao: Subgr
   }
 
   override suspend fun getSubgroupsCreatedByUser(): List<Subgroup> {
-    TODO("Not yet implemented")
+    return subgroupDao.getCreatedByUserSubgroups()
   }
 }
