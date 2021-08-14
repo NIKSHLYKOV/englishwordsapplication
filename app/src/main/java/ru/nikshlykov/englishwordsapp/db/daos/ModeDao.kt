@@ -7,6 +7,7 @@ import ru.nikshlykov.englishwordsapp.db.models.Mode
 
 @Dao
 interface ModeDao {
+
   @Update
   suspend fun update(modes: List<Mode>): Int
 

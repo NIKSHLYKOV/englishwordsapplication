@@ -12,12 +12,6 @@ interface LinkDao {
   @Delete
   suspend fun delete(link: Link): Int
 
-  @Delete
-  fun deleteMultiple(links: List<Link>): Int
-
   @Query("SELECT * FROM Links WHERE WordId = :wordId")
   suspend fun getLinksByWordId(wordId: Long): List<Link>
-
-  @Query("SELECT * FROM Links WHERE WordId = :wordId AND SubgroupId = :subgroupId")
-  fun getLink(wordId: Long, subgroupId: Long): Link
 }
