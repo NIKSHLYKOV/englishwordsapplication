@@ -27,6 +27,7 @@ class Link(
   @ColumnInfo(name = "SubgroupId") val subgroupId: Long,
   @ColumnInfo(name = "WordId") val wordId: Long
 ) {
+
   @ColumnInfo(name = "LevelInParentGroup", defaultValue = "10")
   var levelInParentGroup = 0
 }

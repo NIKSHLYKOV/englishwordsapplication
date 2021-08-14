@@ -19,8 +19,8 @@ class Repeat(
   @ColumnInfo(name = "Date") val date: Long,
   @ColumnInfo(name = "Result") val result: Int
 ) {
+
   @PrimaryKey
   @ColumnInfo(name = "_id")
   var id: Long = 0
-
 }

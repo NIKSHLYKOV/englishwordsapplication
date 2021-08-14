@@ -9,6 +9,7 @@ import java.util.*
 
 @Entity(tableName = "Words")
 class Word : Parcelable {
+
   constructor(word: String, transcription: String?, value: String) {
     this.word = word
     this.transcription = transcription
@@ -122,6 +123,7 @@ class Word : Parcelable {
     dest.writeInt(priority)
   }
 
+  // TODO это же бизнес-логика. Она разве не в отдельном классе должна быть?
   // Повторы слова
   fun isAvailableToRepeat(currentDate: Date): Boolean {
     return when (learnProgress) {

@@ -390,10 +390,10 @@ class SubgroupFragment : DaggerFragment(), SortWordsListener, ResetProgressListe
         // TODO Скорее всего, будем разделять WordFragment на два: один фрагмент
         //  добавляет новое слово, другой - редактирует существующее слово. Тогда
         //  и уберём этот код.
-        val navDirections: NavDirections = SubgroupFragmentDirections
+        /*val navDirections: NavDirections = SubgroupFragmentDirections
           .actionSubgroupDestToWordDest(Word("a", "a", "a"))
           .setStartTo(WordFragment.START_TO_CREATE_WORD)
-        onChildFragmentInteractionListener!!.onChildFragmentInteraction(navDirections)
+        onChildFragmentInteractionListener!!.onChildFragmentInteraction(navDirections)*/
       }
     } else {
       // Скрываем fab для создания нового слова.

@@ -6,6 +6,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "Settings")
 class Setting {
+
   @PrimaryKey
   @ColumnInfo(name = "_id")
   var id: Long = 0

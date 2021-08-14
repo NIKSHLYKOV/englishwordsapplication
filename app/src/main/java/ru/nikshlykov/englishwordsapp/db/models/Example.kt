@@ -14,6 +14,7 @@ import androidx.room.*
   indices = [Index("WordId")]
 )
 class Example {
+
   @PrimaryKey
   @ColumnInfo(name = "_id")
   var id: Long = 0

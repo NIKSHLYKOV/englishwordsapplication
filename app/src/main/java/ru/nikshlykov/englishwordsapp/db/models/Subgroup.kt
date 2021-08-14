@@ -16,24 +16,14 @@ import androidx.room.*
   indices = [Index("groupId")]
 )
 class Subgroup : Parcelable {
-  private constructor(
-    id: Long, name: String, groupId: Long, isStudied: Int,
-    imageURL: String
-  ) {
-    this.id = id
-    this.name = name
-    this.groupId = groupId
-    this.studied = isStudied
-    this.imageURL = imageURL
-  }
 
-  constructor(name: String) : this(
-    0L,
-    name,
-    Group.GROUP_FOR_NEW_SUBGROUPS_ID,
-    0,
-    "subgroup_chemistry.jpg"
-  )
+  constructor(name: String) {
+    this.id = 0L
+    this.name = name
+    this.groupId = Group.GROUP_FOR_NEW_SUBGROUPS_ID
+    this.studied = 0
+    this.imageURL = "subgroup_chemistry.jpg"
+  }
 
   @PrimaryKey
   @ColumnInfo(name = "_id")
@@ -59,22 +49,14 @@ class Subgroup : Parcelable {
   val isCreatedByUser: Boolean
     get() = groupId == Group.GROUP_FOR_NEW_SUBGROUPS_ID
 
-  /*public static class SubgroupsTable {
-        // Названия таблицы подгрупп и её колонок
-        public static final String TABLE_SUBGROUPS = "Subgroups";
-        public static final String TABLE_SUBGROUPS_COLUMN_ID = "_id";
-        public static final String TABLE_SUBGROUPS_COLUMN_SUBGROUPNAME = "SubgroupName";
-        public static final String TABLE_SUBGROUPS_COLUMN_PARENTGROUPID = "groupId";
-        public static final String TABLE_SUBGROUPS_COLUMN_ISSTUDIED = "IsStudied";
-    }*/
-  override fun equals(obj: Any?): Boolean {
-    if (this === obj) {
+  override fun equals(other: Any?): Boolean {
+    if (this === other) {
       return true
     }
-    if (obj == null || javaClass != obj.javaClass) {
+    if (other == null || javaClass != other.javaClass) {
       return false
     }
-    val comparedSubgroup = obj as Subgroup
+    val comparedSubgroup = other as Subgroup
     return id == comparedSubgroup.id && name == comparedSubgroup.name && groupId == comparedSubgroup.groupId && studied == comparedSubgroup.studied && imageURL == comparedSubgroup.imageURL
   }
 
@@ -97,6 +79,15 @@ class Subgroup : Parcelable {
     dest.writeLong(groupId)
     dest.writeInt(studied)
     dest.writeString(imageURL)
+  }
+
+  override fun hashCode(): Int {
+    var result = id.hashCode()
+    result = 31 * result + name.hashCode()
+    result = 31 * result + groupId.hashCode()
+    result = 31 * result + studied
+    result = 31 * result + imageURL.hashCode()
+    return result
   }
 
   companion object {
