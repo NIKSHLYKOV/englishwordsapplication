@@ -1,9 +1,10 @@
-package ru.nikshlykov.englishwordsapp.db.repeat
+package ru.nikshlykov.englishwordsapp.db.daos
 
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import ru.nikshlykov.englishwordsapp.db.models.Repeat
 
 @Dao
 interface RepeatDao {

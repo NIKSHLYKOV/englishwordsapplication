@@ -1,6 +1,6 @@
 package ru.nikshlykov.englishwordsapp.domain.repositories
 
-import ru.nikshlykov.englishwordsapp.db.mode.Mode
+import ru.nikshlykov.englishwordsapp.db.models.Mode
 
 interface ModesRepository {
 

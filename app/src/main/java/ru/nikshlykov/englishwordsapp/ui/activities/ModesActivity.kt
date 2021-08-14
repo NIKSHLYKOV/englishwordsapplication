@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import dagger.android.support.DaggerAppCompatActivity
 import ru.nikshlykov.englishwordsapp.R
-import ru.nikshlykov.englishwordsapp.db.mode.Mode
+import ru.nikshlykov.englishwordsapp.db.models.Mode
 import ru.nikshlykov.englishwordsapp.ui.adapters.ModesRecyclerViewAdapter
 import ru.nikshlykov.englishwordsapp.ui.viewmodels.ModesViewModel
 import java.util.*

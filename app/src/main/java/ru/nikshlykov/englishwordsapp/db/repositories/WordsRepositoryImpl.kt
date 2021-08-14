@@ -1,8 +1,8 @@
-package ru.nikshlykov.englishwordsapp.db
+package ru.nikshlykov.englishwordsapp.db.repositories
 
 import androidx.lifecycle.LiveData
-import ru.nikshlykov.englishwordsapp.db.word.Word
-import ru.nikshlykov.englishwordsapp.db.word.WordDao
+import ru.nikshlykov.englishwordsapp.db.models.Word
+import ru.nikshlykov.englishwordsapp.db.daos.WordDao
 import ru.nikshlykov.englishwordsapp.domain.repositories.WordsRepository
 import javax.inject.Inject
 

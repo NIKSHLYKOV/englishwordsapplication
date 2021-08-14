@@ -3,7 +3,7 @@ package ru.nikshlykov.englishwordsapp.ui.viewmodels
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import ru.nikshlykov.englishwordsapp.db.repeat.Repeat
+import ru.nikshlykov.englishwordsapp.db.models.Repeat
 import java.util.*
 
 class StatisticsViewModel(application: Application) :

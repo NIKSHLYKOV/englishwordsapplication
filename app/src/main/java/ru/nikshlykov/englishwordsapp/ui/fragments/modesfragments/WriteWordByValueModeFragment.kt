@@ -16,7 +16,7 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import ru.nikshlykov.englishwordsapp.R
-import ru.nikshlykov.englishwordsapp.db.word.Word
+import ru.nikshlykov.englishwordsapp.db.models.Word
 import ru.nikshlykov.englishwordsapp.ui.RepeatResultListener
 
 class WriteWordByValueModeFragment : Fragment() {

@@ -1,6 +1,7 @@
-package ru.nikshlykov.englishwordsapp.db.link
+package ru.nikshlykov.englishwordsapp.db.daos
 
 import androidx.room.*
+import ru.nikshlykov.englishwordsapp.db.models.Link
 
 @Dao
 interface LinkDao {

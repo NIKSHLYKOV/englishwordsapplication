@@ -2,7 +2,7 @@ package ru.nikshlykov.englishwordsapp.di
 
 import dagger.Binds
 import dagger.Module
-import ru.nikshlykov.englishwordsapp.db.*
+import ru.nikshlykov.englishwordsapp.db.repositories.*
 import ru.nikshlykov.englishwordsapp.domain.repositories.*
 import javax.inject.Singleton
 

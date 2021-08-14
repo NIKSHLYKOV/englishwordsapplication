@@ -13,7 +13,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.gridlayout.widget.GridLayout
 import ru.nikshlykov.englishwordsapp.R
-import ru.nikshlykov.englishwordsapp.db.word.Word
+import ru.nikshlykov.englishwordsapp.db.models.Word
 import ru.nikshlykov.englishwordsapp.ui.RepeatResultListener
 import java.util.*
 

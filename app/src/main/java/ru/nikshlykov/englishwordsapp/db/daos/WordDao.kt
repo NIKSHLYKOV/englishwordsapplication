@@ -1,7 +1,8 @@
-package ru.nikshlykov.englishwordsapp.db.word
+package ru.nikshlykov.englishwordsapp.db.daos
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import ru.nikshlykov.englishwordsapp.db.models.Word
 
 @Dao
 interface WordDao {

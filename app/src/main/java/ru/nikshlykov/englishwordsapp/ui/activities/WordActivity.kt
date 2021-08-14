@@ -18,8 +18,8 @@ import com.google.android.material.textfield.TextInputEditText
 import dagger.android.support.DaggerAppCompatActivity
 import ru.nikshlykov.englishwordsapp.App
 import ru.nikshlykov.englishwordsapp.R
-import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup
-import ru.nikshlykov.englishwordsapp.db.word.Word
+import ru.nikshlykov.englishwordsapp.db.models.Subgroup
+import ru.nikshlykov.englishwordsapp.db.models.Word
 import ru.nikshlykov.englishwordsapp.ui.adapters.ExamplesRecyclerViewAdapter
 import ru.nikshlykov.englishwordsapp.ui.fragments.LinkOrDeleteWordDialogFragment
 import ru.nikshlykov.englishwordsapp.ui.fragments.ResetProgressDialogFragment

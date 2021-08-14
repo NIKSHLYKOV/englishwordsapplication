@@ -1,7 +1,8 @@
-package ru.nikshlykov.englishwordsapp.db.subgroup
+package ru.nikshlykov.englishwordsapp.db.daos
 
 import androidx.room.*
-import ru.nikshlykov.englishwordsapp.db.group.Group
+import ru.nikshlykov.englishwordsapp.db.models.Group
+import ru.nikshlykov.englishwordsapp.db.models.Subgroup
 
 @Dao
 interface SubgroupDao {

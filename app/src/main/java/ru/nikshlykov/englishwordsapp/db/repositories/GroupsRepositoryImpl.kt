@@ -1,7 +1,7 @@
-package ru.nikshlykov.englishwordsapp.db
+package ru.nikshlykov.englishwordsapp.db.repositories
 
-import ru.nikshlykov.englishwordsapp.db.group.Group
-import ru.nikshlykov.englishwordsapp.db.group.GroupDao
+import ru.nikshlykov.englishwordsapp.db.models.Group
+import ru.nikshlykov.englishwordsapp.db.daos.GroupDao
 import ru.nikshlykov.englishwordsapp.domain.repositories.GroupsRepository
 import javax.inject.Inject
 

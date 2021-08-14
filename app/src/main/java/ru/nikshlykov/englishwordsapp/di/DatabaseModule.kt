@@ -5,12 +5,12 @@ import androidx.room.Room
 import dagger.Module
 import dagger.Provides
 import ru.nikshlykov.englishwordsapp.db.AppDatabase
-import ru.nikshlykov.englishwordsapp.db.group.GroupDao
-import ru.nikshlykov.englishwordsapp.db.link.LinkDao
-import ru.nikshlykov.englishwordsapp.db.mode.ModeDao
-import ru.nikshlykov.englishwordsapp.db.repeat.RepeatDao
-import ru.nikshlykov.englishwordsapp.db.subgroup.SubgroupDao
-import ru.nikshlykov.englishwordsapp.db.word.WordDao
+import ru.nikshlykov.englishwordsapp.db.daos.GroupDao
+import ru.nikshlykov.englishwordsapp.db.daos.LinkDao
+import ru.nikshlykov.englishwordsapp.db.daos.ModeDao
+import ru.nikshlykov.englishwordsapp.db.daos.RepeatDao
+import ru.nikshlykov.englishwordsapp.db.daos.SubgroupDao
+import ru.nikshlykov.englishwordsapp.db.daos.WordDao
 import javax.inject.Singleton
 
 @Module

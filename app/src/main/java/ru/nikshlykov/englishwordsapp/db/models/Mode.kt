@@ -1,4 +1,4 @@
-package ru.nikshlykov.englishwordsapp.db.mode
+package ru.nikshlykov.englishwordsapp.db.models
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

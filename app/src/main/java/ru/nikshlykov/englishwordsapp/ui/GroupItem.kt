@@ -1,7 +1,7 @@
 package ru.nikshlykov.englishwordsapp.ui
 
-import ru.nikshlykov.englishwordsapp.db.group.Group
-import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup
+import ru.nikshlykov.englishwordsapp.db.models.Group
+import ru.nikshlykov.englishwordsapp.db.models.Subgroup
 import java.util.*
 
 class GroupItem(var group: Group, var subgroups: ArrayList<Subgroup>) {

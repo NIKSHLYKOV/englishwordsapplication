@@ -11,7 +11,7 @@ import androidx.navigation.fragment.NavHostFragment
 import dagger.android.support.DaggerFragment
 import ru.nikshlykov.englishwordsapp.NavigationStudyDirections
 import ru.nikshlykov.englishwordsapp.R
-import ru.nikshlykov.englishwordsapp.db.word.Word
+import ru.nikshlykov.englishwordsapp.db.models.Word
 import ru.nikshlykov.englishwordsapp.domain.interactors.GetAvailableToRepeatWordInteractor.OnAvailableToRepeatWordLoadedListener
 import ru.nikshlykov.englishwordsapp.ui.RepeatResultListener
 import ru.nikshlykov.englishwordsapp.ui.fragments.InfoFragment
