@@ -11,15 +11,13 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
-import androidx.fragment.app.Fragment
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import ru.nikshlykov.englishwordsapp.R
 import ru.nikshlykov.englishwordsapp.db.models.Word
-import ru.nikshlykov.englishwordsapp.ui.RepeatResultListener
 
-class WriteWordByValueModeFragment : Fragment() {
+class WriteWordByValueModeFragment : BaseModeFragment() {
   // View элементы.
   private var valueTextView: TextView? = null
   private var userVariantTextInputEditText: TextInputEditText? = null
@@ -32,17 +30,6 @@ class WriteWordByValueModeFragment : Fragment() {
   private var word: Word? = null
 
   //private WordViewModel wordViewModel;
-  // Слушатель результата повтора.
-  private var repeatResultListener: RepeatResultListener? = null
-  override fun onAttach(context: Context) {
-    super.onAttach(context)
-    val parentFlowFragment = parentFragment?.parentFragment
-    repeatResultListener = if (parentFlowFragment is RepeatResultListener) {
-      parentFlowFragment
-    } else {
-      throw RuntimeException(parentFlowFragment.toString() + " must implement RepeatResultListener")
-    }
-  }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

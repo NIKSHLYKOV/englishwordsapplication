@@ -1,6 +1,5 @@
 package ru.nikshlykov.englishwordsapp.ui.fragments.modesfragments
 
-import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
@@ -10,14 +9,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.fragment.app.Fragment
 import androidx.gridlayout.widget.GridLayout
 import ru.nikshlykov.englishwordsapp.R
 import ru.nikshlykov.englishwordsapp.db.models.Word
-import ru.nikshlykov.englishwordsapp.ui.RepeatResultListener
 import java.util.*
 
-class CollectWordByLettersModeFragment : Fragment() {
+class CollectWordByLettersModeFragment : BaseModeFragment() {
 
   // View.
   private var valueTextView: TextView? = null
@@ -30,21 +27,10 @@ class CollectWordByLettersModeFragment : Fragment() {
   //private WordViewModel wordViewModel;
   private var word: Word? = null
 
-  // Интерфейс для передачи результата повтора.
-  private var repeatResultListener: RepeatResultListener? = null
   private var handler: Handler? = null
 
   // Стек, в который помещаются кнопки, чтобы можно было удалять последнюю букву в слове.
   private var invisibleButtons: ArrayList<View>? = null
-  override fun onAttach(context: Context) {
-    super.onAttach(context)
-    val parentFlowFragment = requireParentFragment().parentFragment
-    repeatResultListener = if (parentFlowFragment is RepeatResultListener) {
-      parentFlowFragment
-    } else {
-      throw RuntimeException(parentFlowFragment.toString() + " must implement RepeatResultListener")
-    }
-  }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

@@ -1,6 +1,5 @@
 package ru.nikshlykov.englishwordsapp.ui.fragments.modesfragments
 
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,12 +8,10 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
-import androidx.fragment.app.Fragment
 import ru.nikshlykov.englishwordsapp.R
 import ru.nikshlykov.englishwordsapp.db.models.Word
-import ru.nikshlykov.englishwordsapp.ui.RepeatResultListener
 
-class DictionaryCardsModeFragment : Fragment() {
+class DictionaryCardsModeFragment : BaseModeFragment() {
   // TODO сделать baseModeFragment для навигации и, возможно, чего-то ещё
   // Флаг, получаемый из Activity.
   private var flag = 0
@@ -26,17 +23,8 @@ class DictionaryCardsModeFragment : Fragment() {
   private var doNotRememberButton: Button? = null
   private var rememberButton: Button? = null
   private var showImageButton: ImageButton? = null
-  private var repeatResultListener: RepeatResultListener? = null
+
   private var word: Word? = null
-  override fun onAttach(context: Context) {
-    super.onAttach(context)
-    val parentFlowFragment = requireParentFragment().parentFragment
-    repeatResultListener = if (parentFlowFragment is RepeatResultListener) {
-      parentFlowFragment
-    } else {
-      throw RuntimeException(parentFlowFragment.toString() + " must implement RepeatResultListener")
-    }
-  }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
