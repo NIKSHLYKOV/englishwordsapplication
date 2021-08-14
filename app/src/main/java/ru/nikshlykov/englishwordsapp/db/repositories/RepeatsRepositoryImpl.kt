@@ -1,7 +1,7 @@
-package ru.nikshlykov.englishwordsapp.db
+package ru.nikshlykov.englishwordsapp.db.repositories
 
-import ru.nikshlykov.englishwordsapp.db.repeat.Repeat
-import ru.nikshlykov.englishwordsapp.db.repeat.RepeatDao
+import ru.nikshlykov.englishwordsapp.db.models.Repeat
+import ru.nikshlykov.englishwordsapp.db.daos.RepeatDao
 import ru.nikshlykov.englishwordsapp.domain.repositories.RepeatsRepository
 import javax.inject.Inject
 

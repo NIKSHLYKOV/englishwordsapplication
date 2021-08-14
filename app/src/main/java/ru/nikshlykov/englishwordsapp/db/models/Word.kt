@@ -1,4 +1,4 @@
-package ru.nikshlykov.englishwordsapp.db.word
+package ru.nikshlykov.englishwordsapp.db.models
 
 import android.os.Parcel
 import android.os.Parcelable

@@ -1,7 +1,6 @@
-package ru.nikshlykov.englishwordsapp.db.repeat
+package ru.nikshlykov.englishwordsapp.db.models
 
 import androidx.room.*
-import ru.nikshlykov.englishwordsapp.db.word.Word
 
 @Entity(
   tableName = "Repeats",

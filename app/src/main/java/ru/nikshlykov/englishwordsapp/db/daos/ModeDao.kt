@@ -1,8 +1,9 @@
-package ru.nikshlykov.englishwordsapp.db.mode
+package ru.nikshlykov.englishwordsapp.db.daos
 
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Update
+import ru.nikshlykov.englishwordsapp.db.models.Mode
 
 @Dao
 interface ModeDao {

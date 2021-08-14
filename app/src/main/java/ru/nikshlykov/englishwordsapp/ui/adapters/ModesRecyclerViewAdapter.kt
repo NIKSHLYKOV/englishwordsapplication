@@ -11,7 +11,7 @@ import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import ru.nikshlykov.englishwordsapp.R
-import ru.nikshlykov.englishwordsapp.db.mode.Mode
+import ru.nikshlykov.englishwordsapp.db.models.Mode
 import ru.nikshlykov.englishwordsapp.ui.adapters.ModesRecyclerViewAdapter.ModeViewHolder
 
 class ModesRecyclerViewAdapter(private val context: Context) :

@@ -1,9 +1,8 @@
-package ru.nikshlykov.englishwordsapp.db.subgroup
+package ru.nikshlykov.englishwordsapp.db.models
 
 import android.os.Parcel
 import android.os.Parcelable
 import androidx.room.*
-import ru.nikshlykov.englishwordsapp.db.group.Group
 
 @Entity(
   tableName = "Subgroups",

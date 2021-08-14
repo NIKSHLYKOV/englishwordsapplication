@@ -1,6 +1,7 @@
-package ru.nikshlykov.englishwordsapp.db.example
+package ru.nikshlykov.englishwordsapp.db.daos
 
 import androidx.room.*
+import ru.nikshlykov.englishwordsapp.db.models.Example
 
 @Dao
 interface ExampleDao {

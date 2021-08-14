@@ -2,7 +2,7 @@ package ru.nikshlykov.englishwordsapp.utils
 
 import androidx.navigation.NavDirections
 import ru.nikshlykov.englishwordsapp.NavigationStudyDirections
-import ru.nikshlykov.englishwordsapp.db.word.Word
+import ru.nikshlykov.englishwordsapp.db.models.Word
 
 object ModesNavigation {
   fun getRandomModeNavDirections(modeId: Long, word: Word): NavDirections {

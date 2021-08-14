@@ -1,7 +1,7 @@
 package ru.nikshlykov.englishwordsapp.domain.interactors
 
 import android.util.Log
-import ru.nikshlykov.englishwordsapp.db.repeat.Repeat
+import ru.nikshlykov.englishwordsapp.db.models.Repeat
 import ru.nikshlykov.englishwordsapp.domain.repositories.RepeatsRepository
 import ru.nikshlykov.englishwordsapp.domain.repositories.WordsRepository
 import java.util.*

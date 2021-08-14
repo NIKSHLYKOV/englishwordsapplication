@@ -1,6 +1,6 @@
 package ru.nikshlykov.englishwordsapp.domain.interactors
 
-import ru.nikshlykov.englishwordsapp.db.word.Word
+import ru.nikshlykov.englishwordsapp.db.models.Word
 import ru.nikshlykov.englishwordsapp.domain.repositories.WordsRepository
 import java.util.*
 

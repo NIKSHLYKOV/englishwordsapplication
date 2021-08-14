@@ -9,7 +9,7 @@ import android.widget.EditText
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import ru.nikshlykov.englishwordsapp.R
-import ru.nikshlykov.englishwordsapp.db.example.Example
+import ru.nikshlykov.englishwordsapp.db.models.Example
 import ru.nikshlykov.englishwordsapp.ui.adapters.ExamplesRecyclerViewAdapter.ExamplesViewHolder
 import java.util.*
 

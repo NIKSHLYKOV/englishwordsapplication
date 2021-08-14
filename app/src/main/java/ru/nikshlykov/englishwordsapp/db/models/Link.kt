@@ -1,11 +1,9 @@
-package ru.nikshlykov.englishwordsapp.db.link
+package ru.nikshlykov.englishwordsapp.db.models
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
-import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup
-import ru.nikshlykov.englishwordsapp.db.word.Word
 
 @Entity(
   tableName = "Links",

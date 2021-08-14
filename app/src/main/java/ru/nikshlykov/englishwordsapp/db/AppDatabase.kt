@@ -2,22 +2,22 @@ package ru.nikshlykov.englishwordsapp.db
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import ru.nikshlykov.englishwordsapp.db.example.Example
-import ru.nikshlykov.englishwordsapp.db.example.ExampleDao
-import ru.nikshlykov.englishwordsapp.db.group.Group
-import ru.nikshlykov.englishwordsapp.db.group.GroupDao
-import ru.nikshlykov.englishwordsapp.db.link.Link
-import ru.nikshlykov.englishwordsapp.db.link.LinkDao
-import ru.nikshlykov.englishwordsapp.db.mode.Mode
-import ru.nikshlykov.englishwordsapp.db.mode.ModeDao
-import ru.nikshlykov.englishwordsapp.db.repeat.Repeat
-import ru.nikshlykov.englishwordsapp.db.repeat.RepeatDao
-import ru.nikshlykov.englishwordsapp.db.setting.Setting
-import ru.nikshlykov.englishwordsapp.db.setting.SettingDao
-import ru.nikshlykov.englishwordsapp.db.subgroup.Subgroup
-import ru.nikshlykov.englishwordsapp.db.subgroup.SubgroupDao
-import ru.nikshlykov.englishwordsapp.db.word.Word
-import ru.nikshlykov.englishwordsapp.db.word.WordDao
+import ru.nikshlykov.englishwordsapp.db.models.Example
+import ru.nikshlykov.englishwordsapp.db.daos.ExampleDao
+import ru.nikshlykov.englishwordsapp.db.models.Group
+import ru.nikshlykov.englishwordsapp.db.daos.GroupDao
+import ru.nikshlykov.englishwordsapp.db.models.Link
+import ru.nikshlykov.englishwordsapp.db.daos.LinkDao
+import ru.nikshlykov.englishwordsapp.db.models.Mode
+import ru.nikshlykov.englishwordsapp.db.daos.ModeDao
+import ru.nikshlykov.englishwordsapp.db.models.Repeat
+import ru.nikshlykov.englishwordsapp.db.daos.RepeatDao
+import ru.nikshlykov.englishwordsapp.db.models.Setting
+import ru.nikshlykov.englishwordsapp.db.daos.SettingDao
+import ru.nikshlykov.englishwordsapp.db.models.Subgroup
+import ru.nikshlykov.englishwordsapp.db.daos.SubgroupDao
+import ru.nikshlykov.englishwordsapp.db.models.Word
+import ru.nikshlykov.englishwordsapp.db.daos.WordDao
 
 @Database(
   entities = [Example::class, Group::class, Link::class, Mode::class, Repeat::class, Setting::class,

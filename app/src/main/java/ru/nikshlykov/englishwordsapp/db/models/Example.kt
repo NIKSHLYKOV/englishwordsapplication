@@ -1,7 +1,6 @@
-package ru.nikshlykov.englishwordsapp.db.example
+package ru.nikshlykov.englishwordsapp.db.models
 
 import androidx.room.*
-import ru.nikshlykov.englishwordsapp.db.word.Word
 
 @Entity(
   tableName = "Examples",

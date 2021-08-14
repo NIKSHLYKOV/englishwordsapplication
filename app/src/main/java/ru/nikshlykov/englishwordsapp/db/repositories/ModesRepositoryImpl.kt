@@ -1,7 +1,7 @@
-package ru.nikshlykov.englishwordsapp.db
+package ru.nikshlykov.englishwordsapp.db.repositories
 
-import ru.nikshlykov.englishwordsapp.db.mode.Mode
-import ru.nikshlykov.englishwordsapp.db.mode.ModeDao
+import ru.nikshlykov.englishwordsapp.db.models.Mode
+import ru.nikshlykov.englishwordsapp.db.daos.ModeDao
 import ru.nikshlykov.englishwordsapp.domain.repositories.ModesRepository
 import javax.inject.Inject
 
