@@ -1,7 +1,7 @@
 package ru.nikshlykov.englishwordsapp.db.repositories
 
-import ru.nikshlykov.englishwordsapp.db.models.Subgroup
 import ru.nikshlykov.englishwordsapp.db.daos.SubgroupDao
+import ru.nikshlykov.englishwordsapp.db.models.Subgroup
 import ru.nikshlykov.englishwordsapp.domain.repositories.SubgroupsRepository
 import javax.inject.Inject
 
@@ -26,10 +26,6 @@ class SubgroupsRepositoryImpl @Inject constructor(private val subgroupDao: Subgr
 
   override suspend fun getSubgroupsFromGroup(groupId: Long): List<Subgroup> {
     return subgroupDao.getSubgroupsFromGroup(groupId)
-  }
-
-  override suspend fun getSubgroupWithMinId(): Subgroup {
-    TODO("Not yet implemented")
   }
 
   override suspend fun getSubgroupsCreatedByUser(): List<Subgroup> {
