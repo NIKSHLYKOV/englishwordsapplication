@@ -8,7 +8,7 @@ import ru.nikshlykov.englishwordsapp.db.models.Word
 interface WordDao {
 
   @Insert(onConflict = OnConflictStrategy.IGNORE)
-  fun insert(word: Word): Long
+  suspend fun insert(word: Word): Long
 
   @Update
   suspend fun update(word: Word): Int
@@ -31,7 +31,7 @@ interface WordDao {
   fun getWordsFromSubgroupByAlphabet(subgroupId: Long): LiveData<List<Word>>
 
   @Query("SELECT * FROM Words ORDER BY _id LIMIT 1")
-  fun wordWithMinId(): Word
+  suspend fun wordWithMinId(): Word
 
   @Query(
     "SELECT DISTINCT Words.* FROM Words, Links, Subgroups " +

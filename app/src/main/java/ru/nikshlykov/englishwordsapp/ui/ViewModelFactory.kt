@@ -27,7 +27,8 @@ class ViewModelFactory @Inject constructor(
   private val getWordInteractor: GetWordInteractor,
   private val getFirstShowRepeatsCountForTodayInteractor: GetFirstShowRepeatsCountForTodayInteractor,
   private val getAvailableToRepeatWordInteractor: GetAvailableToRepeatWordInteractor,
-  private val getAvailableSubgroupsInteractor: GetAvailableSubgroupsInteractor
+  private val getAvailableSubgroupsInteractor: GetAvailableSubgroupsInteractor,
+  private val addNewWordToSubgroupInteractor: AddNewWordToSubgroupInteractor
 ) : ViewModelProvider.Factory {
   override fun <T : ViewModel?> create(modelClass: Class<T>): T {
     return if (modelClass == StudyViewModel::class.java) {
@@ -76,6 +77,8 @@ class ViewModelFactory @Inject constructor(
         addSubgroupInteractor,
         updateSubgroupInteractor
       ) as T
+    } else if (modelClass == AddWordViewModel::class.java) {
+      AddWordViewModel(addNewWordToSubgroupInteractor) as T
     } else {
       throw IllegalArgumentException("ViewModel Not Found")
     }

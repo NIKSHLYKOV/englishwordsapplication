@@ -134,4 +134,12 @@ class InteractorModule {
     : GetAvailableSubgroupsInteractor {
     return GetAvailableSubgroupsInteractor(subgroupsRepository, linksRepository)
   }
+
+  @Provides
+  fun provideAddNewWordToSubgroupInteractor(
+    wordsRepository: WordsRepository,
+    addWordToSubgroupInteractor: AddWordToSubgroupInteractor
+  ): AddNewWordToSubgroupInteractor {
+    return AddNewWordToSubgroupInteractor(wordsRepository, addWordToSubgroupInteractor)
+  }
 }

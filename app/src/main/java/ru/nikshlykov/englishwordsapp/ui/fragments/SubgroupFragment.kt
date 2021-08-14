@@ -28,7 +28,6 @@ import dagger.android.support.DaggerAppCompatActivity
 import dagger.android.support.DaggerFragment
 import ru.nikshlykov.englishwordsapp.R
 import ru.nikshlykov.englishwordsapp.db.models.Subgroup
-import ru.nikshlykov.englishwordsapp.db.models.Word
 import ru.nikshlykov.englishwordsapp.ui.adapters.WordsRecyclerViewAdapter
 import ru.nikshlykov.englishwordsapp.ui.adapters.WordsRecyclerViewAdapter.OnEntryClickListener
 import ru.nikshlykov.englishwordsapp.ui.flowfragments.OnChildFragmentInteractionListener
@@ -382,18 +381,10 @@ class SubgroupFragment : DaggerFragment(), SortWordsListener, ResetProgressListe
     // Проверяем, что подгруппа создана пользователем.
     if (subgroupIsCreatedByUser) {
       // Присваиваем обработчик кнопке для создания нового слова.
-      createWordFAB!!.setOnClickListener { /*Intent createNewWordIntent = new Intent(getContext(),
-                            WordActivity.class);
-                    createNewWordIntent.putExtra(EXTRA_SUBGROUP_ID, subgroupId);
-                    createNewWordIntent.putExtra(WordActivity.EXTRA_START_TO, WordActivity.START_TO_CREATE_WORD);
-                    startActivityForResult(createNewWordIntent, REQUEST_CODE_CREATE_NEW_WORD);*/
-        // TODO Скорее всего, будем разделять WordFragment на два: один фрагмент
-        //  добавляет новое слово, другой - редактирует существующее слово. Тогда
-        //  и уберём этот код.
-        /*val navDirections: NavDirections = SubgroupFragmentDirections
-          .actionSubgroupDestToWordDest(Word("a", "a", "a"))
-          .setStartTo(WordFragment.START_TO_CREATE_WORD)
-        onChildFragmentInteractionListener!!.onChildFragmentInteraction(navDirections)*/
+      createWordFAB!!.setOnClickListener {
+        val navDirections: NavDirections =
+          SubgroupFragmentDirections.actionSubgroupDestToAddWordDest().setSubgroupId(subgroupId)
+        onChildFragmentInteractionListener!!.onChildFragmentInteraction(navDirections)
       }
     } else {
       // Скрываем fab для создания нового слова.

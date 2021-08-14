@@ -4,4 +4,6 @@ import androidx.navigation.NavDirections
 
 interface OnChildFragmentInteractionListener {
   fun onChildFragmentInteraction(navDirections: NavDirections?)
+
+  fun close()
 }

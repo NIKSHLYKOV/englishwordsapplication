@@ -43,6 +43,9 @@
         <action
             android:id="@+id/action_subgroup_dest_to_word_dest"
             app:destination="@id/word_dest" />
+        <action
+            android:id="@+id/action_subgroup_dest_to_add_word_dest"
+            app:destination="@id/add_word_dest" />
     </fragment>
     <fragment
         android:id="@+id/word_dest"
@@ -59,5 +62,14 @@
         <argument
             android:name="word"
             app:argType="ru.nikshlykov.englishwordsapp.db.models.Word" />
+    </fragment>
+    <fragment
+        android:id="@+id/add_word_dest"
+        android:name="ru.nikshlykov.englishwordsapp.ui.fragments.AddWordFragment"
+        android:label="AddWordFragment" >
+        <argument
+            android:name="subgroupId"
+            app:argType="long"
+            android:defaultValue="0L" />
     </fragment>
 </navigation>
