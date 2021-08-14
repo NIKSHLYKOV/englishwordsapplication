@@ -1,8 +1,8 @@
 package ru.nikshlykov.englishwordsapp.db.repositories
 
 import androidx.lifecycle.LiveData
-import ru.nikshlykov.englishwordsapp.db.models.Word
 import ru.nikshlykov.englishwordsapp.db.daos.WordDao
+import ru.nikshlykov.englishwordsapp.db.models.Word
 import ru.nikshlykov.englishwordsapp.domain.repositories.WordsRepository
 import javax.inject.Inject
 
@@ -19,14 +19,6 @@ class WordsRepositoryImpl @Inject constructor(private val wordDao: WordDao) : Wo
     return wordDao.update(word)
   }
 
-  override suspend fun updateWords(words: List<Word>): Int {
-    TODO("Not yet implemented")
-  }
-
-  override suspend fun deleteWord(word: Word): Int {
-    TODO("Not yet implemented")
-  }
-
   override suspend fun getWordById(wordId: Long): Word {
     return wordDao.getWordById(wordId)
   }
@@ -37,14 +29,6 @@ class WordsRepositoryImpl @Inject constructor(private val wordDao: WordDao) : Wo
 
   override fun getWordsFromSubgroupByAlphabet(subgroupId: Long): LiveData<List<Word>> {
     return wordDao.getWordsFromSubgroupByAlphabet(subgroupId)
-  }
-
-  override suspend fun getWordsFromSubgroup(subgroupId: Long): List<Word> {
-    TODO("Not yet implemented")
-  }
-
-  override suspend fun getWordWithMinId(): Word {
-    TODO("Not yet implemented")
   }
 
   override suspend fun getWordsFromStudiedSubgroups(): List<Word> {

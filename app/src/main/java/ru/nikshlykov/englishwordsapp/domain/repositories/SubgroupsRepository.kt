@@ -14,8 +14,5 @@ interface SubgroupsRepository {
 
   suspend fun getSubgroupsFromGroup(groupId: Long): List<Subgroup>
 
-  // TODO подумать над тем, чтобы убрать вычисление id.
-  suspend fun getSubgroupWithMinId(): Subgroup
-
   suspend fun getSubgroupsCreatedByUser(): List<Subgroup>
 }
