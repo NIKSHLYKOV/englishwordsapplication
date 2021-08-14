@@ -22,7 +22,6 @@ import ru.nikshlykov.englishwordsapp.App
 import ru.nikshlykov.englishwordsapp.R
 import ru.nikshlykov.englishwordsapp.db.models.Subgroup
 import ru.nikshlykov.englishwordsapp.db.models.Word
-import ru.nikshlykov.englishwordsapp.ui.adapters.ExamplesRecyclerViewAdapter
 import ru.nikshlykov.englishwordsapp.ui.flowfragments.OnChildFragmentInteractionListener
 import ru.nikshlykov.englishwordsapp.ui.fragments.ResetProgressDialogFragment.ResetProgressListener
 import ru.nikshlykov.englishwordsapp.ui.viewmodels.WordViewModel
@@ -46,17 +45,14 @@ class WordFragment : DaggerFragment(), ResetProgressListener {
   private var examplesTextView: TextView? = null
   private var addExampleButton: Button? = null
   private var examplesRecyclerView: RecyclerView? = null
-  private val examplesRecyclerViewAdapter: ExamplesRecyclerViewAdapter? = null
+  //private val examplesRecyclerViewAdapter: ExamplesRecyclerViewAdapter? = null
 
-  /*// id слова, для которого открылось Activity.
-    // Будет равно 0, если открыто для создания нового слова.
-    private long wordId = 0L;*/
-  // ViewModel для работы с БД.
   private var wordViewModel: WordViewModel? = null
 
   @JvmField
   @Inject
   var viewModelFactory: ViewModelProvider.Factory? = null
+
   private var onChildFragmentInteractionListener: OnChildFragmentInteractionListener? = null
 
   // Observer отвечающий за обработку подгруженных подгрупп для связывания или удаления.
@@ -133,24 +129,8 @@ class WordFragment : DaggerFragment(), ResetProgressListener {
     // Устанавливаем тулбар.
     (activity as AppCompatActivity?)!!.setSupportActionBar(toolbar)
     (activity as AppCompatActivity?)!!.supportActionBar!!.title = ""
-  }// Делаем доступными для редактирования поля с параметрами слова.
+  }
 
-  /*wordViewModel.getExamples(WordActivity.this);*/
-
-  // Присваиваем обработчик нажатия на кнопку воспроизведения слова.
-/*RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(
-                        WordActivity.this);
-                examplesRecyclerView.setLayoutManager(layoutManager);
-                examplesRecyclerViewAdapter = new ExamplesRecyclerViewAdapter(WordActivity.this);
-                examplesRecyclerView.setAdapter(examplesRecyclerViewAdapter);*/
-  /*addExampleButton.setOnClickListener(new View.OnClickListener() {
-         @Override
-         public void onClick(View v) {
-             examplesRecyclerViewAdapter.addExample();
-             examplesRecyclerView.smoothScrollToPosition(examplesRecyclerViewAdapter
-                     .getItemCount() - 1);
-         }
-     });*/// Получаем id слова, которое было выбрано.
   /**
    * Получает id слова из Extras и, в зависимости от него, либо скрывает некоторые элементы,
    * чтобы создать новое слово, либо устанавливает параметры уже существующего слова в наши View.
@@ -163,7 +143,6 @@ class WordFragment : DaggerFragment(), ResetProgressListener {
         val startTo = WordFragmentArgs.fromBundle(requireArguments()).startTo
         Log.i(LOG_TAG, "startTo = $startTo")
         when (startTo) {
-          START_TO_CREATE_WORD -> prepareInterfaceForNewWordCreating()
           START_TO_EDIT_WORD -> {
             /*RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(
 WordActivity.this);
@@ -180,7 +159,7 @@ examplesRecyclerView.setAdapter(examplesRecyclerViewAdapter);*/
                });*/
             val word = WordFragmentArgs.fromBundle(requireArguments()).word
             wordViewModel!!.setWord(word)
-            wordViewModel!!.wordMutableLiveData.observe(viewLifecycleOwner, Observer { word ->
+            wordViewModel!!.wordMutableLiveData.observe(viewLifecycleOwner, { word ->
               Log.d(LOG_TAG, "word onChanged()")
               if (word != null) {
                 setWordToViews(word)
@@ -205,7 +184,7 @@ examplesRecyclerView.setAdapter(examplesRecyclerViewAdapter);*/
               )
             }
           }
-          else                 -> errorProcessing()
+          else               -> errorProcessing()
         }
       } else {
         errorProcessing()
@@ -236,26 +215,8 @@ examplesRecyclerView.setAdapter(examplesRecyclerViewAdapter);*/
 
       // Проверяем, что поля слова и перевода не пустые
       if (!word.isEmpty() && !value.isEmpty()) {
-        /*if (wordId != 0) {
-                          wordViewModel.update(wordId, word, transcription, value);
-                      } else {*/
-
-        // Считываем данные из EditText'ов и отправляем их обратно в SubgroupActivity.
-        /*Intent wordData = new Intent();
-                      wordData.putExtra(EXTRA_WORD_ID, wordId);
-                      wordData.putExtra(EXTRA_WORD, word);
-                      wordData.putExtra(EXTRA_TRANSCRIPTION, transcription);
-                      wordData.putExtra(EXTRA_VALUE, value);*/
-
-        //wordData.putExtra(EXTRA_WORD_OBJECT, )
-        //setResult(RESULT_OK, wordData);
-
-        // TODO сделать обработку добавления нового слова.
-        //  Скорее всего, надо разнести код на отдельные фрагменты для слова и для его добавления.
         wordViewModel!!.setWordParameters(word, transcription, value)
         wordViewModel!!.updateWordInDB()
-        //
-        /*}*/
 
         // Закрываем fragment.
         val navDirections: NavDirections = WordFragmentDirections
@@ -307,7 +268,10 @@ examplesRecyclerView.setAdapter(examplesRecyclerViewAdapter);*/
             subgroupsIds
           )
           linkOrDeleteWordDialogFragment.arguments = arguments
-          linkOrDeleteWordDialogFragment.show(requireActivity().supportFragmentManager, "some tag")
+          linkOrDeleteWordDialogFragment.show(
+            requireActivity().supportFragmentManager,
+            DIALOG_LINK_OR_DELETE_WORD
+          )
           wordViewModel!!.clearAvailableSubgroupsToAndRemoveObserver(availableSubgroupsObserver)
         }
       } else {
@@ -377,24 +341,6 @@ examplesRecyclerView.setAdapter(examplesRecyclerViewAdapter);*/
       progressLinearLayout!!.removeViewAt(progressViewIndex)
     }
     progressLinearLayout!!.addView(learnProgressView, progressViewIndex)
-  }
-
-  /**
-   * Скрывает некоторые View при создании нового слова.
-   */
-  private fun prepareInterfaceForNewWordCreating() {
-    progressTextView!!.visibility = View.GONE
-    ttsButton!!.visibility = View.GONE
-    partOfSpeechTextView!!.visibility = View.GONE
-    toolbar!!.visibility = View.GONE
-    progressLinearLayout!!.visibility = View.GONE
-    examplesTextView!!.visibility = View.GONE
-    examplesRecyclerView!!.visibility = View.GONE
-    addExampleButton!!.visibility = View.GONE
-    wordTextInputLayout!!.isEnabled = true
-    transcriptionTextInputLayout!!.isEnabled = true
-    valueTextInputLayout!!.isEnabled = true
-    saveButton!!.visibility = View.VISIBLE
   }
 
   /**
@@ -471,19 +417,11 @@ examplesRecyclerView.setAdapter(examplesRecyclerViewAdapter);*/
     // Тег для логирования.
     private const val LOG_TAG = "WordFragment"
 
-    // Extras для получения данных из интента.
-    const val EXTRA_WORD_ID = "WordId"
-    const val EXTRA_WORD = "word"
-    const val EXTRA_TRANSCRIPTION = "Transcription"
-    const val EXTRA_VALUE = "Value"
-
     // Возможные цели старта Fragment.
-    const val START_TO_CREATE_WORD = 0
     const val START_TO_EDIT_WORD = 1
 
     // Теги для диалоговых фрагментов.
     private const val DIALOG_RESET_WORD_PROGRESS = "ResetWordProgressDialogFragment"
-    private const val DIALOG_LINK_WORD = "LinkWordDialogFragment"
-    private const val DIALOG_DELETE_WORD = "DeleteWordDialogFragment"
+    private const val DIALOG_LINK_OR_DELETE_WORD = "LinkOrDeleteWordDialogFragment"
   }
 }
