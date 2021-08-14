@@ -9,10 +9,8 @@ import javax.inject.Inject
 class WordsRepositoryImpl @Inject constructor(private val wordDao: WordDao) : WordsRepository {
   // TODO подумать над удалением слова после его удаления из последней подгруппы.
   override suspend fun insertWord(word: Word): Long {
-    //TODO не забыть.
-    //words[0].id = wordDao.wordWithMinId().id - 1
-    //words[0].learnProgress = -1
-    TODO("Not yet implemented")
+    word.id = wordDao.wordWithMinId().id - 1
+    return wordDao.insert(word)
   }
 
   override suspend fun updateWord(word: Word): Int {

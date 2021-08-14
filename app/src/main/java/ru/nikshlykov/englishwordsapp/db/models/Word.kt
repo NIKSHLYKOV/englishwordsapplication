@@ -35,7 +35,7 @@ class Word : Parcelable {
 
   @ColumnInfo(name = "LearnProgress", defaultValue = "-1")
   var learnProgress // Прогресс изучения слова - количество правильных повторов, сделанных пользователем подряд.
-    = 0
+    = -1
 
   @ColumnInfo(name = "IsCreatedByUser", defaultValue = "0")
   var createdByUser // Переменная, показывающая выучено ли слово.

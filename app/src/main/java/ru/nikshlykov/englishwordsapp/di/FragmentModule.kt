@@ -27,4 +27,7 @@ abstract class FragmentModule {
 
   @ContributesAndroidInjector
   abstract fun contributeWordFragment(): WordFragment
+
+  @ContributesAndroidInjector
+  abstract fun contributeAddWordFragment(): AddWordFragment
 }
