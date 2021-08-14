@@ -6,6 +6,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "Groups")
 class Group {
+
   @PrimaryKey
   @ColumnInfo(name = "_id")
   var id: Long = 0
@@ -13,23 +14,21 @@ class Group {
   @ColumnInfo(name = "GroupName")
   var name: String = ""
 
-  // TODO подумать, как лучше передавать имена столбцов
-  object GroupsTable {
-    // Названия таблицы групп и её колонок
-    const val TABLE_GROUPS = "Groups"
-    const val TABLE_GROUPS_COLUMN_ID = "_id"
-    const val TABLE_GROUPS_COLUMN_GROUP_NAME = "GroupName"
-  }
-
-  override fun equals(obj: Any?): Boolean {
-    if (this === obj) {
+  override fun equals(other: Any?): Boolean {
+    if (this === other) {
       return true
     }
-    if (obj == null || javaClass != obj.javaClass) {
+    if (other == null || javaClass != other.javaClass) {
       return false
     }
-    val comparedGroup = obj as Group
+    val comparedGroup = other as Group
     return id == comparedGroup.id && name == comparedGroup.name
+  }
+
+  override fun hashCode(): Int {
+    var result = id.hashCode()
+    result = 31 * result + name.hashCode()
+    return result
   }
 
   companion object {
