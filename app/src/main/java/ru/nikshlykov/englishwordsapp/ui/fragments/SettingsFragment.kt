@@ -21,7 +21,8 @@ import ru.nikshlykov.englishwordsapp.preferences.NotificationTimePreference
 import java.util.*
 
 class SettingsFragment : PreferenceFragmentCompat(), OnSharedPreferenceChangeListener {
-  override fun onCreatePreferences(savedInstanceState: Bundle, rootKey: String) {
+
+  override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
     setPreferencesFromResource(R.xml.preferences, rootKey)
   }
 
@@ -35,29 +36,31 @@ class SettingsFragment : PreferenceFragmentCompat(), OnSharedPreferenceChangeLis
     preferenceManager.sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
   }
 
-  override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
+  override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
     Log.i("Settings", "onSharedPreferenceChanged")
-    if (key == getString(string.preference_key___tts_pitch)) {
-      val pitch = sharedPreferences.getInt(key, 10)
-      (requireActivity().applicationContext as App)
-        .setTextToSpeechPitch(pitch)
-    } else if (key == getString(string.preference_key___tts_speech_rate)) {
-      val speechRate = sharedPreferences.getInt(key, 10)
-      val application = requireActivity().applicationContext as App
-      application.setTextToSpeechSpeechRate(speechRate)
-    } else if (key == getString(string.preference_key___notification_time)) {
-      val newNotificationTime = sharedPreferences.getInt(key, 0)
-      Log.i("Settings", "New notification time is $newNotificationTime after midnight (minutes)")
-      setRepeatingNotifications(newNotificationTime)
-    } else if (key == getString(string.preference_key___use_notifications)) {
-      val useNotificationFlag = sharedPreferences.getBoolean(key, false)
-      if (!useNotificationFlag) {
-        cancelNotifications()
+    if (sharedPreferences != null && key != null) {
+      if (key == getString(string.preference_key___tts_pitch)) {
+        val pitch = sharedPreferences.getInt(key, 10)
+        (requireActivity().applicationContext as App)
+          .setTextToSpeechPitch(pitch)
+      } else if (key == getString(string.preference_key___tts_speech_rate)) {
+        val speechRate = sharedPreferences.getInt(key, 10)
+        val application = requireActivity().applicationContext as App
+        application.setTextToSpeechSpeechRate(speechRate)
+      } else if (key == getString(string.preference_key___notification_time)) {
+        val newNotificationTime = sharedPreferences.getInt(key, 0)
+        Log.i("Settings", "New notification time is $newNotificationTime after midnight (minutes)")
+        setRepeatingNotifications(newNotificationTime)
+      } else if (key == getString(string.preference_key___use_notifications)) {
+        val useNotificationFlag = sharedPreferences.getBoolean(key, false)
+        if (!useNotificationFlag) {
+          cancelNotifications()
+        }
       }
     }
   }
 
-  override fun onDisplayPreferenceDialog(preference: Preference) {
+  override fun onDisplayPreferenceDialog(preference: Preference?) {
     // Try if the preference is one of our custom Preferences
     var dialogFragment: DialogFragment? = null
     if (preference is NewWordsCountPreference) {
