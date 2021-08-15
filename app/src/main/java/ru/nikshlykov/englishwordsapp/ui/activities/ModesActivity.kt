@@ -1,6 +1,5 @@
 package ru.nikshlykov.englishwordsapp.ui.activities
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.lifecycle.ViewModelProvider
@@ -9,10 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import dagger.android.support.DaggerAppCompatActivity
 import ru.nikshlykov.englishwordsapp.R
-import ru.nikshlykov.englishwordsapp.db.models.Mode
 import ru.nikshlykov.englishwordsapp.ui.adapters.ModesRecyclerViewAdapter
 import ru.nikshlykov.englishwordsapp.ui.viewmodels.ModesViewModel
-import java.util.*
 import javax.inject.Inject
 
 class ModesActivity : DaggerAppCompatActivity() {
@@ -55,28 +52,12 @@ class ModesActivity : DaggerAppCompatActivity() {
       // Обновляем режимы в БД.
       modes?.let { modesViewModel!!.updateModes(modes) }
 
-      // Подготавливаем массив id выбранных режимов.
-      val selectedModes = ArrayList<Mode>()
-      for (mode in modes!!) {
-        if (mode.selected == 1) {
-          selectedModes.add(mode)
-        }
-      }
-      val selectedModesIds = LongArray(selectedModes.size)
-      for (i in selectedModes.indices) {
-        selectedModesIds[i] = selectedModes[i].id
-      }
-
       // Отправляем id выбранных режимов в MainActivity.
-      val selectedModesData = Intent()
-      selectedModesData.putExtra(EXTRA_SELECTED_MODES, selectedModesIds)
-      setResult(RESULT_OK, selectedModesData)
       finish()
     }
   }
 
   companion object {
     private const val LOG_TAG = "ModesActivity"
-    const val EXTRA_SELECTED_MODES = "SelectedModes"
   }
 }

@@ -1,6 +1,6 @@
 package ru.nikshlykov.englishwordsapp.ui.fragments
 
-import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,23 +9,14 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.google.android.material.button.MaterialButton
 import ru.nikshlykov.englishwordsapp.R
+import ru.nikshlykov.englishwordsapp.ui.activities.ModesActivity
+import ru.nikshlykov.englishwordsapp.ui.activities.SettingsActivity
 
 class ProfileFragment : Fragment() {
 
   // View элементы.
   private var settingsMaterialButton: MaterialButton? = null
   private var modesMaterialButton: MaterialButton? = null
-  private var reportListener: ProfileFragmentReportListener? = null
-
-  interface ProfileFragmentReportListener {
-    fun reportOpenModesActivity()
-    fun reportOpenSettingsActivity()
-  }
-
-  override fun onAttach(context: Context) {
-    super.onAttach(context)
-    reportListener = context as ProfileFragmentReportListener
-  }
 
   override fun onCreateView(
     inflater: LayoutInflater,
@@ -35,8 +26,18 @@ class ProfileFragment : Fragment() {
     Log.d(LOG_TAG, "onCreateView")
     val view = inflater.inflate(R.layout.fragment_profile, null)
     findViews(view)
-    modesMaterialButton!!.setOnClickListener { reportListener!!.reportOpenModesActivity() }
-    settingsMaterialButton!!.setOnClickListener { reportListener!!.reportOpenSettingsActivity() }
+
+    // TODO переделать под Navigation Component
+    modesMaterialButton!!.setOnClickListener {
+      val intent = Intent(requireContext(), ModesActivity::class.java)
+      startActivityForResult(intent, 0)
+    }
+
+    settingsMaterialButton!!.setOnClickListener {
+      val intent = Intent(requireContext(), SettingsActivity::class.java)
+      startActivityForResult(intent, 0)
+    }
+
     val fragmentTransaction = childFragmentManager.beginTransaction()
     val statisticsFragment = StatisticsFragment()
     fragmentTransaction.replace(
@@ -46,11 +47,6 @@ class ProfileFragment : Fragment() {
     //fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
     fragmentTransaction.commit()
     return view
-  }
-
-  override fun onDetach() {
-    super.onDetach()
-    reportListener = null
   }
 
   private fun findViews(view: View) {
