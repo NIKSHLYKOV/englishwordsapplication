@@ -1,6 +1,5 @@
 package ru.nikshlykov.englishwordsapp.ui.fragments
 
-import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -25,12 +24,10 @@ import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import dagger.android.support.DaggerAppCompatActivity
-import dagger.android.support.DaggerFragment
 import ru.nikshlykov.englishwordsapp.R
 import ru.nikshlykov.englishwordsapp.db.models.Subgroup
 import ru.nikshlykov.englishwordsapp.ui.adapters.WordsRecyclerViewAdapter
 import ru.nikshlykov.englishwordsapp.ui.adapters.WordsRecyclerViewAdapter.OnEntryClickListener
-import ru.nikshlykov.englishwordsapp.ui.flowfragments.OnChildFragmentInteractionListener
 import ru.nikshlykov.englishwordsapp.ui.fragments.DeleteSubgroupDialogFragment.DeleteSubgroupListener
 import ru.nikshlykov.englishwordsapp.ui.fragments.ResetProgressDialogFragment.ResetProgressListener
 import ru.nikshlykov.englishwordsapp.ui.fragments.SortWordsDialogFragment.SortWordsListener
@@ -39,7 +36,7 @@ import ru.nikshlykov.englishwordsapp.utils.SubgroupImages
 import java.util.*
 import javax.inject.Inject
 
-class SubgroupFragment : DaggerFragment(), SortWordsListener, ResetProgressListener,
+class SubgroupFragment : FlowFragmentChildFragment(), SortWordsListener, ResetProgressListener,
   DeleteSubgroupListener {
   // TODO проверить баг с отменой изучения подгруппы.
   //  Выставляешь на изучение во вкладе со всеми подгруппами, заходишь сюда, выходишь,
@@ -61,7 +58,7 @@ class SubgroupFragment : DaggerFragment(), SortWordsListener, ResetProgressListe
   @JvmField
   @Inject
   var viewModelFactory: ViewModelProvider.Factory? = null
-  private var onChildFragmentInteractionListener: OnChildFragmentInteractionListener? = null
+
   private var subgroupId: Long = 0
   private var subgroupIsStudied = false
   private var subgroupIsCreatedByUser = false
@@ -70,15 +67,6 @@ class SubgroupFragment : DaggerFragment(), SortWordsListener, ResetProgressListe
 
   // параметр сортировки слов в подгруппе.
   private var sortParam = 0
-  override fun onAttach(context: Context) {
-    super.onAttach(context)
-    onChildFragmentInteractionListener =
-      if (requireParentFragment().parentFragment is OnChildFragmentInteractionListener) {
-        requireParentFragment().parentFragment as OnChildFragmentInteractionListener?
-      } else {
-        throw RuntimeException(requireParentFragment().parentFragment.toString() + " must implement OnChildFragmentInteractionListener")
-      }
-  }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

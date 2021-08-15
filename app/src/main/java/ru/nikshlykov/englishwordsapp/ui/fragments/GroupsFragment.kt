@@ -1,7 +1,6 @@
 package ru.nikshlykov.englishwordsapp.ui.fragments
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -14,17 +13,16 @@ import androidx.navigation.NavDirections
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-import dagger.android.support.DaggerFragment
 import ru.nikshlykov.englishwordsapp.R
 import ru.nikshlykov.englishwordsapp.db.models.Subgroup
 import ru.nikshlykov.englishwordsapp.ui.adapters.GroupItemsRecyclerViewAdapter
 import ru.nikshlykov.englishwordsapp.ui.adapters.SubgroupsRecyclerViewAdapter.OnSubgroupCheckedListener
 import ru.nikshlykov.englishwordsapp.ui.adapters.SubgroupsRecyclerViewAdapter.OnSubgroupClickListener
-import ru.nikshlykov.englishwordsapp.ui.flowfragments.OnChildFragmentInteractionListener
 import ru.nikshlykov.englishwordsapp.ui.viewmodels.GroupsViewModel
 import javax.inject.Inject
 
-class GroupsFragment : DaggerFragment(), OnSubgroupClickListener, OnSubgroupCheckedListener {
+class GroupsFragment : FlowFragmentChildFragment(), OnSubgroupClickListener,
+  OnSubgroupCheckedListener {
   private val LOG_TAG = "GroupsFragment"
 
   // ViewModel для взаимодействия с БД.
@@ -33,7 +31,6 @@ class GroupsFragment : DaggerFragment(), OnSubgroupClickListener, OnSubgroupChec
   @JvmField
   @Inject
   var viewModelFactory: ViewModelProvider.Factory? = null
-  private var onChildFragmentInteractionListener: OnChildFragmentInteractionListener? = null
 
   // View компоненты фрагмента.
   private var groupItemsRecyclerView: RecyclerView? = null
@@ -42,16 +39,6 @@ class GroupsFragment : DaggerFragment(), OnSubgroupClickListener, OnSubgroupChec
 
   // Контекст, передаваемый при прикреплении фрагмента.
   private var subgroupCreatingFlag = false
-  override fun onAttach(context: Context) {
-    super.onAttach(context)
-    Log.d(LOG_TAG, "onAttach")
-    onChildFragmentInteractionListener =
-      if (requireParentFragment().parentFragment is OnChildFragmentInteractionListener) {
-        requireParentFragment().parentFragment as OnChildFragmentInteractionListener?
-      } else {
-        throw RuntimeException(requireParentFragment().parentFragment.toString() + " must implement OnChildFragmentInteractionListener")
-      }
-  }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     Log.i(LOG_TAG, "onCreate()")

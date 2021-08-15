@@ -1,6 +1,5 @@
 package ru.nikshlykov.englishwordsapp.ui.fragments
 
-import android.content.Context
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import android.util.Log
@@ -13,22 +12,19 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.NavDirections
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
-import dagger.android.support.DaggerFragment
 import ru.nikshlykov.englishwordsapp.App
 import ru.nikshlykov.englishwordsapp.R
 import ru.nikshlykov.englishwordsapp.db.models.Subgroup
 import ru.nikshlykov.englishwordsapp.db.models.Word
-import ru.nikshlykov.englishwordsapp.ui.flowfragments.OnChildFragmentInteractionListener
 import ru.nikshlykov.englishwordsapp.ui.fragments.ResetProgressDialogFragment.ResetProgressListener
 import ru.nikshlykov.englishwordsapp.ui.viewmodels.WordViewModel
 import java.util.*
 import javax.inject.Inject
 
-class WordFragment : DaggerFragment(), ResetProgressListener {
+class WordFragment : FlowFragmentChildFragment(), ResetProgressListener {
   // View элементы.
   private var wordTextInputLayout: TextInputLayout? = null
   private var valueTextInputLayout: TextInputLayout? = null
@@ -53,8 +49,6 @@ class WordFragment : DaggerFragment(), ResetProgressListener {
   @Inject
   var viewModelFactory: ViewModelProvider.Factory? = null
 
-  private var onChildFragmentInteractionListener: OnChildFragmentInteractionListener? = null
-
   // Observer отвечающий за обработку подгруженных подгрупп для связывания или удаления.
   lateinit var availableSubgroupsObserver: Observer<ArrayList<Subgroup>?>
 
@@ -63,15 +57,6 @@ class WordFragment : DaggerFragment(), ResetProgressListener {
 
   // Синтезатор речи.
   private var textToSpeech: TextToSpeech? = null
-  override fun onAttach(context: Context) {
-    super.onAttach(context)
-    onChildFragmentInteractionListener =
-      if (requireParentFragment().parentFragment is OnChildFragmentInteractionListener) {
-        requireParentFragment().parentFragment as OnChildFragmentInteractionListener?
-      } else {
-        throw RuntimeException(requireParentFragment().parentFragment.toString() + " must implement OnChildFragmentInteractionListener")
-      }
-  }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
