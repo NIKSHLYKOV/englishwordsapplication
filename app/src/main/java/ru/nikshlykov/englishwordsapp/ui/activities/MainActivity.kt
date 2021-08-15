@@ -5,17 +5,21 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.navigation.NavController
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.android.support.DaggerAppCompatActivity
 import ru.nikshlykov.englishwordsapp.App
 import ru.nikshlykov.englishwordsapp.R
+import ru.nikshlykov.englishwordsapp.ui.flowfragments.GroupsAndWordsFlowFragment
+import ru.nikshlykov.englishwordsapp.ui.flowfragments.ProfileFlowFragment
+import ru.nikshlykov.englishwordsapp.ui.flowfragments.StudyFlowFragment
 import ru.nikshlykov.englishwordsapp.ui.fragments.ProfileFragment.ProfileFragmentReportListener
 import java.util.*
 
 class MainActivity : DaggerAppCompatActivity(), ProfileFragmentReportListener {
+  private var navHostFragment: NavHostFragment? = null
+
   // View элементы.
   private var bottomNavigationView // Нижнее меню.
     : BottomNavigationView? = null
@@ -86,9 +90,9 @@ class MainActivity : DaggerAppCompatActivity(), ProfileFragmentReportListener {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
     findViews()
-    val navHostFragment =
+    navHostFragment =
       supportFragmentManager.findFragmentById(R.id.activity_main___nav_host_fragment) as NavHostFragment
-    val navController: NavController = navHostFragment.navController
+    val navController: NavController = navHostFragment!!.navController
     //val navController = Navigation.findNavController(this, R.id.activity_main___nav_host_fragment)
     NavigationUI.setupWithNavController(bottomNavigationView!!, navController)
   }
@@ -156,11 +160,33 @@ class MainActivity : DaggerAppCompatActivity(), ProfileFragmentReportListener {
    * необходимо нажать её два раза для выхода из приложения.
    */
   override fun onBackPressed() {
-    if (lastBackPressedTime + 2000 > System.currentTimeMillis()) super.onBackPressed() else Toast.makeText(
-      this, "Нажмите ещё раз для выхода!",
-      Toast.LENGTH_SHORT
-    ).show()
-    lastBackPressedTime = System.currentTimeMillis()
+    // TODO разобраться потом с тем, как выходить из любой вкладки (что Profile, что GroupsAndWords)
+    val primaryFragment = navHostFragment?.childFragmentManager?.primaryNavigationFragment
+    if (primaryFragment is GroupsAndWordsFlowFragment && primaryFragment.backPressedIsAvailable()) {
+      Log.d(LOG_TAG, "GroupsAndWordsFlowFragment onBackPressed()")
+      primaryFragment.onBackPressed()
+    } else if (primaryFragment is ProfileFlowFragment && primaryFragment.backPressedIsAvailable()) {
+      Log.d(LOG_TAG, "ProfileFlowFragment onBackPressed()")
+      primaryFragment.onBackPressed()
+    } else if (primaryFragment is StudyFlowFragment && primaryFragment.backPressedIsAvailable()) {
+      Log.d(LOG_TAG, "ProfileFlowFragment onBackPressed()")
+      primaryFragment.onBackPressed()
+    } else {
+      if (primaryFragment is StudyFlowFragment) {
+        if (lastBackPressedTime + 2000 > System.currentTimeMillis()) {
+          Log.d(LOG_TAG, "super.onBackPressed() if StudyFlowFragment")
+          super.onBackPressed()
+        } else {
+          Toast.makeText(
+            this, "Нажмите ещё раз для выхода!",
+            Toast.LENGTH_SHORT
+          ).show()
+          lastBackPressedTime = System.currentTimeMillis()
+        }
+      } else {
+        super.onBackPressed()
+      }
+    }
   }
 
   companion object {

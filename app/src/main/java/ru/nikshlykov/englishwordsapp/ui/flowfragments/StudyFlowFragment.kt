@@ -20,9 +20,8 @@ import ru.nikshlykov.englishwordsapp.ui.viewmodels.StudyViewModel
 import ru.nikshlykov.englishwordsapp.utils.ModesNavigation
 import javax.inject.Inject
 
-class StudyFlowFragment : DaggerFragment(),
-  OnAvailableToRepeatWordLoadedListener, RepeatResultListener,
-  FirstShowModeReportListener {
+class StudyFlowFragment : DaggerFragment(), BackPressedFlowFragmentListener,
+  OnAvailableToRepeatWordLoadedListener, RepeatResultListener, FirstShowModeReportListener {
   // TODO при изначальной установке не показывается никакое сообщение (вроде).
   //  О режимах предупреждения точно нет.
   // ViewModel для работы с БД.
@@ -120,5 +119,13 @@ class StudyFlowFragment : DaggerFragment(),
     // Тег для логирования.
     private val LOG_TAG = StudyFlowFragment::class.java.canonicalName
     const val EXTRA_WORD_OBJECT = "WordObject"
+  }
+
+  override fun backPressedIsAvailable(): Boolean {
+    return false
+  }
+
+  override fun onBackPressed() {
+    TODO("Not yet implemented")
   }
 }
