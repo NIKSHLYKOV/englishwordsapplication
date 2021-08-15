@@ -255,9 +255,9 @@ class SubgroupFragment : DaggerFragment(), SortWordsListener, ResetProgressListe
       }
       R.id.activity_subgroup___action___edit_subgroup -> {
         Log.d(LOG_TAG, "edit subgroup")
-        val navDirections: NavDirections = SubgroupFragmentDirections
-          .actionGlobalSubgroupDataDest()
-          .setSubgroupId(subgroupId)
+        val navDirections: NavDirections =
+          SubgroupFragmentDirections.actionSubgroupDestToSubgroupDataDest()
+            .setSubgroupId(subgroupId)
         onChildFragmentInteractionListener!!.onChildFragmentInteraction(navDirections)
         true
       }
@@ -361,8 +361,7 @@ class SubgroupFragment : DaggerFragment(), SortWordsListener, ResetProgressListe
         subgroupId = subgroup.id
         subgroupIsStudied = subgroup.studied == 1
       } else {
-        val navDirections = SubgroupFragmentDirections.actionSubgroupDestToGroupsDest()
-        onChildFragmentInteractionListener!!.onChildFragmentInteraction(navDirections)
+        onChildFragmentInteractionListener!!.close()
       }
     }
 
@@ -602,8 +601,7 @@ class SubgroupFragment : DaggerFragment(), SortWordsListener, ResetProgressListe
     if (message == DeleteSubgroupDialogFragment.DELETE_MESSAGE) {
       subgroupViewModel!!.deleteSubgroup()
       deleteFlag = true
-      val navDirections = SubgroupFragmentDirections.actionSubgroupDestToGroupsDest()
-      onChildFragmentInteractionListener!!.onChildFragmentInteraction(navDirections)
+      onChildFragmentInteractionListener!!.close()
     }
   }
 

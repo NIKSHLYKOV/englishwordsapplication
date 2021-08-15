@@ -82,14 +82,7 @@ class SubgroupDataFragment : DaggerFragment() {
           { subgroupIsInsertedOrUpdated ->
             if (subgroupIsInsertedOrUpdated) {
               Toast.makeText(context, "Группа сохранена", Toast.LENGTH_SHORT).show()
-              // TODO есть проблема в том, что мы используем NavDirections для
-              //  popBackStack(), но, как я понимаю, можно это просто делать по
-              //  нажатию на кнопку назад в FlowFragment, который будет это перехватывать.
-              //  И 'нажимать' её в коде, когда нам нужно после каких-то действий
-              //  переместиться назад.
-              val navDirections =
-                SubgroupDataFragmentDirections.actionSubgroupDataDestToGroupsDest()
-              onChildFragmentInteractionListener!!.onChildFragmentInteraction(navDirections)
+              onChildFragmentInteractionListener!!.close()
             }
           })
         // TODO проверить сохранение. там какой-то косяк, название не меняется.

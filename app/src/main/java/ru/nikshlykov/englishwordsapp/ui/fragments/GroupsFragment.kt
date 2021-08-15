@@ -73,7 +73,8 @@ class GroupsFragment : DaggerFragment(), OnSubgroupClickListener, OnSubgroupChec
     val view = inflater.inflate(R.layout.fragment_groups, null)
     findViews(view)
     newSubgroupExtendedFAB!!.setOnClickListener {
-      val navDirections: NavDirections = GroupsFragmentDirections.actionGlobalSubgroupDataDest()
+      val navDirections: NavDirections =
+        GroupsFragmentDirections.actionGroupsDestToSubgroupDataDest()
       onChildFragmentInteractionListener!!.onChildFragmentInteraction(navDirections)
     }
     return view
