@@ -1,6 +1,5 @@
 package ru.nikshlykov.englishwordsapp.ui.fragments
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,13 +9,11 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
-import dagger.android.support.DaggerFragment
 import ru.nikshlykov.englishwordsapp.R
-import ru.nikshlykov.englishwordsapp.ui.flowfragments.OnChildFragmentInteractionListener
 import ru.nikshlykov.englishwordsapp.ui.viewmodels.SubgroupDataViewModel
 import javax.inject.Inject
 
-class SubgroupDataFragment : DaggerFragment() {
+class SubgroupDataFragment : FlowFragmentChildFragment() {
   // TODO сделать colorPicker/iconPicker для фона подгруппы.
   // View элементы.
   private var confirmButton: MaterialButton? = null
@@ -27,16 +24,6 @@ class SubgroupDataFragment : DaggerFragment() {
   @Inject
   var viewModelFactory: ViewModelProvider.Factory? = null
   private var subgroupDataViewModel: SubgroupDataViewModel? = null
-  private var onChildFragmentInteractionListener: OnChildFragmentInteractionListener? = null
-  override fun onAttach(context: Context) {
-    super.onAttach(context)
-    onChildFragmentInteractionListener =
-      if (requireParentFragment().parentFragment is OnChildFragmentInteractionListener) {
-        requireParentFragment().parentFragment as OnChildFragmentInteractionListener?
-      } else {
-        throw RuntimeException(requireParentFragment().parentFragment.toString() + " must implement OnChildFragmentInteractionListener")
-      }
-  }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

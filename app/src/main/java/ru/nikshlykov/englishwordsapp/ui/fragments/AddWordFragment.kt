@@ -1,6 +1,5 @@
 package ru.nikshlykov.englishwordsapp.ui.fragments
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,13 +8,11 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.textfield.TextInputEditText
-import dagger.android.support.DaggerFragment
 import ru.nikshlykov.englishwordsapp.R
-import ru.nikshlykov.englishwordsapp.ui.flowfragments.OnChildFragmentInteractionListener
 import ru.nikshlykov.englishwordsapp.ui.viewmodels.AddWordViewModel
 import javax.inject.Inject
 
-class AddWordFragment : DaggerFragment() {
+class AddWordFragment : FlowFragmentChildFragment() {
 
   // View элементы.
   private var wordTextInputEditText: TextInputEditText? = null
@@ -29,20 +26,6 @@ class AddWordFragment : DaggerFragment() {
   @JvmField
   @Inject
   var viewModelFactory: ViewModelProvider.Factory? = null
-  private var onChildFragmentInteractionListener: OnChildFragmentInteractionListener? = null
-
-  override fun onAttach(context: Context) {
-    super.onAttach(context)
-    onChildFragmentInteractionListener =
-      if (requireParentFragment().parentFragment is OnChildFragmentInteractionListener) {
-        requireParentFragment().parentFragment as OnChildFragmentInteractionListener?
-      } else {
-        throw RuntimeException(
-          requireParentFragment().parentFragment.toString()
-            + " must implement OnChildFragmentInteractionListener"
-        )
-      }
-  }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -62,7 +45,7 @@ class AddWordFragment : DaggerFragment() {
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
     addWordViewModel?.wordAdded?.observe(viewLifecycleOwner, { wordAdded ->
-      if (wordAdded){
+      if (wordAdded) {
         onChildFragmentInteractionListener!!.close()
       }
     })
