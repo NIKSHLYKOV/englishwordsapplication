@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_groups_dest_to_subgroup_dest"
             app:destination="@id/subgroup_dest" />
+        <action
+            android:id="@+id/action_groups_dest_to_subgroup_data_dest"
+            app:destination="@id/subgroup_data_dest" />
     </fragment>
     <fragment
         android:id="@+id/subgroup_data_dest"
@@ -23,38 +26,30 @@
             android:name="subgroupId"
             android:defaultValue="0L"
             app:argType="long" />
-        <action
-            android:id="@+id/action_subgroup_data_dest_to_groups_dest"
-            app:destination="@id/groups_dest" />
     </fragment>
-    <action
-        android:id="@+id/action_global_subgroup_data_dest"
-        app:destination="@id/subgroup_data_dest" />
     <fragment
         android:id="@+id/subgroup_dest"
         android:name="ru.nikshlykov.englishwordsapp.ui.fragments.SubgroupFragment"
-        android:label="SubgroupFragment">
+        android:label="SubgroupFragment"
+        tools:layout="@layout/fragment_subgroup">
         <argument
             android:name="subgroup"
             app:argType="ru.nikshlykov.englishwordsapp.db.models.Subgroup" />
-        <action
-            android:id="@+id/action_subgroup_dest_to_groups_dest"
-            app:destination="@id/groups_dest" />
         <action
             android:id="@+id/action_subgroup_dest_to_word_dest"
             app:destination="@id/word_dest" />
         <action
             android:id="@+id/action_subgroup_dest_to_add_word_dest"
             app:destination="@id/add_word_dest" />
+        <action
+            android:id="@+id/action_subgroup_dest_to_subgroup_data_dest"
+            app:destination="@id/subgroup_data_dest" />
     </fragment>
     <fragment
         android:id="@+id/word_dest"
         android:name="ru.nikshlykov.englishwordsapp.ui.fragments.WordFragment"
         android:label="WordFragment"
         tools:layout="@layout/fragment_word">
-        <action
-            android:id="@+id/action_word_dest_to_subgroup_dest"
-            app:destination="@id/subgroup_dest" />
         <argument
             android:name="startTo"
             android:defaultValue="0"
@@ -66,10 +61,11 @@
     <fragment
         android:id="@+id/add_word_dest"
         android:name="ru.nikshlykov.englishwordsapp.ui.fragments.AddWordFragment"
-        android:label="AddWordFragment" >
+        android:label="AddWordFragment"
+        tools:layout="@layout/fragment_add_word">
         <argument
             android:name="subgroupId"
-            app:argType="long"
-            android:defaultValue="0L" />
+            android:defaultValue="0L"
+            app:argType="long" />
     </fragment>
 </navigation>
