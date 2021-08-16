@@ -1,6 +1,5 @@
 package ru.nikshlykov.englishwordsapp.ui.fragments
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.google.android.material.button.MaterialButton
 import ru.nikshlykov.englishwordsapp.R
-import ru.nikshlykov.englishwordsapp.ui.activities.ModesActivity
 
 class ProfileFragment : FlowFragmentChildFragment() {
 
@@ -27,8 +25,8 @@ class ProfileFragment : FlowFragmentChildFragment() {
 
     // TODO переделать под Navigation Component
     modesMaterialButton!!.setOnClickListener {
-      val intent = Intent(requireContext(), ModesActivity::class.java)
-      startActivityForResult(intent, 0)
+      val navDirections = ProfileFragmentDirections.actionProfileDestToModesDest()
+      onChildFragmentInteractionListener?.onChildFragmentInteraction(navDirections)
     }
 
     settingsMaterialButton!!.setOnClickListener {

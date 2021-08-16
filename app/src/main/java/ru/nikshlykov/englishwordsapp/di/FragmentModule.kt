@@ -33,4 +33,7 @@ abstract class FragmentModule {
 
   @ContributesAndroidInjector
   abstract fun contributeProfileFragment(): ProfileFragment
+
+  @ContributesAndroidInjector
+  abstract fun contributeModesFragment(): ModesFragment
 }
