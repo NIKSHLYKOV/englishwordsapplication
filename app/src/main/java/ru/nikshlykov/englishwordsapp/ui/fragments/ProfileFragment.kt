@@ -6,13 +6,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import com.google.android.material.button.MaterialButton
 import ru.nikshlykov.englishwordsapp.R
 import ru.nikshlykov.englishwordsapp.ui.activities.ModesActivity
-import ru.nikshlykov.englishwordsapp.ui.activities.SettingsActivity
 
-class ProfileFragment : Fragment() {
+class ProfileFragment : FlowFragmentChildFragment() {
 
   // View элементы.
   private var settingsMaterialButton: MaterialButton? = null
@@ -34,8 +32,8 @@ class ProfileFragment : Fragment() {
     }
 
     settingsMaterialButton!!.setOnClickListener {
-      val intent = Intent(requireContext(), SettingsActivity::class.java)
-      startActivityForResult(intent, 0)
+      val navDirections = ProfileFragmentDirections.actionProfileDestToSettingsDest()
+      onChildFragmentInteractionListener?.onChildFragmentInteraction(navDirections)
     }
 
     val fragmentTransaction = childFragmentManager.beginTransaction()

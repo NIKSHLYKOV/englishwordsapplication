@@ -22,6 +22,8 @@ import java.util.*
 
 class SettingsFragment : PreferenceFragmentCompat(), OnSharedPreferenceChangeListener {
 
+  // TODO сделать toolbar, если надо будет
+
   override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
     setPreferencesFromResource(R.xml.preferences, rootKey)
   }
