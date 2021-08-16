@@ -7,18 +7,20 @@
 
     <activity
         android:id="@+id/modes_dest"
-        android:name="ru.nikshlykov.englishwordsapp.ui.modes.ModesActivity"
+        android:name="ru.nikshlykov.englishwordsapp.ui.activities.ModesActivity"
         android:label="ModesActivity"
-        tools:layout="@layout/activity_modes"
-        />
-    <activity
-        android:id="@+id/settings_dest"
-        android:name="ru.nikshlykov.englishwordsapp.ui.settings.SettingsActivity"
-        android:label="SettingsActivity"
-        tools:layout="@layout/activity_settings"/>
+        tools:layout="@layout/activity_modes" />
     <fragment
         android:id="@+id/profile_dest"
-        android:name="ru.nikshlykov.englishwordsapp.ui.main.ProfileFragment"
+        android:name="ru.nikshlykov.englishwordsapp.ui.fragments.ProfileFragment"
         android:label="ProfileFragment"
-        tools:layout="@layout/fragment_profile"/>
+        tools:layout="@layout/fragment_profile">
+        <action
+            android:id="@+id/action_profile_dest_to_settings_dest"
+            app:destination="@id/settings_dest" />
+    </fragment>
+    <fragment
+        android:id="@+id/settings_dest"
+        android:name="ru.nikshlykov.englishwordsapp.ui.fragments.SettingsFragment"
+        android:label="SettingsFragment" />
 </navigation>

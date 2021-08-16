@@ -6,11 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
+import androidx.navigation.NavDirections
 import androidx.navigation.fragment.NavHostFragment
 import ru.nikshlykov.englishwordsapp.R
 import ru.nikshlykov.englishwordsapp.ui.fragments.ProfileFragment
 
-class ProfileFlowFragment : Fragment(), BackPressedFlowFragmentListener {
+class ProfileFlowFragment : Fragment(), OnChildFragmentInteractionListener,
+  BackPressedFlowFragmentListener {
   private var navController: NavController? = null
   private var navHostFragment: NavHostFragment? = null
 
@@ -27,6 +29,16 @@ class ProfileFlowFragment : Fragment(), BackPressedFlowFragmentListener {
     navHostFragment =
       childFragmentManager.findFragmentById(R.id.flow_fragment_profile___nav_host) as NavHostFragment?
     navController = navHostFragment!!.navController
+  }
+
+  override fun onChildFragmentInteraction(navDirections: NavDirections?) {
+    when (navDirections?.actionId) {
+      R.id.action_profile_dest_to_settings_dest -> navController!!.navigate(navDirections)
+    }
+  }
+
+  override fun close() {
+    navController?.popBackStack()
   }
 
   override fun backPressedIsAvailable(): Boolean {

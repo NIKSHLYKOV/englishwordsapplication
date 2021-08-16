@@ -15,6 +15,10 @@ import ru.nikshlykov.englishwordsapp.ui.flowfragments.ProfileFlowFragment
 import ru.nikshlykov.englishwordsapp.ui.flowfragments.StudyFlowFragment
 
 class MainActivity : DaggerAppCompatActivity() {
+
+  // TODO сделать скрытие bottomNavigation, когда у нас не корневые фрагменты.
+  //  Иначе не сохраняется тот фрагмент, на котором мы были. Конечно, лучше, чтобы
+  //  сохранялся, но пока можно не реализовывать для простоты.
   private var navHostFragment: NavHostFragment? = null
 
   // View элементы.

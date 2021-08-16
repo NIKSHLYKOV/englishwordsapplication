@@ -30,4 +30,7 @@ abstract class FragmentModule {
 
   @ContributesAndroidInjector
   abstract fun contributeAddWordFragment(): AddWordFragment
+
+  @ContributesAndroidInjector
+  abstract fun contributeProfileFragment(): ProfileFragment
 }
