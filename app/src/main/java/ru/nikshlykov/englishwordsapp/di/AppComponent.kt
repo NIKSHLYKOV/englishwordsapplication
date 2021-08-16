@@ -6,7 +6,6 @@ import dagger.Component
 import dagger.android.AndroidInjectionModule
 import dagger.android.AndroidInjector
 import ru.nikshlykov.englishwordsapp.App
-import ru.nikshlykov.englishwordsapp.ui.activities.ModesActivity
 import ru.nikshlykov.englishwordsapp.ui.flowfragments.StudyFlowFragment
 import ru.nikshlykov.englishwordsapp.ui.fragments.GroupsFragment
 import ru.nikshlykov.englishwordsapp.ui.fragments.LinkOrDeleteWordDialogFragment
@@ -27,7 +26,6 @@ interface AppComponent : AndroidInjector<App> {
   // TODO удалить ненужные интерфейсы.
 
   fun inject(linkOrDeleteWordDialogFragment: LinkOrDeleteWordDialogFragment)
-  fun inject(modesActivity: ModesActivity)
   fun inject(studyFlowFragment: StudyFlowFragment)
   fun inject(groupsFragment: GroupsFragment)
   fun inject(statisticsFragment: StatisticsFragment)

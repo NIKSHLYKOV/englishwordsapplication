@@ -33,7 +33,9 @@ class ProfileFlowFragment : Fragment(), OnChildFragmentInteractionListener,
 
   override fun onChildFragmentInteraction(navDirections: NavDirections?) {
     when (navDirections?.actionId) {
-      R.id.action_profile_dest_to_settings_dest -> navController!!.navigate(navDirections)
+      R.id.action_profile_dest_to_settings_dest,
+      R.id.action_profile_dest_to_modes_dest ->
+        navController!!.navigate(navDirections)
     }
   }
 

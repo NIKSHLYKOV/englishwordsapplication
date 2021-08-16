@@ -5,11 +5,6 @@
     android:id="@+id/navigation_profile"
     app:startDestination="@id/profile_dest">
 
-    <activity
-        android:id="@+id/modes_dest"
-        android:name="ru.nikshlykov.englishwordsapp.ui.activities.ModesActivity"
-        android:label="ModesActivity"
-        tools:layout="@layout/activity_modes" />
     <fragment
         android:id="@+id/profile_dest"
         android:name="ru.nikshlykov.englishwordsapp.ui.fragments.ProfileFragment"
@@ -18,7 +13,15 @@
         <action
             android:id="@+id/action_profile_dest_to_settings_dest"
             app:destination="@id/settings_dest" />
+        <action
+            android:id="@+id/action_profile_dest_to_modes_dest"
+            app:destination="@id/modes_dest" />
     </fragment>
+    <fragment
+        android:id="@+id/modes_dest"
+        android:name="ru.nikshlykov.englishwordsapp.ui.fragments.ModesFragment"
+        android:label="ModesFragment"
+        tools:layout="@layout/activity_modes" />
     <fragment
         android:id="@+id/settings_dest"
         android:name="ru.nikshlykov.englishwordsapp.ui.fragments.SettingsFragment"
