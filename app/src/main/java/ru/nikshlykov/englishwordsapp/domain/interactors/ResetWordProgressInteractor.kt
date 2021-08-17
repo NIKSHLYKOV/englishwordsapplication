@@ -8,5 +8,4 @@ class ResetWordProgressInteractor(private val updateWordInteractor: UpdateWordIn
     word.learnProgress = -1
     return updateWordInteractor.updateWord(word)
   }
-  // TODO удалить все повторы по слову
 }
