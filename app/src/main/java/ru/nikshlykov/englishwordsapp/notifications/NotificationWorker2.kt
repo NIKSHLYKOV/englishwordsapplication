@@ -12,7 +12,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.work.*
 import ru.nikshlykov.englishwordsapp.R
-import ru.nikshlykov.englishwordsapp.ui.activities.MainActivity
+import ru.nikshlykov.englishwordsapp.ui.MainActivity
 import java.util.*
 import java.util.concurrent.TimeUnit
 

@@ -10,7 +10,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import ru.nikshlykov.englishwordsapp.R
-import ru.nikshlykov.englishwordsapp.ui.activities.MainActivity
+import ru.nikshlykov.englishwordsapp.ui.MainActivity
 import java.util.*
 
 class AlarmReceiver : BroadcastReceiver() {

@@ -13,7 +13,7 @@ import androidx.core.app.NotificationCompat
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import ru.nikshlykov.englishwordsapp.R
-import ru.nikshlykov.englishwordsapp.ui.activities.MainActivity
+import ru.nikshlykov.englishwordsapp.ui.MainActivity
 
 class NotificationWorker(
   context: Context,
