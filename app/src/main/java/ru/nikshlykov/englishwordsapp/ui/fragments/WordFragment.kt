@@ -124,10 +124,6 @@ class WordFragment : FlowFragmentChildFragment(), ResetProgressListener {
     get() {
       val arguments = arguments
       if (arguments != null) {
-        // Получаем id слова, которое было выбрано.
-        val startTo = WordFragmentArgs.fromBundle(requireArguments()).startTo
-        Log.i(LOG_TAG, "startTo = $startTo")
-
         /*RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(
 WordActivity.this);
 examplesRecyclerView.setLayoutManager(layoutManager);
