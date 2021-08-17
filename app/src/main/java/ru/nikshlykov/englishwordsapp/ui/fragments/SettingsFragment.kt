@@ -133,7 +133,7 @@ class SettingsFragment : PreferenceFragmentCompat(), OnSharedPreferenceChangeLis
     )
   }
 
-  fun cancelNotifications() {
+  private fun cancelNotifications() {
     val context = context
     val intent = Intent(context, AlarmReceiver::class.java)
     val pendingIntent = PendingIntent.getBroadcast(

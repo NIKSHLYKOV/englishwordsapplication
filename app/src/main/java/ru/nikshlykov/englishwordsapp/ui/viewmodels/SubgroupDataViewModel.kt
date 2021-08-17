@@ -19,6 +19,7 @@ class SubgroupDataViewModel(
 
   val subgroup: LiveData<Subgroup> = _subgroup
 
+  // TODO Сделать private переменную
   val subgroupIsInsertedOrUpdated: MutableLiveData<Boolean> = MutableLiveData()
 
 
@@ -26,10 +27,6 @@ class SubgroupDataViewModel(
     viewModelScope.launch {
       _subgroup.value = getSubgroupInteractor.getSubgroupById(subgroupId)
     }
-  }
-
-  fun getSubgroupIsInsertedOrUpdated(): LiveData<Boolean> {
-    return subgroupIsInsertedOrUpdated
   }
 
   fun addOrUpdateSubgroup(subgroupName: String?) {

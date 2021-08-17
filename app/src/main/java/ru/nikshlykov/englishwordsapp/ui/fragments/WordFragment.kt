@@ -121,55 +121,51 @@ class WordFragment : FlowFragmentChildFragment(), ResetProgressListener {
    * чтобы создать новое слово, либо устанавливает параметры уже существующего слова в наши View.
    */
   private val dataAndPrepareInterface: Unit
-    private get() {
+    get() {
       val arguments = arguments
       if (arguments != null) {
         // Получаем id слова, которое было выбрано.
         val startTo = WordFragmentArgs.fromBundle(requireArguments()).startTo
         Log.i(LOG_TAG, "startTo = $startTo")
-        when (startTo) {
-          START_TO_EDIT_WORD -> {
-            /*RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(
+
+        /*RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(
 WordActivity.this);
 examplesRecyclerView.setLayoutManager(layoutManager);
 examplesRecyclerViewAdapter = new ExamplesRecyclerViewAdapter(WordActivity.this);
 examplesRecyclerView.setAdapter(examplesRecyclerViewAdapter);*/
-            /*addExampleButton.setOnClickListener(new View.OnClickListener() {
-                   @Override
-                   public void onClick(View v) {
-                       examplesRecyclerViewAdapter.addExample();
-                       examplesRecyclerView.smoothScrollToPosition(examplesRecyclerViewAdapter
-                               .getItemCount() - 1);
-                   }
-               });*/
-            val word = WordFragmentArgs.fromBundle(requireArguments()).word
-            wordViewModel!!.setWord(word)
-            wordViewModel!!.wordMutableLiveData.observe(viewLifecycleOwner, { word ->
-              Log.d(LOG_TAG, "word onChanged()")
-              if (word != null) {
-                setWordToViews(word)
+        /*addExampleButton.setOnClickListener(new View.OnClickListener() {
+               @Override
+               public void onClick(View v) {
+                   examplesRecyclerViewAdapter.addExample();
+                   examplesRecyclerView.smoothScrollToPosition(examplesRecyclerViewAdapter
+                           .getItemCount() - 1);
+               }
+           });*/
+        val word = WordFragmentArgs.fromBundle(requireArguments()).word
+        wordViewModel!!.setWord(word)
+        wordViewModel!!.wordMutableLiveData.observe(viewLifecycleOwner, { word ->
+          Log.d(LOG_TAG, "word onChanged()")
+          if (word != null) {
+            setWordToViews(word)
 
-                // Делаем доступными для редактирования поля с параметрами слова.
-                if (word.createdByUser == 1) {
-                  saveButton!!.visibility = View.VISIBLE
-                  wordTextInputLayout!!.isEnabled = true
-                  transcriptionTextInputLayout!!.isEnabled = true
-                  valueTextInputLayout!!.isEnabled = true
-                }
-
-                /*wordViewModel.getExamples(WordActivity.this);*/
-              }
-            })
-
-            // Присваиваем обработчик нажатия на кнопку воспроизведения слова.
-            ttsButton!!.setOnClickListener {
-              textToSpeech!!.speak(
-                wordTextInputEditText!!.text.toString(),
-                TextToSpeech.QUEUE_ADD, null, "1"
-              )
+            // Делаем доступными для редактирования поля с параметрами слова.
+            if (word.createdByUser == 1) {
+              saveButton!!.visibility = View.VISIBLE
+              wordTextInputLayout!!.isEnabled = true
+              transcriptionTextInputLayout!!.isEnabled = true
+              valueTextInputLayout!!.isEnabled = true
             }
+
+            /*wordViewModel.getExamples(WordActivity.this);*/
           }
-          else               -> errorProcessing()
+        })
+
+        // Присваиваем обработчик нажатия на кнопку воспроизведения слова.
+        ttsButton!!.setOnClickListener {
+          textToSpeech!!.speak(
+            wordTextInputEditText!!.text.toString(),
+            TextToSpeech.QUEUE_ADD, null, "1"
+          )
         }
       } else {
         errorProcessing()
@@ -181,7 +177,6 @@ examplesRecyclerView.setAdapter(examplesRecyclerViewAdapter);*/
    */
   private fun errorProcessing() {
     Log.e(LOG_TAG, "Error happened!")
-    // TODO Сделать потом, наверное, через нажатие кнопки назад программно.
     onChildFragmentInteractionListener!!.close()
   }
 
@@ -197,7 +192,7 @@ examplesRecyclerView.setAdapter(examplesRecyclerViewAdapter);*/
       val transcription = transcriptionTextInputEditText!!.text.toString()
 
       // Проверяем, что поля слова и перевода не пустые
-      if (!word.isEmpty() && !value.isEmpty()) {
+      if (word.isNotEmpty() && value.isNotEmpty()) {
         wordViewModel!!.setWordParameters(word, transcription, value)
         wordViewModel!!.updateWordInDB()
 
@@ -397,9 +392,6 @@ examplesRecyclerView.setAdapter(examplesRecyclerViewAdapter);*/
   companion object {
     // Тег для логирования.
     private const val LOG_TAG = "WordFragment"
-
-    // Возможные цели старта Fragment.
-    const val START_TO_EDIT_WORD = 1
 
     // Теги для диалоговых фрагментов.
     private const val DIALOG_RESET_WORD_PROGRESS = "ResetWordProgressDialogFragment"

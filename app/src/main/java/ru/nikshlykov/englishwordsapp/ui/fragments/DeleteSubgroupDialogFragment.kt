@@ -32,9 +32,6 @@ class DeleteSubgroupDialogFragment : DialogFragment() {
   }
 
   companion object {
-    // Тег для логирования.
-    private const val LOG_TAG = "DeleteSubgroupDF"
-
     // Сообщение о том, что удаление подтверждено.
     const val DELETE_MESSAGE = "Delete"
   }

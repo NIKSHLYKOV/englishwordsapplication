@@ -41,10 +41,11 @@ class WordsRecyclerViewAdapter(context: Context) : RecyclerView.Adapter<WordsVie
   inner class WordsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
     View.OnClickListener {
     // View для параметров слова.
-    val word: TextView
-    val transcription: TextView
-    val value: TextView
-    val progress: View
+    val word: TextView = itemView.findViewById(R.id.word_in_subgroup_item___text_view___word)
+    val transcription: TextView =
+      itemView.findViewById(R.id.word_in_subgroup_item___text_view___transcription)
+    val value: TextView = itemView.findViewById(R.id.word_in_subgroup_item___text_view___value)
+    val progress: View = itemView.findViewById(R.id.word_in_subgroup_item___view___progress)
     override fun onClick(v: View) {
       when (v.id) {
         R.id.word_in_subgroup_item___button___voice ->                     // Воспроизводим слово.
@@ -59,13 +60,6 @@ class WordsRecyclerViewAdapter(context: Context) : RecyclerView.Adapter<WordsVie
     }
 
     init {
-
-      // Находим View, в которые будем устанавливать контент в onBindViewHolder().
-      word = itemView.findViewById(R.id.word_in_subgroup_item___text_view___word)
-      transcription = itemView.findViewById(R.id.word_in_subgroup_item___text_view___transcription)
-      value = itemView.findViewById(R.id.word_in_subgroup_item___text_view___value)
-      progress = itemView.findViewById(R.id.word_in_subgroup_item___view___progress)
-
       // Находим кнопку для воспроизведения слова и присваиваем ей обработчик нажатия -
       // сам ViewHolder.
       val ttsButton = itemView.findViewById<Button>(R.id.word_in_subgroup_item___button___voice)
@@ -137,9 +131,5 @@ class WordsRecyclerViewAdapter(context: Context) : RecyclerView.Adapter<WordsVie
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
       return oldWords[oldItemPosition] == newWords[newItemPosition]
     }
-  }
-
-  companion object {
-    private const val TTS_ERROR = "Ошибка воспроизведения!"
   }
 }

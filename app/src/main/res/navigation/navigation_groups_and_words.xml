@@ -51,10 +51,6 @@
         android:label="WordFragment"
         tools:layout="@layout/fragment_word">
         <argument
-            android:name="startTo"
-            android:defaultValue="0"
-            app:argType="integer" />
-        <argument
             android:name="word"
             app:argType="ru.nikshlykov.englishwordsapp.db.models.Word" />
     </fragment>

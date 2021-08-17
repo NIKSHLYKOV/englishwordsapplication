@@ -32,15 +32,16 @@ class SubgroupViewModel(
 
   // Слова, залинкованные с подгруппой
   // Список слов для Activity.
-  val words: MediatorLiveData<List<Word>>
+  val words: MediatorLiveData<List<Word>> = MediatorLiveData()
 
   // Источники данных для words.
   private var wordsByAlphabet: LiveData<List<Word>>? = null
   private var wordsByProgress: LiveData<List<Word>>? = null
 
   // Observer, который сетит список слов в words.
-  private val observer: Observer<List<Word>>
-  private val availableSubgroupToLink: MutableLiveData<ArrayList<Subgroup>?>
+  private val observer: Observer<List<Word>> =
+    Observer { words -> this@SubgroupViewModel.words.value = words }
+  private val availableSubgroupToLink: MutableLiveData<ArrayList<Subgroup>?> = MutableLiveData()
 
   fun loadSubgroupAndWords(subgroupId: Long, sortParam: Int) {
     this.subgroupId = subgroupId
@@ -57,14 +58,6 @@ class SubgroupViewModel(
     } else {
       words.addSource(wordsByProgress!!, observer)
     }
-  }
-
-  fun subgroupIsCreatedByUser(): Boolean {
-    val sub = _subgroup.value
-    if (sub != null) {
-      return subgroupIsCreatedByUser()
-    }
-    throw NullPointerException()
   }
 
   /**
@@ -186,12 +179,5 @@ class SubgroupViewModel(
 
   companion object {
     private const val LOG_TAG = "SubgroupViewModel"
-  }
-
-  init {
-    //subgroupMutableLiveData = new MutableLiveData<>();
-    words = MediatorLiveData()
-    observer = Observer { words -> this@SubgroupViewModel.words.value = words }
-    availableSubgroupToLink = MutableLiveData()
   }
 }

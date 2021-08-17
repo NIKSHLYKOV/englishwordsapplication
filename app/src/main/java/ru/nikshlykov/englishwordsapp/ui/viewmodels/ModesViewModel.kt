@@ -18,7 +18,6 @@ class ModesViewModel(
   AndroidViewModel(application) {
 
   private val _modes: MutableLiveData<List<Mode>> = MutableLiveData()
-
   val modes: LiveData<List<Mode>> = _modes
 
   fun loadModes() {

@@ -23,8 +23,6 @@ class CollectWordByLettersModeFragment : BaseModeFragment() {
   private var lettersGridLayout: GridLayout? = null
   private var resultImageView: ImageView? = null
 
-  // ViewModel для работы с БД и словом.
-  //private WordViewModel wordViewModel;
   private var word: Word? = null
 
   private var handler: Handler? = null
