@@ -1,4 +1,4 @@
-package ru.nikshlykov.englishwordsapp.ui.activities
+package ru.nikshlykov.englishwordsapp.ui
 
 import android.os.Bundle
 import android.util.Log
