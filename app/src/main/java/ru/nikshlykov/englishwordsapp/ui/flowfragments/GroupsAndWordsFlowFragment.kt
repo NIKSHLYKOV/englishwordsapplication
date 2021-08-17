@@ -35,6 +35,7 @@ class GroupsAndWordsFlowFragment : Fragment(), OnChildFragmentInteractionListene
   override fun onChildFragmentInteraction(navDirections: NavDirections?) {
     when (navDirections?.actionId) {
       R.id.action_groups_dest_to_subgroup_dest,
+      R.id.action_groups_dest_to_subgroup_data_dest,
       R.id.action_subgroup_dest_to_word_dest,
       R.id.action_subgroup_dest_to_add_word_dest ->
         navController!!.navigate(navDirections)
