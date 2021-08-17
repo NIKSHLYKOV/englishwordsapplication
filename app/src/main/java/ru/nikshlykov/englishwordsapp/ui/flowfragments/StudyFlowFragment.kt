@@ -52,6 +52,13 @@ class StudyFlowFragment : DaggerFragment(), BackPressedFlowFragmentListener,
     val navHostFragment =
       childFragmentManager.findFragmentById(R.id.flow_fragment_study___nav_host) as NavHostFragment?
     navController = navHostFragment!!.navController
+    studyViewModel!!.modesSelected.observe(viewLifecycleOwner, { modesSelected ->
+      if (modesSelected == false) {
+        val navDirections = NavigationStudyDirections.actionGlobalInfoDest()
+          .setInfoFlag(InfoFragment.FLAG_MODES_ARE_NOT_CHOSEN)
+        navController!!.navigate(navDirections)
+      }
+    })
   }
 
   /**

@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import ru.nikshlykov.englishwordsapp.R
 
+// TODO сделать кнопку с переходом на фрагмент режимов.
 class InfoFragment : Fragment() {
   // Флаг, получаемый из Activity.
   private var flag = 0
