@@ -16,12 +16,12 @@ class SubgroupDataViewModel(
   private val updateSubgroupInteractor: UpdateSubgroupInteractor
 ) : ViewModel() {
   private val _subgroup: MutableLiveData<Subgroup> = MutableLiveData()
-
   val subgroup: LiveData<Subgroup> = _subgroup
 
-  // TODO Сделать private переменную
-  val subgroupIsInsertedOrUpdated: MutableLiveData<Boolean> = MutableLiveData()
-
+  // TODO Проверить, насколько полезна эта скрытая переменная.
+  //  Ведь можно же скастить открытую в MutableLiveData.
+  private val _subgroupIsInsertedOrUpdated: MutableLiveData<Boolean> = MutableLiveData()
+  val subgroupIsInsertedOrUpdated: LiveData<Boolean> = _subgroupIsInsertedOrUpdated
 
   fun loadSubgroup(subgroupId: Long) {
     viewModelScope.launch {
@@ -37,7 +37,7 @@ class SubgroupDataViewModel(
         viewModelScope.launch {
           val subgroupUpdated = updateSubgroupInteractor.updateSubgroup(subgroupToUpdate)
           if (subgroupUpdated == 1) {
-            subgroupIsInsertedOrUpdated.postValue(true)
+            _subgroupIsInsertedOrUpdated.postValue(true)
           }
         }
       } else {
@@ -48,7 +48,7 @@ class SubgroupDataViewModel(
         viewModelScope.launch {
           val newSubgroupId = addSubgroupInteractor.addSubgroup(subgroupName)
           if (newSubgroupId != 0L) {
-            subgroupIsInsertedOrUpdated.postValue(true)
+            _subgroupIsInsertedOrUpdated.postValue(true)
           }
         }
       } else {

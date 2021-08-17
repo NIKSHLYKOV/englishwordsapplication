@@ -156,8 +156,6 @@ class SubgroupFragment : FlowFragmentChildFragment(), SortWordsListener, ResetPr
   // Toolbar.
   override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
     super.onCreateOptionsMenu(menu, inflater)
-
-    // TODO Не работает (не появляются пункты меню в тулбаре), разобраться.
     Log.d(LOG_TAG, "onCreateOptionsMenu()")
     inflater.inflate(R.menu.activity_subgroup_toolbar_menu, menu)
     if (subgroupIsStudied) {
@@ -554,9 +552,6 @@ class SubgroupFragment : FlowFragmentChildFragment(), SortWordsListener, ResetPr
   companion object {
     // TODO сделать свою view для отображения прогресса по слову.
     //  Лучше базу брать из той, которая в WordActivity.
-    // TODO надо будет отсюда убрать onActivityResult (уже убрал). При этом надо учесть, что
-    //  группа (название) должно обновиться. По этому надо подтягивать группу из БД
-    //  через LiveData. Могут быть проблемы при удалении подгруппы, проверить этот момент.
 
     // Тег для логирования.
     private const val LOG_TAG = "SubgroupFragment"
