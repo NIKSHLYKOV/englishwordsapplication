@@ -10,6 +10,7 @@ class WordsRepositoryImpl @Inject constructor(private val wordDao: WordDao) : Wo
   // TODO подумать над удалением слова после его удаления из последней подгруппы.
   override suspend fun insertWord(word: Word): Long {
     word.id = wordDao.wordWithMinId().id - 1
+    word.createdByUser = 1
     return wordDao.insert(word)
   }
 

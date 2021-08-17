@@ -38,7 +38,7 @@ class Word : Parcelable {
     = -1
 
   @ColumnInfo(name = "IsCreatedByUser", defaultValue = "0")
-  var createdByUser // Переменная, показывающая выучено ли слово.
+  var createdByUser // 0 - создано нами. 1 - создано пользователем.
     = 0
 
   @ColumnInfo(name = "PartOfSpeech")

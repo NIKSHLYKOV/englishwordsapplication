@@ -95,7 +95,6 @@ class StudyFlowFragment : DaggerFragment(), BackPressedFlowFragmentListener,
         // Переходим к рандомно выбранному режиму
         val navDirections = ModesNavigation.getRandomModeNavDirections(randomModeId, word)
         navController!!.navigate(navDirections)
-        // TODO РАЗОБРАТЬСЯ, ПОЧЕМУ В MODESFRAGMENTS получаем word null, и раскоментить навигацию.
       }
     }
   }
