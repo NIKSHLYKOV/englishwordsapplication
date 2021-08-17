@@ -12,7 +12,7 @@ import ru.nikshlykov.englishwordsapp.R
 import ru.nikshlykov.englishwordsapp.db.models.Word
 
 class DictionaryCardsModeFragment : BaseModeFragment() {
-  // TODO сделать baseModeFragment для навигации и, возможно, чего-то ещё
+
   // Флаг, получаемый из Activity.
   private var flag = 0
 
@@ -29,11 +29,6 @@ class DictionaryCardsModeFragment : BaseModeFragment() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     word = DictionaryCardsModeFragmentArgs.fromBundle(requireArguments()).word
-    // Получаем id слова.
-    //wordId = getArguments().getLong("WordId");
-
-    //wordViewModel = new ViewModelProvider(getActivity()).get(WordViewModel.class);
-    //wordViewModel.setWord(wordId);
   }
 
   override fun onCreateView(
@@ -106,14 +101,12 @@ class DictionaryCardsModeFragment : BaseModeFragment() {
     wordTextView!!.text = word.word
   }
 
+  // TODO разобраться с тем, что флаг сейчас не используется
   fun setFlag(flag: Int) {
     if (flag == FLAG_ENG_TO_RUS || flag == FLAG_RUS_TO_ENG) this.flag = flag
   }
 
   companion object {
-    // Ключ для передачи флага фрагменту.
-    const val KEY_MODE_FLAG = "ModeFlag"
-
     // Флаги.
     const val FLAG_ENG_TO_RUS = 1
     const val FLAG_RUS_TO_ENG = 2

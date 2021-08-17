@@ -18,11 +18,9 @@ class GroupsViewModel(
 ) :
   AndroidViewModel(application) {
   private val _groupItems: MutableLiveData<ArrayList<GroupItem>?> = MutableLiveData()
-
   val groupItems: LiveData<ArrayList<GroupItem>?> = _groupItems
 
   fun updateSubgroup(subgroup: Subgroup?) {
-    //groupsRepository.update(subgroup)
     viewModelScope.launch {
       // TODO убрать потом проверку на null
       if (subgroup != null) {

@@ -97,7 +97,7 @@ class SubgroupFragment : FlowFragmentChildFragment(), SortWordsListener, ResetPr
     // Устанавливаем наш toolbar.
     (activity as DaggerAppCompatActivity?)!!.setSupportActionBar(toolbar)
     initCreateWordFAB()
-    subgroupViewModel!!.subgroup.observe(viewLifecycleOwner, Observer { subgroup ->
+    subgroupViewModel!!.subgroup.observe(viewLifecycleOwner, { subgroup ->
       if (subgroup != null) {
         Log.i(LOG_TAG, "subgroup onChanged()")
         val toolbarLayout: CollapsingToolbarLayout = view.findViewById(
@@ -121,7 +121,7 @@ class SubgroupFragment : FlowFragmentChildFragment(), SortWordsListener, ResetPr
     recyclerView!!.adapter = adapter
 
     // Закидываем данные в адаптер, подписывая его на изменения в LiveData.
-    subgroupViewModel!!.words.observe(viewLifecycleOwner, Observer { words ->
+    subgroupViewModel!!.words.observe(viewLifecycleOwner, { words ->
       Log.i(LOG_TAG, "words onChanged()")
       if (words != null) {
         if (!deleteFlag) {
@@ -148,11 +148,6 @@ class SubgroupFragment : FlowFragmentChildFragment(), SortWordsListener, ResetPr
     super.onPause()
     Log.i(LOG_TAG, "onPause()")
     if (!deleteFlag) {
-      // TODO проверить Lifecycle в GroupsFragment.
-      //  Если заходить в неизучаемую группу и делать её изучаемой, то не показывается
-      //  обновлённый значок мозга, если сразу назад переходить
-      //  Если заходить в изучаемую группу и делать её неизучаемой, то при переходе назад
-      //  она вообще почему-то не обновляется.
       subgroupViewModel!!.updateSubgroup()
       saveSortParam(sortParam)
     }
@@ -186,36 +181,6 @@ class SubgroupFragment : FlowFragmentChildFragment(), SortWordsListener, ResetPr
         learnToggleButton.setBackgroundDrawable(getDrawable(R.drawable.background_brain_icon));*/
   }
 
-  /*@Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        Log.d(LOG_TAG, "onCreateOptionsMenu()");
-        getMenuInflater().inflate(R.menu.activity_subgroup_toolbar_menu, menu);
-
-        if (subgroupIsStudied) {
-            menu.findItem(R.id.activity_subgroup___action___learn)
-                    .setChecked(true)
-                    .setIcon(getDrawable(R.drawable.ic_brain_selected_yellow));
-        }
-        // Скрываем действия, доступные только для созданных пользователем подгрупп.
-        if (!subgroupIsCreatedByUser) {
-            menu.findItem(R.id.activity_subgroup___action___delete_subgroup).setVisible(false);
-            menu.findItem(R.id.activity_subgroup___action___edit_subgroup).setVisible(false);
-        }
-
-        */
-  /*ToggleButton learnToggleButton = (ToggleButton) menu.findItem(R.id.activity_subgroup___action___learn)
-                .getActionView();
-        learnToggleButton.setLayoutParams(new Toolbar.LayoutParams(
-                getResources().getDimensionPixelSize(R.dimen.toggle_button_brain_width),
-                getResources().getDimensionPixelSize(R.dimen.toggle_button_brain_height)));
-        learnToggleButton.setText("");
-        learnToggleButton.setTextOn("");
-        learnToggleButton.setTextOff("");
-        learnToggleButton.setBackgroundDrawable(getDrawable(R.drawable.background_brain_icon));*/
-  /*
-
-        return true;
-    }*/
   override fun onOptionsItemSelected(item: MenuItem): Boolean {
     val manager = requireActivity().supportFragmentManager
     return when (item.itemId) {
@@ -334,13 +299,12 @@ class SubgroupFragment : FlowFragmentChildFragment(), SortWordsListener, ResetPr
     )
     editor.apply()
   }
-  // Создание Activity и View.// TODO разобраться с этим объектом. Можно будет просто id передавать, если
-  //  через LiveData будем следить, т.к. он сейчас используется для хранения до передачи в ViewModel.
+
   /**
    * Получает из Extras id подгруппы и флаг того, создана ли она пользователем.
    */
   private val bundleArguments: Unit
-    private get() {
+    get() {
       if (arguments != null) {
         // TODO разобраться с этим объектом. Можно будет просто id передавать, если
         //  через LiveData будем следить, т.к. он сейчас используется для хранения до передачи в ViewModel.
@@ -411,15 +375,8 @@ class SubgroupFragment : FlowFragmentChildFragment(), SortWordsListener, ResetPr
     adapter!!.setOnEntryClickListener(object : OnEntryClickListener {
       override fun onEntryClick(view: View?, position: Int) {
         val currentWord = adapter!!.getWords()[position]
-        /*Intent editExistingWordIntent = new Intent(getContext(),
-                        WordActivity.class);
-                editExistingWordIntent.putExtra(WordActivity.EXTRA_WORD_OBJECT, currentWord);
-                editExistingWordIntent.putExtra(WordActivity.EXTRA_START_TO, WordActivity.START_TO_EDIT_WORD);
-                //editExistingWordIntent.putExtra(WordActivity.EXTRA_WORD_ID, currentWord.id);
-                startActivityForResult(editExistingWordIntent, REQUEST_CODE_EDIT_EXISTING_WORD);*/
         val navDirections: NavDirections = SubgroupFragmentDirections
           .actionSubgroupDestToWordDest(currentWord)
-          .setStartTo(WordFragment.START_TO_EDIT_WORD)
         onChildFragmentInteractionListener!!.onChildFragmentInteraction(navDirections)
       }
     })
@@ -431,7 +388,7 @@ class SubgroupFragment : FlowFragmentChildFragment(), SortWordsListener, ResetPr
     deleteIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_delete_white_24dp)
   }
 
-  fun createMySimpleCallbackBySubgroup(subgroup: Subgroup): MySimpleCallback {
+  private fun createMySimpleCallbackBySubgroup(subgroup: Subgroup): MySimpleCallback {
     return if (subgroup.isCreatedByUser) {
       MySimpleCallback(
         0, ItemTouchHelper.LEFT
@@ -600,23 +557,6 @@ class SubgroupFragment : FlowFragmentChildFragment(), SortWordsListener, ResetPr
     // TODO надо будет отсюда убрать onActivityResult (уже убрал). При этом надо учесть, что
     //  группа (название) должно обновиться. По этому надо подтягивать группу из БД
     //  через LiveData. Могут быть проблемы при удалении подгруппы, проверить этот момент.
-    // TODO починить диалоги. Скорее всего, проблема в том, что диалоговые фрагменты ждут слушателя,
-    //  но они крепятся к Activity, которая не реализует интерфейса.
-    // Ключи для получения аргументов.
-    const val EXTRA_SUBGROUP_OBJECT = "SubgroupObject"
-    const val EXTRA_SUBGROUP_ID = "SubgroupId"
-    const val EXTRA_SUBGROUP_IS_CREATED_BY_USER = "SubgroupIsCreatedByUser"
-    const val EXTRA_SUBGROUP_IS_STUDIED = "SubgroupIsStudied"
-
-    // TODO Проверить, что при возвращении на GroupsFragment обновляются подгруппы. Особенно
-    //  при удалении текущей.
-    /*
-    // Ключи для передачи аргументов.
-    public static final String EXTRA_DELETE_SUBGROUP = "DeleteSubgroup";*/
-    // Коды запросов для startActivityForResult().
-    private const val REQUEST_CODE_EDIT_EXISTING_WORD = 1
-    private const val REQUEST_CODE_CREATE_NEW_WORD = 2
-    private const val REQUEST_CODE_EDIT_SUBGROUP = 3
 
     // Тег для логирования.
     private const val LOG_TAG = "SubgroupFragment"

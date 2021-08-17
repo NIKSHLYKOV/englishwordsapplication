@@ -31,56 +31,71 @@ class ViewModelFactory @Inject constructor(
   private val addNewWordToSubgroupInteractor: AddNewWordToSubgroupInteractor
 ) : ViewModelProvider.Factory {
   override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-    return if (modelClass == StudyViewModel::class.java) {
-      StudyViewModel(
-        application,
-        getSelectedModesInteractor,
-        getFirstShowRepeatsCountForTodayInteractor,
-        getAvailableToRepeatWordInteractor,
-        studyWordsInteractor
-      ) as T
-    } else if (modelClass == GroupsViewModel::class.java) {
-      GroupsViewModel(application, getGroupsWithSubgroupsInteractor, updateSubgroupInteractor) as T
-    } else if (modelClass == SubgroupViewModel::class.java) {
-      SubgroupViewModel(
-        application,
-        getSubgroupInteractor,
-        addWordToSubgroupInteractor,
-        deleteWordFromSubgroupInteractor,
-        updateSubgroupInteractor,
-        deleteSubgroupInteractor,
-        getWordsFromSubgroupInteractor,
-        resetWordsProgressFromSubgroupInteractor,
-        getAvailableSubgroupsInteractor
-      ) as T
-    } else if (modelClass == WordDialogsViewModel::class.java) {
-      WordDialogsViewModel(
-        application,
-        addWordToSubgroupInteractor,
-        deleteWordFromSubgroupInteractor
-      ) as T
-    } else if (modelClass == WordViewModel::class.java) {
-      WordViewModel(
-        application,
-        getWordInteractor,
-        updateWordInteractor,
-        resetWordProgressInteractor,
-        getAvailableSubgroupsInteractor
-      ) as T
-    } else if (modelClass == StatisticsViewModel::class.java) {
-      StatisticsViewModel(application) as T
-    } else if (modelClass == ModesViewModel::class.java) {
-      ModesViewModel(application, getAllModesInteractor, updateModesInteractor) as T
-    } else if (modelClass == SubgroupDataViewModel::class.java) {
-      SubgroupDataViewModel(
-        getSubgroupInteractor,
-        addSubgroupInteractor,
-        updateSubgroupInteractor
-      ) as T
-    } else if (modelClass == AddWordViewModel::class.java) {
-      AddWordViewModel(addNewWordToSubgroupInteractor) as T
-    } else {
-      throw IllegalArgumentException("ViewModel Not Found")
+    return when (modelClass) {
+      StudyViewModel::class.java -> {
+        StudyViewModel(
+          application,
+          getSelectedModesInteractor,
+          getFirstShowRepeatsCountForTodayInteractor,
+          getAvailableToRepeatWordInteractor,
+          studyWordsInteractor
+        ) as T
+      }
+      GroupsViewModel::class.java -> {
+        GroupsViewModel(
+          application,
+          getGroupsWithSubgroupsInteractor,
+          updateSubgroupInteractor
+        ) as T
+      }
+      SubgroupViewModel::class.java -> {
+        SubgroupViewModel(
+          application,
+          getSubgroupInteractor,
+          addWordToSubgroupInteractor,
+          deleteWordFromSubgroupInteractor,
+          updateSubgroupInteractor,
+          deleteSubgroupInteractor,
+          getWordsFromSubgroupInteractor,
+          resetWordsProgressFromSubgroupInteractor,
+          getAvailableSubgroupsInteractor
+        ) as T
+      }
+      WordDialogsViewModel::class.java -> {
+        WordDialogsViewModel(
+          application,
+          addWordToSubgroupInteractor,
+          deleteWordFromSubgroupInteractor
+        ) as T
+      }
+      WordViewModel::class.java -> {
+        WordViewModel(
+          application,
+          getWordInteractor,
+          updateWordInteractor,
+          resetWordProgressInteractor,
+          getAvailableSubgroupsInteractor
+        ) as T
+      }
+      StatisticsViewModel::class.java -> {
+        StatisticsViewModel(application) as T
+      }
+      ModesViewModel::class.java -> {
+        ModesViewModel(application, getAllModesInteractor, updateModesInteractor) as T
+      }
+      SubgroupDataViewModel::class.java -> {
+        SubgroupDataViewModel(
+          getSubgroupInteractor,
+          addSubgroupInteractor,
+          updateSubgroupInteractor
+        ) as T
+      }
+      AddWordViewModel::class.java -> {
+        AddWordViewModel(addNewWordToSubgroupInteractor) as T
+      }
+      else                              -> {
+        throw IllegalArgumentException("ViewModel Not Found")
+      }
     }
   }
 }

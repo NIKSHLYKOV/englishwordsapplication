@@ -31,8 +31,6 @@ class WriteWordByVoiceModeFragment : BaseModeFragment() {
   private var confirmMaterialButton: MaterialButton? = null
   private var resultImageView: ImageView? = null
 
-  // ViewModel для работы с БД.
-  //private WordViewModel wordViewModel;
   private var word: Word? = null
   private var handler: Handler? = null
 
@@ -127,9 +125,5 @@ class WriteWordByVoiceModeFragment : BaseModeFragment() {
     confirmMaterialButton =
       v.findViewById(R.id.fragment_write_word_by_voice_mode___material_button___confirm)
     resultImageView = v.findViewById(R.id.fragment_write_word_by_voice_mode___image_view___result)
-  }
-
-  companion object {
-    private const val TTS_ERROR = "Ошибка воспроизведения!"
   }
 }

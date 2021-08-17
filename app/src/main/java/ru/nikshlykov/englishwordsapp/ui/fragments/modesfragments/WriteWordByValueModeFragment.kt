@@ -26,10 +26,7 @@ class WriteWordByValueModeFragment : BaseModeFragment() {
   private var resultImageView: ImageView? = null
   private var handler: Handler? = null
 
-  // ViewModel для работы с БД.
   private var word: Word? = null
-
-  //private WordViewModel wordViewModel;
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

@@ -54,7 +54,7 @@ class ResetProgressDialogFragment : DialogFragment() {
   }
 
   private val errorDialog: AlertDialog
-    private get() = AlertDialog.Builder(requireContext())
+    get() = AlertDialog.Builder(requireContext())
       .setTitle(R.string.sorry_error_happened)
       .setPositiveButton(R.string.ok, null)
       .create()

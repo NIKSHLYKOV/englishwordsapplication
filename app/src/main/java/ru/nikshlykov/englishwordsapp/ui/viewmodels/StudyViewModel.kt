@@ -80,7 +80,6 @@ class StudyViewModel(
         // Запрашиваем следующее для повтора слово.
         getNextAvailableToRepeatWord(listener)
       } else {
-        //displayInfoFragment(InfoFragment.FLAG_MODES_ARE_NOT_CHOSEN)
         // TODO сделать LiveData, чтобы можно было выводить сообщение об ошибке/невыбранных режимах.
       }
     }
@@ -121,10 +120,6 @@ class StudyViewModel(
         listener!!.onAvailableToRepeatWordLoaded(wordForStudying)
       }
     }
-  }
-
-  fun setNewWordsCount(newWordsCount: Int) {
-    this.newWordsCount = newWordsCount
   }
 
   private fun loadNewWordsCount() {

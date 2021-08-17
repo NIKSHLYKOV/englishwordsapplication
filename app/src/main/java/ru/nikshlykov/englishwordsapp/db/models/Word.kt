@@ -54,14 +54,14 @@ class Word : Parcelable {
     = 0
 
   // Object методы
-  override fun equals(obj: Any?): Boolean {
-    if (this === obj) {
+  override fun equals(other: Any?): Boolean {
+    if (this === other) {
       return true
     }
-    if (obj == null || javaClass != obj.javaClass) {
+    if (other == null || javaClass != other.javaClass) {
       return false
     }
-    val comparedWord = obj as Word
+    val comparedWord = other as Word
     // Здесь мы проверяем всё, что не может быть null.
     val flag =
       id == comparedWord.id && word == comparedWord.word && value == comparedWord.value && learnProgress == comparedWord.learnProgress && createdByUser == comparedWord.createdByUser && lastRepetitionDate == comparedWord.lastRepetitionDate && priority == comparedWord.priority

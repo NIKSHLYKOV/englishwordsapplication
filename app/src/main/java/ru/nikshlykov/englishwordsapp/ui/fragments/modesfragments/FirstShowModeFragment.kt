@@ -18,7 +18,6 @@ class FirstShowModeFragment : Fragment() {
   private var transcriptionTextView: TextView? = null
   private var valueTextView: TextView? = null
 
-  //private WordViewModel wordViewModel;
   private var word: Word? = null
   private var firstShowModeReportListener: FirstShowModeReportListener? = null
 
@@ -38,12 +37,6 @@ class FirstShowModeFragment : Fragment() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    //wordViewModel = new ViewModelProvider(getActivity()).get(WordViewModel.class);
-
-    // Получаем id слова.
-    //wordId = getArguments().getLong(EXTRA_WORD_ID);
-    // Получаем слово по id из БД.
-    //wordViewModel.setWord(wordId);
     word = FirstShowModeFragmentArgs.fromBundle(requireArguments()).word
   }
 
@@ -105,6 +98,5 @@ class FirstShowModeFragment : Fragment() {
 
   companion object {
     private const val LOG_TAG = "FirstShowModeFragment"
-    const val EXTRA_WORD_ID = "WordId"
   }
 }

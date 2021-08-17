@@ -55,15 +55,11 @@ class GroupItemsRecyclerViewAdapter(
   }
 
   inner class GroupsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    val groupNameTextView: TextView
-    val moreSubgroupsButton: Button
-    val subgroupsRecyclerView: RecyclerView
-
-    init {
-      groupNameTextView = itemView.findViewById(R.id.group_item___text_view___group_name)
-      moreSubgroupsButton = itemView.findViewById(R.id.group_item___button___more)
-      subgroupsRecyclerView = itemView.findViewById(R.id.group_item___recycler_view___subgroups)
-    }
+    val groupNameTextView: TextView =
+      itemView.findViewById(R.id.group_item___text_view___group_name)
+    val moreSubgroupsButton: Button = itemView.findViewById(R.id.group_item___button___more)
+    val subgroupsRecyclerView: RecyclerView =
+      itemView.findViewById(R.id.group_item___recycler_view___subgroups)
   }
 
   fun setGroupItems(groupItems: ArrayList<GroupItem>) {

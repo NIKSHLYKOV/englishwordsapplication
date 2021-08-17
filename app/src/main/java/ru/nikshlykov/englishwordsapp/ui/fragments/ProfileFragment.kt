@@ -23,7 +23,6 @@ class ProfileFragment : FlowFragmentChildFragment() {
     val view = inflater.inflate(R.layout.fragment_profile, null)
     findViews(view)
 
-    // TODO переделать под Navigation Component
     modesMaterialButton!!.setOnClickListener {
       val navDirections = ProfileFragmentDirections.actionProfileDestToModesDest()
       onChildFragmentInteractionListener?.onChildFragmentInteraction(navDirections)
@@ -40,7 +39,6 @@ class ProfileFragment : FlowFragmentChildFragment() {
       R.id.fragment_profile___linear_layout___statistics,
       statisticsFragment
     )
-    //fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
     fragmentTransaction.commit()
     return view
   }

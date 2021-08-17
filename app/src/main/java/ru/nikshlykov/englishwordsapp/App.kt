@@ -120,9 +120,5 @@ class App : DaggerApplication(), Configuration.Provider {
 
   companion object {
     // TODO Проверить все EditText на лишние пробелы.
-    // TODO Проверить все Fragments/Activities на то, что они могут менять размер, чтобы кнопки
-    //  были над клавой и EditText'ы были в фокусе с учётом клавы. Для этого вроде в
-    //  AddOrEditSubgroupActivity использовалось в Manifest AdjustResize.
-    const val PREFERENCE_FILE_NAME = "my_preferences"
   }
 }

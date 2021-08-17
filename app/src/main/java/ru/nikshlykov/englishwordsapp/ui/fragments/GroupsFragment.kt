@@ -23,6 +23,7 @@ import javax.inject.Inject
 
 class GroupsFragment : FlowFragmentChildFragment(), OnSubgroupClickListener,
   OnSubgroupCheckedListener {
+  // TODO новую подгруппу нельзя создать.
   private val LOG_TAG = "GroupsFragment"
 
   // ViewModel для взаимодействия с БД.
@@ -147,6 +148,7 @@ class GroupsFragment : FlowFragmentChildFragment(), OnSubgroupClickListener,
       view.findViewById(R.id.fragment_groups___recycler_view___groups_and_subgroups)
   }
 
+  // TODO перенести этот код для скролла и подгрузки групп.
   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
     super.onActivityResult(requestCode, resultCode, data)
     if (requestCode == REQUEST_CODE_CREATE_SUBGROUP && resultCode == Activity.RESULT_OK) {
@@ -159,13 +161,6 @@ class GroupsFragment : FlowFragmentChildFragment(), OnSubgroupClickListener,
   }
 
   override fun onSubgroupClick(view: View?, subgroup: Subgroup?) {
-    /*intent.putExtra(SubgroupActivity.EXTRA_SUBGROUP_ID, subgroup.id);
-        intent.putExtra(SubgroupActivity.EXTRA_SUBGROUP_IS_CREATED_BY_USER, subgroup.isCreatedByUser());
-        intent.putExtra(SubgroupActivity.EXTRA_SUBGROUP_IS_STUDIED, subgroup.isStudied == 1);*/
-
-    /*Intent intent = new Intent(context, SubgroupActivity.class);
-        intent.putExtra(SubgroupActivity.EXTRA_SUBGROUP_OBJECT, subgroup);
-        startActivityForResult(intent, REQUEST_EDIT_SUBGROUP);*/
     val navDirections: NavDirections = GroupsFragmentDirections.actionGroupsDestToSubgroupDest(
       subgroup!!
     )
