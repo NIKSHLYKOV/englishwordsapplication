@@ -202,8 +202,7 @@ examplesRecyclerView.setAdapter(examplesRecyclerViewAdapter);*/
       }
     }
   }
-  // TODO Что делать с сохранением прогресса, если пользователь не нажал сохранить
-  // Наверное, просто апдейтить его в самом диалоге сбрасывания прогресса.
+
   /**
    * Инициализирует availableSubgroupsObserver.
    */

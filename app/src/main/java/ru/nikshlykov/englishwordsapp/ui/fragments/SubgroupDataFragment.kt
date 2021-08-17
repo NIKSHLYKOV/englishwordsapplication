@@ -72,7 +72,6 @@ class SubgroupDataFragment : FlowFragmentChildFragment() {
               onChildFragmentInteractionListener!!.close()
             }
           })
-        // TODO проверить сохранение. там какой-то косяк, название не меняется.
         subgroupDataViewModel!!.addOrUpdateSubgroup(subgroupName)
       } else {
         Toast.makeText(

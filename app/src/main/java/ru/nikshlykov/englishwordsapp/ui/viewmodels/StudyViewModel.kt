@@ -99,7 +99,6 @@ class StudyViewModel(
   private fun getNextAvailableToRepeatWord(
     listener: OnAvailableToRepeatWordLoadedListener?
   ) {
-    //wordsRepository.getRepeatsCountForToday(this)
     GlobalScope.launch {
       val repeatsCount =
         getFirstShowRepeatsCountForTodayInteractor.getFirstShowRepeatsCountForToday()
