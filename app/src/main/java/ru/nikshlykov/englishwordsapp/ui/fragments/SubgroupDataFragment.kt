@@ -14,7 +14,7 @@ import ru.nikshlykov.englishwordsapp.ui.viewmodels.SubgroupDataViewModel
 import javax.inject.Inject
 
 class SubgroupDataFragment : FlowFragmentChildFragment() {
-  // TODO сделать colorPicker/iconPicker для фона подгруппы.
+  // TODO сделать добавление фото для подгруппы.
   // View элементы.
   private var confirmButton: MaterialButton? = null
   private var subgroupNameEditText: TextInputEditText? = null

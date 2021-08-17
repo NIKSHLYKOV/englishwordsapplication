@@ -66,7 +66,6 @@ class GroupsFragment : FlowFragmentChildFragment(), OnSubgroupClickListener,
     return view
   }
 
-  // TODO скролить доверху, если добавилась новая группа.
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     Log.i(LOG_TAG, "onViewCreated()")
     super.onViewCreated(view, savedInstanceState)

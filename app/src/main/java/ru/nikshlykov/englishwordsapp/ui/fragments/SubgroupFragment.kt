@@ -75,7 +75,6 @@ class SubgroupFragment : FlowFragmentChildFragment(), SortWordsListener, ResetPr
     // Получаем id подгруппы из Intent.
     bundleArguments
     sortParam = getSortParam()
-    subgroupViewModel!!.loadSubgroupAndWords(subgroupId, sortParam)
   }
 
   override fun onCreateView(
@@ -85,6 +84,7 @@ class SubgroupFragment : FlowFragmentChildFragment(), SortWordsListener, ResetPr
   ): View? {
     val v = inflater.inflate(R.layout.fragment_subgroup, container, false)
     setHasOptionsMenu(true)
+    subgroupViewModel!!.loadSubgroupAndWords(subgroupId, sortParam)
     return v
   }
 

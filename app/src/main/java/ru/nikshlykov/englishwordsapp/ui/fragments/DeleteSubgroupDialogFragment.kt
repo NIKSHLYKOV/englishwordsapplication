@@ -14,8 +14,6 @@ class DeleteSubgroupDialogFragment : DialogFragment() {
     fun deleteMessage(message: String?)
   }
 
-  // TODO просмотреть ещё диалоговые фрагменты, в которых могут быть слушатели.
-  //  Т.к. раньше были acitivity, которые их обрабатывали. А сейчас всё перешло на фрагменты.
   fun setDeleteSubgroupListener(deleteSubgroupListener: DeleteSubgroupListener) {
     this.deleteSubgroupListener = deleteSubgroupListener
   }

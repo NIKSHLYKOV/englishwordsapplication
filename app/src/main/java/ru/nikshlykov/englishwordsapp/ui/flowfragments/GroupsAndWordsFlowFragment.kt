@@ -36,11 +36,12 @@ class GroupsAndWordsFlowFragment : Fragment(), OnChildFragmentInteractionListene
     when (navDirections?.actionId) {
       R.id.action_groups_dest_to_subgroup_dest,
       R.id.action_groups_dest_to_subgroup_data_dest,
+      R.id.action_subgroup_dest_to_subgroup_data_dest,
       R.id.action_subgroup_dest_to_word_dest,
       R.id.action_subgroup_dest_to_add_word_dest ->
         navController!!.navigate(navDirections)
     }
-  } // TODO перехватывать нажатие кнопки назад, если на экране не GroupsFragment. Иначе передавать
+  }
 
   //  нажатие обратно в MainActivity.
   override fun close() {
