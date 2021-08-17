@@ -1,13 +1,10 @@
 package ru.nikshlykov.englishwordsapp.ui.fragments
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavDirections
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,7 +20,7 @@ import javax.inject.Inject
 
 class GroupsFragment : FlowFragmentChildFragment(), OnSubgroupClickListener,
   OnSubgroupCheckedListener {
-  // TODO новую подгруппу нельзя создать.
+
   private val LOG_TAG = "GroupsFragment"
 
   // ViewModel для взаимодействия с БД.
@@ -38,7 +35,8 @@ class GroupsFragment : FlowFragmentChildFragment(), OnSubgroupClickListener,
   private var newSubgroupExtendedFAB: ExtendedFloatingActionButton? = null
   private var groupItemsRecyclerViewAdapter: GroupItemsRecyclerViewAdapter? = null
 
-  // Контекст, передаваемый при прикреплении фрагмента.
+  // TODO подумать, как скроллить теперь доверху, когда создалась новая подгруппа.
+  //  Запускать новый GroupsFragment?
   private var subgroupCreatingFlag = false
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,7 +72,7 @@ class GroupsFragment : FlowFragmentChildFragment(), OnSubgroupClickListener,
     super.onViewCreated(view, savedInstanceState)
     groupsViewModel!!.groupItems.observe(
       viewLifecycleOwner,
-      Observer { groupItems ->
+      { groupItems ->
         Log.i(LOG_TAG, "groupItems onChanged()")
         if (groupItems != null) {
           groupItemsRecyclerViewAdapter!!.setGroupItems(groupItems)
@@ -148,18 +146,6 @@ class GroupsFragment : FlowFragmentChildFragment(), OnSubgroupClickListener,
       view.findViewById(R.id.fragment_groups___recycler_view___groups_and_subgroups)
   }
 
-  // TODO перенести этот код для скролла и подгрузки групп.
-  override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-    super.onActivityResult(requestCode, resultCode, data)
-    if (requestCode == REQUEST_CODE_CREATE_SUBGROUP && resultCode == Activity.RESULT_OK) {
-      // TODO разобраться с флагом, т.к. он больше не используется.
-      subgroupCreatingFlag = true
-    }
-    if (requestCode == REQUEST_EDIT_SUBGROUP) {
-      groupsViewModel!!.loadGroupItems()
-    }
-  }
-
   override fun onSubgroupClick(view: View?, subgroup: Subgroup?) {
     val navDirections: NavDirections = GroupsFragmentDirections.actionGroupsDestToSubgroupDest(
       subgroup!!
@@ -173,10 +159,5 @@ class GroupsFragment : FlowFragmentChildFragment(), OnSubgroupClickListener,
       LOG_TAG, "Subgroup (id:" + subgroup!!.id + ") update query: new isStudied = "
         + subgroup.studied
     )
-  }
-
-  companion object {
-    private const val REQUEST_CODE_CREATE_SUBGROUP = 1
-    private const val REQUEST_EDIT_SUBGROUP = 2
   }
 }
