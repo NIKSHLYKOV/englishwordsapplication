@@ -55,7 +55,6 @@ class WordViewModel(
   }
 
   fun updateWordInDB() {
-    // TODO проверить работу, т.к. нужны свои слова для этого
     GlobalScope.launch {
       val word = wordMutableLiveData.value
       if (word != null) {
@@ -76,8 +75,6 @@ class WordViewModel(
           // TODO сделать потом что-нибудь получше. подумать, как убрать модель слова из фрагмента.
           wordMutableLiveData.value?.id?.let { loadWord(it) }
         }
-        // TODO решить, что делать с LiveData слова после сброса прогресса.
-        //  До этого обновляли прям тут прогресс.
       }
     }
   }
