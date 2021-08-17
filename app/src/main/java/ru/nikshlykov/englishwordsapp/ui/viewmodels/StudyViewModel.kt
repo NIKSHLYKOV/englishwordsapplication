@@ -3,6 +3,8 @@ package ru.nikshlykov.englishwordsapp.ui.viewmodels
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.preference.PreferenceManager
 import kotlinx.coroutines.Dispatchers
@@ -25,6 +27,10 @@ class StudyViewModel(
   private val getAvailableToRepeatWordInteractor: GetAvailableToRepeatWordInteractor,
   private val studyWordsInteractor: StudyWordsInteractor
 ) : AndroidViewModel(application) {
+
+  private val _modesSelected: MutableLiveData<Boolean> = MutableLiveData(false)
+  val modesSelected: LiveData<Boolean> = _modesSelected
+
   // TODO подумать над тем, чтобы логику работы с количеством начатых за слов день перенести
   //  на слой interactor'ов.
   private var withNew = true
@@ -80,7 +86,7 @@ class StudyViewModel(
         // Запрашиваем следующее для повтора слово.
         getNextAvailableToRepeatWord(listener)
       } else {
-        // TODO сделать LiveData, чтобы можно было выводить сообщение об ошибке/невыбранных режимах.
+        _modesSelected.value = true
       }
     }
   }
