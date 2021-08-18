@@ -17,7 +17,7 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import ru.nikshlykov.englishwordsapp.App
 import ru.nikshlykov.englishwordsapp.R
-import ru.nikshlykov.englishwordsapp.db.models.Word
+import ru.nikshlykov.data.database.models.Word
 
 class WriteWordByVoiceModeFragment : BaseModeFragment() {
 

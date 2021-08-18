@@ -1,6 +1,6 @@
 package ru.nikshlykov.englishwordsapp.domain.repositories
 
-import ru.nikshlykov.englishwordsapp.db.models.Repeat
+import ru.nikshlykov.data.database.models.Repeat
 
 interface RepeatsRepository {
 

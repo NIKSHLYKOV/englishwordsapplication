@@ -13,7 +13,7 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import ru.nikshlykov.englishwordsapp.R
-import ru.nikshlykov.englishwordsapp.db.models.Subgroup
+import ru.nikshlykov.data.database.models.Subgroup
 import ru.nikshlykov.englishwordsapp.ui.adapters.SubgroupsRecyclerViewAdapter.SubgroupViewHolder
 import ru.nikshlykov.englishwordsapp.utils.SubgroupImages
 import java.util.*

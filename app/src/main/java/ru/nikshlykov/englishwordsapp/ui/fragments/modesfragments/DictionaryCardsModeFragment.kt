@@ -9,7 +9,7 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import ru.nikshlykov.englishwordsapp.R
-import ru.nikshlykov.englishwordsapp.db.models.Word
+import ru.nikshlykov.data.database.models.Word
 
 class DictionaryCardsModeFragment : BaseModeFragment() {
 

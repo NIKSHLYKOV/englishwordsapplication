@@ -1,27 +1,20 @@
 package ru.nikshlykov.englishwordsapp.di
 
 import android.content.Context
-import androidx.room.Room
 import dagger.Module
 import dagger.Provides
-import ru.nikshlykov.englishwordsapp.db.AppDatabase
-import ru.nikshlykov.englishwordsapp.db.daos.GroupDao
-import ru.nikshlykov.englishwordsapp.db.daos.LinkDao
-import ru.nikshlykov.englishwordsapp.db.daos.ModeDao
-import ru.nikshlykov.englishwordsapp.db.daos.RepeatDao
-import ru.nikshlykov.englishwordsapp.db.daos.SubgroupDao
-import ru.nikshlykov.englishwordsapp.db.daos.WordDao
+import ru.nikshlykov.data.database.AppDatabase
+import ru.nikshlykov.data.database.daos.*
+import ru.nikshlykov.data.database.getAppDatabase
 import javax.inject.Singleton
 
 @Module
 class DatabaseModule {
+
   @Provides
   @Singleton
   fun provideAppDatabase(context: Context): AppDatabase {
-    return Room
-      .databaseBuilder(context, AppDatabase::class.java, DATABASE_NAME)
-      .createFromAsset(DATABASE_DIR)
-      .build()
+    return getAppDatabase(context)
   }
 
   @Provides
@@ -58,10 +51,5 @@ class DatabaseModule {
   @Singleton
   fun provideRepeatDao(appDatabase: AppDatabase): RepeatDao {
     return appDatabase.repeatDao()
-  }
-
-  companion object {
-    private const val DATABASE_NAME = "words.db"
-    private const val DATABASE_DIR = "words.db"
   }
 }

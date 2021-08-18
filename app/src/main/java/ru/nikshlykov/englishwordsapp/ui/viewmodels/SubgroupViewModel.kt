@@ -6,8 +6,8 @@ import androidx.lifecycle.*
 import androidx.lifecycle.Observer
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import ru.nikshlykov.englishwordsapp.db.models.Subgroup
-import ru.nikshlykov.englishwordsapp.db.models.Word
+import ru.nikshlykov.data.database.models.Subgroup
+import ru.nikshlykov.data.database.models.Word
 import ru.nikshlykov.englishwordsapp.domain.interactors.*
 import ru.nikshlykov.englishwordsapp.ui.fragments.SortWordsDialogFragment
 import java.util.*

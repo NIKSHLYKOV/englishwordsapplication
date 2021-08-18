@@ -11,7 +11,7 @@ import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.gridlayout.widget.GridLayout
 import ru.nikshlykov.englishwordsapp.R
-import ru.nikshlykov.englishwordsapp.db.models.Word
+import ru.nikshlykov.data.database.models.Word
 import java.util.*
 
 class CollectWordByLettersModeFragment : BaseModeFragment() {

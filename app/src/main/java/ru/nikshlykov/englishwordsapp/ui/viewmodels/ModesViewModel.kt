@@ -6,7 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
-import ru.nikshlykov.englishwordsapp.db.models.Mode
+import ru.nikshlykov.data.database.models.Mode
 import ru.nikshlykov.englishwordsapp.domain.interactors.GetAllModesInteractor
 import ru.nikshlykov.englishwordsapp.domain.interactors.UpdateModesInteractor
 

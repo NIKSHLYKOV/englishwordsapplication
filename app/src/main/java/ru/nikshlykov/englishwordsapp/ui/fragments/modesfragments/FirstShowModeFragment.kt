@@ -10,7 +10,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import ru.nikshlykov.englishwordsapp.R
-import ru.nikshlykov.englishwordsapp.db.models.Word
+import ru.nikshlykov.data.database.models.Word
 
 class FirstShowModeFragment : Fragment() {
   // View для отображения параметров слова.

@@ -8,8 +8,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import ru.nikshlykov.englishwordsapp.db.models.Subgroup
-import ru.nikshlykov.englishwordsapp.db.models.Word
+import ru.nikshlykov.data.database.models.Subgroup
+import ru.nikshlykov.data.database.models.Word
 import ru.nikshlykov.englishwordsapp.domain.interactors.GetAvailableSubgroupsInteractor
 import ru.nikshlykov.englishwordsapp.domain.interactors.GetWordInteractor
 import ru.nikshlykov.englishwordsapp.domain.interactors.ResetWordProgressInteractor

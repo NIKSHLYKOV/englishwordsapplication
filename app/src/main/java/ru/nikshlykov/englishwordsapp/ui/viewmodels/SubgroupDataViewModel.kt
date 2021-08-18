@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
-import ru.nikshlykov.englishwordsapp.db.models.Subgroup
+import ru.nikshlykov.data.database.models.Subgroup
 import ru.nikshlykov.englishwordsapp.domain.interactors.AddSubgroupInteractor
 import ru.nikshlykov.englishwordsapp.domain.interactors.GetSubgroupInteractor
 import ru.nikshlykov.englishwordsapp.domain.interactors.UpdateSubgroupInteractor

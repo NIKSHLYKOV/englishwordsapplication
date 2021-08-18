@@ -22,7 +22,7 @@
         tools:layout="@layout/fragment_collect_word_by_letters_mode">
         <argument
             android:name="word"
-            app:argType="ru.nikshlykov.englishwordsapp.db.models.Word" />
+            app:argType="ru.nikshlykov.data.database.models.Word" />
     </fragment>
     <fragment
         android:id="@+id/dictionary_cards_mode_dest"
@@ -31,7 +31,7 @@
         tools:layout="@layout/fragment_dictionary_cards_eng_to_rus">
         <argument
             android:name="word"
-            app:argType="ru.nikshlykov.englishwordsapp.db.models.Word" />
+            app:argType="ru.nikshlykov.data.database.models.Word" />
     </fragment>
     <fragment
         android:id="@+id/first_show_mode_dest"
@@ -40,7 +40,7 @@
         tools:layout="@layout/fragment_first_show_mode">
         <argument
             android:name="word"
-            app:argType="ru.nikshlykov.englishwordsapp.db.models.Word" />
+            app:argType="ru.nikshlykov.data.database.models.Word" />
     </fragment>
     <fragment
         android:id="@+id/write_word_by_voice_mode_dest"
@@ -49,7 +49,7 @@
         tools:layout="@layout/fragment_write_word_by_voice_mode">
         <argument
             android:name="word"
-            app:argType="ru.nikshlykov.englishwordsapp.db.models.Word" />
+            app:argType="ru.nikshlykov.data.database.models.Word" />
     </fragment>
     <fragment
         android:id="@+id/write_word_by_value_mode_dest"
@@ -58,7 +58,7 @@
         tools:layout="@layout/fragment_write_word_by_value_mode">
         <argument
             android:name="word"
-            app:argType="ru.nikshlykov.englishwordsapp.db.models.Word" />
+            app:argType="ru.nikshlykov.data.database.models.Word" />
     </fragment>
     <action android:id="@+id/action_global_info_dest" app:destination="@id/info_dest" />
     <action android:id="@+id/action_global_collect_word_by_letters_mode_dest" app:destination="@id/collect_word_by_letters_mode_dest" />

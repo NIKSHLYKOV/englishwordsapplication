@@ -1,6 +1,6 @@
 package ru.nikshlykov.englishwordsapp.domain.repositories
 
-import ru.nikshlykov.englishwordsapp.db.models.Subgroup
+import ru.nikshlykov.data.database.models.Subgroup
 
 interface SubgroupsRepository {
 
