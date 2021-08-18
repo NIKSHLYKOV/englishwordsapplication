@@ -1,6 +1,6 @@
 package ru.nikshlykov.englishwordsapp.domain.interactors
 
-import ru.nikshlykov.englishwordsapp.db.models.Mode
+import ru.nikshlykov.data.database.models.Mode
 import ru.nikshlykov.englishwordsapp.domain.repositories.ModesRepository
 
 class UpdateModesInteractor(private val modesRepository: ModesRepository) {

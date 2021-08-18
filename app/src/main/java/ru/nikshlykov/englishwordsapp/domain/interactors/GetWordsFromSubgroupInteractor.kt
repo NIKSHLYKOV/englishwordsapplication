@@ -1,7 +1,7 @@
 package ru.nikshlykov.englishwordsapp.domain.interactors
 
 import androidx.lifecycle.LiveData
-import ru.nikshlykov.englishwordsapp.db.models.Word
+import ru.nikshlykov.data.database.models.Word
 import ru.nikshlykov.englishwordsapp.domain.repositories.WordsRepository
 
 

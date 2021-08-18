@@ -34,7 +34,7 @@
         tools:layout="@layout/fragment_subgroup">
         <argument
             android:name="subgroup"
-            app:argType="ru.nikshlykov.englishwordsapp.db.models.Subgroup" />
+            app:argType="ru.nikshlykov.data.database.models.Subgroup" />
         <action
             android:id="@+id/action_subgroup_dest_to_word_dest"
             app:destination="@id/word_dest" />
@@ -52,7 +52,7 @@
         tools:layout="@layout/fragment_word">
         <argument
             android:name="word"
-            app:argType="ru.nikshlykov.englishwordsapp.db.models.Word" />
+            app:argType="ru.nikshlykov.data.database.models.Word" />
     </fragment>
     <fragment
         android:id="@+id/add_word_dest"

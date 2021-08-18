@@ -1,7 +1,7 @@
 package ru.nikshlykov.englishwordsapp.db.repositories
 
-import ru.nikshlykov.englishwordsapp.db.models.Link
-import ru.nikshlykov.englishwordsapp.db.daos.LinkDao
+import ru.nikshlykov.data.database.daos.LinkDao
+import ru.nikshlykov.data.database.models.Link
 import ru.nikshlykov.englishwordsapp.domain.repositories.LinksRepository
 import javax.inject.Inject
 

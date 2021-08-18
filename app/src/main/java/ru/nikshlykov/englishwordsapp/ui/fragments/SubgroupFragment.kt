@@ -25,7 +25,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import dagger.android.support.DaggerAppCompatActivity
 import ru.nikshlykov.englishwordsapp.R
-import ru.nikshlykov.englishwordsapp.db.models.Subgroup
+import ru.nikshlykov.data.database.models.Subgroup
 import ru.nikshlykov.englishwordsapp.ui.adapters.WordsRecyclerViewAdapter
 import ru.nikshlykov.englishwordsapp.ui.adapters.WordsRecyclerViewAdapter.OnEntryClickListener
 import ru.nikshlykov.englishwordsapp.ui.fragments.DeleteSubgroupDialogFragment.DeleteSubgroupListener

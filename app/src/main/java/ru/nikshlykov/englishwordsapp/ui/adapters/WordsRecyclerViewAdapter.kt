@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import ru.nikshlykov.englishwordsapp.App
 import ru.nikshlykov.englishwordsapp.R
-import ru.nikshlykov.englishwordsapp.db.models.Word
+import ru.nikshlykov.data.database.models.Word
 import ru.nikshlykov.englishwordsapp.ui.adapters.WordsRecyclerViewAdapter.WordsViewHolder
 import java.util.*
 

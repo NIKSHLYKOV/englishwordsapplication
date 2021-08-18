@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import ru.nikshlykov.englishwordsapp.R
-import ru.nikshlykov.englishwordsapp.db.models.Subgroup
+import ru.nikshlykov.data.database.models.Subgroup
 import ru.nikshlykov.englishwordsapp.ui.adapters.GroupItemsRecyclerViewAdapter
 import ru.nikshlykov.englishwordsapp.ui.adapters.SubgroupsRecyclerViewAdapter.OnSubgroupCheckedListener
 import ru.nikshlykov.englishwordsapp.ui.adapters.SubgroupsRecyclerViewAdapter.OnSubgroupClickListener
