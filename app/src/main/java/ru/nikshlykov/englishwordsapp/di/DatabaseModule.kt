@@ -3,53 +3,51 @@ package ru.nikshlykov.englishwordsapp.di
 import android.content.Context
 import dagger.Module
 import dagger.Provides
-import ru.nikshlykov.data.database.AppDatabase
+import ru.nikshlykov.data.database.DaoProvider
 import ru.nikshlykov.data.database.daos.*
-import ru.nikshlykov.data.database.getAppDatabase
 import javax.inject.Singleton
 
 @Module
 class DatabaseModule {
-
   @Provides
   @Singleton
-  fun provideAppDatabase(context: Context): AppDatabase {
-    return getAppDatabase(context)
+  fun provideDaoProvider(context: Context): DaoProvider {
+    return DaoProvider(context)
   }
 
   @Provides
   @Singleton
-  fun provideSubgroupDao(appDatabase: AppDatabase): SubgroupDao {
-    return appDatabase.subgroupDao()
+  fun provideSubgroupDao(daoProvider: DaoProvider): SubgroupDao {
+    return daoProvider.getSubgroupDao()
   }
 
   @Provides
   @Singleton
-  fun provideGroupDao(appDatabase: AppDatabase): GroupDao {
-    return appDatabase.groupDao()
+  fun provideGroupDao(daoProvider: DaoProvider): GroupDao {
+    return daoProvider.getGroupDao()
   }
 
   @Provides
   @Singleton
-  fun provideModeDao(appDatabase: AppDatabase): ModeDao {
-    return appDatabase.modeDao()
+  fun provideModeDao(daoProvider: DaoProvider): ModeDao {
+    return daoProvider.getModeDao()
   }
 
   @Provides
   @Singleton
-  fun provideLinkDao(appDatabase: AppDatabase): LinkDao {
-    return appDatabase.linkDao()
+  fun provideLinkDao(daoProvider: DaoProvider): LinkDao {
+    return daoProvider.getLinkDao()
   }
 
   @Provides
   @Singleton
-  fun provideWordDao(appDatabase: AppDatabase): WordDao {
-    return appDatabase.wordDao()
+  fun provideWordDao(daoProvider: DaoProvider): WordDao {
+    return daoProvider.getWordDao()
   }
 
   @Provides
   @Singleton
-  fun provideRepeatDao(appDatabase: AppDatabase): RepeatDao {
-    return appDatabase.repeatDao()
+  fun provideRepeatDao(daoProvider: DaoProvider): RepeatDao {
+    return daoProvider.getRepeatDao()
   }
 }
