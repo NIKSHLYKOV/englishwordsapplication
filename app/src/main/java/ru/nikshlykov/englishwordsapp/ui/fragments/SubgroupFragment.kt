@@ -74,6 +74,8 @@ class SubgroupFragment : FlowFragmentChildFragment(), SortWordsListener, ResetPr
 
     // Получаем id подгруппы из Intent.
     bundleArguments
+
+    subgroupViewModel!!.setNewIsStudied(subgroupIsStudied)
     sortParam = getSortParam()
   }
 

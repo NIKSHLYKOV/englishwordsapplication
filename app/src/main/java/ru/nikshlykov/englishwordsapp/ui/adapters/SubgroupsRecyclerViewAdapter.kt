@@ -50,7 +50,9 @@ class SubgroupsRecyclerViewAdapter(
         .error(R.drawable.shape_load_picture)
         .into(holder.subgroupImageView)
     }
-    holder.learnSubgroupToggleButton.isChecked = currentSubgroup.studied == 1
+    if (currentSubgroup.studied == 1) {
+      holder.setSubgroupStudied(true)
+    }
   }
 
   override fun getItemCount(): Int {
@@ -62,8 +64,13 @@ class SubgroupsRecyclerViewAdapter(
       itemView.findViewById(R.id.subgroup_item___image_view___subgroup_image)
     val subgroupTextView: TextView =
       itemView.findViewById(R.id.subgroup_item___text_view___subgroup_name)
-    val learnSubgroupToggleButton: ToggleButton =
+    private val learnSubgroupToggleButton: ToggleButton =
       itemView.findViewById(R.id.subgroup_item___toggle_button___to_learn)
+
+    // флаг, который нужен, чтобы каждый раз не обновлять БД при выставлении isChecked в кнопке изучения.
+    // TODO так решалась проблема с тем, что мы не успевали, видимо, обновить из SubgroupViewModel.
+    //  Поэтому флаг оставался прежним (обновление предыдущего значения тут проходило быстрее)
+    private var subgroupStudiedByAdapter = false
 
     init {
       val forLearnSubgroupButtonRelativeLayout =
@@ -82,14 +89,23 @@ class SubgroupsRecyclerViewAdapter(
         learnSubgroupToggleButton.isChecked = !isChecked
       }
       learnSubgroupToggleButton.setOnCheckedChangeListener { buttonView, isChecked ->
-        if (onSubgroupCheckedListener != null) {
-          val subgroup = getSubgroupAt(layoutPosition)
-          if (subgroup != null) {
-            subgroup.studied = if (isChecked) 1 else 0
-            onSubgroupCheckedListener.onSubgroupChecked(buttonView, subgroup)
+        if (subgroupStudiedByAdapter) {
+          subgroupStudiedByAdapter = false
+        } else {
+          if (onSubgroupCheckedListener != null) {
+            val subgroup = getSubgroupAt(layoutPosition)
+            if (subgroup != null) {
+              subgroup.studied = if (isChecked) 1 else 0
+              onSubgroupCheckedListener.onSubgroupChecked(buttonView, subgroup)
+            }
           }
         }
       }
+    }
+
+    fun setSubgroupStudied(flag: Boolean) {
+      subgroupStudiedByAdapter = true
+      learnSubgroupToggleButton.isChecked = flag
     }
   }
 
