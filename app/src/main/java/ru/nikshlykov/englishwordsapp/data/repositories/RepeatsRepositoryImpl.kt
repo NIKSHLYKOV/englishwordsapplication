@@ -1,4 +1,4 @@
-package ru.nikshlykov.englishwordsapp.db.repositories
+package ru.nikshlykov.englishwordsapp.data.repositories
 
 
 import ru.nikshlykov.data.database.daos.RepeatDao
