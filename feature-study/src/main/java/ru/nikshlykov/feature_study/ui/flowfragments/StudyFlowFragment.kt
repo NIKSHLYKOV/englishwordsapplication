@@ -1,27 +1,35 @@
-package ru.nikshlykov.englishwordsapp.ui.flowfragments
+package ru.nikshlykov.feature_study.ui.flowfragments
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import dagger.android.support.DaggerFragment
-import ru.nikshlykov.englishwordsapp.NavigationStudyDirections
-import ru.nikshlykov.englishwordsapp.R
 import ru.nikshlykov.data.database.models.Word
-import ru.nikshlykov.englishwordsapp.domain.interactors.GetAvailableToRepeatWordInteractor.OnAvailableToRepeatWordLoadedListener
-import ru.nikshlykov.englishwordsapp.ui.RepeatResultListener
-import ru.nikshlykov.englishwordsapp.ui.fragments.InfoFragment
-import ru.nikshlykov.englishwordsapp.ui.fragments.modesfragments.FirstShowModeFragment.FirstShowModeReportListener
-import ru.nikshlykov.englishwordsapp.ui.viewmodels.StudyViewModel
-import ru.nikshlykov.englishwordsapp.utils.ModesNavigation
+import ru.nikshlykov.feature_study.NavigationStudyDirections
+import ru.nikshlykov.feature_study.R
+import ru.nikshlykov.feature_study.domain.interactors.GetAvailableToRepeatWordInteractor
+import ru.nikshlykov.feature_study.ui.fragments.InfoFragment
+import ru.nikshlykov.feature_study.ui.fragments.modesfragments.FirstShowModeFragment.FirstShowModeReportListener
+import ru.nikshlykov.feature_study.ui.fragments.modesfragments.RepeatResultListener
+import ru.nikshlykov.feature_study.ui.viewmodels.StudyFeatureComponentViewModel
+import ru.nikshlykov.feature_study.ui.viewmodels.StudyViewModel
+import ru.nikshlykov.feature_study.utils.ModesNavigation
 import javax.inject.Inject
 
-class StudyFlowFragment : DaggerFragment(), BackPressedFlowFragmentListener,
-  OnAvailableToRepeatWordLoadedListener, RepeatResultListener, FirstShowModeReportListener {
+class StudyFlowFragment : Fragment(),
+  GetAvailableToRepeatWordInteractor.OnAvailableToRepeatWordLoadedListener, RepeatResultListener,
+  FirstShowModeReportListener {
+
+  private val studyFeatureComponentViewModel: StudyFeatureComponentViewModel by viewModels()
+  // Убрал BackPressed, т.к. он всё равно не тот бы был, что в app модуле.
+
   // TODO при изначальной установке не показывается никакое сообщение (вроде).
   //  О режимах предупреждения точно нет.
   // ViewModel для работы с БД.
@@ -30,6 +38,12 @@ class StudyFlowFragment : DaggerFragment(), BackPressedFlowFragmentListener,
   var viewModelFactory: ViewModelProvider.Factory? = null
   private var studyViewModel: StudyViewModel? = null
   private var navController: NavController? = null
+
+  override fun onAttach(context: Context) {
+    studyFeatureComponentViewModel.modesFeatureComponent.inject(this)
+    super.onAttach(context)
+  }
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     // Создаём ViewModel для работы с БД.
@@ -125,13 +139,5 @@ class StudyFlowFragment : DaggerFragment(), BackPressedFlowFragmentListener,
     // Тег для логирования.
     private val LOG_TAG = StudyFlowFragment::class.java.canonicalName
     const val EXTRA_WORD_OBJECT = "WordObject"
-  }
-
-  override fun backPressedIsAvailable(): Boolean {
-    return false
-  }
-
-  override fun onBackPressed() {
-    TODO("Not yet implemented")
   }
 }

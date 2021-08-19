@@ -1,4 +1,4 @@
-package ru.nikshlykov.englishwordsapp.ui.fragments.modesfragments
+package ru.nikshlykov.feature_study.ui.fragments.modesfragments
 
 import android.content.Context
 import android.os.Bundle
@@ -9,10 +9,10 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import ru.nikshlykov.englishwordsapp.R
 import ru.nikshlykov.data.database.models.Word
+import ru.nikshlykov.feature_study.R
 
-class FirstShowModeFragment : Fragment() {
+internal class FirstShowModeFragment : Fragment() {
   // View для отображения параметров слова.
   private var wordTextView: TextView? = null
   private var transcriptionTextView: TextView? = null

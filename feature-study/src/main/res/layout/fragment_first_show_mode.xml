@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/fragment_first_show_mode___layout___main_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/fragment_first_show_mode___text_view___word"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="150dp"
+            android:gravity="center"
+            android:text="@string/word"
+            android:textColor="@android:color/black"
+            android:textSize="30sp" />
+
+        <TextView
+            android:id="@+id/fragment_first_show_mode___text_view___transcription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/transcription"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/fragment_first_show_mode___text_view___value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:text="@string/value"
+            android:textColor="@android:color/black"
+            android:textSize="30sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:paddingBottom="10dp">
+
+        <Button
+            android:id="@+id/fragment_first_show_mode___button___know"
+            style="@style/MaterialButtonWithoutAllCaps"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:layout_weight="1"
+            android:text="@string/know"
+            android:textSize="12sp"/>
+
+        <Button
+            android:id="@+id/fragment_first_show_mode___button___learn"
+            style="@style/MaterialButtonWithoutAllCaps"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:layout_weight="1"
+            android:text="@string/to_learn"
+            android:textSize="12sp"/>
+
+        <Button
+            android:id="@+id/fragment_first_show_mode___button___skip"
+            style="@style/MaterialButtonWithoutAllCaps"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:layout_weight="1"
+            android:text="@string/to_skip"
+            android:textSize="12sp"/>
+
+    </LinearLayout>
+
+
+</RelativeLayout>

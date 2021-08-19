@@ -17,7 +17,7 @@
         tools:layout="@layout/flow_fragment_profile"/>
     <fragment
         android:id="@+id/study_flow_dest"
-        android:name="ru.nikshlykov.englishwordsapp.ui.flowfragments.StudyFlowFragment"
+        android:name="ru.nikshlykov.feature_study.ui.flowfragments.StudyFlowFragment"
         android:label="StudyFlowFragment"
         tools:layout="@layout/flow_fragment_study"/>
 </navigation>

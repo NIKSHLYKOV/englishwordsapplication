@@ -11,17 +11,19 @@ import androidx.work.Configuration
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
-import dagger.android.AndroidInjector
 import dagger.android.DaggerApplication
 import ru.nikshlykov.englishwordsapp.di.AppComponent
 import ru.nikshlykov.englishwordsapp.di.DaggerAppComponent
 import ru.nikshlykov.englishwordsapp.notifications.NotificationWorker
 import ru.nikshlykov.feature_modes.di.ModesFeatureDeps
 import ru.nikshlykov.feature_modes.di.ModesFeatureDepsProvider
+import ru.nikshlykov.feature_study.di.StudyFeatureDeps
+import ru.nikshlykov.feature_study.di.StudyFeatureDepsProvider
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class App : DaggerApplication(), Configuration.Provider, ModesFeatureDepsProvider {
+class App : DaggerApplication(), Configuration.Provider, ModesFeatureDepsProvider,
+  StudyFeatureDepsProvider {
   var textToSpeech: TextToSpeech? = null
     private set
   private val TTS_ERROR = "Ошибка синтезирования речи!"
@@ -125,5 +127,8 @@ class App : DaggerApplication(), Configuration.Provider, ModesFeatureDepsProvide
   }
 
   override val modesFeatureDeps: ModesFeatureDeps
+    get() = appComponent!!
+
+  override val studyFeatureDeps: StudyFeatureDeps
     get() = appComponent!!
 }

@@ -1,4 +1,4 @@
-package ru.nikshlykov.englishwordsapp.ui.fragments.modesfragments
+package ru.nikshlykov.feature_study.ui.fragments.modesfragments
 
 import android.os.Bundle
 import android.util.Log
@@ -8,10 +8,10 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
-import ru.nikshlykov.englishwordsapp.R
 import ru.nikshlykov.data.database.models.Word
+import ru.nikshlykov.feature_study.R
 
-class DictionaryCardsModeFragment : BaseModeFragment() {
+internal class DictionaryCardsModeFragment : BaseModeFragment() {
 
   // Флаг, получаемый из Activity.
   private var flag = 0
