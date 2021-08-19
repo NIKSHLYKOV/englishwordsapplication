@@ -6,7 +6,7 @@ import dagger.Module
 import ru.nikshlykov.feature_modes.ui.viewmodels.ViewModelFactory
 
 @Module
-abstract class ViewModelModule {
+internal abstract class ViewModelModule {
   @Binds
   @ModesFeatureScope
   abstract fun provideViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
