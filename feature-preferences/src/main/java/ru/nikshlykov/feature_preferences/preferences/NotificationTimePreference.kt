@@ -1,12 +1,12 @@
-package ru.nikshlykov.englishwordsapp.preferences
+package ru.nikshlykov.feature_preferences.preferences
 
 import android.content.Context
 import android.content.res.TypedArray
 import android.util.AttributeSet
 import androidx.preference.DialogPreference
-import ru.nikshlykov.englishwordsapp.R
+import ru.nikshlykov.feature_preferences.R
 
-class NotificationTimePreference @JvmOverloads constructor(
+internal class NotificationTimePreference @JvmOverloads constructor(
   context: Context?, attrs: AttributeSet? = null,
   defStyleAttr: Int = 0, defStyleRes: Int = defStyleAttr
 ) : DialogPreference(context, attrs, defStyleAttr, defStyleRes) {

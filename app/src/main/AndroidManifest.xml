@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <receiver android:name=".notifications.AlarmReceiver" />
+        <receiver android:name="ru.nikshlykov.feature_preferences.notifications.AlarmReceiver" />
 
         <provider
             android:name="androidx.work.impl.WorkManagerInitializer"

@@ -1,13 +1,13 @@
-package ru.nikshlykov.englishwordsapp.ui.fragments
+package ru.nikshlykov.feature_preferences.ui
 
 import android.os.Bundle
 import android.view.View
 import android.widget.TimePicker
 import androidx.preference.PreferenceDialogFragmentCompat
-import ru.nikshlykov.englishwordsapp.R
-import ru.nikshlykov.englishwordsapp.preferences.NotificationTimePreference
+import ru.nikshlykov.feature_preferences.R
+import ru.nikshlykov.feature_preferences.preferences.NotificationTimePreference
 
-class NotificationTimePreferenceDialogFragmentCompat : PreferenceDialogFragmentCompat() {
+internal class NotificationTimePreferenceDialogFragmentCompat : PreferenceDialogFragmentCompat() {
   private var notificationTimePicker: TimePicker? = null
   override fun onBindDialogView(view: View) {
     super.onBindDialogView(view)
@@ -57,7 +57,7 @@ class NotificationTimePreferenceDialogFragmentCompat : PreferenceDialogFragmentC
   }
 
   companion object {
-    @JvmStatic
+
     fun newInstance(
       key: String?
     ): NotificationTimePreferenceDialogFragmentCompat {

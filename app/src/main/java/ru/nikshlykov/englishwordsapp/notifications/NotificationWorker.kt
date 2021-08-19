@@ -19,6 +19,7 @@ class NotificationWorker(
   context: Context,
   params: WorkerParameters
 ) : Worker(context, params) {
+  // TODO разобраться с этим кодом.
   override fun doWork(): Result {
     Log.i("Notification11", "doWork()")
     val context = applicationContext

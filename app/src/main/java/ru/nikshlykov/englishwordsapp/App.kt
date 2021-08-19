@@ -1,5 +1,6 @@
 package ru.nikshlykov.englishwordsapp
 
+import android.app.Activity
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.os.Build
@@ -15,15 +16,19 @@ import dagger.android.DaggerApplication
 import ru.nikshlykov.englishwordsapp.di.AppComponent
 import ru.nikshlykov.englishwordsapp.di.DaggerAppComponent
 import ru.nikshlykov.englishwordsapp.notifications.NotificationWorker
+import ru.nikshlykov.englishwordsapp.ui.MainActivity
 import ru.nikshlykov.feature_modes.di.ModesFeatureDeps
 import ru.nikshlykov.feature_modes.di.ModesFeatureDepsProvider
+import ru.nikshlykov.feature_preferences.di.SettingsFeatureDeps
+import ru.nikshlykov.feature_preferences.di.SettingsFeatureDepsProvider
+import ru.nikshlykov.feature_preferences.notifications.ActivityClassProvider
 import ru.nikshlykov.feature_study.di.StudyFeatureDeps
 import ru.nikshlykov.feature_study.di.StudyFeatureDepsProvider
 import java.util.*
 import java.util.concurrent.TimeUnit
 
 class App : DaggerApplication(), Configuration.Provider, ModesFeatureDepsProvider,
-  StudyFeatureDepsProvider {
+  StudyFeatureDepsProvider, SettingsFeatureDepsProvider, ActivityClassProvider {
   var textToSpeech: TextToSpeech? = null
     private set
   private val TTS_ERROR = "Ошибка синтезирования речи!"
@@ -131,4 +136,10 @@ class App : DaggerApplication(), Configuration.Provider, ModesFeatureDepsProvide
 
   override val studyFeatureDeps: StudyFeatureDeps
     get() = appComponent!!
+
+  override val settingsFeatureDeps: SettingsFeatureDeps
+    get() = appComponent!!
+
+  override val activityClass: Class<out Activity>
+    get() = MainActivity::class.java
 }
