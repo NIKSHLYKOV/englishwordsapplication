@@ -1,4 +1,4 @@
-package ru.nikshlykov.englishwordsapp.ui.fragments.modesfragments
+package ru.nikshlykov.feature_study.ui.fragments.modesfragments
 
 import android.os.Bundle
 import android.os.Handler
@@ -9,12 +9,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.gridlayout.widget.GridLayout
-import ru.nikshlykov.englishwordsapp.R
 import ru.nikshlykov.data.database.models.Word
+import ru.nikshlykov.feature_study.R
 import java.util.*
 
-class CollectWordByLettersModeFragment : BaseModeFragment() {
+internal class CollectWordByLettersModeFragment : BaseModeFragment() {
 
   // View.
   private var valueTextView: TextView? = null
@@ -139,10 +138,10 @@ class CollectWordByLettersModeFragment : BaseModeFragment() {
         if (userVariantOfWord == word.word) {
           result = 1
           resultImageView!!.setImageResource(R.drawable.ic_done_white_48dp)
-          mainLayout.setBackgroundResource(R.color.progress_4)
+          mainLayout.setBackgroundResource(R.color.true_repeat_background)
         } else {
           resultImageView!!.setImageResource(R.drawable.ic_clear_white_48dp)
-          mainLayout.setBackgroundResource(R.color.progress_1)
+          mainLayout.setBackgroundResource(R.color.not_true_repeat_background)
         }
         resultImageView!!.visibility = View.VISIBLE
 

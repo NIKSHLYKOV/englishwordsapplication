@@ -1,10 +1,9 @@
-package ru.nikshlykov.englishwordsapp.ui.fragments.modesfragments
+package ru.nikshlykov.feature_study.ui.fragments.modesfragments
 
 import android.content.Context
 import androidx.fragment.app.Fragment
-import ru.nikshlykov.englishwordsapp.ui.RepeatResultListener
 
-abstract class BaseModeFragment : Fragment() {
+internal abstract class BaseModeFragment : Fragment() {
   protected var repeatResultListener: RepeatResultListener? = null
 
   override fun onAttach(context: Context) {

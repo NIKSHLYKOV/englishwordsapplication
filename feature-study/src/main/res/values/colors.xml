@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- TODO вынести потом все ресурсы в отдельный модуль-->
+    <color name="colorPrimary">#2D9AF3</color>
+
+    <color name="true_repeat_background">#C0DF85</color>
+    <color name="not_true_repeat_background">#CC444B</color>
+</resources>

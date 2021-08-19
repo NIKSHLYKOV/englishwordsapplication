@@ -12,7 +12,7 @@ import ru.nikshlykov.englishwordsapp.App
 import ru.nikshlykov.englishwordsapp.R
 import ru.nikshlykov.englishwordsapp.ui.flowfragments.GroupsAndWordsFlowFragment
 import ru.nikshlykov.englishwordsapp.ui.flowfragments.ProfileFlowFragment
-import ru.nikshlykov.englishwordsapp.ui.flowfragments.StudyFlowFragment
+import ru.nikshlykov.feature_study.ui.flowfragments.StudyFlowFragment
 
 class MainActivity : DaggerAppCompatActivity() {
 
@@ -64,10 +64,11 @@ class MainActivity : DaggerAppCompatActivity() {
     } else if (primaryFragment is ProfileFlowFragment && primaryFragment.backPressedIsAvailable()) {
       Log.d(LOG_TAG, "ProfileFlowFragment onBackPressed()")
       primaryFragment.onBackPressed()
-    } else if (primaryFragment is StudyFlowFragment && primaryFragment.backPressedIsAvailable()) {
+    } // Закомментил, т.к. код туда не заходил, но придётся что-то делать, если будем делать дальнейшую навигацию из обучения в другие места.
+    /*else if (primaryFragment is StudyFlowFragment && primaryFragment.backPressedIsAvailable()) {
       Log.d(LOG_TAG, "ProfileFlowFragment onBackPressed()")
       primaryFragment.onBackPressed()
-    } else {
+    }*/ else {
       if (primaryFragment is StudyFlowFragment) {
         if (lastBackPressedTime + 2000 > System.currentTimeMillis()) {
           Log.d(LOG_TAG, "super.onBackPressed() if StudyFlowFragment")

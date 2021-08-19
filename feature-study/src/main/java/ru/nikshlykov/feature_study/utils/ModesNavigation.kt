@@ -1,10 +1,10 @@
-package ru.nikshlykov.englishwordsapp.utils
+package ru.nikshlykov.feature_study.utils
 
 import androidx.navigation.NavDirections
-import ru.nikshlykov.englishwordsapp.NavigationStudyDirections
 import ru.nikshlykov.data.database.models.Word
+import ru.nikshlykov.feature_study.NavigationStudyDirections
 
-object ModesNavigation {
+internal object ModesNavigation {
   fun getRandomModeNavDirections(modeId: Long, word: Word): NavDirections {
     return when (modeId.toInt()) {
       1, 2 -> NavigationStudyDirections.actionGlobalDictionaryCardsModeDest(word)

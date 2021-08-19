@@ -1,0 +1,6 @@
+<resources>
+
+    <style name="BorderlessButton" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:textAllCaps">false</item>
+    </style>
+</resources>

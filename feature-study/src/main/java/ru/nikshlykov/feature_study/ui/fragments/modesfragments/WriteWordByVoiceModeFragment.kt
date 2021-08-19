@@ -1,4 +1,4 @@
-package ru.nikshlykov.englishwordsapp.ui.fragments.modesfragments
+package ru.nikshlykov.feature_study.ui.fragments.modesfragments
 
 import android.content.Context
 import android.os.Bundle
@@ -15,14 +15,15 @@ import android.widget.RelativeLayout
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
-import ru.nikshlykov.englishwordsapp.App
-import ru.nikshlykov.englishwordsapp.R
 import ru.nikshlykov.data.database.models.Word
+import ru.nikshlykov.feature_study.R
+import javax.inject.Inject
 
-class WriteWordByVoiceModeFragment : BaseModeFragment() {
+internal class WriteWordByVoiceModeFragment : BaseModeFragment() {
 
   // Синтезатор речи.
-  private var textToSpeech: TextToSpeech? = null
+  @Inject
+  lateinit var textToSpeech: TextToSpeech
 
   // Views элементы.
   private var voiceImageButton: ImageButton? = null
@@ -37,7 +38,7 @@ class WriteWordByVoiceModeFragment : BaseModeFragment() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     word = WriteWordByVoiceModeFragmentArgs.fromBundle(requireArguments()).word
-    textToSpeech = (activity?.applicationContext as App).textToSpeech
+    //textToSpeech = (activity?.applicationContext as App).textToSpeech
     handler = object : Handler() {
       override fun handleMessage(msg: Message) {
         super.handleMessage(msg)
@@ -59,6 +60,7 @@ class WriteWordByVoiceModeFragment : BaseModeFragment() {
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
     voiceImageButton!!.setOnClickListener {
+      // TODO можно поменять на ?. и сделать вывод ошибки
       textToSpeech!!.speak(
         word!!.word,
         TextToSpeech.QUEUE_FLUSH,
@@ -99,10 +101,10 @@ class WriteWordByVoiceModeFragment : BaseModeFragment() {
       if (userVariantOfWord == word!!.word) {
         result = 1
         resultImageView!!.setImageResource(R.drawable.ic_done_white_48dp)
-        rootLayout.setBackgroundResource(R.color.progress_4)
+        rootLayout.setBackgroundResource(R.color.true_repeat_background)
       } else {
         resultImageView!!.setImageResource(R.drawable.ic_clear_white_48dp)
-        rootLayout.setBackgroundResource(R.color.progress_1)
+        rootLayout.setBackgroundResource(R.color.not_true_repeat_background)
       }
       resultImageView!!.visibility = View.VISIBLE
 

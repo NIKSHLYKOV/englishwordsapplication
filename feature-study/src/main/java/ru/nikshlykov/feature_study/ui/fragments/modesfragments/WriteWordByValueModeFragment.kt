@@ -1,4 +1,4 @@
-package ru.nikshlykov.englishwordsapp.ui.fragments.modesfragments
+package ru.nikshlykov.feature_study.ui.fragments.modesfragments
 
 import android.content.Context
 import android.os.Bundle
@@ -14,10 +14,10 @@ import android.widget.TextView
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
-import ru.nikshlykov.englishwordsapp.R
 import ru.nikshlykov.data.database.models.Word
+import ru.nikshlykov.feature_study.R
 
-class WriteWordByValueModeFragment : BaseModeFragment() {
+internal class WriteWordByValueModeFragment : BaseModeFragment() {
   // View элементы.
   private var valueTextView: TextView? = null
   private var userVariantTextInputEditText: TextInputEditText? = null
@@ -84,10 +84,10 @@ class WriteWordByValueModeFragment : BaseModeFragment() {
       if (userVariantOfWord == word!!.word) {
         result = 1
         resultImageView!!.setImageResource(R.drawable.ic_done_white_48dp)
-        rootLayout.setBackgroundResource(R.color.progress_4)
+        rootLayout.setBackgroundResource(R.color.true_repeat_background)
       } else {
         resultImageView!!.setImageResource(R.drawable.ic_clear_white_48dp)
-        rootLayout.setBackgroundResource(R.color.progress_1)
+        rootLayout.setBackgroundResource(R.color.not_true_repeat_background)
       }
       resultImageView!!.visibility = View.VISIBLE
 
