@@ -7,7 +7,7 @@ import ru.nikshlykov.feature_modes.ui.fragments.ModesFragment
   dependencies = [ModesFeatureDeps::class],
   modules = [ViewModelModule::class, RepositoryModule::class, InteractorModule::class]
 )]
-interface ModesFeatureComponent {
+internal interface ModesFeatureComponent {
 
   @Component.Builder
   interface Builder {

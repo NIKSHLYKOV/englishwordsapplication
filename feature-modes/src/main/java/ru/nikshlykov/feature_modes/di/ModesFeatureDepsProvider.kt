@@ -11,6 +11,6 @@ interface ModesFeatureDepsProvider {
 val Context.modesFeatureDepsProvider: ModesFeatureDepsProvider
   get() = when (this) {
     is ModesFeatureDepsProvider -> this
-    is Application -> error("Applicaiton must implement ModesFeatureDepsProvider")
+    is Application -> error("Application must implement ModesFeatureDepsProvider")
     else                        -> applicationContext.modesFeatureDepsProvider
   }

@@ -7,7 +7,7 @@ import ru.nikshlykov.feature_modes.domain.interactors.GetAllModesInteractor
 import ru.nikshlykov.feature_modes.domain.interactors.UpdateModesInteractor
 import javax.inject.Inject
 
-class ViewModelFactory @Inject constructor(
+internal class ViewModelFactory @Inject constructor(
   private val getAllModesInteractor: GetAllModesInteractor,
   private val updateModesInteractor: UpdateModesInteractor,
 ) : ViewModelProvider.Factory {
