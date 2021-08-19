@@ -1,5 +1,15 @@
 <resources>
 
+    <style name="MaterialButtonWithoutAllCaps" parent="Widget.MaterialComponents.Button">
+        <item name="textAllCaps">false</item>
+    </style>
+
+    <style name="MaterialButtonIconOnly" parent="Widget.MaterialComponents.Button">
+        <item name="android:inset">0dp</item>
+        <item name="iconPadding">0dp</item>
+        <item name="iconGravity">textStart</item>
+    </style>
+
     <style name="BorderlessButton" parent="Widget.AppCompat.Button.Borderless">
         <item name="android:textAllCaps">false</item>
     </style>

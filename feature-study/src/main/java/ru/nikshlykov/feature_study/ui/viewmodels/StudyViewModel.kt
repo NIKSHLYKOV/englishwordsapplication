@@ -27,7 +27,7 @@ internal class StudyViewModel(
   private val studyWordsInteractor: StudyWordsInteractor
 ) : AndroidViewModel(application) {
 
-  private val _modesSelected: MutableLiveData<Boolean> = MutableLiveData(false)
+  private val _modesSelected: MutableLiveData<Boolean> = MutableLiveData(true)
   val modesSelected: LiveData<Boolean> = _modesSelected
 
   // TODO подумать над тем, чтобы логику работы с количеством начатых за слов день перенести

@@ -32,17 +32,6 @@
         <item name="theme">@style/AppTheme</item>
     </style>
 
-    <style name="MaterialButtonWithoutAllCaps" parent="Widget.MaterialComponents.Button">
-        <item name="textAllCaps">false</item>
-    </style>
-
-    <style name="MaterialButtonIconOnly" parent="Widget.MaterialComponents.Button">
-        <item name="android:inset">0dp</item>
-        <item name="iconPadding">0dp</item>
-        <item name="iconGravity">textStart</item>
-    </style>
-    
-
     <style name="Toolbar">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">?attr/actionBarSize</item>
