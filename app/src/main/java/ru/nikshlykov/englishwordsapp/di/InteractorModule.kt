@@ -29,16 +29,6 @@ class InteractorModule {
   }
 
   @Provides
-  fun provideGetAllModesInteractor(modesRepository: ModesRepository): GetAllModesInteractor {
-    return GetAllModesInteractor(modesRepository)
-  }
-
-  @Provides
-  fun provideUpdateModesInteractor(modesRepository: ModesRepository): UpdateModesInteractor {
-    return UpdateModesInteractor(modesRepository)
-  }
-
-  @Provides
   fun provideGetSelectedModesInteractor(modesRepository: ModesRepository): GetSelectedModesInteractor {
     return GetSelectedModesInteractor(modesRepository)
   }

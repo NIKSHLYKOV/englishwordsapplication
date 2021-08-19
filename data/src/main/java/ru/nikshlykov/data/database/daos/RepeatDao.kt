@@ -15,7 +15,7 @@ interface RepeatDao {
   suspend fun getLastRepeatByWord(wordId: Long): Repeat
 
   @Query("SELECT * FROM Repeats ORDER BY _id DESC LIMIT 1")
-  fun repeatWithMaxId(): Repeat
+  fun repeatWithMaxId(): Repeat?
 
   @Query("SELECT * FROM Repeats")
   suspend fun getAllRepeats(): List<Repeat>

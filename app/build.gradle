@@ -28,6 +28,7 @@ android {
     }
     sourceSets {
         main {
+            // TODO добавить ресурсы из feature_modes
             res.srcDirs = ['src/main/res',
                            'src/main/res-main',
                            'src/main/res-screen/modes',
@@ -36,7 +37,7 @@ android {
                            'src/main/res-screen/groups',
                            'src/main/res-screen/word',
                            'src/main/res-screen/settings',
-                           'src/main/res-screen/statistics']
+                           'src/main/res-screen/statistics',]
         }
     }
 }
