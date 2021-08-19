@@ -1,3 +1,4 @@
+include ':feature-study'
 include ':feature-modes'
 include ':data'
 include ':app'
