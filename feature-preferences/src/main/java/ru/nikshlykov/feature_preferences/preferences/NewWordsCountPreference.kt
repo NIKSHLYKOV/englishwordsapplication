@@ -1,12 +1,12 @@
-package ru.nikshlykov.englishwordsapp.preferences
+package ru.nikshlykov.feature_preferences.preferences
 
 import android.content.Context
 import android.content.res.TypedArray
 import android.util.AttributeSet
 import androidx.preference.DialogPreference
-import ru.nikshlykov.englishwordsapp.R
+import ru.nikshlykov.feature_preferences.R
 
-class NewWordsCountPreference  /*private NumberPicker wordsCountNumberPicker;*/
+internal class NewWordsCountPreference  /*private NumberPicker wordsCountNumberPicker;*/
 @JvmOverloads constructor(
   context: Context?, attrs: AttributeSet? = null,
   defStyleAttr: Int = 0, defStyleRes: Int = defStyleAttr
@@ -17,6 +17,7 @@ class NewWordsCountPreference  /*private NumberPicker wordsCountNumberPicker;*/
       field = newWordsCount
       persistInt(newWordsCount)
     }
+
   /*public NewWordsNumberPickerPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
 
@@ -74,7 +75,8 @@ class NewWordsCountPreference  /*private NumberPicker wordsCountNumberPicker;*/
 
   override fun getDialogLayoutResource(): Int {
     return LAYOUT_RES_ID
-  } /*@Override
+  }
+  /*@Override
     protected View onCreateDialogView() {
         int max = 100;
         int min = 1;

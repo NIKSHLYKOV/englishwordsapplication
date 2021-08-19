@@ -1,13 +1,13 @@
-package ru.nikshlykov.englishwordsapp.ui.fragments
+package ru.nikshlykov.feature_preferences.ui
 
 import android.os.Bundle
 import android.view.View
 import android.widget.NumberPicker
 import androidx.preference.PreferenceDialogFragmentCompat
-import ru.nikshlykov.englishwordsapp.R
-import ru.nikshlykov.englishwordsapp.preferences.NewWordsCountPreference
+import ru.nikshlykov.feature_preferences.R
+import ru.nikshlykov.feature_preferences.preferences.NewWordsCountPreference
 
-class NewWordsCountPreferenceDialogFragmentCompat : PreferenceDialogFragmentCompat() {
+internal class NewWordsCountPreferenceDialogFragmentCompat : PreferenceDialogFragmentCompat() {
   private var newWordsCountNumberPicker: NumberPicker? = null
   override fun onBindDialogView(view: View) {
     super.onBindDialogView(view)

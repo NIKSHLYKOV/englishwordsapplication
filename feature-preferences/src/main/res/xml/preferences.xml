@@ -18,7 +18,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory app:title="Обучение">
-        <ru.nikshlykov.englishwordsapp.preferences.NewWordsCountPreference
+        <ru.nikshlykov.feature_preferences.preferences.NewWordsCountPreference
             android:key="@string/preference_key___new_word_count"
             android:title="Макс. количество новых слов в день"
             android:summary="Позволяет ограничить затрачиваемое на изучение слов время, чтобы не потратить все силы сразу."
@@ -32,7 +32,7 @@
             android:key="@string/preference_key___use_notifications"
             android:title="Присылать уведомления"
             android:defaultValue="false"/>
-        <ru.nikshlykov.englishwordsapp.preferences.NotificationTimePreference
+        <ru.nikshlykov.feature_preferences.preferences.NotificationTimePreference
             android:dependency="@string/preference_key___use_notifications"
             android:key="@string/preference_key___notification_time"
             android:title="Время уведомления"

@@ -24,6 +24,6 @@
         tools:layout="" />
     <fragment
         android:id="@+id/settings_dest"
-        android:name="ru.nikshlykov.englishwordsapp.ui.fragments.SettingsFragment"
+        android:name="ru.nikshlykov.feature_preferences.ui.SettingsFragment"
         android:label="SettingsFragment" />
 </navigation>

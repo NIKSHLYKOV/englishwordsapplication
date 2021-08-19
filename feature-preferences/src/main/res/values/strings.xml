@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="preference_key___use_notifications">PreferenceKeyUseNotification</string>
+    <string name="preference_key___notification_time">PreferenceKeyNotificationTime</string>
+    <string name="preference_key___tts_pitch">PreferenceKeyTtsPitch</string>
+    <string name="preference_key___tts_speech_rate">PreferenceKeyTtsSpeechRate</string>
+    <string name="preference_key___sort_words_in_subgroups">PreferenceKeySortWordsInSubgroups</string>
+    <string name="preference_key___new_word_count">PreferenceKeyNewWordsCount</string>
+
+    <string name="by_progress">По прогрессу</string>
+    <string name="by_alphabet">По алфавиту</string>
+
+    <string name="notification_channel___remember_to_study___name">Напоминания об обучении</string>
+    <string name="notification_channel___remember_to_study___description">Уведомления о том, что необходимо повторить слова</string>
+    <string name="notification_channel___remember_to_study___id">NotificationChannelRememberToStudyId</string>
+</resources>

@@ -33,7 +33,6 @@ android {
                            'src/main/res-screen/subgroup',
                            'src/main/res-screen/groups',
                            'src/main/res-screen/word',
-                           'src/main/res-screen/settings',
                            'src/main/res-screen/statistics',]
         }
     }
@@ -43,6 +42,7 @@ dependencies {
     implementation project(path: ":data")
     implementation project(path: ":feature-modes")
     implementation project(path: ":feature-study")
+    implementation project(path: ":feature-preferences")
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.3.0-alpha01'

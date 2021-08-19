@@ -1,28 +1,41 @@
-package ru.nikshlykov.englishwordsapp.ui.fragments
+package ru.nikshlykov.feature_preferences.ui
 
 import android.app.Activity
 import android.app.AlarmManager
 import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.os.Build
 import android.os.Bundle
+import android.speech.tts.TextToSpeech
 import android.util.Log
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.viewModels
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import ru.nikshlykov.englishwordsapp.App
-import ru.nikshlykov.englishwordsapp.R
-import ru.nikshlykov.englishwordsapp.R.string
-import ru.nikshlykov.englishwordsapp.notifications.AlarmReceiver
-import ru.nikshlykov.englishwordsapp.preferences.NewWordsCountPreference
-import ru.nikshlykov.englishwordsapp.preferences.NotificationTimePreference
+import ru.nikshlykov.feature_preferences.R
+import ru.nikshlykov.feature_preferences.di.SettingsFeatureComponentViewModel
+import ru.nikshlykov.feature_preferences.notifications.AlarmReceiver
+import ru.nikshlykov.feature_preferences.preferences.NewWordsCountPreference
+import ru.nikshlykov.feature_preferences.preferences.NotificationTimePreference
 import java.util.*
+import javax.inject.Inject
 
-class SettingsFragment : PreferenceFragmentCompat(), OnSharedPreferenceChangeListener {
+internal class SettingsFragment : PreferenceFragmentCompat(), OnSharedPreferenceChangeListener {
 
   // TODO сделать toolbar, если надо будет
+
+  private val settingsFeatureComponentViewModel: SettingsFeatureComponentViewModel by viewModels()
+
+  @Inject
+  lateinit var textToSpeech: TextToSpeech
+
+  override fun onAttach(context: Context) {
+    settingsFeatureComponentViewModel.modesFeatureComponent.inject(this)
+    super.onAttach(context)
+  }
 
   override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
     setPreferencesFromResource(R.xml.preferences, rootKey)
@@ -41,19 +54,23 @@ class SettingsFragment : PreferenceFragmentCompat(), OnSharedPreferenceChangeLis
   override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
     Log.i("Settings", "onSharedPreferenceChanged")
     if (sharedPreferences != null && key != null) {
-      if (key == getString(string.preference_key___tts_pitch)) {
+      if (key == getString(R.string.preference_key___tts_pitch)) {
         val pitch = sharedPreferences.getInt(key, 10)
-        (requireActivity().applicationContext as App)
-          .setTextToSpeechPitch(pitch)
-      } else if (key == getString(string.preference_key___tts_speech_rate)) {
+        /*(requireActivity().applicationContext as App)
+          .setTextToSpeechPitch(pitch)*/
+        textToSpeech.setPitch(pitch * 0.1f)
+        textToSpeech.speak("An example of pitch.", TextToSpeech.QUEUE_FLUSH, null, "1")
+      } else if (key == getString(R.string.preference_key___tts_speech_rate)) {
         val speechRate = sharedPreferences.getInt(key, 10)
-        val application = requireActivity().applicationContext as App
-        application.setTextToSpeechSpeechRate(speechRate)
-      } else if (key == getString(string.preference_key___notification_time)) {
+        /*val application = requireActivity().applicationContext as App
+        application.setTextToSpeechSpeechRate(speechRate)*/
+        textToSpeech.setSpeechRate(speechRate * 0.1f)
+        textToSpeech.speak("An example of speech rate.", TextToSpeech.QUEUE_FLUSH, null, "1")
+      } else if (key == getString(R.string.preference_key___notification_time)) {
         val newNotificationTime = sharedPreferences.getInt(key, 0)
         Log.i("Settings", "New notification time is $newNotificationTime after midnight (minutes)")
         setRepeatingNotifications(newNotificationTime)
-      } else if (key == getString(string.preference_key___use_notifications)) {
+      } else if (key == getString(R.string.preference_key___use_notifications)) {
         val useNotificationFlag = sharedPreferences.getBoolean(key, false)
         if (!useNotificationFlag) {
           cancelNotifications()

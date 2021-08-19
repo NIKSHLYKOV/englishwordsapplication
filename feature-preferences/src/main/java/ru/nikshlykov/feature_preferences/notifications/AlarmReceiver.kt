@@ -1,4 +1,4 @@
-package ru.nikshlykov.englishwordsapp.notifications
+package ru.nikshlykov.feature_preferences.notifications
 
 import android.app.*
 import android.content.BroadcastReceiver
@@ -9,11 +9,10 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import ru.nikshlykov.englishwordsapp.R
-import ru.nikshlykov.englishwordsapp.ui.MainActivity
+import ru.nikshlykov.feature_preferences.R
 import java.util.*
 
-class AlarmReceiver : BroadcastReceiver() {
+internal class AlarmReceiver : BroadcastReceiver() {
   override fun onReceive(context: Context, intent: Intent) {
     createNotification(context)
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -34,7 +33,7 @@ class AlarmReceiver : BroadcastReceiver() {
   }
 
   private fun createNotification(context: Context) {
-    val notificationIntent = Intent(context, MainActivity::class.java)
+    val notificationIntent = Intent(context, context.activityClassProvider.activityClass)
     notificationIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
     val pendingIntent = PendingIntent.getActivity(
       context, 0,
@@ -71,4 +70,16 @@ class AlarmReceiver : BroadcastReceiver() {
     )
     notificationManager.createNotificationChannel(channel)
   }
+}
+
+// TODO придумать потом что-нибудь более адекватное
+val Context.activityClassProvider: ActivityClassProvider
+  get() = when (this) {
+    is ActivityClassProvider -> this
+    is Application -> error("Error for AlarmReceiver")
+    else                     -> applicationContext.activityClassProvider
+  }
+
+interface ActivityClassProvider {
+  val activityClass: Class<out Activity>
 }
