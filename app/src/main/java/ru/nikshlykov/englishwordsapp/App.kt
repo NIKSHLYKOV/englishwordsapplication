@@ -16,10 +16,12 @@ import dagger.android.DaggerApplication
 import ru.nikshlykov.englishwordsapp.di.AppComponent
 import ru.nikshlykov.englishwordsapp.di.DaggerAppComponent
 import ru.nikshlykov.englishwordsapp.notifications.NotificationWorker
+import ru.nikshlykov.feature_modes.di.ModesFeatureDeps
+import ru.nikshlykov.feature_modes.di.ModesFeatureDepsProvider
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class App : DaggerApplication(), Configuration.Provider {
+class App : DaggerApplication(), Configuration.Provider, ModesFeatureDepsProvider {
   var textToSpeech: TextToSpeech? = null
     private set
   private val TTS_ERROR = "Ошибка синтезирования речи!"
@@ -121,4 +123,7 @@ class App : DaggerApplication(), Configuration.Provider {
   companion object {
     // TODO Проверить все EditText на лишние пробелы.
   }
+
+  override val modesFeatureDeps: ModesFeatureDeps
+    get() = appComponent!!
 }
