@@ -25,10 +25,6 @@
     <!-- Методы работы со словом -->
     <string name="create_new_word">Создать новое слово</string>
     <string name="save_word">Сохранить слово</string>
-    <string name="to_skip">Пропустить</string>
-    <string name="know">Знаю</string>
-    <string name="remember">Помню</string>
-    <string name="do_not_remember">Не помню</string>
     <string name="word_deleted">Слово удалено</string>
     <string name="error_word_saving">Необходимо указать слово и его значение!</string>
     <string name="by_progress">По прогрессу</string>

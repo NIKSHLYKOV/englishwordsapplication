@@ -16,12 +16,7 @@ internal class InfoFragment : Fragment() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     Log.i("InfoFragment", "onCreate")
-    val arguments = arguments
-    try {
-      flag = arguments!!.getInt(KEY_INFO_FLAG)
-    } catch (e: NullPointerException) {
-      e.printStackTrace()
-    }
+    flag = InfoFragmentArgs.fromBundle(requireArguments()).infoFlag
   }
 
   override fun onCreateView(

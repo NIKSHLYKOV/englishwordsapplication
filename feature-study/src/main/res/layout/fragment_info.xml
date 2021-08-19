@@ -15,5 +15,5 @@
         android:gravity="center"
         android:textColor="@color/colorPrimary"
         android:textSize="24sp"
-        tools:text="@string/lorem_ipsum" />
+        tools:text="@tools:sample/lorem/random" />
 </RelativeLayout>
