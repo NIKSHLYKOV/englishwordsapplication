@@ -10,7 +10,6 @@ import javax.inject.Inject
 class ViewModelFactory @Inject constructor(
   private val application: Application,
   private val getGroupsWithSubgroupsInteractor: GetGroupsWithSubgroupsInteractor,
-  private val getSelectedModesInteractor: GetSelectedModesInteractor,
   private val addSubgroupInteractor: AddSubgroupInteractor,
   private val updateSubgroupInteractor: UpdateSubgroupInteractor,
   private val addWordToSubgroupInteractor: AddWordToSubgroupInteractor,
@@ -19,26 +18,14 @@ class ViewModelFactory @Inject constructor(
   private val deleteSubgroupInteractor: DeleteSubgroupInteractor,
   private val getWordsFromSubgroupInteractor: GetWordsFromSubgroupInteractor,
   private val updateWordInteractor: UpdateWordInteractor,
-  private val studyWordsInteractor: StudyWordsInteractor,
   private val resetWordProgressInteractor: ResetWordProgressInteractor,
   private val resetWordsProgressFromSubgroupInteractor: ResetWordsProgressFromSubgroupInteractor,
   private val getWordInteractor: GetWordInteractor,
-  private val getFirstShowRepeatsCountForTodayInteractor: GetFirstShowRepeatsCountForTodayInteractor,
-  private val getAvailableToRepeatWordInteractor: GetAvailableToRepeatWordInteractor,
   private val getAvailableSubgroupsInteractor: GetAvailableSubgroupsInteractor,
   private val addNewWordToSubgroupInteractor: AddNewWordToSubgroupInteractor
 ) : ViewModelProvider.Factory {
   override fun <T : ViewModel?> create(modelClass: Class<T>): T {
     return when (modelClass) {
-      StudyViewModel::class.java -> {
-        StudyViewModel(
-          application,
-          getSelectedModesInteractor,
-          getFirstShowRepeatsCountForTodayInteractor,
-          getAvailableToRepeatWordInteractor,
-          studyWordsInteractor
-        ) as T
-      }
       GroupsViewModel::class.java -> {
         GroupsViewModel(
           application,

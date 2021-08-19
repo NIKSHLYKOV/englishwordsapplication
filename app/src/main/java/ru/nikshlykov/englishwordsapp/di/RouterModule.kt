@@ -13,6 +13,7 @@ class RouterModule {
   fun provideModesRouterSource(): ModesRouterSource {
     return object : ModesRouterSource {
       override fun close() {
+        // TODO решить, что с этим делать.
       }
     }
   }

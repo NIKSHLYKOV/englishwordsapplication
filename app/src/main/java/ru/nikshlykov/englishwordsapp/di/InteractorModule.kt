@@ -3,7 +3,10 @@ package ru.nikshlykov.englishwordsapp.di
 import dagger.Module
 import dagger.Provides
 import ru.nikshlykov.englishwordsapp.domain.interactors.*
-import ru.nikshlykov.englishwordsapp.domain.repositories.*
+import ru.nikshlykov.englishwordsapp.domain.repositories.GroupsRepository
+import ru.nikshlykov.englishwordsapp.domain.repositories.LinksRepository
+import ru.nikshlykov.englishwordsapp.domain.repositories.SubgroupsRepository
+import ru.nikshlykov.englishwordsapp.domain.repositories.WordsRepository
 
 @Module
 class InteractorModule {
@@ -26,11 +29,6 @@ class InteractorModule {
     getGroupsInteractor: GetGroupsInteractor
   ): GetGroupsWithSubgroupsInteractor {
     return GetGroupsWithSubgroupsInteractor(getGroupsInteractor, getSubgroupsFromGroupInteractor)
-  }
-
-  @Provides
-  fun provideGetSelectedModesInteractor(modesRepository: ModesRepository): GetSelectedModesInteractor {
-    return GetSelectedModesInteractor(modesRepository)
   }
 
   @Provides
@@ -85,14 +83,6 @@ class InteractorModule {
   }
 
   @Provides
-  fun provideStudyWordsInteractor(
-    wordsRepository: WordsRepository,
-    repeatsRepository: RepeatsRepository
-  ): StudyWordsInteractor {
-    return StudyWordsInteractor(wordsRepository, repeatsRepository)
-  }
-
-  @Provides
   fun provideResetWordProgressInteractor(updateWordInteractor: UpdateWordInteractor)
     : ResetWordProgressInteractor {
     return ResetWordProgressInteractor(updateWordInteractor)
@@ -102,18 +92,6 @@ class InteractorModule {
   fun provideResetWordsProgressFromSubgroupInteractor(wordsRepository: WordsRepository)
     : ResetWordsProgressFromSubgroupInteractor {
     return ResetWordsProgressFromSubgroupInteractor(wordsRepository)
-  }
-
-  @Provides
-  fun provideGetFirstShowRepeatsCountForTodayInteractor(repeatsRepository: RepeatsRepository)
-    : GetFirstShowRepeatsCountForTodayInteractor {
-    return GetFirstShowRepeatsCountForTodayInteractor(repeatsRepository)
-  }
-
-  @Provides
-  fun provideGetAvailableToRepeatWordInteractor(wordsRepository: WordsRepository)
-    : GetAvailableToRepeatWordInteractor {
-    return GetAvailableToRepeatWordInteractor(wordsRepository)
   }
 
   @Provides

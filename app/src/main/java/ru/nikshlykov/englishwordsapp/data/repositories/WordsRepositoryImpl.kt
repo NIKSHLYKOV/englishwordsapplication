@@ -30,14 +30,6 @@ class WordsRepositoryImpl @Inject constructor(private val wordDao: WordDao) : Wo
     return wordDao.getWordsFromSubgroupByAlphabet(subgroupId)
   }
 
-  override suspend fun getWordsFromStudiedSubgroups(): List<Word> {
-    return wordDao.getWordsFromStudiedSubgroups()
-  }
-
-  override suspend fun getNotNewWordsFromStudiedSubgroups(): List<Word> {
-    return wordDao.getNotNewWordsFromStudiedSubgroups()
-  }
-
   override suspend fun resetWordsProgressFromSubgroup(subgroupId: Long): Int {
     return wordDao.resetWordsProgressFromSubgroup(subgroupId)
   }
