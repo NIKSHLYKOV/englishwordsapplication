@@ -12,7 +12,11 @@ class RepeatsRepositoryImpl @Inject constructor(private val repeatDao: RepeatDao
   override suspend fun insertRepeat(repeat: Repeat): Long {
     // Вычисляем id для повтора и добавляем его в БД.
     val lastRepeat = repeatDao.repeatWithMaxId()
-    val idForNewRepeat: Long = lastRepeat.id + 1
+    val idForNewRepeat: Long = if (lastRepeat == null) {
+      1
+    } else {
+      lastRepeat.id + 1
+    }
     repeat.id = idForNewRepeat
     return repeatDao.insert(repeat)
   }

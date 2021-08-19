@@ -10,8 +10,6 @@ import javax.inject.Inject
 class ViewModelFactory @Inject constructor(
   private val application: Application,
   private val getGroupsWithSubgroupsInteractor: GetGroupsWithSubgroupsInteractor,
-  private val getAllModesInteractor: GetAllModesInteractor,
-  private val updateModesInteractor: UpdateModesInteractor,
   private val getSelectedModesInteractor: GetSelectedModesInteractor,
   private val addSubgroupInteractor: AddSubgroupInteractor,
   private val updateSubgroupInteractor: UpdateSubgroupInteractor,
@@ -79,9 +77,6 @@ class ViewModelFactory @Inject constructor(
       }
       StatisticsViewModel::class.java -> {
         StatisticsViewModel(application) as T
-      }
-      ModesViewModel::class.java -> {
-        ModesViewModel(application, getAllModesInteractor, updateModesInteractor) as T
       }
       SubgroupDataViewModel::class.java -> {
         SubgroupDataViewModel(
