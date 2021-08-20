@@ -25,13 +25,6 @@
         <item name="android:textColor">?attr/colorOnBackground</item>
     </style>
 
-    <style name="CharButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
-        <item name="textAllCaps">false</item>
-        <item name="strokeColor">@color/colorPrimary</item>
-        <item name="strokeWidth">1dp</item>
-        <item name="theme">@style/AppTheme</item>
-    </style>
-
     <style name="Toolbar">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">?attr/actionBarSize</item>
@@ -47,16 +40,4 @@
         <item name="android:textSize">20sp</item>
         <item name="android:textColor">@android:color/white</item>
     </style>
-
-    <!-- Style for an Preference Entry -->
-    <style name="AppPreference">
-        <item name="android:layout" tools:ignore="PrivateResource">@layout/preference_material</item>
-    </style>
-
-    <!-- Style for a DialogPreference Entry -->
-    <style name="AppPreference.DialogPreference">
-        <item name="positiveButtonText">@android:string/ok</item>
-        <item name="negativeButtonText">@android:string/cancel</item>
-    </style>
-
 </resources>

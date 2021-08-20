@@ -11,8 +11,8 @@ import dagger.android.support.DaggerAppCompatActivity
 import ru.nikshlykov.englishwordsapp.App
 import ru.nikshlykov.englishwordsapp.R
 import ru.nikshlykov.englishwordsapp.ui.flowfragments.GroupsAndWordsFlowFragment
-import ru.nikshlykov.englishwordsapp.ui.flowfragments.ProfileFlowFragment
 import ru.nikshlykov.feature_profile.navigation.ProfileFeatureRouter
+import ru.nikshlykov.feature_profile.ui.flowfragments.ProfileFlowFragment
 import ru.nikshlykov.feature_profile.ui.flowfragments.ProfileFlowFragmentDirections
 import ru.nikshlykov.feature_study.ui.flowfragments.StudyFlowFragment
 

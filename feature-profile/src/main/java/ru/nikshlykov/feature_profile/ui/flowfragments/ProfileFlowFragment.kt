@@ -18,7 +18,7 @@ import ru.nikshlykov.feature_profile.ui.viewmodels.ProfileFeatureComponentViewMo
 import ru.nikshlykov.navigation.BackPressedFlowFragmentListener
 import javax.inject.Inject
 
-internal class ProfileFlowFragment : Fragment(), BackPressedFlowFragmentListener, ProfileFragmentNavigation {
+class ProfileFlowFragment : Fragment(), BackPressedFlowFragmentListener, ProfileFragmentNavigation {
   private var navController: NavController? = null
   private var navHostFragment: NavHostFragment? = null
 
