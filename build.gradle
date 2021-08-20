@@ -10,7 +10,7 @@ buildscript {
             material: '1.3.0-alpha01',
             preference: '1.1.1',
             jUnit: '4.12',
-            runner: '1.3.0-rc01',
+            test: '1.3.0-rc01',
             espresso: '3.3.0-rc01',
             cardView: '1.0.0',
             recyclerView: '1.1.0',
@@ -19,10 +19,84 @@ buildscript {
             dagger: '2.37',
             navigation: '2.3.0',
             core: '+',
+            kotlin: '1.5.10',
             coroutines: '1.5.0',
             fragment: '1.3.6',
-            gridLayout: '1.0.0'
+            gridLayout: '1.0.0',
+            work: '2.3.4'
     ]
+    ext.appcompat = [
+            appcompat: "androidx.appcompat:appcompat:$versions.appCompat"
+    ]
+    ext.glide = [
+            glide: "com.github.bumptech.glide:glide:$versions.glide"
+    ]
+    ext.constraintlayout = [
+            constraintlayout: "androidx.constraintlayout:constraintlayout:$versions.constraintLayout"
+    ]
+    ext.material = [
+            material: "com.google.android.material:material:$versions.material"
+    ]
+    ext.preference = [
+            preference: "androidx.preference:preference:$versions.preference"
+    ]
+    ext.junit = [
+            junit: "junit:junit:$versions.jUnit"
+    ]
+    ext.test = [
+            runner: "androidx.test:runner:$versions.test"
+    ]
+    ext.espresso = [
+            core: "androidx.test.espresso:espresso-core:$versions.espresso"
+    ]
+    ext.cardview = [
+            cardview: "androidx.cardview:cardview:$versions.cardView"
+    ]
+    ext.recyclerview = [
+            recyclerview: "androidx.recyclerview:recyclerview:$versions.recyclerView"
+    ]
+    ext.room = [
+            runtime: "androidx.room:room-runtime:$versions.room",
+            compiler: "androidx.room:room-compiler:$versions.room",
+            ktx: "androidx.room:room-ktx:$versions.room"
+    ]
+    ext.lifecycle = [
+            extensions: "androidx.lifecycle:lifecycle-extensions:$versions.lifecycle",
+            viewmodel: "androidx.lifecycle:lifecycle-viewmodel:$versions.lifecycle",
+            viewmodelktx: "androidx.lifecycle:lifecycle-viewmodel-ktx:$versions.lifecycle",
+            livedata: "androidx.lifecycle:lifecycle-livedata:$versions.lifecycle"
+    ]
+    ext.dagger = [
+            dagger: "com.google.dagger:dagger:$versions.dagger",
+            compiler: "com.google.dagger:dagger-compiler:$versions.dagger",
+            android: "com.google.dagger:dagger-android:$versions.dagger",
+            androidsupport: "com.google.dagger:dagger-android-support:$versions.dagger",
+            androidprocessor: "com.google.dagger:dagger-android-processor:$versions.dagger"
+    ]
+    ext.work = [
+            runtime: "androidx.work:work-runtime:$versions.work"
+    ]
+    ext.navigation = [
+            fragment: "androidx.navigation:navigation-fragment:$versions.navigation",
+            ui: "androidx.navigation:navigation-ui:$versions.navigation"
+    ]
+    ext.core = [
+            ktx: "androidx.core:core-ktx:$versions.core"
+    ]
+    ext.kotlin = [
+            stdlibjdk7: "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versions.kotlin"
+    ]
+    ext.coroutines = [
+            core: "org.jetbrains.kotlinx:kotlinx-coroutines-core:$versions.coroutines",
+            android: "org.jetbrains.kotlinx:kotlinx-coroutines-android:$versions.coroutines"
+    ]
+    ext.fragment = [
+            ktx: "androidx.fragment:fragment-ktx:$versions.fragment"
+    ]
+    ext.gridlayout = [
+            gridlayout: "androidx.gridlayout:gridlayout:$versions.gridLayout"
+    ]
+
     repositories {
         google()
         jcenter()
