@@ -22,17 +22,24 @@ import ru.nikshlykov.feature_modes.di.ModesFeatureDepsProvider
 import ru.nikshlykov.feature_preferences.di.SettingsFeatureDeps
 import ru.nikshlykov.feature_preferences.di.SettingsFeatureDepsProvider
 import ru.nikshlykov.feature_preferences.notifications.ActivityClassProvider
+import ru.nikshlykov.feature_profile.di.ProfileFeatureDeps
+import ru.nikshlykov.feature_profile.di.ProfileFeatureDepsProvider
 import ru.nikshlykov.feature_study.di.StudyFeatureDeps
 import ru.nikshlykov.feature_study.di.StudyFeatureDepsProvider
 import java.util.*
 import java.util.concurrent.TimeUnit
 
 class App : DaggerApplication(), Configuration.Provider, ModesFeatureDepsProvider,
-  StudyFeatureDepsProvider, SettingsFeatureDepsProvider, ActivityClassProvider {
+  StudyFeatureDepsProvider, SettingsFeatureDepsProvider, ActivityClassProvider,
+  ProfileFeatureDepsProvider {
   var textToSpeech: TextToSpeech? = null
     private set
   private val TTS_ERROR = "Ошибка синтезирования речи!"
   private var appComponent: AppComponent? = null
+
+  // TODO убрать костыль. Возможно, надо перейти не Cicerone.
+  var mainActivity: MainActivity? = null
+
   override fun onCreate() {
     appComponent = DaggerAppComponent.factory().create(this)
     super.onCreate()
@@ -138,6 +145,9 @@ class App : DaggerApplication(), Configuration.Provider, ModesFeatureDepsProvide
     get() = appComponent!!
 
   override val settingsFeatureDeps: SettingsFeatureDeps
+    get() = appComponent!!
+
+  override val profileFeatureDeps: ProfileFeatureDeps
     get() = appComponent!!
 
   override val activityClass: Class<out Activity>

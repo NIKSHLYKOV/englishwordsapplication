@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <!--<ImageButton
+            android:id="@+id/fragment_profile___button___settings"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/ic_settings_dark_blue_24dp"
+            android:backgroundTint="@color/colorPrimary"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"/>-->
+
+        <LinearLayout
+            android:id="@+id/fragment_profile___linear_layout___modes_and_statistics"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!--<Button
+                android:layout_width="match_parent"
+                android:layout_height="112dp"
+
+                android:layout_weight="1"
+
+                android:drawableTop="@drawable/ic_library_books_white_24dp"
+                android:gravity="center|bottom"
+
+                android:paddingTop="16dp"
+                android:paddingBottom="16dp"
+                android:text="@string/modes"
+
+                android:textColor="@android:color/white"
+                android:textSize="18sp" />-->
+            <FrameLayout
+                android:id="@+id/fragment_profile___linear_layout___statistics"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/fragment_profile___material_button___modes"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:paddingStart="16dp"
+
+                android:paddingEnd="16dp"
+                android:text="@string/modes"
+
+                android:textAlignment="textStart"
+                android:textAllCaps="false"
+                android:textColor="@android:color/black"
+
+                app:icon="@drawable/ic_library_books_white_24dp"
+                app:iconPadding="32dp"
+                app:iconTint="@android:color/black" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/fragment_profile___material_button___settings"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:paddingStart="16dp"
+
+                android:paddingEnd="16dp"
+                android:text="Настройки"
+
+                android:textAlignment="textStart"
+                android:textAllCaps="false"
+                android:textColor="@android:color/black"
+
+                app:icon="@drawable/ic_settings_dark_blue_24dp"
+                app:iconPadding="32dp"
+                app:iconTint="@android:color/black" />
+
+            <!--<Button
+                android:id="@+id/fragment_profile___button___statistics"
+                android:layout_width="0dp"
+                android:layout_height="112dp"
+
+                android:layout_weight="1"
+
+                android:drawableTop="@drawable/ic_pie_chart_blue_24dp"
+                android:gravity="center|bottom"
+
+                android:paddingTop="16dp"
+                android:paddingBottom="16dp"
+                android:text="@string/statistics"
+
+                android:textColor="@android:color/white"
+                android:textSize="18sp" />-->
+
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

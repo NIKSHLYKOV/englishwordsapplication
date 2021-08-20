@@ -91,6 +91,7 @@ dependencies {
     def nav_version = "2.3.0"
     implementation "androidx.navigation:navigation-fragment:$nav_version"
     implementation "androidx.navigation:navigation-ui:$nav_version"
+
     implementation "androidx.core:core-ktx:+"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
 
