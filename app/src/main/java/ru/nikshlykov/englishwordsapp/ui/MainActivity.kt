@@ -12,9 +12,11 @@ import ru.nikshlykov.englishwordsapp.App
 import ru.nikshlykov.englishwordsapp.R
 import ru.nikshlykov.englishwordsapp.ui.flowfragments.GroupsAndWordsFlowFragment
 import ru.nikshlykov.englishwordsapp.ui.flowfragments.ProfileFlowFragment
+import ru.nikshlykov.feature_profile.navigation.ProfileFeatureRouter
+import ru.nikshlykov.feature_profile.ui.flowfragments.ProfileFlowFragmentDirections
 import ru.nikshlykov.feature_study.ui.flowfragments.StudyFlowFragment
 
-class MainActivity : DaggerAppCompatActivity() {
+class MainActivity : DaggerAppCompatActivity(), ProfileFeatureRouter {
 
   // TODO проверить все вьюхи с клавой на adjustresize.
 
@@ -23,6 +25,8 @@ class MainActivity : DaggerAppCompatActivity() {
   //  сохранялся, но пока можно не реализовывать для простоты.
   private var navHostFragment: NavHostFragment? = null
 
+  private var navController: NavController? = null
+
   // View элементы.
   private var bottomNavigationView // Нижнее меню.
     : BottomNavigationView? = null
@@ -30,12 +34,13 @@ class MainActivity : DaggerAppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     setTheme(R.style.AppTheme)
     super.onCreate(savedInstanceState)
+    (applicationContext as App).mainActivity = this
     setContentView(R.layout.activity_main)
     findViews()
     navHostFragment =
       supportFragmentManager.findFragmentById(R.id.activity_main___nav_host_fragment) as NavHostFragment
-    val navController: NavController = navHostFragment!!.navController
-    NavigationUI.setupWithNavController(bottomNavigationView!!, navController)
+    navController = navHostFragment!!.navController
+    NavigationUI.setupWithNavController(bottomNavigationView!!, navController!!)
   }
 
   override fun onDestroy() {
@@ -84,6 +89,16 @@ class MainActivity : DaggerAppCompatActivity() {
         super.onBackPressed()
       }
     }
+  }
+
+  override fun openModes() {
+    val navDirections = ProfileFlowFragmentDirections.actionProfileFlowDestToModesDest()
+    navController?.navigate(navDirections)
+  }
+
+  override fun openSettings() {
+    val navDirections = ProfileFlowFragmentDirections.actionProfileFlowDestToSettingsDest()
+    navController?.navigate(navDirections)
   }
 
   companion object {

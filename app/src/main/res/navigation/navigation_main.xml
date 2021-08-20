@@ -9,15 +9,32 @@
         android:id="@+id/groups_and_words_flow_dest"
         android:name="ru.nikshlykov.englishwordsapp.ui.flowfragments.GroupsAndWordsFlowFragment"
         android:label="GroupsAndWordFlowFragment"
-        tools:layout="@layout/flow_fragment_groups_and_words"/>
+        tools:layout="@layout/flow_fragment_groups_and_words" />
     <fragment
         android:id="@+id/profile_flow_dest"
-        android:name="ru.nikshlykov.englishwordsapp.ui.flowfragments.ProfileFlowFragment"
+        android:name="ru.nikshlykov.feature_profile.ui.flowfragments.ProfileFlowFragment"
         android:label="ProfileFlowFragment"
-        tools:layout="@layout/flow_fragment_profile"/>
+        tools:layout="@layout/flow_fragment_profile">
+        <action
+            android:id="@+id/action_profile_flow_dest_to_settings_dest"
+            app:destination="@id/settings_dest" />
+        <action
+            android:id="@+id/action_profile_flow_dest_to_modes_dest"
+            app:destination="@id/modes_dest" />
+    </fragment>
     <fragment
         android:id="@+id/study_flow_dest"
         android:name="ru.nikshlykov.feature_study.ui.flowfragments.StudyFlowFragment"
         android:label="StudyFlowFragment"
-        tools:layout="@layout/flow_fragment_study"/>
+        tools:layout="@layout/flow_fragment_study" />
+
+    <fragment
+        android:id="@+id/modes_dest"
+        android:name="ru.nikshlykov.feature_modes.ui.fragments.ModesFragment"
+        android:label="ModesFragment"
+        tools:layout="" />
+    <fragment
+        android:id="@+id/settings_dest"
+        android:name="ru.nikshlykov.feature_preferences.ui.SettingsFragment"
+        android:label="SettingsFragment" />
 </navigation>

@@ -1,20 +1,37 @@
-package ru.nikshlykov.englishwordsapp.ui.flowfragments
+package ru.nikshlykov.feature_profile.ui.flowfragments
 
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
-import androidx.navigation.NavDirections
 import androidx.navigation.fragment.NavHostFragment
-import ru.nikshlykov.englishwordsapp.R
-import ru.nikshlykov.englishwordsapp.ui.fragments.ProfileFragment
+import ru.nikshlykov.feature_profile.R
+import ru.nikshlykov.feature_profile.navigation.ProfileFeatureRouter
+import ru.nikshlykov.feature_profile.navigation.ProfileFragmentNavigation
+import ru.nikshlykov.feature_profile.ui.fragments.ProfileFragment
+import ru.nikshlykov.feature_profile.ui.viewmodels.ProfileFeatureComponentViewModel
+import ru.nikshlykov.navigation.BackPressedFlowFragmentListener
+import javax.inject.Inject
 
-class ProfileFlowFragment : Fragment(), OnChildFragmentInteractionListener,
-  BackPressedFlowFragmentListener {
+internal class ProfileFlowFragment : Fragment(), BackPressedFlowFragmentListener, ProfileFragmentNavigation {
   private var navController: NavController? = null
   private var navHostFragment: NavHostFragment? = null
+
+  @Inject
+  lateinit var profileFeatureRouter: ProfileFeatureRouter
+
+  private val profileFeatureComponentViewModel: ProfileFeatureComponentViewModel by viewModels()
+
+  override fun onAttach(context: Context) {
+    profileFeatureComponentViewModel.profileFeatureComponent.inject(this)
+    super.onAttach(context)
+    Log.d("ProfileFlowFragment", "onAttach()")
+  }
 
   override fun onCreateView(
     inflater: LayoutInflater,
@@ -31,18 +48,6 @@ class ProfileFlowFragment : Fragment(), OnChildFragmentInteractionListener,
     navController = navHostFragment!!.navController
   }
 
-  override fun onChildFragmentInteraction(navDirections: NavDirections?) {
-    /*when (navDirections?.actionId) {
-      R.id.action_profile_dest_to_settings_dest,
-      R.id.action_profile_dest_to_modes_dest ->
-        navController!!.navigate(navDirections)
-    }*/
-  }
-
-  override fun close() {
-    navController?.popBackStack()
-  }
-
   override fun backPressedIsAvailable(): Boolean {
     // Тут, возможно, могут быть ошибки из-за activity, которые ещё не убраны.
     return navHostFragment?.childFragmentManager?.primaryNavigationFragment !is ProfileFragment
@@ -50,5 +55,13 @@ class ProfileFlowFragment : Fragment(), OnChildFragmentInteractionListener,
 
   override fun onBackPressed() {
     navController!!.popBackStack()
+  }
+
+  override fun openModes() {
+    profileFeatureRouter.openModes()
+  }
+
+  override fun openSettings() {
+    profileFeatureRouter.openSettings()
   }
 }

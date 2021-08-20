@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Статистика -->
+    <string name="statistics">Статистика</string>
+
+    <!-- Режимы -->
+    <string name="modes">Режимы</string>
+</resources>
