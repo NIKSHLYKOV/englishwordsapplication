@@ -10,6 +10,7 @@ import androidx.navigation.NavDirections
 import androidx.navigation.fragment.NavHostFragment
 import ru.nikshlykov.englishwordsapp.R
 import ru.nikshlykov.englishwordsapp.ui.fragments.GroupsFragment
+import ru.nikshlykov.navigation.BackPressedFlowFragmentListener
 
 class GroupsAndWordsFlowFragment : Fragment(), OnChildFragmentInteractionListener,
   BackPressedFlowFragmentListener {

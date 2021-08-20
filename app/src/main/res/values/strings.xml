@@ -30,15 +30,6 @@
     <string name="by_progress">По прогрессу</string>
     <string name="by_alphabet">По алфавиту</string>
 
-    <!-- Статистика -->
-    <string name="statistics">Статистика</string>
-    <string name="already_known_words">Уже известные слова</string>
-    <string name="learned_words">Изученные слова</string>
-    <string name="studied_words">Изучаемые слова</string>
-
-    <!-- Режимы -->
-    <string name="modes">Режимы</string>
-
 
     <string name="title_profile">Профиль</string>
     <string name="examples">Примеры</string>

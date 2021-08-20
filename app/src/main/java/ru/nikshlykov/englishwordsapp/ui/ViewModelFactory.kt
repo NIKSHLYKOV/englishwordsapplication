@@ -62,9 +62,6 @@ class ViewModelFactory @Inject constructor(
           getAvailableSubgroupsInteractor
         ) as T
       }
-      StatisticsViewModel::class.java -> {
-        StatisticsViewModel(application) as T
-      }
       SubgroupDataViewModel::class.java -> {
         SubgroupDataViewModel(
           getSubgroupInteractor,

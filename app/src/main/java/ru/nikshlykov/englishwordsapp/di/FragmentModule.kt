@@ -10,9 +10,6 @@ abstract class FragmentModule {
   abstract fun contributeGroupsFragment(): GroupsFragment
 
   @ContributesAndroidInjector
-  abstract fun contributeStatisticsFragment(): StatisticsFragment
-
-  @ContributesAndroidInjector
   abstract fun contributeLinkOrDeleteWordDialogFragment(): LinkOrDeleteWordDialogFragment
 
   @ContributesAndroidInjector
@@ -26,7 +23,4 @@ abstract class FragmentModule {
 
   @ContributesAndroidInjector
   abstract fun contributeAddWordFragment(): AddWordFragment
-
-  @ContributesAndroidInjector
-  abstract fun contributeProfileFragment(): ProfileFragment
 }
