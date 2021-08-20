@@ -4,107 +4,83 @@ buildscript {
     ext.kotlin_version = '1.5.10'
 
     ext.versions = [
-            appCompat: '1.3.0-alpha01',
-            glide: '4.9.0',
+            appCompat       : '1.3.0-alpha01',
+            glide           : '4.9.0',
             constraintLayout: '1.1.3',
-            material: '1.3.0-alpha01',
-            preference: '1.1.1',
-            jUnit: '4.12',
-            test: '1.3.0-rc01',
-            espresso: '3.3.0-rc01',
-            cardView: '1.0.0',
-            recyclerView: '1.1.0',
-            room: '2.3.0',
-            lifecycle: '2.2.0',
-            dagger: '2.37',
-            navigation: '2.3.0',
-            core: '+',
-            kotlin: '1.5.10',
-            coroutines: '1.5.0',
-            fragment: '1.3.6',
-            gridLayout: '1.0.0',
-            work: '2.3.4'
+            material        : '1.3.0-alpha01',
+            preference      : '1.1.1',
+            jUnit           : '4.12',
+            test            : '1.3.0-rc01',
+            espresso        : '3.3.0-rc01',
+            cardView        : '1.0.0',
+            recyclerView    : '1.1.0',
+            room            : '2.3.0',
+            lifecycle       : '2.2.0',
+            dagger          : '2.37',
+            navigation      : '2.3.0',
+            core            : '+',
+            kotlin          : '1.5.10',
+            coroutines      : '1.5.0',
+            fragment        : '1.3.6',
+            gridLayout      : '1.0.0',
+            work            : '2.3.4'
     ]
-    ext.appcompat = [
-            appcompat: "androidx.appcompat:appcompat:$versions.appCompat"
-    ]
-    ext.glide = [
-            glide: "com.github.bumptech.glide:glide:$versions.glide"
-    ]
-    ext.constraintlayout = [
-            constraintlayout: "androidx.constraintlayout:constraintlayout:$versions.constraintLayout"
-    ]
-    ext.material = [
-            material: "com.google.android.material:material:$versions.material"
-    ]
-    ext.preference = [
-            preference: "androidx.preference:preference:$versions.preference"
-    ]
-    ext.junit = [
-            junit: "junit:junit:$versions.jUnit"
-    ]
-    ext.test = [
-            runner: "androidx.test:runner:$versions.test"
-    ]
-    ext.espresso = [
-            core: "androidx.test.espresso:espresso-core:$versions.espresso"
-    ]
-    ext.cardview = [
-            cardview: "androidx.cardview:cardview:$versions.cardView"
-    ]
-    ext.recyclerview = [
-            recyclerview: "androidx.recyclerview:recyclerview:$versions.recyclerView"
-    ]
-    ext.room = [
-            runtime: "androidx.room:room-runtime:$versions.room",
-            compiler: "androidx.room:room-compiler:$versions.room",
-            ktx: "androidx.room:room-ktx:$versions.room"
-    ]
-    ext.lifecycle = [
-            extensions: "androidx.lifecycle:lifecycle-extensions:$versions.lifecycle",
-            viewmodel: "androidx.lifecycle:lifecycle-viewmodel:$versions.lifecycle",
-            viewmodelktx: "androidx.lifecycle:lifecycle-viewmodel-ktx:$versions.lifecycle",
-            livedata: "androidx.lifecycle:lifecycle-livedata:$versions.lifecycle"
-    ]
-    ext.dagger = [
-            dagger: "com.google.dagger:dagger:$versions.dagger",
-            compiler: "com.google.dagger:dagger-compiler:$versions.dagger",
-            android: "com.google.dagger:dagger-android:$versions.dagger",
-            androidsupport: "com.google.dagger:dagger-android-support:$versions.dagger",
-            androidprocessor: "com.google.dagger:dagger-android-processor:$versions.dagger"
-    ]
-    ext.work = [
-            runtime: "androidx.work:work-runtime:$versions.work"
-    ]
-    ext.navigation = [
-            fragment: "androidx.navigation:navigation-fragment:$versions.navigation",
-            ui: "androidx.navigation:navigation-ui:$versions.navigation"
-    ]
-    ext.core = [
-            ktx: "androidx.core:core-ktx:$versions.core"
-    ]
-    ext.kotlin = [
-            stdlibjdk7: "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versions.kotlin"
-    ]
-    ext.coroutines = [
-            core: "org.jetbrains.kotlinx:kotlinx-coroutines-core:$versions.coroutines",
-            android: "org.jetbrains.kotlinx:kotlinx-coroutines-android:$versions.coroutines"
-    ]
-    ext.fragment = [
-            ktx: "androidx.fragment:fragment-ktx:$versions.fragment"
-    ]
-    ext.gridlayout = [
-            gridlayout: "androidx.gridlayout:gridlayout:$versions.gridLayout"
+    ext.libraries = [
+            appcompat              : "androidx.appcompat:appcompat:$versions.appCompat",
+            glide                  : "com.github.bumptech.glide:glide:$versions.glide",
+            work_runtime           : "androidx.work:work-runtime:$versions.work",
+            preference             : "androidx.preference:preference:$versions.preference",
+            core_ktx               : "androidx.core:core-ktx:$versions.core",
+            kotlin_stdlib          : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versions.kotlin",
+
+            // UI
+            fragment_ktx           : "androidx.fragment:fragment-ktx:$versions.fragment",
+            gridlayout             : "androidx.gridlayout:gridlayout:$versions.gridLayout",
+            constraintlayout       : "androidx.constraintlayout:constraintlayout:$versions.constraintLayout",
+            material               : "com.google.android.material:material:$versions.material",
+            cardview               : "androidx.cardview:cardview:$versions.cardView",
+            recyclerview           : "androidx.recyclerview:recyclerview:$versions.recyclerView",
+
+            // Testing
+            junit                  : "junit:junit:$versions.jUnit",
+            test_runner            : "androidx.test:runner:$versions.test",
+            espresso_core          : "androidx.test.espresso:espresso-core:$versions.espresso",
+
+            // Room
+            room_runtime           : "androidx.room:room-runtime:$versions.room",
+            room_compiler          : "androidx.room:room-compiler:$versions.room",
+            room_ktx               : "androidx.room:room-ktx:$versions.room",
+
+            // Lifecycle
+            lifecycle_extensions   : "androidx.lifecycle:lifecycle-extensions:$versions.lifecycle",
+            lifecycle_viewmodel    : "androidx.lifecycle:lifecycle-viewmodel:$versions.lifecycle",
+            lifecycle_viewmodelktx : "androidx.lifecycle:lifecycle-viewmodel-ktx:$versions.lifecycle",
+            lifecycle_livedata     : "androidx.lifecycle:lifecycle-livedata:$versions.lifecycle",
+
+            // Dagger
+            dagger                 : "com.google.dagger:dagger:$versions.dagger",
+            dagger_compiler        : "com.google.dagger:dagger-compiler:$versions.dagger",
+            dagger_android         : "com.google.dagger:dagger-android:$versions.dagger",
+            dagger_androidsupport  : "com.google.dagger:dagger-android-support:$versions.dagger",
+            dagger_androidprocessor: "com.google.dagger:dagger-android-processor:$versions.dagger",
+
+            // Navigation
+            navigation_fragment    : "androidx.navigation:navigation-fragment:$versions.navigation",
+            navigation_ui          : "androidx.navigation:navigation-ui:$versions.navigation",
+
+            // Coroutines
+            coroutines_core        : "org.jetbrains.kotlinx:kotlinx-coroutines-core:$versions.coroutines",
+            coroutines_android     : "org.jetbrains.kotlinx:kotlinx-coroutines-android:$versions.coroutines"
     ]
 
     repositories {
         google()
         jcenter()
-        
+
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:4.1.1'
-        
+
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
 
@@ -119,7 +95,7 @@ allprojects {
     repositories {
         google()
         jcenter()
-        
+
     }
 }
 
