@@ -1,6 +1,7 @@
 package ru.nikshlykov.englishwordsapp
 
 import android.app.Activity
+import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.os.Build
@@ -12,11 +13,12 @@ import androidx.work.Configuration
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
-import dagger.android.DaggerApplication
 import ru.nikshlykov.englishwordsapp.di.AppComponent
 import ru.nikshlykov.englishwordsapp.di.DaggerAppComponent
 import ru.nikshlykov.englishwordsapp.notifications.NotificationWorker
 import ru.nikshlykov.englishwordsapp.ui.MainActivity
+import ru.nikshlykov.feature_groups_and_words.di.GroupsFeatureDeps
+import ru.nikshlykov.feature_groups_and_words.di.GroupsFeatureDepsProvider
 import ru.nikshlykov.feature_modes.di.ModesFeatureDeps
 import ru.nikshlykov.feature_modes.di.ModesFeatureDepsProvider
 import ru.nikshlykov.feature_preferences.di.SettingsFeatureDeps
@@ -29,9 +31,9 @@ import ru.nikshlykov.feature_study.di.StudyFeatureDepsProvider
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class App : DaggerApplication(), Configuration.Provider, ModesFeatureDepsProvider,
+class App : Application(), Configuration.Provider, ModesFeatureDepsProvider,
   StudyFeatureDepsProvider, SettingsFeatureDepsProvider, ActivityClassProvider,
-  ProfileFeatureDepsProvider {
+  ProfileFeatureDepsProvider, GroupsFeatureDepsProvider {
   var textToSpeech: TextToSpeech? = null
     private set
   private val TTS_ERROR = "Ошибка синтезирования речи!"
@@ -129,11 +131,6 @@ class App : DaggerApplication(), Configuration.Provider, ModesFeatureDepsProvide
     textToSpeech!!.speak("An example of speech rate.", TextToSpeech.QUEUE_FLUSH, null, "1")
   }
 
-  // Dagger Component
-  override fun applicationInjector(): AppComponent? {
-    return appComponent
-  }
-
   companion object {
     // TODO Проверить все EditText на лишние пробелы.
   }
@@ -148,6 +145,9 @@ class App : DaggerApplication(), Configuration.Provider, ModesFeatureDepsProvide
     get() = appComponent!!
 
   override val profileFeatureDeps: ProfileFeatureDeps
+    get() = appComponent!!
+
+  override val groupsFeatureDeps: GroupsFeatureDeps
     get() = appComponent!!
 
   override val activityClass: Class<out Activity>

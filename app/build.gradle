@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: "androidx.navigation.safeargs"
 apply plugin: 'kotlin-kapt'
 
 android {
@@ -28,11 +27,7 @@ android {
     }
     sourceSets {
         main {
-            // TODO добавить ресурсы из feature_modes
-            res.srcDirs = ['src/main/res',
-                           'src/main/res-screen/subgroup',
-                           'src/main/res-screen/groups',
-                           'src/main/res-screen/word']
+            res.srcDirs = ['src/main/res']
         }
     }
 }
@@ -43,6 +38,7 @@ dependencies {
     implementation project(path: ":feature-study")
     implementation project(path: ":feature-preferences")
     implementation project(path: ":feature-profile")
+    implementation project(path: ":feature-groups_and_words")
     implementation project(path: ":navigation")
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])

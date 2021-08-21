@@ -10,10 +10,9 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.android.support.DaggerAppCompatActivity
 import ru.nikshlykov.englishwordsapp.App
 import ru.nikshlykov.englishwordsapp.R
-import ru.nikshlykov.englishwordsapp.ui.flowfragments.GroupsAndWordsFlowFragment
+import ru.nikshlykov.feature_groups_and_words.ui.GroupsAndWordsFlowFragment
 import ru.nikshlykov.feature_profile.navigation.ProfileFeatureRouter
 import ru.nikshlykov.feature_profile.ui.flowfragments.ProfileFlowFragment
-import ru.nikshlykov.feature_profile.ui.flowfragments.ProfileFlowFragmentDirections
 import ru.nikshlykov.feature_study.ui.flowfragments.StudyFlowFragment
 
 class MainActivity : DaggerAppCompatActivity(), ProfileFeatureRouter {
@@ -91,14 +90,15 @@ class MainActivity : DaggerAppCompatActivity(), ProfileFeatureRouter {
     }
   }
 
+  // TODO раскомментить
   override fun openModes() {
-    val navDirections = ProfileFlowFragmentDirections.actionProfileFlowDestToModesDest()
-    navController?.navigate(navDirections)
+    /*val navDirections = ProfileFlowFragmentDirections.actionProfileFlowDestToModesDest()
+    navController?.navigate(navDirections)*/
   }
 
   override fun openSettings() {
-    val navDirections = ProfileFlowFragmentDirections.actionProfileFlowDestToSettingsDest()
-    navController?.navigate(navDirections)
+    /*val navDirections = ProfileFlowFragmentDirections.actionProfileFlowDestToSettingsDest()
+    navController?.navigate(navDirections)*/
   }
 
   companion object {
