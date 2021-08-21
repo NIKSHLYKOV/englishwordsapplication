@@ -1,3 +1,4 @@
+include ':feature-groups_and_words'
 include ':navigation'
 include ':feature-profile'
 include ':feature-preferences'
