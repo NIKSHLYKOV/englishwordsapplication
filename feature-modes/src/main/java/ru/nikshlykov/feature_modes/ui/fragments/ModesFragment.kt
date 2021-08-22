@@ -18,7 +18,7 @@ import ru.nikshlykov.feature_modes.ui.viewmodels.ModesFeatureComponentViewModel
 import ru.nikshlykov.feature_modes.ui.viewmodels.ModesViewModel
 import javax.inject.Inject
 
-internal class ModesFragment : Fragment() {
+class ModesFragment : Fragment() {
 
   private val modesFeatureComponentViewModel: ModesFeatureComponentViewModel by viewModels()
 

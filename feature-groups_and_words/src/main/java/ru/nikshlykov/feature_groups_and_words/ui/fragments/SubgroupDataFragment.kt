@@ -1,19 +1,25 @@
 package ru.nikshlykov.feature_groups_and_words.ui.fragments
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import ru.nikshlykov.feature_groups_and_words.R
+import ru.nikshlykov.feature_groups_and_words.di.GroupsFeatureComponentViewModel
 import ru.nikshlykov.feature_groups_and_words.ui.viewmodels.SubgroupDataViewModel
 import javax.inject.Inject
 
 class SubgroupDataFragment : FlowFragmentChildFragment() {
+
+  private val groupsFeatureComponentViewModel: GroupsFeatureComponentViewModel by viewModels()
+
   // TODO сделать добавление фото для подгруппы.
   // View элементы.
   private var confirmButton: MaterialButton? = null
@@ -23,6 +29,11 @@ class SubgroupDataFragment : FlowFragmentChildFragment() {
   @Inject
   lateinit var viewModelFactory: ViewModelProvider.Factory
   private var subgroupDataViewModel: SubgroupDataViewModel? = null
+
+  override fun onAttach(context: Context) {
+    groupsFeatureComponentViewModel.modesFeatureComponent.inject(this)
+    super.onAttach(context)
+  }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

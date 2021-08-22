@@ -14,7 +14,6 @@ class GroupsViewModel(
   private val getGroupsWithSubgroupsInteractor: GetGroupsWithSubgroupsInteractor,
   private val updateSubgroupInteractor: UpdateSubgroupInteractor
 ) : ViewModel() {
-  // TODO переписать все androidviewmodel на viewmodel.
 
   private val _groupItems: MutableLiveData<ArrayList<GroupItem>?> = MutableLiveData()
   val groupItems: LiveData<ArrayList<GroupItem>?> = _groupItems

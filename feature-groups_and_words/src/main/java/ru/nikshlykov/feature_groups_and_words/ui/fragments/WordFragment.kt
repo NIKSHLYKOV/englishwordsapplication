@@ -1,5 +1,6 @@
 package ru.nikshlykov.feature_groups_and_words.ui.fragments
 
+import android.content.Context
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import android.util.Log
@@ -10,6 +11,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
@@ -18,12 +20,16 @@ import com.google.android.material.textfield.TextInputLayout
 import ru.nikshlykov.data.database.models.Subgroup
 import ru.nikshlykov.data.database.models.Word
 import ru.nikshlykov.feature_groups_and_words.R
+import ru.nikshlykov.feature_groups_and_words.di.GroupsFeatureComponentViewModel
 import ru.nikshlykov.feature_groups_and_words.ui.viewmodels.WordViewModel
 import java.util.*
 import javax.inject.Inject
 
 class WordFragment : FlowFragmentChildFragment(),
   ResetProgressDialogFragment.ResetProgressListener {
+
+  private val groupsFeatureComponentViewModel: GroupsFeatureComponentViewModel by viewModels()
+
   // View элементы.
   private var wordTextInputLayout: TextInputLayout? = null
   private var valueTextInputLayout: TextInputLayout? = null
@@ -54,12 +60,17 @@ class WordFragment : FlowFragmentChildFragment(),
   private var linkOrDeleteFlag = 0
 
   // Синтезатор речи.
-  private var textToSpeech: TextToSpeech? = null
+  @Inject
+  lateinit var textToSpeech: TextToSpeech
+
+  override fun onAttach(context: Context) {
+    groupsFeatureComponentViewModel.modesFeatureComponent.inject(this)
+    super.onAttach(context)
+  }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     wordViewModel = viewModelFactory!!.create(WordViewModel::class.java)
-    //textToSpeech = (requireActivity().applicationContext as App).textToSpeech
   }
 
   override fun onCreateView(

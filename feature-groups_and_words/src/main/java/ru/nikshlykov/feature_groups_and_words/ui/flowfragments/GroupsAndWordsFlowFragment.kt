@@ -1,4 +1,4 @@
-package ru.nikshlykov.feature_groups_and_words.ui
+package ru.nikshlykov.feature_groups_and_words.ui.flowfragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -15,6 +15,7 @@ import ru.nikshlykov.navigation.BackPressedFlowFragmentListener
 class GroupsAndWordsFlowFragment : Fragment(), OnChildFragmentInteractionListener,
   BackPressedFlowFragmentListener {
   // TODO сделать проверку на корневой фрагмент (чтобы groupsFragment не пересоздавался)
+
   private var navController: NavController? = null
   private var navHostFragment: NavHostFragment? = null
 

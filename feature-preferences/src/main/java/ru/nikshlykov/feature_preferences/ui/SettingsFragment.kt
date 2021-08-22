@@ -23,7 +23,7 @@ import ru.nikshlykov.feature_preferences.preferences.NotificationTimePreference
 import java.util.*
 import javax.inject.Inject
 
-internal class SettingsFragment : PreferenceFragmentCompat(), OnSharedPreferenceChangeListener {
+class SettingsFragment : PreferenceFragmentCompat(), OnSharedPreferenceChangeListener {
 
   // TODO сделать toolbar, если надо будет
 

@@ -1,10 +1,12 @@
 package ru.nikshlykov.feature_groups_and_words.ui.fragments
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavDirections
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import ru.nikshlykov.data.database.models.Subgroup
 import ru.nikshlykov.feature_groups_and_words.R
+import ru.nikshlykov.feature_groups_and_words.di.GroupsFeatureComponentViewModel
 import ru.nikshlykov.feature_groups_and_words.ui.adapters.GroupItemsRecyclerViewAdapter
 import ru.nikshlykov.feature_groups_and_words.ui.adapters.SubgroupsRecyclerViewAdapter
 import ru.nikshlykov.feature_groups_and_words.ui.viewmodels.GroupsViewModel
@@ -20,6 +23,8 @@ import javax.inject.Inject
 class GroupsFragment : FlowFragmentChildFragment(),
   SubgroupsRecyclerViewAdapter.OnSubgroupClickListener,
   SubgroupsRecyclerViewAdapter.OnSubgroupCheckedListener {
+
+  private val groupsFeatureComponentViewModel: GroupsFeatureComponentViewModel by viewModels()
 
   private val LOG_TAG = "GroupsFragment"
 
@@ -37,6 +42,11 @@ class GroupsFragment : FlowFragmentChildFragment(),
   // TODO подумать, как скроллить теперь доверху, когда создалась новая подгруппа.
   //  Запускать новый GroupsFragment?
   private var subgroupCreatingFlag = false
+
+  override fun onAttach(context: Context) {
+    groupsFeatureComponentViewModel.modesFeatureComponent.inject(this)
+    super.onAttach(context)
+  }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     Log.i(LOG_TAG, "onCreate()")
