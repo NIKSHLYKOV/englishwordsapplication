@@ -1,4 +1,4 @@
-package ru.nikshlykov.feature_groups_and_words.ui
+package ru.nikshlykov.feature_groups_and_words.ui.flowfragments
 
 import androidx.navigation.NavDirections
 

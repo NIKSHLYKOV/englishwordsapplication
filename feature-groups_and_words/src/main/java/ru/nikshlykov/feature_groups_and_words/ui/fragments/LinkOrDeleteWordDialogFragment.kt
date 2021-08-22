@@ -1,17 +1,22 @@
 package ru.nikshlykov.feature_groups_and_words.ui.fragments
 
 import android.app.Dialog
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
-import dagger.android.support.DaggerDialogFragment
 import ru.nikshlykov.feature_groups_and_words.R
+import ru.nikshlykov.feature_groups_and_words.di.GroupsFeatureComponentViewModel
 import ru.nikshlykov.feature_groups_and_words.ui.viewmodels.WordDialogsViewModel
 import javax.inject.Inject
 
 class LinkOrDeleteWordDialogFragment : DialogFragment() {
+
+  private val groupsFeatureComponentViewModel: GroupsFeatureComponentViewModel by viewModels()
+
   // Флаг, который отвечает за подбираемые подгруппы.
   private var flag = 0
 
@@ -28,6 +33,11 @@ class LinkOrDeleteWordDialogFragment : DialogFragment() {
 
   @Inject
   lateinit var viewModelFactory: ViewModelProvider.Factory
+
+  override fun onAttach(context: Context) {
+    groupsFeatureComponentViewModel.modesFeatureComponent.inject(this)
+    super.onAttach(context)
+  }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     Log.d(LOG_TAG, "onCreate")

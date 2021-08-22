@@ -3,19 +3,20 @@ package ru.nikshlykov.englishwordsapp.ui
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import dagger.android.support.DaggerAppCompatActivity
 import ru.nikshlykov.englishwordsapp.App
 import ru.nikshlykov.englishwordsapp.R
-import ru.nikshlykov.feature_groups_and_words.ui.GroupsAndWordsFlowFragment
+import ru.nikshlykov.feature_groups_and_words.ui.flowfragments.GroupsAndWordsFlowFragment
 import ru.nikshlykov.feature_profile.navigation.ProfileFeatureRouter
 import ru.nikshlykov.feature_profile.ui.flowfragments.ProfileFlowFragment
+import ru.nikshlykov.feature_profile.ui.flowfragments.ProfileFlowFragmentDirections
 import ru.nikshlykov.feature_study.ui.flowfragments.StudyFlowFragment
 
-class MainActivity : DaggerAppCompatActivity(), ProfileFeatureRouter {
+class MainActivity : AppCompatActivity(), ProfileFeatureRouter {
 
   // TODO проверить все вьюхи с клавой на adjustresize.
 
@@ -90,15 +91,14 @@ class MainActivity : DaggerAppCompatActivity(), ProfileFeatureRouter {
     }
   }
 
-  // TODO раскомментить
   override fun openModes() {
-    /*val navDirections = ProfileFlowFragmentDirections.actionProfileFlowDestToModesDest()
-    navController?.navigate(navDirections)*/
+    val navDirections = ProfileFlowFragmentDirections.actionProfileFlowDestToModesDest()
+    navController?.navigate(navDirections)
   }
 
   override fun openSettings() {
-    /*val navDirections = ProfileFlowFragmentDirections.actionProfileFlowDestToSettingsDest()
-    navController?.navigate(navDirections)*/
+    val navDirections = ProfileFlowFragmentDirections.actionProfileFlowDestToSettingsDest()
+    navController?.navigate(navDirections)
   }
 
   companion object {

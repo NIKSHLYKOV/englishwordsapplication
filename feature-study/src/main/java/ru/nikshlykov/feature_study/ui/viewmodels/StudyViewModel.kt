@@ -85,7 +85,7 @@ internal class StudyViewModel(
         // Запрашиваем следующее для повтора слово.
         getNextAvailableToRepeatWord(listener)
       } else {
-        _modesSelected.value = true
+        _modesSelected.value = false
       }
     }
   }

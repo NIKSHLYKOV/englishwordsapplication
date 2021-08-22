@@ -1,18 +1,23 @@
 package ru.nikshlykov.feature_groups_and_words.ui.fragments
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.textfield.TextInputEditText
 import ru.nikshlykov.feature_groups_and_words.R
+import ru.nikshlykov.feature_groups_and_words.di.GroupsFeatureComponentViewModel
 import ru.nikshlykov.feature_groups_and_words.ui.viewmodels.AddWordViewModel
 import javax.inject.Inject
 
 class AddWordFragment : FlowFragmentChildFragment() {
+
+  private val groupsFeatureComponentViewModel: GroupsFeatureComponentViewModel by viewModels()
 
   // View элементы.
   private var wordTextInputEditText: TextInputEditText? = null
@@ -25,6 +30,11 @@ class AddWordFragment : FlowFragmentChildFragment() {
 
   @Inject
   lateinit var viewModelFactory: ViewModelProvider.Factory
+
+  override fun onAttach(context: Context) {
+    groupsFeatureComponentViewModel.modesFeatureComponent.inject(this)
+    super.onAttach(context)
+  }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

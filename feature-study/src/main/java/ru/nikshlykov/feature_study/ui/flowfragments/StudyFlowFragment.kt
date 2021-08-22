@@ -30,8 +30,6 @@ class StudyFlowFragment : Fragment(),
   private val studyFeatureComponentViewModel: StudyFeatureComponentViewModel by viewModels()
   // Убрал BackPressed, т.к. он всё равно не тот бы был, что в app модуле.
 
-  // TODO при изначальной установке не показывается никакое сообщение (вроде).
-  //  О режимах предупреждения точно нет.
   // ViewModel для работы с БД.
   @JvmField
   @Inject

@@ -1,5 +1,6 @@
 package ru.nikshlykov.feature_groups_and_words.ui.fragments
 
+import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -10,8 +11,10 @@ import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavDirections
@@ -23,10 +26,10 @@ import com.bumptech.glide.Glide
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
-import dagger.android.support.DaggerAppCompatActivity
 import ru.nikshlykov.data.database.models.Subgroup
 import ru.nikshlykov.feature_groups_and_words.R
 import ru.nikshlykov.feature_groups_and_words.data.repositories.SubgroupImages
+import ru.nikshlykov.feature_groups_and_words.di.GroupsFeatureComponentViewModel
 import ru.nikshlykov.feature_groups_and_words.ui.adapters.WordsRecyclerViewAdapter
 import ru.nikshlykov.feature_groups_and_words.ui.viewmodels.SubgroupViewModel
 import java.util.*
@@ -35,10 +38,9 @@ import javax.inject.Inject
 class SubgroupFragment : FlowFragmentChildFragment(), SortWordsDialogFragment.SortWordsListener,
   ResetProgressDialogFragment.ResetProgressListener,
   DeleteSubgroupDialogFragment.DeleteSubgroupListener {
-  // TODO проверить баг с отменой изучения подгруппы.
-  //  Выставляешь на изучение во вкладе со всеми подгруппами, заходишь сюда, выходишь,
-  //  и она уже не изучается почему-то. Видимо, какой-то баг с toolbar. проверить во ViewModel
-  //  сущность отвечающую за это
+
+  private val groupsFeatureComponentViewModel: GroupsFeatureComponentViewModel by viewModels()
+
   // View элементы.
   private var createWordFAB: FloatingActionButton? = null
   private var toolbar: Toolbar? = null
@@ -65,6 +67,11 @@ class SubgroupFragment : FlowFragmentChildFragment(), SortWordsDialogFragment.So
 
   // параметр сортировки слов в подгруппе.
   private var sortParam = 0
+
+  override fun onAttach(context: Context) {
+    groupsFeatureComponentViewModel.modesFeatureComponent.inject(this)
+    super.onAttach(context)
+  }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -95,7 +102,7 @@ class SubgroupFragment : FlowFragmentChildFragment(), SortWordsDialogFragment.So
     findViews(view)
 
     // Устанавливаем наш toolbar.
-    (activity as DaggerAppCompatActivity?)!!.setSupportActionBar(toolbar)
+    (activity as AppCompatActivity?)!!.setSupportActionBar(toolbar)
     initCreateWordFAB()
     subgroupViewModel!!.subgroup.observe(viewLifecycleOwner, { subgroup ->
       if (subgroup != null) {
