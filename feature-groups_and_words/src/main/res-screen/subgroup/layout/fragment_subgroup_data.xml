@@ -11,7 +11,7 @@
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/group_name">
+        android:hint="@string/subgroup_name">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/fragment_subgroup_data___text_input_edit_text___subgroup_name"
@@ -30,6 +30,6 @@
         style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
         app:cornerRadius="20dp"
 
-        android:text="@string/create_group" />
+        android:text="@string/create_subgroup" />
 
 </RelativeLayout>

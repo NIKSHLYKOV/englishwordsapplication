@@ -15,7 +15,7 @@
 
         style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton"
 
-        android:text="@string/create_group" />
+        android:text="@string/create_subgroup" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/fragment_groups___recycler_view___groups_and_subgroups"

@@ -100,7 +100,7 @@ class App : Application(), Configuration.Provider, ModesFeatureDepsProvider,
     val ttsPitch = sharedPreferences
       .getInt(getString(R.string.preference_key___tts_pitch), 10) * 0.1f
     val ttsSpeechRate = sharedPreferences
-      .getInt(getString(R.string.preference_key___tts_pitch), 10) * 0.1f
+      .getInt(getString(R.string.preference_key___tts_speech_rate), 10) * 0.1f
     textToSpeech = TextToSpeech(applicationContext) { status ->
       if (status == TextToSpeech.SUCCESS) {
         // Установка языка, высоты и скорости речи.
