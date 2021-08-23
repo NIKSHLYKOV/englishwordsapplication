@@ -43,8 +43,8 @@ android {
 }
 
 dependencies {
-    implementation project(path: ':data')
-    implementation project(path: ':navigation')
+    implementation project(path: ':core-db')
+    implementation project(path: ':core-navigation')
 
     implementation libraries.cardview
     implementation libraries.recyclerview

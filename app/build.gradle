@@ -34,13 +34,13 @@ android {
 }
 
 dependencies {
-    implementation project(path: ":data")
+    implementation project(path: ':core-db')
     implementation project(path: ":feature-modes")
     implementation project(path: ":feature-study")
     implementation project(path: ":feature-preferences")
     implementation project(path: ":feature-profile")
     implementation project(path: ":feature-groups_and_words")
-    implementation project(path: ":navigation")
+    implementation project(path: ':core-navigation')
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 

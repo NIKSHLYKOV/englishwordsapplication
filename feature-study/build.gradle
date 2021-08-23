@@ -35,7 +35,7 @@ android {
 }
 
 dependencies {
-    implementation project(path: ":data")
+    implementation project(path: ':core-db')
 
     // DI (Dagger 2)
     def dagger_version = "2.37"
