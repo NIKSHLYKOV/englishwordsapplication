@@ -1,39 +1,30 @@
 <resources>
-    <string name="app_name">EnglishWordsApp</string>
-
-    <string name="title_study">Изучение</string>
-
-    <string name="in_english">На английском</string>
-    <string name="in_russian">На русском</string>
-
     <!-- Группы -->
-    <string name="title_groups">Группы</string>
-    <string name="group_name">Название группы</string>
+    <string name="subgroup_name">Название группы</string>
     <!-- Методы работы с группой -->
-    <string name="create_group">Создать группу</string>
+    <string name="create_subgroup">Создать группу</string>
     <string name="to_learn">Изучать</string>
+    <!-- Сообщения о группе -->
     <string name="error_subgroup_is_empty">"На данный момент ваша группа пуста! Добавьте в неё слова из других групп или создайте свои."</string>
     <string name="error_new_subgroup_empty_name">Необходимо указать название создаваемой группы!</string>
 
     <!-- Слова -->
-    <string name="word">Слово</string>
-    <string name="transcription">Транскрипция</string>
-    <string name="translation">Перевод</string>
-    <string name="value">Значение</string>
     <string name="progress">Прогресс</string>
     <string name="part_of_speech">Часть речи</string>
     <!-- Методы работы со словом -->
     <string name="create_new_word">Создать новое слово</string>
     <string name="save_word">Сохранить слово</string>
+    <!-- Сообщения о словах -->
     <string name="word_deleted">Слово удалено</string>
     <string name="error_word_saving">Необходимо указать слово и его значение!</string>
-    <string name="by_progress">По прогрессу</string>
-    <string name="by_alphabet">По алфавиту</string>
 
 
-    <string name="title_profile">Профиль</string>
+    <!-- Примеры -->
     <string name="examples">Примеры</string>
+    <string name="in_english">На английском</string>
+    <string name="in_russian">На русском</string>
 
+    <!-- Меню -->
     <string name="action___delete_word___title">Удалить слово</string>
     <string name="action___link_word___title">Связать слово</string>
     <string name="action___reset_progress___title">Сбросить прогресс</string>
@@ -62,7 +53,7 @@
     <string name="dialog___delete_subgroup___title">Удаление группы</string>
     <string name="dialog___delete_subgroup___message">Вы действительно хотите удалить текущую группу?</string>
 
-
+    <!-- Общие выражения -->
     <string name="no">Нет</string>
     <string name="yes">Да</string>
     <string name="cancel">Отмена</string>
@@ -70,27 +61,6 @@
     <string name="to_add">Добавить</string>
     <string name="to_save">Сохранить</string>
     <string name="ok">ОК</string>
-    <string name="settings">Настройки</string>
     <string name="sorry_error_happened">Извините, произошла ошибка!</string>
     <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </string>
-
-    <!-- Preference Titles -->
-    <string name="messages_header">Messages</string>
-    <string name="sync_header">Sync</string>
-
-    <!-- Messages Preferences -->
-    <string name="signature_title">Your signature</string>
-    <string name="reply_title">Default reply action</string>
-
-    <!-- Preferences Keys -->
-    <string name="preference_key___use_notifications">PreferenceKeyUseNotification</string>
-    <string name="preference_key___notification_time">PreferenceKeyNotificationTime</string>
-    <string name="preference_key___tts_pitch">PreferenceKeyTtsPitch</string>
-    <string name="preference_key___tts_speech_rate">PreferenceKeyTtsSpeechRate</string>
-    <string name="preference_key___sort_words_in_subgroups">PreferenceKeySortWordsInSubgroups</string>
-    <string name="preference_key___new_word_count">PreferenceKeyNewWordsCount</string>
-
-    <string name="notification_channel___remember_to_study___name">Напоминания об обучении</string>
-    <string name="notification_channel___remember_to_study___description">Уведомления о том, что необходимо повторить слова</string>
-    <string name="notification_channel___remember_to_study___id">NotificationChannelRememberToStudyId</string>
 </resources>

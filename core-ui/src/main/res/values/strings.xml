@@ -1,2 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="word">Слово</string>
+    <string name="transcription">Транскрипция</string>
+    <string name="value">Значение</string>
+    <string name="translation">Перевод</string>
+
+    <string name="by_progress">По прогрессу</string>
+    <string name="by_alphabet">По алфавиту</string>
+
+    <string name="preference_key___sort_words_in_subgroups">PreferenceKeySortWordsInSubgroups</string>
+    <string name="preference_key___new_word_count">PreferenceKeyNewWordsCount</string>
+</resources>

@@ -1,10 +1,4 @@
 <resources>
-    <string name="preference_key___new_word_count">PreferenceKeyNewWordsCount</string>
-
-    <string name="value">Значение слова</string>
-    <string name="word">Слово на английском</string>
-    <string name="transcription">Транскрипция</string>
-
     <string name="remember">Помню</string>
     <string name="do_not_remember">Не помню</string>
 
