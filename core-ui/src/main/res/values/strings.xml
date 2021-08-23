@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="word">Слово</string>
     <string name="transcription">Транскрипция</string>
     <string name="value">Значение</string>
     <string name="translation">Перевод</string>
+
+    <string name="to_learn">Изучать</string>
 
     <string name="by_progress">По прогрессу</string>
     <string name="by_alphabet">По алфавиту</string>
