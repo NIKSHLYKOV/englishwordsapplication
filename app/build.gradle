@@ -41,6 +41,7 @@ dependencies {
     implementation project(path: ":feature-profile")
     implementation project(path: ":feature-groups_and_words")
     implementation project(path: ':core-navigation')
+    implementation project(path: ':core-ui')
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
