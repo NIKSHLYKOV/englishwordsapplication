@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
@@ -23,21 +23,5 @@
 
     <style name="PopupMenuTextAppearance" parent="TextAppearance.AppCompat.Menu">
         <item name="android:textColor">?attr/colorOnBackground</item>
-    </style>
-
-    <style name="Toolbar">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">?attr/actionBarSize</item>
-        <item name="theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
-        <item name="android:background">@color/colorPrimary</item>
-    </style>
-    <style name="CollapsingToolbarExpandedTitle">
-        <item name="android:textSize">24sp</item>
-        <item name="android:textColor">@android:color/white</item>
-        <item name="android:textAlignment">center</item>
-    </style>
-    <style name="CollapsingToolbarCollapseTitle">
-        <item name="android:textSize">20sp</item>
-        <item name="android:textColor">@android:color/white</item>
     </style>
 </resources>
