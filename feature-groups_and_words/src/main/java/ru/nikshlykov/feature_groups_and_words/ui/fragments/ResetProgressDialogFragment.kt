@@ -7,7 +7,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import ru.nikshlykov.feature_groups_and_words.R
 
-class ResetProgressDialogFragment : DialogFragment() {
+internal class ResetProgressDialogFragment : DialogFragment() {
   // Флаг, который отвечает за выводимые заголовок и сообщение (либо только для одного слова,
   // либо для целой подгруппы).
   private var flag = 0

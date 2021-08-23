@@ -13,7 +13,7 @@ import ru.nikshlykov.feature_groups_and_words.di.GroupsFeatureComponentViewModel
 import ru.nikshlykov.feature_groups_and_words.ui.viewmodels.WordDialogsViewModel
 import javax.inject.Inject
 
-class LinkOrDeleteWordDialogFragment : DialogFragment() {
+internal class LinkOrDeleteWordDialogFragment : DialogFragment() {
 
   private val groupsFeatureComponentViewModel: GroupsFeatureComponentViewModel by viewModels()
 

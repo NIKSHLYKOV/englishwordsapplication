@@ -35,7 +35,7 @@ import ru.nikshlykov.feature_groups_and_words.ui.viewmodels.SubgroupViewModel
 import java.util.*
 import javax.inject.Inject
 
-class SubgroupFragment : FlowFragmentChildFragment(), SortWordsDialogFragment.SortWordsListener,
+internal class SubgroupFragment : FlowFragmentChildFragment(), SortWordsDialogFragment.SortWordsListener,
   ResetProgressDialogFragment.ResetProgressListener,
   DeleteSubgroupDialogFragment.DeleteSubgroupListener {
 

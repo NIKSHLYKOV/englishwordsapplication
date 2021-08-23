@@ -3,7 +3,7 @@ package ru.nikshlykov.feature_groups_and_words.domain.interactors
 import ru.nikshlykov.data.database.models.Word
 import ru.nikshlykov.feature_groups_and_words.domain.repositories.WordsRepository
 
-class AddNewWordToSubgroupInteractor(
+internal class AddNewWordToSubgroupInteractor(
   private val wordsRepository: WordsRepository,
   private val addWordToSubgroupInteractor: AddWordToSubgroupInteractor
 ) {

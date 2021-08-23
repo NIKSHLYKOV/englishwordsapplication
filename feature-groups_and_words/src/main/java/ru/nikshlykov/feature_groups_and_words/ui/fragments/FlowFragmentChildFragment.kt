@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.fragment.app.Fragment
 import ru.nikshlykov.feature_groups_and_words.ui.flowfragments.OnChildFragmentInteractionListener
 
-abstract class FlowFragmentChildFragment : Fragment() {
+internal abstract class FlowFragmentChildFragment : Fragment() {
 
   protected var onChildFragmentInteractionListener: OnChildFragmentInteractionListener? = null
 

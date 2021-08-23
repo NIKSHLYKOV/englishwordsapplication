@@ -12,7 +12,7 @@ import ru.nikshlykov.feature_groups_and_words.domain.repositories.SubgroupsRepos
 import ru.nikshlykov.feature_groups_and_words.domain.repositories.WordsRepository
 
 @Module
-abstract class RepositoryModule {
+internal abstract class RepositoryModule {
 
   @Binds
   @GroupsFeatureScope

@@ -6,7 +6,7 @@ import ru.nikshlykov.feature_groups_and_words.domain.repositories.SubgroupsRepos
 import java.util.*
 import kotlin.collections.HashSet
 
-class GetAvailableSubgroupsInteractor(
+internal class GetAvailableSubgroupsInteractor(
   private val subgroupsRepository: SubgroupsRepository,
   private val linksRepository: LinksRepository
 ) {

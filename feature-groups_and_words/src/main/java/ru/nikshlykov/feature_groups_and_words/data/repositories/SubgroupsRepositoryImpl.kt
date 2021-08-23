@@ -5,7 +5,7 @@ import ru.nikshlykov.data.database.models.Subgroup
 import ru.nikshlykov.feature_groups_and_words.domain.repositories.SubgroupsRepository
 import javax.inject.Inject
 
-class SubgroupsRepositoryImpl @Inject constructor(private val subgroupDao: SubgroupDao) :
+internal class SubgroupsRepositoryImpl @Inject constructor(private val subgroupDao: SubgroupDao) :
   SubgroupsRepository {
   override suspend fun insertSubgroup(subgroup: Subgroup): Long {
     subgroup.id = subgroupDao.subgroupWithMinId().id - 1

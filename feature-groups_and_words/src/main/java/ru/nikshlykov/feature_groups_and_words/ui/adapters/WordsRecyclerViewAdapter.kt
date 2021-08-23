@@ -14,7 +14,7 @@ import ru.nikshlykov.data.database.models.Word
 import ru.nikshlykov.feature_groups_and_words.R
 import java.util.*
 
-class WordsRecyclerViewAdapter(private val textToSpeech: TextToSpeech) :
+internal class WordsRecyclerViewAdapter(private val textToSpeech: TextToSpeech) :
   RecyclerView.Adapter<WordsRecyclerViewAdapter.WordsViewHolder>() {
   // Слова подгруппы.
   private var words: List<Word> = ArrayList()

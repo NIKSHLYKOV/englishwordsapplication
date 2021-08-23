@@ -18,6 +18,8 @@ import ru.nikshlykov.feature_study.ui.flowfragments.StudyFlowFragment
 
 class MainActivity : AppCompatActivity(), ProfileFeatureRouter {
 
+  // TODO посмотреть, что вообще с flowfragments. у них можно поставить internal или нет.
+
   // TODO проверить все вьюхи с клавой на adjustresize.
 
   // TODO сделать скрытие bottomNavigation, когда у нас не корневые фрагменты.

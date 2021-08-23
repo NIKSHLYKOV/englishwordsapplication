@@ -14,7 +14,7 @@ import ru.nikshlykov.feature_groups_and_words.domain.interactors.GetWordInteract
 import ru.nikshlykov.feature_groups_and_words.domain.interactors.ResetWordProgressInteractor
 import ru.nikshlykov.feature_groups_and_words.domain.interactors.UpdateWordInteractor
 
-class WordViewModel(
+internal class WordViewModel(
   private val getWordInteractor: GetWordInteractor,
   private val updateWordInteractor: UpdateWordInteractor,
   private val resetWordProgressInteractor: ResetWordProgressInteractor,

@@ -7,7 +7,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import ru.nikshlykov.feature_groups_and_words.R
 
-class SortWordsDialogFragment : DialogFragment() {
+internal class SortWordsDialogFragment : DialogFragment() {
   // Параметр сортировки.
   private var sortParam = 0
 

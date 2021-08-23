@@ -17,7 +17,7 @@ import ru.nikshlykov.feature_groups_and_words.R
 import ru.nikshlykov.feature_groups_and_words.data.repositories.SubgroupImages
 import java.util.*
 
-class SubgroupsRecyclerViewAdapter(
+internal class SubgroupsRecyclerViewAdapter(
   private val context: Context, private val subgroups: ArrayList<Subgroup>?,
   private val onSubgroupClickListener: OnSubgroupClickListener?,
   private val onSubgroupCheckedListener: OnSubgroupCheckedListener?

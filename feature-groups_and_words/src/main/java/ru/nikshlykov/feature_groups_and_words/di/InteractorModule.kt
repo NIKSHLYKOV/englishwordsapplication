@@ -9,7 +9,7 @@ import ru.nikshlykov.feature_groups_and_words.domain.repositories.SubgroupsRepos
 import ru.nikshlykov.feature_groups_and_words.domain.repositories.WordsRepository
 
 @Module
-class InteractorModule {
+internal class InteractorModule {
 
   @Provides
   fun provideGetSubgroupsFromGroupInteractor(

@@ -10,7 +10,7 @@ import ru.nikshlykov.feature_groups_and_words.domain.interactors.AddSubgroupInte
 import ru.nikshlykov.feature_groups_and_words.domain.interactors.GetSubgroupInteractor
 import ru.nikshlykov.feature_groups_and_words.domain.interactors.UpdateSubgroupInteractor
 
-class SubgroupDataViewModel(
+internal class SubgroupDataViewModel(
   private val getSubgroupInteractor: GetSubgroupInteractor,
   private val addSubgroupInteractor: AddSubgroupInteractor,
   private val updateSubgroupInteractor: UpdateSubgroupInteractor

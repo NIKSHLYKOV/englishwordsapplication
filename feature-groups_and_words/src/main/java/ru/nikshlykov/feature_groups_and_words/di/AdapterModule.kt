@@ -6,7 +6,7 @@ import dagger.Provides
 import ru.nikshlykov.feature_groups_and_words.ui.adapters.WordsRecyclerViewAdapter
 
 @Module
-class AdapterModule {
+internal class AdapterModule {
 
   @Provides
   @GroupsFeatureScope

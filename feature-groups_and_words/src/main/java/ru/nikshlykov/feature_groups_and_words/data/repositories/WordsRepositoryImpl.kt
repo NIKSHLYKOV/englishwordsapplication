@@ -6,7 +6,7 @@ import ru.nikshlykov.data.database.models.Word
 import ru.nikshlykov.feature_groups_and_words.domain.repositories.WordsRepository
 import javax.inject.Inject
 
-class WordsRepositoryImpl @Inject constructor(private val wordDao: WordDao) : WordsRepository {
+internal class WordsRepositoryImpl @Inject constructor(private val wordDao: WordDao) : WordsRepository {
   // TODO подумать над удалением слова после его удаления из последней подгруппы.
   override suspend fun insertWord(word: Word): Long {
     word.id = wordDao.wordWithMinId().id - 1
