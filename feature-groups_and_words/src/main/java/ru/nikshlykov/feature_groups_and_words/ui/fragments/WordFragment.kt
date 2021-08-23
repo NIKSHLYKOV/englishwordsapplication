@@ -25,7 +25,7 @@ import ru.nikshlykov.feature_groups_and_words.ui.viewmodels.WordViewModel
 import java.util.*
 import javax.inject.Inject
 
-class WordFragment : FlowFragmentChildFragment(),
+internal class WordFragment : FlowFragmentChildFragment(),
   ResetProgressDialogFragment.ResetProgressListener {
 
   private val groupsFeatureComponentViewModel: GroupsFeatureComponentViewModel by viewModels()

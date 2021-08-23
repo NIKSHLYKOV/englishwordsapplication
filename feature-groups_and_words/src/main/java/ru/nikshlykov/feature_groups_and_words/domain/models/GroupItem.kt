@@ -4,7 +4,7 @@ import ru.nikshlykov.data.database.models.Group
 import ru.nikshlykov.data.database.models.Subgroup
 import java.util.*
 
-class GroupItem(var group: Group, var subgroups: ArrayList<Subgroup>) {
+internal class GroupItem(var group: Group, var subgroups: ArrayList<Subgroup>) {
   override fun equals(obj: Any?): Boolean {
     if (this === obj) {
       return true

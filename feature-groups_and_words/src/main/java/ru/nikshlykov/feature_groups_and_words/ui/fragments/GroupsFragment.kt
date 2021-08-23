@@ -20,7 +20,7 @@ import ru.nikshlykov.feature_groups_and_words.ui.adapters.SubgroupsRecyclerViewA
 import ru.nikshlykov.feature_groups_and_words.ui.viewmodels.GroupsViewModel
 import javax.inject.Inject
 
-class GroupsFragment : FlowFragmentChildFragment(),
+internal class GroupsFragment : FlowFragmentChildFragment(),
   SubgroupsRecyclerViewAdapter.OnSubgroupClickListener,
   SubgroupsRecyclerViewAdapter.OnSubgroupCheckedListener {
 

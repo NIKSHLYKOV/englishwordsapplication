@@ -6,7 +6,7 @@ import kotlinx.coroutines.launch
 import ru.nikshlykov.feature_groups_and_words.domain.interactors.AddWordToSubgroupInteractor
 import ru.nikshlykov.feature_groups_and_words.domain.interactors.DeleteWordFromSubgroupInteractor
 
-class WordDialogsViewModel(
+internal class WordDialogsViewModel(
   private val addWordToSubgroupInteractor: AddWordToSubgroupInteractor,
   private val deleteWordFromSubgroupInteractor: DeleteWordFromSubgroupInteractor
 ) : ViewModel() {

@@ -4,7 +4,7 @@ import ru.nikshlykov.data.database.models.Subgroup
 import ru.nikshlykov.feature_groups_and_words.domain.models.GroupItem
 import java.util.*
 
-class GetGroupsWithSubgroupsInteractor(
+internal class GetGroupsWithSubgroupsInteractor(
   private val getGroupsInteractor: GetGroupsInteractor,
   private val getSubgroupsFromGroupInteractor: GetSubgroupsFromGroupInteractor
 ) {

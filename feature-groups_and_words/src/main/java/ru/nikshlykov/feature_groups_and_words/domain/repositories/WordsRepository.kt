@@ -3,7 +3,7 @@ package ru.nikshlykov.feature_groups_and_words.domain.repositories
 import androidx.lifecycle.LiveData
 import ru.nikshlykov.data.database.models.Word
 
-interface WordsRepository {
+internal interface WordsRepository {
 
   suspend fun insertWord(word: Word): Long
 

@@ -1,6 +1,6 @@
 package ru.nikshlykov.feature_groups_and_words.data.repositories
 
-object SubgroupImages {
+internal object SubgroupImages {
   // TODO перенести в data модуль
 
   const val PATH_TO_SUBGROUP_IMAGES =

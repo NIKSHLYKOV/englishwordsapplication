@@ -14,7 +14,7 @@ import ru.nikshlykov.feature_groups_and_words.R
 import ru.nikshlykov.feature_groups_and_words.domain.models.GroupItem
 import java.util.*
 
-class GroupItemsRecyclerViewAdapter(
+internal class GroupItemsRecyclerViewAdapter(
   private val context: Context,
   private val onSubgroupClickListener: SubgroupsRecyclerViewAdapter.OnSubgroupClickListener,
   private val onSubgroupCheckedListener: SubgroupsRecyclerViewAdapter.OnSubgroupCheckedListener

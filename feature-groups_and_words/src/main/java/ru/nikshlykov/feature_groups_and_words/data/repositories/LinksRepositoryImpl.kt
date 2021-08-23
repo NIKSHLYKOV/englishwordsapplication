@@ -5,7 +5,7 @@ import ru.nikshlykov.data.database.models.Link
 import ru.nikshlykov.feature_groups_and_words.domain.repositories.LinksRepository
 import javax.inject.Inject
 
-class LinksRepositoryImpl @Inject constructor(private val linkDao: LinkDao) : LinksRepository {
+internal class LinksRepositoryImpl @Inject constructor(private val linkDao: LinkDao) : LinksRepository {
   override suspend fun insertLink(link: Link): Long {
     return linkDao.insert(link)
   }

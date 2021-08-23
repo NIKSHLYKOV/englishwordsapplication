@@ -15,7 +15,7 @@ import ru.nikshlykov.feature_groups_and_words.di.GroupsFeatureComponentViewModel
 import ru.nikshlykov.feature_groups_and_words.ui.viewmodels.AddWordViewModel
 import javax.inject.Inject
 
-class AddWordFragment : FlowFragmentChildFragment() {
+internal class AddWordFragment : FlowFragmentChildFragment() {
 
   private val groupsFeatureComponentViewModel: GroupsFeatureComponentViewModel by viewModels()
 

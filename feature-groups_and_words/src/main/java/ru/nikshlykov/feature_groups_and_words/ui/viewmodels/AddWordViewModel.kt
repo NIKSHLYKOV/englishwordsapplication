@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import ru.nikshlykov.feature_groups_and_words.domain.interactors.AddNewWordToSubgroupInteractor
 
-class AddWordViewModel(private val addNewWordToSubgroupInteractor: AddNewWordToSubgroupInteractor) :
+internal class AddWordViewModel(private val addNewWordToSubgroupInteractor: AddNewWordToSubgroupInteractor) :
   ViewModel() {
 
   private val _wordAdded: MutableLiveData<Boolean> = MutableLiveData(false)

@@ -9,7 +9,7 @@ import ru.nikshlykov.feature_groups_and_words.ui.fragments.*
     AdapterModule::class]
 )
 @GroupsFeatureScope
-interface GroupsFeatureComponent {
+internal interface GroupsFeatureComponent {
 
   @Component.Builder
   interface Builder {

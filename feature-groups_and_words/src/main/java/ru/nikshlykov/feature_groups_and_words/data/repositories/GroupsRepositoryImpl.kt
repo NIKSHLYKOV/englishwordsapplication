@@ -5,7 +5,7 @@ import ru.nikshlykov.data.database.models.Group
 import ru.nikshlykov.feature_groups_and_words.domain.repositories.GroupsRepository
 import javax.inject.Inject
 
-class GroupsRepositoryImpl @Inject constructor(private val groupDao: GroupDao) : GroupsRepository {
+internal class GroupsRepositoryImpl @Inject constructor(private val groupDao: GroupDao) : GroupsRepository {
 
   override suspend fun getAllGroups(): List<Group> {
     return groupDao.getAllGroups()

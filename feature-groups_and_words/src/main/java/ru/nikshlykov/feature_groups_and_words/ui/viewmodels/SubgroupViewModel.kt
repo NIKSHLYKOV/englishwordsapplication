@@ -11,7 +11,7 @@ import ru.nikshlykov.feature_groups_and_words.domain.interactors.*
 import ru.nikshlykov.feature_groups_and_words.ui.fragments.SortWordsDialogFragment
 import java.util.*
 
-class SubgroupViewModel(
+internal class SubgroupViewModel(
   private val getSubgroupInteractor: GetSubgroupInteractor,
   private val addWordToSubgroupInteractor: AddWordToSubgroupInteractor,
   private val deleteWordFromSubgroupInteractor: DeleteWordFromSubgroupInteractor,

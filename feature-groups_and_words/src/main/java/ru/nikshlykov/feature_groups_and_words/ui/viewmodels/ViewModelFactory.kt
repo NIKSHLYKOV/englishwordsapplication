@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import ru.nikshlykov.feature_groups_and_words.domain.interactors.*
 import javax.inject.Inject
 
-class ViewModelFactory @Inject constructor(
+internal class ViewModelFactory @Inject constructor(
   private val getGroupsWithSubgroupsInteractor: GetGroupsWithSubgroupsInteractor,
   private val addSubgroupInteractor: AddSubgroupInteractor,
   private val updateSubgroupInteractor: UpdateSubgroupInteractor,

@@ -12,7 +12,7 @@ import ru.nikshlykov.data.database.models.Example
 import ru.nikshlykov.feature_groups_and_words.R
 import java.util.*
 
-class ExamplesRecyclerViewAdapter(context: Context?) :
+internal class ExamplesRecyclerViewAdapter(context: Context?) :
   RecyclerView.Adapter<ExamplesRecyclerViewAdapter.ExamplesViewHolder>() {
   // Слова подгруппы.
   private var examples: List<Example> = ArrayList()
