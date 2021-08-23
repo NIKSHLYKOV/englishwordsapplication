@@ -3,7 +3,6 @@
     <string name="subgroup_name">Название группы</string>
     <!-- Методы работы с группой -->
     <string name="create_subgroup">Создать группу</string>
-    <string name="to_learn">Изучать</string>
     <!-- Сообщения о группе -->
     <string name="error_subgroup_is_empty">"На данный момент ваша группа пуста! Добавьте в неё слова из других групп или создайте свои."</string>
     <string name="error_new_subgroup_empty_name">Необходимо указать название создаваемой группы!</string>
