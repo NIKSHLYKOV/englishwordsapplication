@@ -26,7 +26,11 @@
         android:id="@+id/study_flow_dest"
         android:name="ru.nikshlykov.feature_study.ui.flowfragments.StudyFlowFragment"
         android:label="StudyFlowFragment"
-        tools:layout="@layout/flow_fragment_study" />
+        tools:layout="@layout/flow_fragment_study">
+        <action
+            android:id="@+id/action_study_flow_dest_to_modes_dest"
+            app:destination="@id/modes_dest" />
+    </fragment>
 
     <fragment
         android:id="@+id/modes_dest"

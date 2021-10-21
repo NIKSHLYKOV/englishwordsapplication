@@ -15,6 +15,8 @@ import ru.nikshlykov.data.database.models.Word
 import ru.nikshlykov.feature_study.NavigationStudyDirections
 import ru.nikshlykov.feature_study.R
 import ru.nikshlykov.feature_study.domain.interactors.GetAvailableToRepeatWordInteractor
+import ru.nikshlykov.feature_study.navigation.StudyFeatureRouter
+import ru.nikshlykov.feature_study.navigation.StudyFragmentNavigation
 import ru.nikshlykov.feature_study.ui.fragments.InfoFragment
 import ru.nikshlykov.feature_study.ui.fragments.modesfragments.FirstShowModeFragment.FirstShowModeReportListener
 import ru.nikshlykov.feature_study.ui.fragments.modesfragments.RepeatResultListener
@@ -25,7 +27,7 @@ import javax.inject.Inject
 
 class StudyFlowFragment : Fragment(),
   GetAvailableToRepeatWordInteractor.OnAvailableToRepeatWordLoadedListener, RepeatResultListener,
-  FirstShowModeReportListener {
+  FirstShowModeReportListener, StudyFragmentNavigation {
 
   private val studyFeatureComponentViewModel: StudyFeatureComponentViewModel by viewModels()
   // Убрал BackPressed, т.к. он всё равно не тот бы был, что в app модуле.
@@ -36,6 +38,9 @@ class StudyFlowFragment : Fragment(),
   var viewModelFactory: ViewModelProvider.Factory? = null
   private var studyViewModel: StudyViewModel? = null
   private var navController: NavController? = null
+
+  @Inject
+  lateinit var studyFeatureRouter: StudyFeatureRouter
 
   override fun onAttach(context: Context) {
     studyFeatureComponentViewModel.modesFeatureComponent.inject(this)
@@ -131,6 +136,10 @@ class StudyFlowFragment : Fragment(),
    */
   override fun repeatResult(wordId: Long, result: Int) {
     studyViewModel!!.repeatProcessing(wordId, result, this)
+  }
+
+  override fun openModes() {
+    studyFeatureRouter.openModesFromStudy()
   }
 
   companion object {

@@ -1,5 +1,6 @@
 package ru.nikshlykov.feature_study.ui.fragments
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -7,12 +8,33 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import com.google.android.material.button.MaterialButton
 import ru.nikshlykov.feature_study.R
+import ru.nikshlykov.feature_study.navigation.StudyFragmentNavigation
 
-// TODO сделать кнопку с переходом на фрагмент режимов.
+// TODO сделать перепроверку режимов после взаимодействия с фичей режимов.
+//  Возможно, надо просто в подписке на режимы прописать startStudying.
+//  Проверить, как работает этот метод, не будет ли ошибок каких-то.
 internal class InfoFragment : Fragment() {
   // Флаг, получаемый из Activity.
   private var flag = 0
+
+  private var studyFragmentNavigation: StudyFragmentNavigation? = null
+
+  override fun onAttach(context: Context) {
+    Log.d("ProfileFragment", "onAttach()")
+    super.onAttach(context)
+    studyFragmentNavigation =
+      if (requireParentFragment().parentFragment is StudyFragmentNavigation) {
+        requireParentFragment().parentFragment as StudyFragmentNavigation?
+      } else {
+        throw RuntimeException(
+          requireParentFragment().parentFragment.toString()
+            + " must implement ProfileFragmentNavigation"
+        )
+      }
+  }
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     Log.i("InfoFragment", "onCreate")
@@ -32,9 +54,17 @@ internal class InfoFragment : Fragment() {
     // Объявляем переменную для текста и находим необходимый для вывода текст.
     var text = ""
     when (flag) {
-      FLAG_MODES_ARE_NOT_CHOSEN -> text =
-        "Для того, чтобы изучать слова, необходимо выбрать режимы изучения. " +
-          "Сделать это вы можете перейдя во вкладку \"Профиль\" в пункт \"Режимы\""
+      FLAG_MODES_ARE_NOT_CHOSEN -> {
+        text =
+          "Для того, чтобы изучать слова, необходимо выбрать режимы изучения. " +
+            "Сделать это вы можете перейдя во вкладку \"Профиль\" в пункт \"Режимы\""
+        val goToModesButton: MaterialButton =
+          v.findViewById(R.id.fragment_info___material_button___to_modes)
+        goToModesButton.visibility = View.VISIBLE
+        goToModesButton.setOnClickListener {
+          studyFragmentNavigation?.openModes()
+        }
+      }
       FLAG_AVAILABLE_WORDS_ARE_NOT_EXISTING -> text = "Нет доступных слов на данный момент! " +
         "Выбери группы, если ты ещё этого не делал или если ты выучил все слова из выбранных групп."
     }

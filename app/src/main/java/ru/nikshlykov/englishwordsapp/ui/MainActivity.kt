@@ -14,9 +14,11 @@ import ru.nikshlykov.feature_groups_and_words.ui.flowfragments.GroupsAndWordsFlo
 import ru.nikshlykov.feature_profile.navigation.ProfileFeatureRouter
 import ru.nikshlykov.feature_profile.ui.flowfragments.ProfileFlowFragment
 import ru.nikshlykov.feature_profile.ui.flowfragments.ProfileFlowFragmentDirections
+import ru.nikshlykov.feature_study.navigation.StudyFeatureRouter
 import ru.nikshlykov.feature_study.ui.flowfragments.StudyFlowFragment
+import ru.nikshlykov.feature_study.ui.flowfragments.StudyFlowFragmentDirections
 
-class MainActivity : AppCompatActivity(), ProfileFeatureRouter {
+class MainActivity : AppCompatActivity(), ProfileFeatureRouter, StudyFeatureRouter {
 
   // TODO посмотреть, что вообще с flowfragments. у них можно поставить internal или нет.
 
@@ -100,6 +102,11 @@ class MainActivity : AppCompatActivity(), ProfileFeatureRouter {
 
   override fun openSettings() {
     val navDirections = ProfileFlowFragmentDirections.actionProfileFlowDestToSettingsDest()
+    navController?.navigate(navDirections)
+  }
+
+  override fun openModesFromStudy() {
+    val navDirections = StudyFlowFragmentDirections.actionStudyFlowDestToModesDest()
     navController?.navigate(navDirections)
   }
 
