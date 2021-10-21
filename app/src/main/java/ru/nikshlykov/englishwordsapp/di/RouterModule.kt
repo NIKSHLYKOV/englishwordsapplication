@@ -6,6 +6,7 @@ import dagger.Provides
 import ru.nikshlykov.englishwordsapp.App
 import ru.nikshlykov.feature_modes.navigation.ModesRouterSource
 import ru.nikshlykov.feature_profile.navigation.ProfileFeatureRouter
+import ru.nikshlykov.feature_study.navigation.StudyFeatureRouter
 import javax.inject.Singleton
 
 @Module
@@ -24,6 +25,12 @@ class RouterModule {
   @Provides
   @Singleton
   fun provideProfileFeatureRouter(application: Application): ProfileFeatureRouter {
+    return (application as App).mainActivity!!
+  }
+
+  @Provides
+  @Singleton
+  fun provideStudyFeatureRouter(application: Application): StudyFeatureRouter {
     return (application as App).mainActivity!!
   }
 }
