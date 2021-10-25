@@ -3,10 +3,7 @@ package ru.nikshlykov.feature_study.ui.viewmodels
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import ru.nikshlykov.feature_study.domain.interactors.GetAvailableToRepeatWordInteractor
-import ru.nikshlykov.feature_study.domain.interactors.GetFirstShowRepeatsCountForTodayInteractor
-import ru.nikshlykov.feature_study.domain.interactors.GetSelectedModesInteractor
-import ru.nikshlykov.feature_study.domain.interactors.StudyWordsInteractor
+import ru.nikshlykov.feature_study.domain.interactors.*
 import javax.inject.Inject
 
 internal class ViewModelFactory @Inject constructor(
@@ -14,7 +11,8 @@ internal class ViewModelFactory @Inject constructor(
   private val getSelectedModesInteractor: GetSelectedModesInteractor,
   private val studyWordsInteractor: StudyWordsInteractor,
   private val getFirstShowRepeatsCountForTodayInteractor: GetFirstShowRepeatsCountForTodayInteractor,
-  private val getAvailableToRepeatWordInteractor: GetAvailableToRepeatWordInteractor
+  private val getAvailableToRepeatWordInteractor: GetAvailableToRepeatWordInteractor,
+  private val getModesAreSelectedInteractor: GetModesAreSelectedInteractor
 ) : ViewModelProvider.Factory {
   override fun <T : ViewModel?> create(modelClass: Class<T>): T {
     return when (modelClass) {
@@ -22,6 +20,7 @@ internal class ViewModelFactory @Inject constructor(
         StudyViewModel(
           application,
           getSelectedModesInteractor,
+          getModesAreSelectedInteractor,
           getFirstShowRepeatsCountForTodayInteractor,
           getAvailableToRepeatWordInteractor,
           studyWordsInteractor

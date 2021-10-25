@@ -12,9 +12,6 @@ import com.google.android.material.button.MaterialButton
 import ru.nikshlykov.feature_study.R
 import ru.nikshlykov.feature_study.navigation.StudyFragmentNavigation
 
-// TODO сделать перепроверку режимов после взаимодействия с фичей режимов.
-//  Возможно, надо просто в подписке на режимы прописать startStudying.
-//  Проверить, как работает этот метод, не будет ли ошибок каких-то.
 internal class InfoFragment : Fragment() {
   // Флаг, получаемый из Activity.
   private var flag = 0
