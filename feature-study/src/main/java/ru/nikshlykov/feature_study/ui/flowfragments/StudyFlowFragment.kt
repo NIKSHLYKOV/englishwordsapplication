@@ -51,9 +51,6 @@ class StudyFlowFragment : Fragment(),
     super.onCreate(savedInstanceState)
     // Создаём ViewModel для работы с БД.
     studyViewModel = viewModelFactory!!.create(StudyViewModel::class.java)
-
-    // Получаем выбранные пользователем режимы.
-    studyViewModel!!.startStudying(this)
   }
 
   override fun onCreateView(
@@ -69,8 +66,11 @@ class StudyFlowFragment : Fragment(),
     val navHostFragment =
       childFragmentManager.findFragmentById(R.id.flow_fragment_study___nav_host) as NavHostFragment?
     navController = navHostFragment!!.navController
-    studyViewModel!!.modesSelected.observe(viewLifecycleOwner, { modesSelected ->
-      if (modesSelected == false) {
+
+    studyViewModel!!.getModesAreSelected().observe(viewLifecycleOwner, { modesAreSelected ->
+      if (modesAreSelected) {
+        studyViewModel!!.startStudying(this)
+      } else {
         val navDirections = NavigationStudyDirections.actionGlobalInfoDest()
           .setInfoFlag(InfoFragment.FLAG_MODES_ARE_NOT_CHOSEN)
         navController!!.navigate(navDirections)

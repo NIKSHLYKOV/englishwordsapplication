@@ -12,23 +12,18 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.nikshlykov.feature_study.R
-import ru.nikshlykov.feature_study.domain.interactors.GetAvailableToRepeatWordInteractor
+import ru.nikshlykov.feature_study.domain.interactors.*
 import ru.nikshlykov.feature_study.domain.interactors.GetAvailableToRepeatWordInteractor.OnAvailableToRepeatWordLoadedListener
-import ru.nikshlykov.feature_study.domain.interactors.GetFirstShowRepeatsCountForTodayInteractor
-import ru.nikshlykov.feature_study.domain.interactors.GetSelectedModesInteractor
-import ru.nikshlykov.feature_study.domain.interactors.StudyWordsInteractor
 import java.util.*
 
 internal class StudyViewModel(
   application: Application,
   private val getSelectedModesInteractor: GetSelectedModesInteractor,
+  private val getModesAreSelectedInteractor: GetModesAreSelectedInteractor,
   private val getFirstShowRepeatsCountForTodayInteractor: GetFirstShowRepeatsCountForTodayInteractor,
   private val getAvailableToRepeatWordInteractor: GetAvailableToRepeatWordInteractor,
   private val studyWordsInteractor: StudyWordsInteractor
 ) : AndroidViewModel(application) {
-
-  private val _modesSelected: MutableLiveData<Boolean> = MutableLiveData(true)
-  val modesSelected: LiveData<Boolean> = _modesSelected
 
   // TODO подумать над тем, чтобы логику работы с количеством начатых за слов день перенести
   //  на слой interactor'ов.
@@ -68,6 +63,10 @@ internal class StudyViewModel(
     }*/
   // Выбранные режимы.
 
+  fun getModesAreSelected(): LiveData<Boolean> {
+    return getModesAreSelectedInteractor.getSelectedModes()
+  }
+
   fun startStudying(listener: OnAvailableToRepeatWordLoadedListener) {
     viewModelScope.launch {
       val selectedModes = getSelectedModesInteractor.getSelectedModes()
@@ -84,8 +83,6 @@ internal class StudyViewModel(
 
         // Запрашиваем следующее для повтора слово.
         getNextAvailableToRepeatWord(listener)
-      } else {
-        _modesSelected.value = false
       }
     }
   }
