@@ -41,7 +41,8 @@ class NotificationWorker(
       .setContentIntent(pendingIntent)
       .setVibrate(longArrayOf(1000, 1000, 1000, 1000, 1000))
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-      val channelId = context.getString(R.string.notification_channel___remember_to_study___id)
+      val channelId =
+        context.getString(ru.nikshlykov.feature_preferences.R.string.notification_channel___remember_to_study___id)
       if (notificationManager.getNotificationChannel(channelId) == null) createNotificationChannel(
         context
       )
@@ -85,11 +86,12 @@ class NotificationWorker(
     }*/
   @RequiresApi(Build.VERSION_CODES.O)
   private fun createNotificationChannel(context: Context) {
-    val id = context.getString(R.string.notification_channel___remember_to_study___id)
+    val id =
+      context.getString(ru.nikshlykov.feature_preferences.R.string.notification_channel___remember_to_study___id)
     val name: CharSequence =
-      context.getString(R.string.notification_channel___remember_to_study___name)
+      context.getString(ru.nikshlykov.feature_preferences.R.string.notification_channel___remember_to_study___name)
     val description =
-      context.getString(R.string.notification_channel___remember_to_study___description)
+      context.getString(ru.nikshlykov.feature_preferences.R.string.notification_channel___remember_to_study___description)
     val importance = NotificationManager.IMPORTANCE_DEFAULT
     val channel = NotificationChannel(id, name, importance)
     channel.description = description

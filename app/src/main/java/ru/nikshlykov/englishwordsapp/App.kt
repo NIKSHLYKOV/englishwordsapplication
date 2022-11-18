@@ -78,9 +78,12 @@ class App : Application(), Configuration.Provider, ModesFeatureDepsProvider,
 
   private fun createNotificationChannel() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-      val id = getString(R.string.notification_channel___remember_to_study___id)
-      val name: CharSequence = getString(R.string.notification_channel___remember_to_study___name)
-      val description = getString(R.string.notification_channel___remember_to_study___description)
+      val id =
+        getString(ru.nikshlykov.feature_preferences.R.string.notification_channel___remember_to_study___id)
+      val name: CharSequence =
+        getString(ru.nikshlykov.feature_preferences.R.string.notification_channel___remember_to_study___name)
+      val description =
+        getString(ru.nikshlykov.feature_preferences.R.string.notification_channel___remember_to_study___description)
       val importance = NotificationManager.IMPORTANCE_DEFAULT
       val channel = NotificationChannel(id, name, importance)
       channel.description = description
@@ -98,9 +101,15 @@ class App : Application(), Configuration.Provider, ModesFeatureDepsProvider,
     // Получаем настройки для робота TTS и инициализируем его.
     val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
     val ttsPitch = sharedPreferences
-      .getInt(getString(R.string.preference_key___tts_pitch), 10) * 0.1f
+      .getInt(
+        getString(ru.nikshlykov.feature_preferences.R.string.preference_key___tts_pitch),
+        10
+      ) * 0.1f
     val ttsSpeechRate = sharedPreferences
-      .getInt(getString(R.string.preference_key___tts_speech_rate), 10) * 0.1f
+      .getInt(
+        getString(ru.nikshlykov.feature_preferences.R.string.preference_key___tts_speech_rate),
+        10
+      ) * 0.1f
     textToSpeech = TextToSpeech(applicationContext) { status ->
       if (status == TextToSpeech.SUCCESS) {
         // Установка языка, высоты и скорости речи.
