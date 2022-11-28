@@ -3,6 +3,7 @@ package ru.nikshlykov.feature_groups_and_words.di
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import ru.nikshlykov.data.database.daos.GroupDao
 import ru.nikshlykov.data.database.daos.LinkDao
 import ru.nikshlykov.data.database.daos.SubgroupDao
@@ -23,8 +24,9 @@ internal class RepositoryModule {
   @GroupsFeatureScope
   fun provideSubgroupsRepository(
     subgroupDao: SubgroupDao,
+    applicationScope: CoroutineScope,
     dispatcher: CoroutineDispatcher
-  ): SubgroupsRepository = SubgroupsRepositoryImpl(subgroupDao, dispatcher)
+  ): SubgroupsRepository = SubgroupsRepositoryImpl(subgroupDao, applicationScope, dispatcher)
 
   @Provides
   @GroupsFeatureScope
@@ -35,11 +37,19 @@ internal class RepositoryModule {
 
   @Provides
   @GroupsFeatureScope
-  fun provideLinksRepository(linkDao: LinkDao, dispatcher: CoroutineDispatcher): LinksRepository =
-    LinksRepositoryImpl(linkDao, dispatcher)
+  fun provideLinksRepository(
+    linkDao: LinkDao,
+    applicationScope: CoroutineScope,
+    dispatcher: CoroutineDispatcher
+  ): LinksRepository =
+    LinksRepositoryImpl(linkDao, applicationScope, dispatcher)
 
   @Provides
   @GroupsFeatureScope
-  fun provideWordsRepository(wordDao: WordDao, dispatcher: CoroutineDispatcher): WordsRepository =
-    WordsRepositoryImpl(wordDao, dispatcher)
+  fun provideWordsRepository(
+    wordDao: WordDao,
+    applicationScope: CoroutineScope,
+    dispatcher: CoroutineDispatcher
+  ): WordsRepository =
+    WordsRepositoryImpl(wordDao, applicationScope, dispatcher)
 }

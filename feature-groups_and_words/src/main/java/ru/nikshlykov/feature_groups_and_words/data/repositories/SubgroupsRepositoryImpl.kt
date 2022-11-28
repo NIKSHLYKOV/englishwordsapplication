@@ -1,6 +1,7 @@
 package ru.nikshlykov.feature_groups_and_words.data.repositories
 
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import ru.nikshlykov.data.database.daos.SubgroupDao
@@ -10,22 +11,23 @@ import javax.inject.Inject
 
 internal class SubgroupsRepositoryImpl @Inject constructor(
   private val subgroupDao: SubgroupDao,
+  private val externalScope: CoroutineScope,
   private val dispatcher: CoroutineDispatcher = Dispatchers.Default
 ) :
   SubgroupsRepository {
   override suspend fun insertSubgroup(subgroup: Subgroup): Long =
-    withContext(dispatcher) {
+    withContext(externalScope.coroutineContext + dispatcher) {
       subgroup.id = subgroupDao.subgroupWithMinId().id - 1
       subgroupDao.insert(subgroup)
     }
 
   override suspend fun updateSubgroup(subgroup: Subgroup): Int =
-    withContext(dispatcher) {
+    withContext(externalScope.coroutineContext + dispatcher) {
       subgroupDao.update(subgroup)
     }
 
   override suspend fun deleteSubgroup(subgroup: Subgroup): Int =
-    withContext(dispatcher) {
+    withContext(externalScope.coroutineContext + dispatcher) {
       subgroupDao.delete(subgroup)
     }
 

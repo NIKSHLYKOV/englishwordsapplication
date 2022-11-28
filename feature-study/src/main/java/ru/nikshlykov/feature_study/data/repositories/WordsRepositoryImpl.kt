@@ -1,6 +1,7 @@
 package ru.nikshlykov.feature_study.data.repositories
 
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import ru.nikshlykov.data.database.daos.WordDao
@@ -10,11 +11,12 @@ import javax.inject.Inject
 
 internal class WordsRepositoryImpl @Inject constructor(
   private val wordDao: WordDao,
+  private val externalScope: CoroutineScope,
   private val dispatcher: CoroutineDispatcher = Dispatchers.Default
 ) : WordsRepository {
 
   override suspend fun updateWord(word: Word): Int =
-    withContext(dispatcher) {
+    withContext(externalScope.coroutineContext + dispatcher) {
       wordDao.update(word)
     }
 

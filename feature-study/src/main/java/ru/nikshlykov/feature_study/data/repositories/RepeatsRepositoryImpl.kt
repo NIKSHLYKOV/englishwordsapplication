@@ -2,6 +2,7 @@ package ru.nikshlykov.feature_study.data.repositories
 
 
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import ru.nikshlykov.data.database.daos.RepeatDao
@@ -11,12 +12,13 @@ import javax.inject.Inject
 
 internal class RepeatsRepositoryImpl @Inject constructor(
   private val repeatDao: RepeatDao,
+  private val externalScope: CoroutineScope,
   private val dispatcher: CoroutineDispatcher = Dispatchers.Default
 ) :
   RepeatsRepository {
 
   override suspend fun insertRepeat(repeat: Repeat): Long =
-    withContext(dispatcher) {
+    withContext(externalScope.coroutineContext + dispatcher) {
       // Вычисляем id для повтора и добавляем его в БД.
       val lastRepeat = repeatDao.repeatWithMaxId()
       val idForNewRepeat: Long = if (lastRepeat == null) {
