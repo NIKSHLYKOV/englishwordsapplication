@@ -1,7 +1,11 @@
 package ru.nikshlykov.feature_study.di.modules
 
-import dagger.Binds
 import dagger.Module
+import dagger.Provides
+import kotlinx.coroutines.CoroutineDispatcher
+import ru.nikshlykov.data.database.daos.ModeDao
+import ru.nikshlykov.data.database.daos.RepeatDao
+import ru.nikshlykov.data.database.daos.WordDao
 import ru.nikshlykov.feature_study.data.repositories.ModesRepositoryImpl
 import ru.nikshlykov.feature_study.data.repositories.RepeatsRepositoryImpl
 import ru.nikshlykov.feature_study.data.repositories.WordsRepositoryImpl
@@ -11,17 +15,22 @@ import ru.nikshlykov.feature_study.domain.repositories.RepeatsRepository
 import ru.nikshlykov.feature_study.domain.repositories.WordsRepository
 
 @Module
-internal abstract class RepositoryModule {
+internal class RepositoryModule {
 
-  @Binds
+  @Provides
   @StudyFeatureScope
-  abstract fun bindWordsRepository(wordsRepositoryImpl: WordsRepositoryImpl): WordsRepository
+  fun provideWordsRepository(wordDao: WordDao, dispatcher: CoroutineDispatcher): WordsRepository =
+    WordsRepositoryImpl(wordDao, dispatcher)
 
-  @Binds
+  @Provides
   @StudyFeatureScope
-  abstract fun bindRepeatsRepository(repeatsRepositoryImpl: RepeatsRepositoryImpl): RepeatsRepository
+  fun provideRepeatsRepository(
+    repeatDao: RepeatDao,
+    dispatcher: CoroutineDispatcher
+  ): RepeatsRepository = RepeatsRepositoryImpl(repeatDao, dispatcher)
 
-  @Binds
+  @Provides
   @StudyFeatureScope
-  abstract fun bindModesRepository(modesRepositoryImpl: ModesRepositoryImpl): ModesRepository
+  fun provideModesRepository(modeDao: ModeDao, dispatcher: CoroutineDispatcher): ModesRepository =
+    ModesRepositoryImpl(modeDao, dispatcher)
 }

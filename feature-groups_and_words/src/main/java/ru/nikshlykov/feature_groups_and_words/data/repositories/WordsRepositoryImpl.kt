@@ -1,26 +1,36 @@
 package ru.nikshlykov.feature_groups_and_words.data.repositories
 
 import androidx.lifecycle.LiveData
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import ru.nikshlykov.data.database.daos.WordDao
 import ru.nikshlykov.data.database.models.Word
 import ru.nikshlykov.feature_groups_and_words.domain.repositories.WordsRepository
 import javax.inject.Inject
 
-internal class WordsRepositoryImpl @Inject constructor(private val wordDao: WordDao) : WordsRepository {
+internal class WordsRepositoryImpl @Inject constructor(
+  private val wordDao: WordDao,
+  private val dispatcher: CoroutineDispatcher = Dispatchers.Default
+) : WordsRepository {
   // TODO подумать над удалением слова после его удаления из последней подгруппы.
-  override suspend fun insertWord(word: Word): Long {
-    word.id = wordDao.wordWithMinId().id - 1
-    word.createdByUser = 1
-    return wordDao.insert(word)
-  }
+  override suspend fun insertWord(word: Word): Long =
+    withContext(dispatcher) {
+      word.id = wordDao.wordWithMinId().id - 1
+      word.createdByUser = 1
+      wordDao.insert(word)
+    }
 
-  override suspend fun updateWord(word: Word): Int {
-    return wordDao.update(word)
-  }
+  override suspend fun updateWord(word: Word): Int =
 
-  override suspend fun getWordById(wordId: Long): Word {
-    return wordDao.getWordById(wordId)
-  }
+    withContext(dispatcher) {
+      wordDao.update(word)
+    }
+
+  override suspend fun getWordById(wordId: Long): Word =
+    withContext(dispatcher) {
+      wordDao.getWordById(wordId)
+    }
 
   override fun getWordsFromSubgroupByProgress(subgroupId: Long): LiveData<List<Word>> {
     return wordDao.getWordsFromSubgroupByProgress(subgroupId)
@@ -30,7 +40,8 @@ internal class WordsRepositoryImpl @Inject constructor(private val wordDao: Word
     return wordDao.getWordsFromSubgroupByAlphabet(subgroupId)
   }
 
-  override suspend fun resetWordsProgressFromSubgroup(subgroupId: Long): Int {
-    return wordDao.resetWordsProgressFromSubgroup(subgroupId)
-  }
+  override suspend fun resetWordsProgressFromSubgroup(subgroupId: Long): Int =
+    withContext(dispatcher) {
+      wordDao.resetWordsProgressFromSubgroup(subgroupId)
+    }
 }
