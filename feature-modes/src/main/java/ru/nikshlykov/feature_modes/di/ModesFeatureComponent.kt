@@ -5,7 +5,8 @@ import ru.nikshlykov.feature_modes.ui.fragments.ModesFragment
 
 @[ModesFeatureScope Component(
   dependencies = [ModesFeatureDeps::class],
-  modules = [ViewModelModule::class, RepositoryModule::class, InteractorModule::class]
+  modules = [ViewModelModule::class, RepositoryModule::class, InteractorModule::class,
+    DispatchersModule::class]
 )]
 internal interface ModesFeatureComponent {
 

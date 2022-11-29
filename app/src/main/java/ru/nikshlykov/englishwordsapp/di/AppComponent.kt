@@ -13,7 +13,7 @@ import javax.inject.Singleton
 
 @Component(
   modules = [AndroidInjectionModule::class, ContextModule::class, DatabaseModule::class,
-    RouterModule::class]
+    RouterModule::class, CoroutinesModule::class]
 )
 @Singleton
 interface AppComponent : ModesFeatureDeps, StudyFeatureDeps, SettingsFeatureDeps,

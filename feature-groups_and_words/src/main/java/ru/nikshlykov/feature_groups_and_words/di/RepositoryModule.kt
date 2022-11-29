@@ -1,7 +1,13 @@
 package ru.nikshlykov.feature_groups_and_words.di
 
-import dagger.Binds
 import dagger.Module
+import dagger.Provides
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import ru.nikshlykov.data.database.daos.GroupDao
+import ru.nikshlykov.data.database.daos.LinkDao
+import ru.nikshlykov.data.database.daos.SubgroupDao
+import ru.nikshlykov.data.database.daos.WordDao
 import ru.nikshlykov.feature_groups_and_words.data.repositories.GroupsRepositoryImpl
 import ru.nikshlykov.feature_groups_and_words.data.repositories.LinksRepositoryImpl
 import ru.nikshlykov.feature_groups_and_words.data.repositories.SubgroupsRepositoryImpl
@@ -12,21 +18,38 @@ import ru.nikshlykov.feature_groups_and_words.domain.repositories.SubgroupsRepos
 import ru.nikshlykov.feature_groups_and_words.domain.repositories.WordsRepository
 
 @Module
-internal abstract class RepositoryModule {
+internal class RepositoryModule {
 
-  @Binds
+  @Provides
   @GroupsFeatureScope
-  abstract fun bindSubgroupsRepository(subgroupsRepositoryImpl: SubgroupsRepositoryImpl): SubgroupsRepository
+  fun provideSubgroupsRepository(
+    subgroupDao: SubgroupDao,
+    applicationScope: CoroutineScope,
+    dispatcher: CoroutineDispatcher
+  ): SubgroupsRepository = SubgroupsRepositoryImpl(subgroupDao, applicationScope, dispatcher)
 
-  @Binds
+  @Provides
   @GroupsFeatureScope
-  abstract fun bindGroupsRepository(groupsRepositoryImpl: GroupsRepositoryImpl): GroupsRepository
+  fun provideGroupsRepository(
+    groupDao: GroupDao,
+    dispatcher: CoroutineDispatcher
+  ): GroupsRepository = GroupsRepositoryImpl(groupDao, dispatcher)
 
-  @Binds
+  @Provides
   @GroupsFeatureScope
-  abstract fun bindLinksRepository(linksRepositoryImpl: LinksRepositoryImpl): LinksRepository
+  fun provideLinksRepository(
+    linkDao: LinkDao,
+    applicationScope: CoroutineScope,
+    dispatcher: CoroutineDispatcher
+  ): LinksRepository =
+    LinksRepositoryImpl(linkDao, applicationScope, dispatcher)
 
-  @Binds
+  @Provides
   @GroupsFeatureScope
-  abstract fun bindWordsRepository(wordsRepositoryImpl: WordsRepositoryImpl): WordsRepository
+  fun provideWordsRepository(
+    wordDao: WordDao,
+    applicationScope: CoroutineScope,
+    dispatcher: CoroutineDispatcher
+  ): WordsRepository =
+    WordsRepositoryImpl(wordDao, applicationScope, dispatcher)
 }

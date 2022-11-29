@@ -6,7 +6,7 @@ import ru.nikshlykov.feature_groups_and_words.ui.fragments.*
 @Component(
   dependencies = [GroupsFeatureDeps::class],
   modules = [ViewModelModule::class, RepositoryModule::class, InteractorModule::class,
-    AdapterModule::class]
+    AdapterModule::class, DispatchersModule::class]
 )
 @GroupsFeatureScope
 internal interface GroupsFeatureComponent {
