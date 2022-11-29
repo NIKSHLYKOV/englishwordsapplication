@@ -15,8 +15,8 @@ class Mode {
   var name: String = ""
 
   @ColumnInfo(name = "IsSelected", defaultValue = "0")
-  var selected: Int = 0 // Параметр выбора режима изучения слов (1 - выбран, 0 - не выбран).
+  var selected: Int = 0 // 1 - выбран, 0 - не выбран.
 
   @ColumnInfo(name = "ImageResourceId")
-  var imageResourceId: String = "" // id картинки (скрин режима) для вывода в Activity режимов.
+  var imageResourceId: String = ""
 }

@@ -7,13 +7,14 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "Settings")
 class Setting {
 
+  // TODO убрать эту сущность
   @PrimaryKey
   @ColumnInfo(name = "_id")
   var id: Long = 0
 
   @ColumnInfo(name = "Param")
-  var name: String = "" // Имя параметра для вывода в Activity настроек.
+  var name: String = ""
 
   @ColumnInfo(name = "Value", defaultValue = "0")
-  var value = 0 // Значение параметра настроек.
+  var value = 0
 }

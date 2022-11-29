@@ -22,20 +22,21 @@ class Subgroup : Parcelable {
     this.name = name
     this.groupId = Group.GROUP_FOR_NEW_SUBGROUPS_ID
     this.studied = 0
+    // TODO заменить базовый imageURL
     this.imageURL = "subgroup_chemistry.jpg"
   }
 
   @PrimaryKey
   @ColumnInfo(name = "_id")
-  var id // id подгруппы.
+  var id
     : Long
 
   @ColumnInfo(name = "SubgroupName")
-  var name // Имя подгруппы.
+  var name
     : String
 
   @ColumnInfo(name = "groupId")
-  var groupId // id группы, которой принадлежит данная подгруппа.
+  var groupId
     : Long
 
   @ColumnInfo(name = "IsStudied")
@@ -43,7 +44,7 @@ class Subgroup : Parcelable {
     : Int
 
   @ColumnInfo(name = "ImageResourceId")
-  var imageURL // id картинки для вывода в GroupsFragment.
+  var imageURL
     : String
 
   val isCreatedByUser: Boolean
@@ -60,7 +61,6 @@ class Subgroup : Parcelable {
     return id == comparedSubgroup.id && name == comparedSubgroup.name && groupId == comparedSubgroup.groupId && studied == comparedSubgroup.studied && imageURL == comparedSubgroup.imageURL
   }
 
-  // Parcelable
   constructor(`in`: Parcel) {
     id = `in`.readLong()
     name = `in`.readString()!!

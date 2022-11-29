@@ -36,24 +36,22 @@ class App : Application(), Configuration.Provider, ModesFeatureDepsProvider,
   ProfileFeatureDepsProvider, GroupsFeatureDepsProvider {
   var textToSpeech: TextToSpeech? = null
     private set
-  private val TTS_ERROR = "Ошибка синтезирования речи!"
+
   private var appComponent: AppComponent? = null
 
-  // TODO убрать костыль. Возможно, надо перейти не Cicerone.
+  // TODO убрать костыль. Возможно, надо перейти на Cicerone.
   var mainActivity: MainActivity? = null
 
   override fun onCreate() {
     appComponent = DaggerAppComponent.factory().create(this)
     super.onCreate()
 
-    // Устанавливаем дефолтные значения в настройках. Сработает только один раз
-    // при первом запуске приложения.
     PreferenceManager.setDefaultValues(this, R.xml.preferences, false)
 
-    // Инициализируем TTS.
     initTTS()
     createNotificationChannel()
 
+    // TODO Разобраться с периодическими уведомлениями
     //setNotificationPeriodicWorker(10);
   }
 
@@ -93,12 +91,9 @@ class App : Application(), Configuration.Provider, ModesFeatureDepsProvider,
       notificationManager?.createNotificationChannel(channel)
     }
   }
-  // Робот TTS для произношения слов.
-  /**
-   * Инициализирует textToSpeech при запуске приложения.
-   */
+
+
   private fun initTTS() {
-    // Получаем настройки для робота TTS и инициализируем его.
     val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
     val ttsPitch = sharedPreferences
       .getInt(
@@ -112,7 +107,6 @@ class App : Application(), Configuration.Provider, ModesFeatureDepsProvider,
       ) * 0.1f
     textToSpeech = TextToSpeech(applicationContext) { status ->
       if (status == TextToSpeech.SUCCESS) {
-        // Установка языка, высоты и скорости речи.
         textToSpeech!!.language = Locale.US
         textToSpeech!!.setPitch(ttsPitch)
         textToSpeech!!.setSpeechRate(ttsSpeechRate)
@@ -122,26 +116,9 @@ class App : Application(), Configuration.Provider, ModesFeatureDepsProvider,
     }
   }
 
-  /**
-   * Устанавливает новый тембр роботу.
-   * @param pitch параметр тембра из настроек (там он может быть от 5 до 25).
-   */
-  fun setTextToSpeechPitch(pitch: Int) {
-    textToSpeech!!.setPitch(pitch * 0.1f)
-    textToSpeech!!.speak("An example of pitch.", TextToSpeech.QUEUE_FLUSH, null, "1")
-  }
-
-  /**
-   * Устанавливает новую скорость роботу.
-   * @param speechRate параметр скорости из настроек (там он может быть от 1 до 25).
-   */
-  fun setTextToSpeechSpeechRate(speechRate: Int) {
-    textToSpeech!!.setSpeechRate(speechRate * 0.1f)
-    textToSpeech!!.speak("An example of speech rate.", TextToSpeech.QUEUE_FLUSH, null, "1")
-  }
-
   companion object {
     // TODO Проверить все EditText на лишние пробелы.
+    private const val TTS_ERROR = "Ошибка синтезирования речи!"
   }
 
   override val modesFeatureDeps: ModesFeatureDeps

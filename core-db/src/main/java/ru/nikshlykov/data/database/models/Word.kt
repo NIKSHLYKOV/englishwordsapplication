@@ -18,15 +18,15 @@ class Word : Parcelable {
 
   @PrimaryKey
   @ColumnInfo(name = "_id")
-  var id // ID слова в базе данных.
+  var id
     : Long = 0
 
   @ColumnInfo(name = "Word")
-  var word // Само слово на английском.
+  var word
     : String
 
   @ColumnInfo(name = "Transcription")
-  var transcription // Транскрипция слова на английском.
+  var transcription
     : String?
 
   @ColumnInfo(name = "Value")
@@ -42,18 +42,17 @@ class Word : Parcelable {
     = 0
 
   @ColumnInfo(name = "PartOfSpeech")
-  var partOfSpeech // Часть/Части речи слова???????????????
+  var partOfSpeech
     : String? = null
 
   @ColumnInfo(name = "LastRepetitionDate", defaultValue = "0")
-  var lastRepetitionDate // Дата последнего повтора слова.
+  var lastRepetitionDate
     : Long = 0
 
   @ColumnInfo(name = "Priority", defaultValue = "0")
   var priority // Приоритет слова. Если слово пропускается, то значение увеличивается.
     = 0
 
-  // Object методы
   override fun equals(other: Any?): Boolean {
     if (this === other) {
       return true
@@ -62,14 +61,14 @@ class Word : Parcelable {
       return false
     }
     val comparedWord = other as Word
-    // Здесь мы проверяем всё, что не может быть null.
+    // Здесь мы проверяем всё, что не может быть null
+    // TODO
     val flag =
       id == comparedWord.id && word == comparedWord.word && value == comparedWord.value && learnProgress == comparedWord.learnProgress && createdByUser == comparedWord.createdByUser && lastRepetitionDate == comparedWord.lastRepetitionDate && priority == comparedWord.priority
     if (flag) {
       // Если всё предыдущее сошлось, то уже можем проверить транскрипцию и
       // часть речи, которые могут быть null.
 
-      // Проверяем транскрипцию.
       if (transcription != null) {
         if (transcription != comparedWord.transcription) {
           return false
@@ -80,7 +79,6 @@ class Word : Parcelable {
         }
       }
 
-      // Проверяем часть речи.
       return if (partOfSpeech != null) {
         partOfSpeech == comparedWord.partOfSpeech
       } else {
@@ -94,7 +92,7 @@ class Word : Parcelable {
     return "Word(id=$id, word=$word, value=$value)"
   }
 
-  // Parcelable
+
   constructor(`in`: Parcel) {
     id = `in`.readLong()
     word = `in`.readString()!!

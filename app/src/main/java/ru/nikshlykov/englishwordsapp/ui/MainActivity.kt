@@ -31,8 +31,7 @@ class MainActivity : AppCompatActivity(), ProfileFeatureRouter, StudyFeatureRout
 
   private var navController: NavController? = null
 
-  // View элементы.
-  private var bottomNavigationView // Нижнее меню.
+  private var bottomNavigationView
     : BottomNavigationView? = null
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,18 +51,11 @@ class MainActivity : AppCompatActivity(), ProfileFeatureRouter, StudyFeatureRout
     (applicationContext as App).textToSpeech!!.shutdown()
   }
 
-  /**
-   * Находит View элементы в разметке.
-   */
   private fun findViews() {
     bottomNavigationView = findViewById(R.id.navigation)
   }
 
-  // Обработка выхода из приложения.
-  /**
-   * Обрабатывает нажатие кнопки назад и информирует о том, что
-   * необходимо нажать её два раза для выхода из приложения.
-   */
+  // Для обработки выхода из приложения.
   override fun onBackPressed() {
     // TODO разобраться потом с тем, как выходить из любой вкладки (что Profile, что GroupsAndWords)
     val primaryFragment = navHostFragment?.childFragmentManager?.primaryNavigationFragment
@@ -73,11 +65,7 @@ class MainActivity : AppCompatActivity(), ProfileFeatureRouter, StudyFeatureRout
     } else if (primaryFragment is ProfileFlowFragment && primaryFragment.backPressedIsAvailable()) {
       Log.d(LOG_TAG, "ProfileFlowFragment onBackPressed()")
       primaryFragment.onBackPressed()
-    } // Закомментил, т.к. код туда не заходил, но придётся что-то делать, если будем делать дальнейшую навигацию из обучения в другие места.
-    /*else if (primaryFragment is StudyFlowFragment && primaryFragment.backPressedIsAvailable()) {
-      Log.d(LOG_TAG, "ProfileFlowFragment onBackPressed()")
-      primaryFragment.onBackPressed()
-    }*/ else {
+    } else {
       if (primaryFragment is StudyFlowFragment) {
         if (lastBackPressedTime + 2000 > System.currentTimeMillis()) {
           Log.d(LOG_TAG, "super.onBackPressed() if StudyFlowFragment")
@@ -111,10 +99,8 @@ class MainActivity : AppCompatActivity(), ProfileFeatureRouter, StudyFeatureRout
   }
 
   companion object {
-    // Тег для логирования.
     private const val LOG_TAG = "MainActivity"
 
-    // Время последнего нажатия на кнопку "Назад" в данном Activity.
     private var lastBackPressedTime: Long = 0
   }
 }
