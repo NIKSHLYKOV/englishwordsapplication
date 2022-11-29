@@ -1,4 +1,4 @@
-package ru.nikshlykov.feature_groups_and_words.data.repositories
+package ru.nikshlykov.feature_groups_and_words.data
 
 internal object SubgroupImages {
   // TODO перенести в data модуль

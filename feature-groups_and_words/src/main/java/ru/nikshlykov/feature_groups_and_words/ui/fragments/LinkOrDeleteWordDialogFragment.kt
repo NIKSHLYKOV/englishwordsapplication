@@ -22,13 +22,13 @@ internal class LinkOrDeleteWordDialogFragment : DialogFragment() {
 
   // id слова, для которого вызывается диалог.
   private var wordId: Long = 0
+
   private var availableSubgroupsNames: Array<String>? = null
   private var availableSubgroupsIds: LongArray? = null
 
   // Массив значений чекбоксов подгрупп.
   private lateinit var checkedSubgroups: BooleanArray
 
-  // ViewModel для работы с БД.
   private var wordDialogsViewModel: WordDialogsViewModel? = null
 
   @Inject
@@ -40,7 +40,6 @@ internal class LinkOrDeleteWordDialogFragment : DialogFragment() {
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
-    Log.d(LOG_TAG, "onCreate")
     super.onCreate(savedInstanceState)
     wordDialogsViewModel = viewModelFactory!!.create(WordDialogsViewModel::class.java)
     dialogArguments
@@ -48,7 +47,6 @@ internal class LinkOrDeleteWordDialogFragment : DialogFragment() {
   }
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-    Log.d(LOG_TAG, "onCreateDialog")
     // Получаем названия доступных подгрупп.
     var availableSubgroupsCount = 0
     if (availableSubgroupsNames != null) {
@@ -65,11 +63,9 @@ internal class LinkOrDeleteWordDialogFragment : DialogFragment() {
     }
   }
 
-  // Получаем id слова.
   private val dialogArguments: Unit
     get() {
       val arguments = arguments
-      // Получаем id слова.
       try {
         wordId = arguments!!.getLong(EXTRA_WORD_ID)
         Log.d(LOG_TAG, "wordId: $wordId")
@@ -94,16 +90,16 @@ internal class LinkOrDeleteWordDialogFragment : DialogFragment() {
   ): AlertDialog {
     checkedSubgroups = BooleanArray(availableSubgroupsCount)
     return when (flag) {
-      TO_LINK ->                 // Возвращаем диалог с подгруппами, доступными для связывания с ними.
+      TO_LINK ->
         AlertDialog.Builder(requireContext())
           .setTitle(R.string.dialog___link_word___title)
           .setMultiChoiceItems(
             availableSubgroupsNames,
             null
-          ) { _, which, isChecked -> // Меняем значение в массиве значений чекбоксов.
+          ) { _, which, isChecked ->
             checkedSubgroups[which] = isChecked
           }
-          .setPositiveButton(R.string.dialog___link_word___positive_button) { _, _ -> // Добавляем связь между подгруппой и словом, если чекбокс выставлен.
+          .setPositiveButton(R.string.dialog___link_word___positive_button) { _, _ ->
             var i = 0
             while (i < checkedSubgroups.size) {
               if (checkedSubgroups[i]) {
@@ -114,16 +110,16 @@ internal class LinkOrDeleteWordDialogFragment : DialogFragment() {
           }
           .setNegativeButton(R.string.cancel, null)
           .create()
-      TO_DELETE ->                 // Возвращаем диалог с подгруппами, доступными для удаления из них слова.
+      TO_DELETE ->
         AlertDialog.Builder(requireContext())
           .setTitle(R.string.dialog___delete_word___title)
           .setMultiChoiceItems(
             availableSubgroupsNames,
             null
-          ) { _, which, isChecked -> // Меняем значение в массиве значений чекбоксов.
+          ) { _, which, isChecked ->
             checkedSubgroups[which] = isChecked
           }
-          .setPositiveButton(R.string.dialog___delete_word___positive_button) { _, _ -> // Удаляем связь между подгруппой и словом, если чекбокс выставлен.
+          .setPositiveButton(R.string.dialog___delete_word___positive_button) { _, _ ->
             var i = 0
             while (i < checkedSubgroups.size) {
               if (checkedSubgroups[i]) {
@@ -163,10 +159,8 @@ internal class LinkOrDeleteWordDialogFragment : DialogFragment() {
       .create()
 
   companion object {
-    // Тег для логирования.
     private const val LOG_TAG = "NewLinkOrDeleteWordDF"
 
-    // Ключи для получения аргументов.
     const val EXTRA_FLAG = "Flag"
     const val EXTRA_WORD_ID = "WordId"
     const val EXTRA_AVAILABLE_SUBGROUPS_NAMES = "AvailableSubgroupsNames"

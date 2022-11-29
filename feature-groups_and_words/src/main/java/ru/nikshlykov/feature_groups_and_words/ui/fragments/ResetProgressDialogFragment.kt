@@ -16,7 +16,6 @@ internal class ResetProgressDialogFragment : DialogFragment() {
     fun resetMessage(message: String?)
   }
 
-  // Интерфейс для взаимодействия.
   private var resetProgressListener: ResetProgressListener? = null
 
   fun setResetProgressListener(resetProgressListener: ResetProgressListener) {
@@ -46,7 +45,7 @@ internal class ResetProgressDialogFragment : DialogFragment() {
     return AlertDialog.Builder(requireContext())
       .setTitle(dialogTitle)
       .setMessage(dialogMessage)
-      .setPositiveButton(R.string.yes) { dialog, which -> // Отправляем Activity сообщение о том, что сбрасывание подтверждено.
+      .setPositiveButton(R.string.yes) { dialog, which ->
         resetProgressListener!!.resetMessage(RESET_MESSAGE)
       }
       .setNegativeButton(R.string.no, null)
@@ -68,17 +67,14 @@ internal class ResetProgressDialogFragment : DialogFragment() {
   }
 
   companion object {
-    // Тег для логирования.
     private const val LOG_TAG = "ResetWordProgressDF"
 
-    // Ключи для получения аргументов.
     const val EXTRA_FLAG = "Flag"
 
     // Возможные значения флага.
     const val FOR_SUBGROUP = 1
     const val FOR_ONE_WORD = 2
 
-    // Сообщение о том, что сбрасывание подтверждено.
     const val RESET_MESSAGE = "Reset"
   }
 }

@@ -34,7 +34,6 @@ internal class GroupItemsRecyclerViewAdapter(
       onSubgroupCheckedListener
     )
 
-    //holder.recycler_view_list.setHasFixedSize(true);
     holder.subgroupsRecyclerView.layoutManager = LinearLayoutManager(
       context,
       LinearLayoutManager.HORIZONTAL, false

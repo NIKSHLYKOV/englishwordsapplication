@@ -20,7 +20,6 @@ internal class GetAvailableSubgroupsInteractor(
    * @return доступные подгруппы или пустой список, если таковых нет.
    */
   suspend fun getAvailableSubgroups(wordId: Long, flagTo: Int): List<Subgroup> {
-    // Получаем подгруппы, созданные пользователем и проверяем, что они вообще есть.
     val createdByUserSubgroups = subgroupsRepository.getSubgroupsCreatedByUser()
     return if (createdByUserSubgroups.isNotEmpty()) {
       // Получаем все связи нашего слова и проверяем, что они вообще есть.
@@ -74,7 +73,6 @@ internal class GetAvailableSubgroupsInteractor(
   }
 
   companion object {
-    // Возможные значения флага.
     const val TO_LINK = 1
     const val TO_DELETE = 2
   }

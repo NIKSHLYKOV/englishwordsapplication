@@ -45,7 +45,6 @@ class GroupsAndWordsFlowFragment : Fragment(), OnChildFragmentInteractionListene
     }
   }
 
-  //  нажатие обратно в MainActivity.
   override fun close() {
     navController!!.popBackStack()
   }

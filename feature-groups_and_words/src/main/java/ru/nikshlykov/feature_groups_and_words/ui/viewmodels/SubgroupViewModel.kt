@@ -22,17 +22,14 @@ internal class SubgroupViewModel(
   private val getAvailableSubgroupsInteractor: GetAvailableSubgroupsInteractor
 ) : ViewModel() {
 
-  // Подгруппа
   private val _subgroup: MutableLiveData<Subgroup> = MutableLiveData()
   val subgroup: LiveData<Subgroup> = _subgroup
   private var subgroupId: Long = 0
   private var newIsStudied = 0
 
   // Слова, залинкованные с подгруппой
-  // Список слов для Activity.
   val words: MediatorLiveData<List<Word>> = MediatorLiveData()
 
-  // Источники данных для words.
   private var wordsByAlphabet: LiveData<List<Word>>? = null
   private var wordsByProgress: LiveData<List<Word>>? = null
 
@@ -43,14 +40,13 @@ internal class SubgroupViewModel(
 
   fun loadSubgroupAndWords(subgroupId: Long, sortParam: Int) {
     this.subgroupId = subgroupId
-    //subgroupLiveData = groupsRepository.getLiveDataSubgroupById(subgroupId)
     viewModelScope.launch {
       _subgroup.value = getSubgroupInteractor.getSubgroupById(subgroupId)
     }
-    // Подгружаем возможные списки слов для words.
+
     wordsByAlphabet = getWordsFromSubgroupInteractor.getWordsFromSubgroupByAlphabet(subgroupId)
     wordsByProgress = getWordsFromSubgroupInteractor.getWordsFromSubgroupByProgress(subgroupId)
-    // Устанавниваем начальный источник для words в зависимости от параметра сортировки.
+
     if (sortParam == SortWordsDialogFragment.BY_ALPHABET) {
       words.addSource(wordsByAlphabet!!, observer)
     } else {
@@ -58,9 +54,6 @@ internal class SubgroupViewModel(
     }
   }
 
-  /**
-   * Удаляет подгруппу.
-   */
   fun deleteSubgroup() {
     val subgroup = _subgroup.value
     if (subgroup != null && subgroup.isCreatedByUser) {
@@ -89,11 +82,6 @@ internal class SubgroupViewModel(
     }
   }
 
-  /**
-   * Устанавливает параметр изучения для подгруппы.
-   *
-   * @param isStudied значение параметра isChecked чекбокса.
-   */
   fun setNewIsStudied(isStudied: Boolean) {
     newIsStudied = if (isStudied) {
       1
@@ -102,11 +90,6 @@ internal class SubgroupViewModel(
     }
   }
 
-  /**
-   * Меняет источник данных для words, создавая эффект сортировки.
-   *
-   * @param sortParam параметр сортировки.
-   */
   fun sortWords(sortParam: Int) {
     when (sortParam) {
       SortWordsDialogFragment.BY_ALPHABET -> {
@@ -120,9 +103,7 @@ internal class SubgroupViewModel(
     }
   }
 
-  /**
-   * Сбрасывает прогресс по всем словам, залинкованным с данной подгруппой.
-   */
+
   fun resetWordsProgress() {
     // TODO можно ещё всякие условия для безопасности сделать.
     viewModelScope.launch {
@@ -130,11 +111,7 @@ internal class SubgroupViewModel(
     }
   }
 
-  /**
-   * Удаляет связь между текущей подгруппой и словом.
-   *
-   * @param wordId id слова.
-   */
+
   fun deleteWordFromSubgroup(wordId: Long) {
     viewModelScope.launch {
       // TODO сделать выведение snackbar уже после удаления слова.
@@ -142,11 +119,6 @@ internal class SubgroupViewModel(
     }
   }
 
-  /**
-   * Добавляет связь между текущей подгруппой и словом, которое из него удалилось.
-   *
-   * @param wordId id слова.
-   */
   fun addWordToSubgroup(wordId: Long) {
     viewModelScope.launch {
       addWordToSubgroupInteractor.addLinkBetweenWordAndSubgroup(wordId, subgroupId)

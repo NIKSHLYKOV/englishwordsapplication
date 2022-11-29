@@ -21,7 +21,6 @@ internal class SubgroupDataFragment : FlowFragmentChildFragment() {
   private val groupsFeatureComponentViewModel: GroupsFeatureComponentViewModel by viewModels()
 
   // TODO сделать добавление фото для подгруппы.
-  // View элементы.
   private var confirmButton: MaterialButton? = null
   private var subgroupNameEditText: TextInputEditText? = null
   private var subgroupId = 0L
@@ -72,7 +71,6 @@ internal class SubgroupDataFragment : FlowFragmentChildFragment() {
   private fun setConfirmButtonClickListener() {
     confirmButton!!.setOnClickListener {
       val subgroupName = subgroupNameEditText!!.text.toString().trim { it <= ' ' }
-      // Проверяем, что поле названия группы не пустое.
       if (subgroupName.isNotEmpty()) {
         subgroupDataViewModel!!.subgroupIsInsertedOrUpdated.observe(
           viewLifecycleOwner,

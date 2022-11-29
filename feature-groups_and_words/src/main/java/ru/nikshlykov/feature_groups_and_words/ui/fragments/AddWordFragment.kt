@@ -19,13 +19,11 @@ internal class AddWordFragment : FlowFragmentChildFragment() {
 
   private val groupsFeatureComponentViewModel: GroupsFeatureComponentViewModel by viewModels()
 
-  // View элементы.
   private var wordTextInputEditText: TextInputEditText? = null
   private var valueTextInputEditText: TextInputEditText? = null
   private var transcriptionTextInputEditText: TextInputEditText? = null
   private var saveButton: Button? = null
 
-  // ViewModel для работы с БД.
   private var addWordViewModel: AddWordViewModel? = null
 
   @Inject
@@ -62,9 +60,6 @@ internal class AddWordFragment : FlowFragmentChildFragment() {
     initSaveButtonClick()
   }
 
-  /**
-   * Находит View элементы в разметке.
-   */
   private fun findViews(v: View) {
     wordTextInputEditText = v.findViewById(R.id.fragment_add_word___text_input_edit_text___word)
     valueTextInputEditText = v.findViewById(R.id.fragment_add_word___text_input_edit_text___value)
@@ -73,17 +68,12 @@ internal class AddWordFragment : FlowFragmentChildFragment() {
     saveButton = v.findViewById(R.id.fragment_add_word___button___save_word)
   }
 
-  /**
-   * Присваивает обработчик нажатия на кнопку сохранения слова.
-   */
   private fun initSaveButtonClick() {
     saveButton!!.setOnClickListener {
-      // Получаем строки из EditText'ов.
       val word = wordTextInputEditText!!.text.toString()
       val value = valueTextInputEditText!!.text.toString()
       val transcription = transcriptionTextInputEditText!!.text.toString()
 
-      // Проверяем, что поля слова и перевода не пустые
       if (word.isNotEmpty() && value.isNotEmpty()) {
         addWordViewModel?.addWord(word, transcription, value)
       } else {

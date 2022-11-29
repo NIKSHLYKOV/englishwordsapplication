@@ -15,7 +15,6 @@ internal class WordDialogsViewModel(
     this.wordId = wordId
   }
 
-  // Методы для обработки результата работы диалога.
   fun deleteWordFromSubgroup(subgroupId: Long) {
     GlobalScope.launch {
       deleteWordFromSubgroupInteractor.deleteLinkBetweenWordAndSubgroup(wordId, subgroupId)

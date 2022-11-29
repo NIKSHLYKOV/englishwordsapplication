@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.nikshlykov.data.database.models.Example
 import ru.nikshlykov.feature_groups_and_words.R
 import java.util.*
-
+// TODO реализовать функционал примеров
 internal class ExamplesRecyclerViewAdapter(context: Context?) :
   RecyclerView.Adapter<ExamplesRecyclerViewAdapter.ExamplesViewHolder>() {
   // Слова подгруппы.

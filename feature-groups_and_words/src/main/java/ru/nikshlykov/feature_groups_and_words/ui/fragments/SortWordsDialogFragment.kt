@@ -8,10 +8,8 @@ import androidx.fragment.app.DialogFragment
 import ru.nikshlykov.feature_groups_and_words.R
 
 internal class SortWordsDialogFragment : DialogFragment() {
-  // Параметр сортировки.
   private var sortParam = 0
 
-  // Интерфейс для общения.
   interface SortWordsListener {
     fun sort(sortParam: Int)
   }
@@ -25,13 +23,11 @@ internal class SortWordsDialogFragment : DialogFragment() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
-    // Получаем текущий параметр сортировки.
     sortParam = arguments?.getInt(EXTRA_SORT_PARAM)!!
     Log.d("SortWordsDialogFragment", "sortParam from bundle = $sortParam")
   }
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-    // Массив отображаемых значений сортировки для диалога.
     val sortParams = resources
       .getStringArray(R.array.preference_entries___sort_words_in_subgroup)
     return AlertDialog.Builder(requireContext())
@@ -47,7 +43,6 @@ internal class SortWordsDialogFragment : DialogFragment() {
     const val BY_ALPHABET = 0
     const val BY_PROGRESS = 1
 
-    // Ключ для получения флага.
     const val EXTRA_SORT_PARAM = "SortParam"
   }
 }

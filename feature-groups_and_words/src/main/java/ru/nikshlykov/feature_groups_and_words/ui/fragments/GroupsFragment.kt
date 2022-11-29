@@ -28,13 +28,11 @@ internal class GroupsFragment : FlowFragmentChildFragment(),
 
   private val LOG_TAG = "GroupsFragment"
 
-  // ViewModel для взаимодействия с БД.
   private var groupsViewModel: GroupsViewModel? = null
 
   @Inject
   lateinit var viewModelFactory: ViewModelProvider.Factory
 
-  // View компоненты фрагмента.
   private var groupItemsRecyclerView: RecyclerView? = null
   private var newSubgroupExtendedFAB: ExtendedFloatingActionButton? = null
   private var groupItemsRecyclerViewAdapter: GroupItemsRecyclerViewAdapter? = null
@@ -49,7 +47,6 @@ internal class GroupsFragment : FlowFragmentChildFragment(),
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
-    Log.i(LOG_TAG, "onCreate()")
     super.onCreate(savedInstanceState)
     groupsViewModel = viewModelFactory!!.create(GroupsViewModel::class.java)
     groupItemsRecyclerViewAdapter = context?.let {
@@ -64,7 +61,6 @@ internal class GroupsFragment : FlowFragmentChildFragment(),
     inflater: LayoutInflater, container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    Log.i(LOG_TAG, "onCreateView()")
     val view = inflater.inflate(R.layout.fragment_groups, null)
     findViews(view)
     newSubgroupExtendedFAB!!.setOnClickListener {
@@ -76,12 +72,10 @@ internal class GroupsFragment : FlowFragmentChildFragment(),
   }
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-    Log.i(LOG_TAG, "onViewCreated()")
     super.onViewCreated(view, savedInstanceState)
     groupsViewModel!!.groupItems.observe(
       viewLifecycleOwner,
       { groupItems ->
-        Log.i(LOG_TAG, "groupItems onChanged()")
         if (groupItems != null) {
           groupItemsRecyclerViewAdapter!!.setGroupItems(groupItems)
         }
@@ -111,41 +105,6 @@ internal class GroupsFragment : FlowFragmentChildFragment(),
       }
     })
     groupItemsRecyclerView!!.adapter = groupItemsRecyclerViewAdapter
-  }
-
-  override fun onStart() {
-    super.onStart()
-    Log.i(LOG_TAG, "onStart()")
-  }
-
-  override fun onResume() {
-    super.onResume()
-    Log.i(LOG_TAG, "onResume()")
-  }
-
-  override fun onPause() {
-    super.onPause()
-    Log.i(LOG_TAG, "onPause()")
-  }
-
-  override fun onStop() {
-    super.onStop()
-    Log.i(LOG_TAG, "onStop()")
-  }
-
-  override fun onDestroyView() {
-    super.onDestroyView()
-    Log.i(LOG_TAG, "onDestroyView()")
-  }
-
-  override fun onDestroy() {
-    super.onDestroy()
-    Log.i(LOG_TAG, "onDestroyView()")
-  }
-
-  override fun onDetach() {
-    super.onDetach()
-    Log.i(LOG_TAG, "onDetach()")
   }
 
   private fun findViews(view: View) {

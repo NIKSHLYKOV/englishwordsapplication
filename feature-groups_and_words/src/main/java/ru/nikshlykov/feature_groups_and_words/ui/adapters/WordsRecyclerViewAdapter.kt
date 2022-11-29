@@ -16,10 +16,9 @@ import java.util.*
 
 internal class WordsRecyclerViewAdapter(private val textToSpeech: TextToSpeech) :
   RecyclerView.Adapter<WordsRecyclerViewAdapter.WordsViewHolder>() {
-  // Слова подгруппы.
+
   private var words: List<Word> = ArrayList()
 
-  // Интерфейс для реагирования на нажатие элемента RecyclerView.
   interface OnEntryClickListener {
     fun onEntryClick(view: View?, position: Int)
   }
@@ -35,7 +34,6 @@ internal class WordsRecyclerViewAdapter(private val textToSpeech: TextToSpeech) 
 
   inner class WordsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
     View.OnClickListener {
-    // View для параметров слова.
     val word: TextView = itemView.findViewById(R.id.word_in_subgroup_item___text_view___word)
     val transcription: TextView =
       itemView.findViewById(R.id.word_in_subgroup_item___text_view___transcription)
@@ -43,11 +41,9 @@ internal class WordsRecyclerViewAdapter(private val textToSpeech: TextToSpeech) 
     val progress: View = itemView.findViewById(R.id.word_in_subgroup_item___view___progress)
     override fun onClick(v: View) {
       when (v.id) {
-        R.id.word_in_subgroup_item___button___voice ->                     // Воспроизводим слово.
+        R.id.word_in_subgroup_item___button___voice ->
           textToSpeech?.speak(word.text.toString(), TextToSpeech.QUEUE_FLUSH, null, "somethingID")
-        R.id.word_in_subgroup_item___layout___all_without_voice_button ->                     // Вызываем метод слушателя, который реализован в SubgroupActivity.
-          // Прежде всего это необходимо для того, чтобы запускать WordActivity
-          // через startActivityForResult().
+        R.id.word_in_subgroup_item___layout___all_without_voice_button ->
           if (mOnEntryClickListener != null) {
             mOnEntryClickListener!!.onEntryClick(v, layoutPosition)
           }
@@ -55,13 +51,9 @@ internal class WordsRecyclerViewAdapter(private val textToSpeech: TextToSpeech) 
     }
 
     init {
-      // Находим кнопку для воспроизведения слова и присваиваем ей обработчик нажатия -
-      // сам ViewHolder.
       val ttsButton = itemView.findViewById<Button>(R.id.word_in_subgroup_item___button___voice)
       ttsButton.setOnClickListener(this)
 
-      // Находим контейнер, который хранит в себе всё кроме кнопки воспроизведения слова
-      // и присваиваем ей обработчик нажатия.
       val allWithoutVoiceButtonLayout =
         itemView.findViewById<LinearLayout>(R.id.word_in_subgroup_item___layout___all_without_voice_button)
       allWithoutVoiceButtonLayout.setOnClickListener(this)

@@ -25,7 +25,6 @@ internal class WordViewModel(
   // Список подгрупп для добавления или удаления связи с ними.
   private val availableSubgroupsTo: MutableLiveData<ArrayList<Subgroup>?> = MutableLiveData()
 
-  // Слово
   fun setWord(word: Word) {
     wordMutableLiveData.value = word
   }
@@ -61,9 +60,6 @@ internal class WordViewModel(
     }
   }
 
-  /**
-   * Сбрасывает прогресс по слову.
-   */
   fun resetProgress() {
     viewModelScope.launch {
       val word = wordMutableLiveData.value
@@ -77,7 +73,6 @@ internal class WordViewModel(
     }
   }
 
-  // Связывание с пользовательскими подгруппами
   fun getAvailableSubgroupsTo(flag: Int): MutableLiveData<ArrayList<Subgroup>?> {
     if (availableSubgroupsTo.value == null) {
       Log.d(LOG_TAG, "availableSubgroupsTo value = null")

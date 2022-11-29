@@ -28,20 +28,20 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import ru.nikshlykov.data.database.models.Subgroup
 import ru.nikshlykov.feature_groups_and_words.R
-import ru.nikshlykov.feature_groups_and_words.data.repositories.SubgroupImages
+import ru.nikshlykov.feature_groups_and_words.data.SubgroupImages
 import ru.nikshlykov.feature_groups_and_words.di.GroupsFeatureComponentViewModel
 import ru.nikshlykov.feature_groups_and_words.ui.adapters.WordsRecyclerViewAdapter
 import ru.nikshlykov.feature_groups_and_words.ui.viewmodels.SubgroupViewModel
 import java.util.*
 import javax.inject.Inject
 
-internal class SubgroupFragment : FlowFragmentChildFragment(), SortWordsDialogFragment.SortWordsListener,
+internal class SubgroupFragment : FlowFragmentChildFragment(),
+  SortWordsDialogFragment.SortWordsListener,
   ResetProgressDialogFragment.ResetProgressListener,
   DeleteSubgroupDialogFragment.DeleteSubgroupListener {
 
   private val groupsFeatureComponentViewModel: GroupsFeatureComponentViewModel by viewModels()
 
-  // View элементы.
   private var createWordFAB: FloatingActionButton? = null
   private var toolbar: Toolbar? = null
   private var infoTextView: TextView? = null
@@ -51,9 +51,9 @@ internal class SubgroupFragment : FlowFragmentChildFragment(), SortWordsDialogFr
   @Inject
   lateinit var adapter: WordsRecyclerViewAdapter
 
-  // Иконки для свайпа слова в recyclerView.
   private var deleteIcon: Drawable? = null
   private var linkIcon: Drawable? = null
+
   private var subgroupViewModel: SubgroupViewModel? = null
 
   @Inject
@@ -65,7 +65,6 @@ internal class SubgroupFragment : FlowFragmentChildFragment(), SortWordsDialogFr
   private var deleteFlag = false
   private lateinit var availableSubgroupsObserver: Observer<ArrayList<Subgroup>?>
 
-  // параметр сортировки слов в подгруппе.
   private var sortParam = 0
 
   override fun onAttach(context: Context) {
@@ -77,7 +76,6 @@ internal class SubgroupFragment : FlowFragmentChildFragment(), SortWordsDialogFr
     super.onCreate(savedInstanceState)
     subgroupViewModel = viewModelFactory!!.create(SubgroupViewModel::class.java)
 
-    // Получаем id подгруппы из Intent.
     bundleArguments
 
     subgroupViewModel!!.setNewIsStudied(subgroupIsStudied)
@@ -98,10 +96,8 @@ internal class SubgroupFragment : FlowFragmentChildFragment(), SortWordsDialogFr
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
 
-    // Находим наши View.
     findViews(view)
 
-    // Устанавливаем наш toolbar.
     (activity as AppCompatActivity?)!!.setSupportActionBar(toolbar)
     initCreateWordFAB()
     subgroupViewModel!!.subgroup.observe(viewLifecycleOwner, { subgroup ->
@@ -115,35 +111,26 @@ internal class SubgroupFragment : FlowFragmentChildFragment(), SortWordsDialogFr
         toolbarLayout.setExpandedTitleTextAppearance(R.style.CollapsingToolbarExpandedTitle)
         setSubgroupImage(subgroup.isCreatedByUser, subgroup.imageURL)
 
-        // Создаём вещи для свайпа слов.
         initSwipeIcons()
         ItemTouchHelper(createMySimpleCallbackBySubgroup(subgroup))
           .attachToRecyclerView(recyclerView)
       }
     })
 
-    // Создаём Recycler и адаптер для него.
     initRecyclerView()
     initRecyclerViewAdapter()
     recyclerView!!.adapter = adapter
 
-    // Закидываем данные в адаптер, подписывая его на изменения в LiveData.
     subgroupViewModel!!.words.observe(viewLifecycleOwner, { words ->
       Log.i(LOG_TAG, "words onChanged()")
       if (words != null) {
         if (!deleteFlag) {
-          // Если слов нет, то скрываем CheckBox изучения подгруппы.
           if (words.isEmpty()) {
             if (!subgroupIsCreatedByUser) {
               infoTextView!!.text = "Здесь скоро появятся слова. Пожалуйста, подождите обновления!"
             } else {
-              //learnSubgroupCheckBox.setVisibility(View.GONE);
-              /*Toast.makeText(SubgroupActivity.this,
-                                          R.string.error_subgroup_is_empty, Toast.LENGTH_LONG)
-                                          .show();*/
+              infoTextView!!.text = "Добавьте слова в группу, чтобы видеть их здесь"
             }
-          } else {
-            //learnSubgroupCheckBox.setVisibility(View.VISIBLE);
           }
           adapter!!.setWords(words)
         }
@@ -160,7 +147,6 @@ internal class SubgroupFragment : FlowFragmentChildFragment(), SortWordsDialogFr
     }
   }
 
-  // Toolbar.
   override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
     super.onCreateOptionsMenu(menu, inflater)
     Log.d(LOG_TAG, "onCreateOptionsMenu()")
@@ -174,16 +160,6 @@ internal class SubgroupFragment : FlowFragmentChildFragment(), SortWordsDialogFr
       menu.findItem(R.id.activity_subgroup___action___delete_subgroup).isVisible = false
       menu.findItem(R.id.activity_subgroup___action___edit_subgroup).isVisible = false
     }
-
-    /*ToggleButton learnToggleButton = (ToggleButton) menu.findItem(R.id.activity_subgroup___action___learn)
-                .getActionView();
-        learnToggleButton.setLayoutParams(new Toolbar.LayoutParams(
-                getResources().getDimensionPixelSize(R.dimen.toggle_button_brain_width),
-                getResources().getDimensionPixelSize(R.dimen.toggle_button_brain_height)));
-        learnToggleButton.setText("");
-        learnToggleButton.setTextOn("");
-        learnToggleButton.setTextOff("");
-        learnToggleButton.setBackgroundDrawable(getDrawable(R.drawable.background_brain_icon));*/
   }
 
   override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -259,28 +235,20 @@ internal class SubgroupFragment : FlowFragmentChildFragment(), SortWordsDialogFr
         .into(subgroupImageView!!)
     }
   }
-  // Параметр сортировки слова.
+
   /**
    * Обрабатывает результат работы SortWordsDialogFragment.
-   *
-   * @param sortParam параметр сортировки, полученный из фрагмента.
    */
   override fun sort(sortParam: Int) {
     Log.i(LOG_TAG, "sortParam from SortWordsDialogFragment = $sortParam")
     // Проверяем, изменился ли вообще параметр, чтобы не делать лишней работы.
     if (this.sortParam != sortParam) {
-      // Устанавливаем новый параметр сортировки.
       this.sortParam = sortParam
-      // Сообщаем модели о том, что необходимо отсортировать слова.
       subgroupViewModel!!.sortWords(sortParam)
     }
   }
 
-  /**
-   * Достаёт параметр сортировки слов в подгруппе.
-   *
-   * @return параметр сортировки.
-   */
+  // TODO убрать взаимодейтсвие с Preferences во ViewModel.
   private fun getSortParam(): Int {
     val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
       context
@@ -291,11 +259,6 @@ internal class SubgroupFragment : FlowFragmentChildFragment(), SortWordsDialogFr
     )!!.toInt()
   }
 
-  /**
-   * Сохраняет параметр сортировки слов в подгруппе.
-   *
-   * @param sortParam последний выставленный параметр сортировки.
-   */
   private fun saveSortParam(sortParam: Int) {
     val editor = PreferenceManager.getDefaultSharedPreferences(context).edit()
     editor.putString(
@@ -305,9 +268,6 @@ internal class SubgroupFragment : FlowFragmentChildFragment(), SortWordsDialogFr
     editor.apply()
   }
 
-  /**
-   * Получает из Extras id подгруппы и флаг того, создана ли она пользователем.
-   */
   private val bundleArguments: Unit
     get() {
       if (arguments != null) {
@@ -322,9 +282,6 @@ internal class SubgroupFragment : FlowFragmentChildFragment(), SortWordsDialogFr
       }
     }
 
-  /**
-   * Находит View в разметке.
-   */
   private fun findViews(view: View) {
     createWordFAB = view.findViewById(R.id.fragment_subgroup___floating_action_button___new_word)
     toolbar = view.findViewById(R.id.fragment_subgroup___toolbar)
@@ -334,24 +291,20 @@ internal class SubgroupFragment : FlowFragmentChildFragment(), SortWordsDialogFr
   }
 
   private fun initCreateWordFAB() {
-    // Проверяем, что подгруппа создана пользователем.
     if (subgroupIsCreatedByUser) {
-      // Присваиваем обработчик кнопке для создания нового слова.
       createWordFAB!!.setOnClickListener {
         val navDirections: NavDirections =
           SubgroupFragmentDirections.actionSubgroupDestToAddWordDest().setSubgroupId(subgroupId)
         onChildFragmentInteractionListener!!.onChildFragmentInteraction(navDirections)
       }
     } else {
-      // Скрываем fab для создания нового слова.
       createWordFAB!!.isClickable = false
       createWordFAB!!.visibility = View.GONE
     }
   }
 
-  // RecyclerView.
+
   private fun initRecyclerView() {
-    // Создаём вспомогательные вещи для RecyclerView и соединяем их с ним.
     recyclerView!!.layoutManager = LinearLayoutManager(context)
     recyclerView!!.addItemDecoration(
       DividerItemDecoration(
@@ -373,10 +326,6 @@ internal class SubgroupFragment : FlowFragmentChildFragment(), SortWordsDialogFr
   }
 
   private fun initRecyclerViewAdapter() {
-    // Создаём adapter для RecyclerView.
-    //adapter = WordsRecyclerViewAdapter(requireContext())
-
-    // Присваиваем обработчик нажатия на элемент в RecyclerView (слово).
     adapter!!.setOnEntryClickListener(object : WordsRecyclerViewAdapter.OnEntryClickListener {
       override fun onEntryClick(view: View?, position: Int) {
         val currentWord = adapter!!.getWords()[position]
@@ -388,7 +337,6 @@ internal class SubgroupFragment : FlowFragmentChildFragment(), SortWordsDialogFr
   }
 
   private fun initSwipeIcons() {
-    // Находим иконки, изображаемые при свайпе.
     linkIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_link_white_24dp)
     deleteIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_delete_white_24dp)
   }
@@ -530,11 +478,9 @@ internal class SubgroupFragment : FlowFragmentChildFragment(), SortWordsDialogFr
       }
     }
   }
-  // Диалоги.
+
   /**
-   * Принимает сообщение от ResetWordProgressDialogFragment.
-   *
-   * @param message представляет из себя сообщение.
+   * Обрабатывает работу ResetWordProgressDialogFragment.
    */
   override fun resetMessage(message: String?) {
     if (message == ResetProgressDialogFragment.RESET_MESSAGE) {
@@ -543,7 +489,7 @@ internal class SubgroupFragment : FlowFragmentChildFragment(), SortWordsDialogFr
   }
 
   /**
-   * Принимает сообщение от DeleteSubgroupDialogFragment.
+   * Обрабатывает работу DeleteSubgroupDialogFragment.
    *
    * @param message удалять подгруппу или нет.
    */
@@ -560,10 +506,8 @@ internal class SubgroupFragment : FlowFragmentChildFragment(), SortWordsDialogFr
     // TODO сделать свою view для отображения прогресса по слову.
     //  Лучше базу брать из той, которая в WordActivity.
 
-    // Тег для логирования.
     private const val LOG_TAG = "SubgroupFragment"
 
-    // Теги для диалоговых фрагментов.
     private const val DIALOG_SORT_WORDS = "SortWordsDialogFragment"
     private const val DIALOG_RESET_WORDS_PROGRESS = "ResetWordsProgressDialogFragment"
     private const val DIALOG_DELETE_SUBGROUP = "DeleteSubgroupDialogFragment"

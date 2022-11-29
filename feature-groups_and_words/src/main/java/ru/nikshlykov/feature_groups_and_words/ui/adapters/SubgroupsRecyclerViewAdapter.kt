@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import ru.nikshlykov.data.database.models.Subgroup
 import ru.nikshlykov.feature_groups_and_words.R
-import ru.nikshlykov.feature_groups_and_words.data.repositories.SubgroupImages
+import ru.nikshlykov.feature_groups_and_words.data.SubgroupImages
 import java.util.*
 
 internal class SubgroupsRecyclerViewAdapter(

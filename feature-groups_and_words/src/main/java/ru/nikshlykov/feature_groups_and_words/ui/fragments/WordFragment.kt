@@ -30,7 +30,6 @@ internal class WordFragment : FlowFragmentChildFragment(),
 
   private val groupsFeatureComponentViewModel: GroupsFeatureComponentViewModel by viewModels()
 
-  // View элементы.
   private var wordTextInputLayout: TextInputLayout? = null
   private var valueTextInputLayout: TextInputLayout? = null
   private var transcriptionTextInputLayout: TextInputLayout? = null
@@ -55,11 +54,9 @@ internal class WordFragment : FlowFragmentChildFragment(),
 
   // Observer отвечающий за обработку подгруженных подгрупп для связывания или удаления.
   lateinit var availableSubgroupsObserver: Observer<ArrayList<Subgroup>?>
-
   // Флаг, который будет передаваться observer'ом в LinkOrDeleteDialogFragment.
   private var linkOrDeleteFlag = 0
 
-  // Синтезатор речи.
   @Inject
   lateinit var textToSpeech: TextToSpeech
 
@@ -92,9 +89,6 @@ internal class WordFragment : FlowFragmentChildFragment(),
     initAvailableSubgroupsObserver()
   }
 
-  /**
-   * Находит View элементы в разметке.
-   */
   private fun findViews(v: View) {
     wordTextInputEditText = v.findViewById(R.id.fragment_word___text_input_edit_text___word)
     valueTextInputEditText = v.findViewById(R.id.fragment_word___text_input_edit_text___value)
@@ -116,19 +110,13 @@ internal class WordFragment : FlowFragmentChildFragment(),
     examplesTextView = v.findViewById(R.id.fragment_word___text_view___examples)
   }
 
-  /**
-   * Устанавливает toolbar и его title.
-   */
+
   private fun initToolbar() {
-    // Устанавливаем тулбар.
     (activity as AppCompatActivity?)!!.setSupportActionBar(toolbar)
     (activity as AppCompatActivity?)!!.supportActionBar!!.title = ""
   }
 
-  /**
-   * Получает id слова из Extras и, в зависимости от него, либо скрывает некоторые элементы,
-   * чтобы создать новое слово, либо устанавливает параметры уже существующего слова в наши View.
-   */
+
   private val dataAndPrepareInterface: Unit
     get() {
       val arguments = arguments
@@ -153,7 +141,6 @@ examplesRecyclerView.setAdapter(examplesRecyclerViewAdapter);*/
           if (word != null) {
             setWordToViews(word)
 
-            // Делаем доступными для редактирования поля с параметрами слова.
             if (word.createdByUser == 1) {
               saveButton!!.visibility = View.VISIBLE
               wordTextInputLayout!!.isEnabled = true
@@ -165,7 +152,6 @@ examplesRecyclerView.setAdapter(examplesRecyclerViewAdapter);*/
           }
         })
 
-        // Присваиваем обработчик нажатия на кнопку воспроизведения слова.
         ttsButton!!.setOnClickListener {
           textToSpeech!!.speak(
             wordTextInputEditText!!.text.toString(),
@@ -177,31 +163,23 @@ examplesRecyclerView.setAdapter(examplesRecyclerViewAdapter);*/
       }
     }
 
-  /**
-   * Выводит сообщение об ошибке и закрывает fragment.
-   */
+
   private fun errorProcessing() {
     Log.e(LOG_TAG, "Error happened!")
     onChildFragmentInteractionListener!!.close()
   }
 
-  /**
-   * Присваивает обработчик нажатия на кнопку сохранения слова.
-   */
+
   private fun initSaveButtonClick() {
-    // Присваиваем обработчик нажатия на кнопку сохранения слова.
     saveButton!!.setOnClickListener {
-      // Получаем строки из EditText'ов.
       val word = wordTextInputEditText!!.text.toString()
       val value = valueTextInputEditText!!.text.toString()
       val transcription = transcriptionTextInputEditText!!.text.toString()
 
-      // Проверяем, что поля слова и перевода не пустые
       if (word.isNotEmpty() && value.isNotEmpty()) {
         wordViewModel!!.setWordParameters(word, transcription, value)
         wordViewModel!!.updateWordInDB()
 
-        // Закрываем fragment.
         onChildFragmentInteractionListener!!.close()
       } else {
         Toast.makeText(
@@ -212,9 +190,7 @@ examplesRecyclerView.setAdapter(examplesRecyclerViewAdapter);*/
     }
   }
 
-  /**
-   * Инициализирует availableSubgroupsObserver.
-   */
+
   private fun initAvailableSubgroupsObserver() {
     availableSubgroupsObserver = Observer { subgroups ->
       Log.d(LOG_TAG, "availableSubgroups onChanged()")
@@ -260,23 +236,18 @@ examplesRecyclerView.setAdapter(examplesRecyclerViewAdapter);*/
     }
   }
 
-  /**
-   * Устанавливаем параметры слова (слово, транскрипция, перевод, часть речи, прогресс в разные View.
-   */
+
   private fun setWordToViews(word: Word) {
-    // Устанавливаем параметры слова в EditText'ы.
     wordTextInputEditText!!.setText(word.word)
     valueTextInputEditText!!.setText(word.value)
     transcriptionTextInputEditText!!.setText(word.transcription)
 
-    // Устанавливаем часть речи, если она указана.
     if (word.partOfSpeech != null) {
       partOfSpeechTextView!!.text = word.partOfSpeech
     } else {
       partOfSpeechTextView!!.visibility = View.GONE
     }
 
-    // Устанавливаем прогресс.
     val learnProgressView = View(context)
     val progressViewIndex = 0
     when (word.learnProgress) {
@@ -323,27 +294,19 @@ examplesRecyclerView.setAdapter(examplesRecyclerViewAdapter);*/
     progressLinearLayout!!.addView(learnProgressView, progressViewIndex)
   }
 
-  /**
-   * Создаёт меню для тулбара.
-   */
   override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
     super.onCreateOptionsMenu(menu, inflater)
     inflater.inflate(R.menu.fragment_word_toolbar_menu, menu)
   }
 
-  /**
-   * Обрабатывает нажатия на пункты тулбара.
-   */
   override fun onOptionsItemSelected(item: MenuItem): Boolean {
     val manager = requireActivity().supportFragmentManager
 
-    // Bundle для передачи id слова в диалоговый фрагмент, который вызовется.
     val arguments = Bundle()
     return when (item.itemId) {
       R.id.fragment_word___action___link_word -> {
         Log.d(LOG_TAG, "Link word")
         linkOrDeleteFlag = LinkOrDeleteWordDialogFragment.TO_LINK
-        // Подписываемся на изменение доступных для связывания подгрупп.
         wordViewModel!!.getAvailableSubgroupsTo(linkOrDeleteFlag).observe(
           this,
           availableSubgroupsObserver!!
@@ -365,7 +328,6 @@ examplesRecyclerView.setAdapter(examplesRecyclerViewAdapter);*/
       R.id.fragment_word___action___delete_word -> {
         Log.d(LOG_TAG, "Delete word")
         linkOrDeleteFlag = LinkOrDeleteWordDialogFragment.TO_DELETE
-        // Подписываемся на изменение доступных для связывания подгрупп.
         wordViewModel!!.getAvailableSubgroupsTo(linkOrDeleteFlag).observe(
           this,
           availableSubgroupsObserver!!
@@ -377,9 +339,7 @@ examplesRecyclerView.setAdapter(examplesRecyclerViewAdapter);*/
   }
 
   /**
-   * Принимает сообщение от ResetWordProgressDialogFragment.
-   *
-   * @param message представляет из себя сообщение.
+   * Обработка работы ResetWordProgressDialogFragment на сброс прогресса слова.
    */
   override fun resetMessage(message: String?) {
     if (message == ResetProgressDialogFragment.RESET_MESSAGE) {
@@ -387,17 +347,15 @@ examplesRecyclerView.setAdapter(examplesRecyclerViewAdapter);*/
     }
   }
 
-  // ПОСМОТРЕТЬ, КАК МОЖНО ОТ ЭТОГО ИЗБАВИТЬСЯ
+  // TODO ПОСМОТРЕТЬ, КАК МОЖНО ОТ ЭТОГО ИЗБАВИТЬСЯ, или переместить в core-ui
   fun dpToPx(dp: Int): Int {
     val density = this.resources.displayMetrics.density
     return Math.round(dp.toFloat() * density)
   }
 
   companion object {
-    // Тег для логирования.
     private const val LOG_TAG = "WordFragment"
 
-    // Теги для диалоговых фрагментов.
     private const val DIALOG_RESET_WORD_PROGRESS = "ResetWordProgressDialogFragment"
     private const val DIALOG_LINK_OR_DELETE_WORD = "LinkOrDeleteWordDialogFragment"
   }
