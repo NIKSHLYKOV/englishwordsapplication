@@ -45,6 +45,8 @@ dependencies {
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
+    implementation libraries.kotlin_stdlib
+    implementation libraries.core_ktx
     implementation libraries.appcompat
     implementation libraries.constraintlayout
     implementation libraries.material
@@ -83,9 +85,6 @@ dependencies {
     implementation libraries.navigation_fragment
     implementation libraries.navigation_ui
 
-    implementation libraries.core_ktx
-
-    implementation libraries.kotlin_stdlib
 
     // Coroutines
     implementation libraries.coroutines_core
