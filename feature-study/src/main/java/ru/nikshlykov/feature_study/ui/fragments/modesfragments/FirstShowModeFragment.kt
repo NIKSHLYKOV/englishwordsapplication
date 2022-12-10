@@ -13,7 +13,6 @@ import ru.nikshlykov.data.database.models.Word
 import ru.nikshlykov.feature_study.R
 
 internal class FirstShowModeFragment : Fragment() {
-  // View для отображения параметров слова.
   private var wordTextView: TextView? = null
   private var transcriptionTextView: TextView? = null
   private var valueTextView: TextView? = null
@@ -49,7 +48,6 @@ internal class FirstShowModeFragment : Fragment() {
     val view = inflater.inflate(R.layout.fragment_first_show_mode, null)
     findViews(view)
 
-    // Находим кнопку начала изучения слова и присваиваем ей обработчик.
     val learnButton = view.findViewById<Button>(R.id.fragment_first_show_mode___button___learn)
     learnButton.setOnClickListener {
       firstShowModeReportListener!!.firstShowModeResult(
@@ -58,7 +56,6 @@ internal class FirstShowModeFragment : Fragment() {
       )
     }
 
-    // Находим кнопку начала изучения слова и присваиваем ей обработчик.
     val knowButton = view.findViewById<Button>(R.id.fragment_first_show_mode___button___know)
     knowButton.setOnClickListener {
       firstShowModeReportListener!!.firstShowModeResult(
@@ -67,7 +64,6 @@ internal class FirstShowModeFragment : Fragment() {
       )
     }
 
-    // Находим кнопку знания слова и присваиваем ей обработчик.
     val skipButton = view.findViewById<Button>(R.id.fragment_first_show_mode___button___skip)
     skipButton.setOnClickListener {
       firstShowModeReportListener!!.firstShowModeResult(

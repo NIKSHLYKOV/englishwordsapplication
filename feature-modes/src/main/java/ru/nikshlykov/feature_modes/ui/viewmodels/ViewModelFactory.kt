@@ -1,6 +1,5 @@
 package ru.nikshlykov.feature_modes.ui.viewmodels
 
-import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import ru.nikshlykov.feature_modes.domain.interactors.GetAllModesInteractor
@@ -16,7 +15,7 @@ internal class ViewModelFactory @Inject constructor(
       ModesViewModel::class.java -> {
         ModesViewModel(getAllModesInteractor, updateModesInteractor) as T
       }
-      else                       -> {
+      else -> {
         throw IllegalArgumentException("ViewModel Not Found")
       }
     }

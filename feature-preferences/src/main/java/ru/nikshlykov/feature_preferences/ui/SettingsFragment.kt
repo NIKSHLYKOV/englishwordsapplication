@@ -57,15 +57,11 @@ class SettingsFragment : PreferenceFragmentCompat(), OnSharedPreferenceChangeLis
       if (key == getString(R.string.preference_key___tts_pitch)) {
         // параметр тембра из настроек (там он может быть от 5 до 25).
         val pitch = sharedPreferences.getInt(key, 10)
-        /*(requireActivity().applicationContext as App)
-          .setTextToSpeechPitch(pitch)*/
         textToSpeech.setPitch(pitch * 0.1f)
         textToSpeech.speak("An example of pitch.", TextToSpeech.QUEUE_FLUSH, null, "1")
       } else if (key == getString(R.string.preference_key___tts_speech_rate)) {
         // параметр скорости из настроек (там он может быть от 1 до 25).
         val speechRate = sharedPreferences.getInt(key, 10)
-        /*val application = requireActivity().applicationContext as App
-        application.setTextToSpeechSpeechRate(speechRate)*/
         textToSpeech.setSpeechRate(speechRate * 0.1f)
         textToSpeech.speak("An example of speech rate.", TextToSpeech.QUEUE_FLUSH, null, "1")
       } else if (key == getString(R.string.preference_key___notification_time)) {
@@ -82,16 +78,11 @@ class SettingsFragment : PreferenceFragmentCompat(), OnSharedPreferenceChangeLis
   }
 
   override fun onDisplayPreferenceDialog(preference: Preference?) {
-    // Try if the preference is one of our custom Preferences
     var dialogFragment: DialogFragment? = null
     if (preference is NewWordsCountPreference) {
-      // Create a new instance of TimePreferenceDialogFragment with the key of the related
-      // Preference
       dialogFragment = NewWordsCountPreferenceDialogFragmentCompat
         .newInstance(preference.getKey())
     } else if (preference is NotificationTimePreference) {
-      // Create a new instance of TimePreferenceDialogFragment with the key of the related
-      // Preference
       dialogFragment = NotificationTimePreferenceDialogFragmentCompat
         .newInstance(preference.getKey())
     }

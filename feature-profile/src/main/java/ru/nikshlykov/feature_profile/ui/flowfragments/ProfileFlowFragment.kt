@@ -49,7 +49,6 @@ class ProfileFlowFragment : Fragment(), BackPressedFlowFragmentListener, Profile
   }
 
   override fun backPressedIsAvailable(): Boolean {
-    // Тут, возможно, могут быть ошибки из-за activity, которые ещё не убраны.
     return navHostFragment?.childFragmentManager?.primaryNavigationFragment !is ProfileFragment
   }
 

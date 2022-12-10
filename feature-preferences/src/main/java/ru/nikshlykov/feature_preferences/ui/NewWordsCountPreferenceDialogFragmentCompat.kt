@@ -13,29 +13,24 @@ internal class NewWordsCountPreferenceDialogFragmentCompat : PreferenceDialogFra
     super.onBindDialogView(view)
     newWordsCountNumberPicker = view.findViewById(R.id.number_picker_dialog___number_picker)
 
-    // Exception when there is no TimePicker
     checkNotNull(newWordsCountNumberPicker) {
       "Dialog view must contain" +
-        " a TimePicker with id 'edit'"
+              " a TimePicker with id 'edit'"
     }
 
-    // Get the time from the related Preference
     var wordsCount: Int? = null
     val preference = preference
     if (preference is NewWordsCountPreference) {
       wordsCount = preference.newWordsCount
     }
 
-    // Set the time to the TimePicker
     if (wordsCount != null) {
       val min = 1
       val max = 100
 
-      // Initialize state
       newWordsCountNumberPicker!!.minValue = min
       newWordsCountNumberPicker!!.maxValue = max
       newWordsCountNumberPicker!!.value = wordsCount
-      //newWordsCountNumberPicker.setWrapSelectorWheel(false);
     }
   }
 
@@ -43,17 +38,10 @@ internal class NewWordsCountPreferenceDialogFragmentCompat : PreferenceDialogFra
     if (positiveResult) {
       val newValueOfWordsCount = newWordsCountNumberPicker!!.value
 
-      // Get the related Preference and save the value
       val preference = preference
       if (preference is NewWordsCountPreference) {
-        val timePreference = preference
-        // This allows the client to ignore the user value.
-        if (timePreference.callChangeListener(
-            newValueOfWordsCount
-          )
-        ) {
-          // Save the value
-          timePreference.newWordsCount = newValueOfWordsCount
+        if (preference.callChangeListener(newValueOfWordsCount)) {
+          preference.newWordsCount = newValueOfWordsCount
         }
       }
     }

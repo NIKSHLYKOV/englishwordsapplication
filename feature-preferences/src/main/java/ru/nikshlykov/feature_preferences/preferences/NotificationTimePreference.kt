@@ -10,19 +10,15 @@ internal class NotificationTimePreference @JvmOverloads constructor(
   context: Context?, attrs: AttributeSet? = null,
   defStyleAttr: Int = 0, defStyleRes: Int = defStyleAttr
 ) : DialogPreference(context, attrs, defStyleAttr, defStyleRes) {
+
   private val LAYOUT_RES_ID = R.layout.notification_time_picker_dialog
+
   var time = 0
     set(time) {
       field = time
       persistInt(time)
     }
 
-  /**
-   * Возвращает default value, который мы сами устанавливаем.
-   * @param a массив атрибутов в xml.
-   * @param index индекс элемента defaultValue в xml.
-   * @return значение по умолчанию.
-   */
   override fun onGetDefaultValue(a: TypedArray, index: Int): Any {
     return a.getInt(index, DEFAULT_VALUE)
   }

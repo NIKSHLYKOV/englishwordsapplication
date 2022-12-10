@@ -13,10 +13,8 @@ import ru.nikshlykov.feature_study.R
 
 internal class DictionaryCardsModeFragment : BaseModeFragment() {
 
-  // Флаг, получаемый из Activity.
   private var flag = 0
 
-  // Views.
   private var wordTextView: TextView? = null
   private var transcriptionTextView: TextView? = null
   private var valueTextView: TextView? = null
@@ -43,7 +41,7 @@ internal class DictionaryCardsModeFragment : BaseModeFragment() {
         view = inflater.inflate(R.layout.fragment_dictionary_cards_eng_to_rus, null)
         findViewsEngToRus(view)
       }
-      else            -> {
+      else -> {
         view = inflater.inflate(R.layout.fragment_dictionary_cards_rus_to_eng, null)
         findViewsRusToEng(view)
       }
@@ -53,7 +51,7 @@ internal class DictionaryCardsModeFragment : BaseModeFragment() {
     showImageButton!!.setOnClickListener {
       when (flag) {
         FLAG_ENG_TO_RUS -> valueTextView!!.visibility = View.VISIBLE
-        else            -> {
+        else -> {
           wordTextView!!.visibility = View.VISIBLE
           transcriptionTextView!!.visibility = View.VISIBLE
         }
@@ -107,7 +105,6 @@ internal class DictionaryCardsModeFragment : BaseModeFragment() {
   }
 
   companion object {
-    // Флаги.
     const val FLAG_ENG_TO_RUS = 1
     const val FLAG_RUS_TO_ENG = 2
   }

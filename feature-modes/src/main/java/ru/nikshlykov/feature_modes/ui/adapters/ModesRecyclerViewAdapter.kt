@@ -49,6 +49,7 @@ internal class ModesRecyclerViewAdapter(private val context: Context) :
 
   fun setModes(modes: List<Mode>?) {
     this.modes = modes
+    // TODO посмотреть, что с ним не так
     notifyDataSetChanged()
   }
 

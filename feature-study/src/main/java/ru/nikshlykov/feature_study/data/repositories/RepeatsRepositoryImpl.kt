@@ -19,7 +19,6 @@ internal class RepeatsRepositoryImpl @Inject constructor(
 
   override suspend fun insertRepeat(repeat: Repeat): Long =
     withContext(externalScope.coroutineContext + dispatcher) {
-      // Вычисляем id для повтора и добавляем его в БД.
       val lastRepeat = repeatDao.repeatWithMaxId()
       val idForNewRepeat: Long = if (lastRepeat == null) {
         1

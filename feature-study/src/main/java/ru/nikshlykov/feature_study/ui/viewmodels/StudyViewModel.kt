@@ -33,35 +33,7 @@ internal class StudyViewModel(
   // TODO подумать над тем, чтобы получать слова для повтора прямо из интерактора, который
   //  будет комбинировать новые и уже начатые.
 
-  /*private MediatorLiveData<List<Word>> availableToRepeatWords;
-    private LiveData<List<Word>> wordsFromStudiedSubgroups;
-    private Observer<List<Word>> observer;*/
   private var selectedModesIds: ArrayList<Long>? = null
-
-  /*public Word getNextAvailableWord(long lastWordId){
-        // Получаем первое слово в списке доступных и проверяем, не является ли оно тем,
-        // которое было перед этим.
-        Word nextWord = null;
-        List<Word> words = availableToRepeatWords.getValue();
-        if (words != null) {
-            nextWord = words.get(0);
-            if (nextWord != null) {
-                if (nextWord.id == lastWordId) {
-                    // Если всё-таки является, и наш список не успел обновится, то возьмём следующее слово.
-
-                    //При этом может случится так, что список обновится до того, как мы возьмём следующее.
-                    // Но в этом случае то слово, которое реально должно было повторится следующим, переместится
-                    // на первое место и возмётся 100% в следующий раз.
-                    nextWord = words.get(1);
-                }
-            }
-        }
-        return nextWord;
-    }*/
-  /*public LiveData<List<Word>> getWordsFromStudiedSubgroups() {
-        return wordsFromStudiedSubgroups;
-    }*/
-  // Выбранные режимы.
 
   fun getModesAreSelected(): LiveData<Boolean> {
     return getModesAreSelectedInteractor.getSelectedModes()
@@ -72,16 +44,13 @@ internal class StudyViewModel(
       val selectedModes = getSelectedModesInteractor.getSelectedModes()
 
       if (selectedModes.isNotEmpty()) {
-        // Создаём список выбранных режимов.
         val selectedModesIds = ArrayList<Long>(selectedModes.size)
         for (mode in selectedModes) {
           selectedModesIds.add(mode.id)
         }
 
-        // Сетим режимы в StudyViewModel для хранения.
         setSelectedModesIds(selectedModesIds)
 
-        // Запрашиваем следующее для повтора слово.
         getNextAvailableToRepeatWord(listener)
       }
     }
@@ -97,7 +66,6 @@ internal class StudyViewModel(
     return selectedModesIds!![index]
   }
 
-  // Слова, доступные к повтору или началу изучения.
   private fun getNextAvailableToRepeatWord(
     listener: OnAvailableToRepeatWordLoadedListener?
   ) {
@@ -132,13 +100,7 @@ internal class StudyViewModel(
     Log.i(LOG_TAG, "loadNewWordsCount(): newWordsCount = $newWordsCount")
   }
 
-  // Обработка результатов повторов.
-  /**
-   * Обрабатывает результат первого показа слова пользователю.
-   *
-   * @param wordId id показанного слова.
-   * @param result результат повтора (0 - пропустить, 1 - изучать, 2 - знаю).
-   */
+
   fun firstShowProcessing(
     wordId: Long,
     result: Int,
@@ -159,13 +121,6 @@ internal class StudyViewModel(
     }
   }
 
-
-  /**
-   * Обрабатывает результат повтора слова.
-   *
-   * @param wordId id повторяемого слова.
-   * @param result результат повтора (0 - неверно, 1 - верно).
-   */
   fun repeatProcessing(wordId: Long, result: Int, listener: OnAvailableToRepeatWordLoadedListener) {
     GlobalScope.launch {
       val processingResult = studyWordsInteractor.repeatProcessing(wordId, result)
@@ -183,28 +138,5 @@ internal class StudyViewModel(
 
   init {
     loadNewWordsCount()
-    /*availableToRepeatWords = new MediatorLiveData<>();
-
-        observer = new Observer<List<Word>>() {
-            @Override
-            public void onChanged(List<Word> words) {
-                Log.i(LOG_TAG, "words from studied subgroups onChanged()");
-                ArrayList<Word> newWords = new ArrayList<>();
-                Date currentDate = new Date();
-                for (Word word : words) {
-                    if (word.isAvailableToRepeat(currentDate)) {
-                        newWords.add(word);
-                    }
-                }
-                for (Word word : newWords) {
-                    Log.i(LOG_TAG, "word = " + word.word);
-                }
-                Log.i(LOG_TAG, "---------------------------------------------------------");
-                availableToRepeatWords.setValue(newWords);
-            }
-        };
-
-        wordsFromStudiedSubgroups = repository.getWordsFromStudiedSubgroups();
-        availableToRepeatWords.addSource(wordsFromStudiedSubgroups, observer);*/
   }
 }

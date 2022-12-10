@@ -12,25 +12,22 @@ internal class NotificationTimePreferenceDialogFragmentCompat : PreferenceDialog
   override fun onBindDialogView(view: View) {
     super.onBindDialogView(view)
 
-    // Находим TimePicker.
     notificationTimePicker = view.findViewById(R.id.notification_time_picker_dialog___time_picker)
     checkNotNull(notificationTimePicker) {
       "Dialog view must contain" +
         " a TimePicker with id 'edit'"
     }
 
-    // Получаем время, которое было выставлено (либо default).
     var minutesAfterMidnight: Int? = null
     val preference = preference
     if (preference is NotificationTimePreference) {
       minutesAfterMidnight = preference.time
     }
 
-    // Устанавливаем это время в наш TimePicker.
     if (minutesAfterMidnight != null) {
       val hours = minutesAfterMidnight / 60
       val minutes = minutesAfterMidnight % 60
-      //boolean is24hour = DateFormat.is24HourFormat(getContext());
+
       notificationTimePicker!!.setIs24HourView(true)
       notificationTimePicker!!.currentHour = hours
       notificationTimePicker!!.currentMinute = minutes
@@ -45,11 +42,7 @@ internal class NotificationTimePreferenceDialogFragmentCompat : PreferenceDialog
       val preference = preference
       if (preference is NotificationTimePreference) {
         val timePreference = preference
-        // This allows the client to ignore the user value.
-        if (timePreference.callChangeListener(
-            minutesAfterMidnight
-          )
-        ) {
+        if (timePreference.callChangeListener(minutesAfterMidnight)) {
           timePreference.time = minutesAfterMidnight
         }
       }

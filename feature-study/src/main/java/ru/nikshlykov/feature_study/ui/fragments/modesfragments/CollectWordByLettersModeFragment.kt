@@ -16,7 +16,6 @@ import java.util.*
 
 internal class CollectWordByLettersModeFragment : BaseModeFragment() {
 
-  // View.
   private var valueTextView: TextView? = null
   private var removeLetterImageButton: ImageButton? = null
   private var userVariantTextView: TextView? = null
@@ -27,13 +26,12 @@ internal class CollectWordByLettersModeFragment : BaseModeFragment() {
 
   private var handler: Handler? = null
 
-  // Стек, в который помещаются кнопки, чтобы можно было удалять последнюю букву в слове.
+  // TODO заменить на структуру стека (ArrayDeque вроде)
   private var invisibleButtons: ArrayList<View>? = null
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
-    // Получаем id слова.
     word = CollectWordByLettersModeFragmentArgs.fromBundle(requireArguments()).word
 
     handler = object : Handler() {
@@ -58,16 +56,13 @@ internal class CollectWordByLettersModeFragment : BaseModeFragment() {
     super.onViewCreated(view, savedInstanceState)
     removeLetterImageButton!!.isEnabled = false
 
-    // Устанавливаем перевод.
     valueTextView!!.text = word!!.value
 
-    // Получаем слово на английском и находим его длину.
     val wordOnEnglish = word!!.word
     val lettersCount = wordOnEnglish.length
     invisibleButtons = ArrayList(lettersCount)
     val shuffleLetters = getShuffleCharacters(wordOnEnglish)
 
-    // Закидываем случайно расставленные буквы в кнопки по порядку.
     for (i in 0 until lettersCount) {
       val button = initCharButton(word, shuffleLetters[i])
       lettersGridLayout!!.addView(button)
@@ -75,9 +70,6 @@ internal class CollectWordByLettersModeFragment : BaseModeFragment() {
     initRemoveButton()
   }
 
-  /**
-   * Присваивает обработчик кнопке удаления последнего символа.
-   */
   private fun initRemoveButton() {
     removeLetterImageButton!!.setOnClickListener {
       if (invisibleButtons!!.size != 0) {
@@ -92,13 +84,6 @@ internal class CollectWordByLettersModeFragment : BaseModeFragment() {
     }
   }
 
-  /**
-   * Создаёт кнопку для символа. Задаёт ей стиль, параметры высоты и ширины, а также отступы.
-   *
-   * @param word   слово, для которого вызвался режим.
-   * @param letter символ, который будет текстом на кнопке (как правило, это буква).
-   * @return кнопку.
-   */
   private fun initCharButton(word: Word?, letter: Char): Button {
     val lettersCount = word!!.word.length
     val button = Button(
@@ -123,8 +108,6 @@ internal class CollectWordByLettersModeFragment : BaseModeFragment() {
       invisibleButtons!!.add(v)
       if (invisibleButtons!!.size == 1) removeLetterImageButton!!.isEnabled = true
       if (invisibleButtons!!.size == lettersCount) {
-
-        // Скрывает View элементы.
         valueTextView!!.visibility = View.GONE
         removeLetterImageButton!!.visibility = View.GONE
         userVariantTextView!!.visibility = View.GONE
@@ -132,8 +115,6 @@ internal class CollectWordByLettersModeFragment : BaseModeFragment() {
         val mainLayout = v.getParent().parent
           .parent as ConstraintLayout
 
-        // Расчитываем результат (верно/не верно). В зависомости от этого выводим
-        // определённый фон и значок.
         var result = 0
         val userVariantOfWord = userVariantTextView!!.text.toString()
         if (userVariantOfWord == word.word) {
@@ -153,20 +134,13 @@ internal class CollectWordByLettersModeFragment : BaseModeFragment() {
     return button
   }
 
-  /**
-   * Перемешивает символы в строке.
-   *
-   * @param string строка для перемешивания.
-   * @return список из случайно добавленных в него символов.
-   */
+  // TODO посмотреть, можно ли сделать более быстрый алгоритм. И, наверное, перенести код в utils.
   private fun getShuffleCharacters(string: String): ArrayList<Char> {
     val lettersCount = string.length
-    // Делаем список букв слова.
     val letters = ArrayList<Char>(lettersCount)
     for (i in 0 until lettersCount) {
       letters.add(string[i])
     }
-    // Делаем список случайно расставленных букв слова.
     val shuffleLetters = ArrayList<Char>(lettersCount)
     while (letters.size != 0) {
       val random = Random()
@@ -176,11 +150,6 @@ internal class CollectWordByLettersModeFragment : BaseModeFragment() {
     return shuffleLetters
   }
 
-  /**
-   * Находит View элементы в разметке.
-   *
-   * @param v корневой элемент разметки.
-   */
   private fun findViews(v: View) {
     userVariantTextView =
       v.findViewById(R.id.fragment_collect_word_by_letters_mode___text_view___user_variant)
@@ -193,6 +162,7 @@ internal class CollectWordByLettersModeFragment : BaseModeFragment() {
       v.findViewById(R.id.fragment_collect_word_by_letters_mode___image_view___result)
   }
 
+  // TODO тоже перенести. Наверное, в core-ui.
   // ПОСМОТРЕТЬ, КАК МОЖНО ОТ ЭТОГО ИЗБАВИТЬСЯ
   fun dpToPx(dp: Int): Int {
     val density = this.resources.displayMetrics.density

@@ -18,7 +18,7 @@ import ru.nikshlykov.data.database.models.Word
 import ru.nikshlykov.feature_study.R
 
 internal class WriteWordByValueModeFragment : BaseModeFragment() {
-  // View элементы.
+
   private var valueTextView: TextView? = null
   private var userVariantTextInputEditText: TextInputEditText? = null
   private var userVariantTextInputLayout: TextInputLayout? = null
@@ -55,11 +55,6 @@ internal class WriteWordByValueModeFragment : BaseModeFragment() {
     initConfirmImageButton(word)
   }
 
-  /**
-   * Устанавливает обработчик нажатия кнопке подтверждения.
-   *
-   * @param word слово.
-   */
   private fun initConfirmImageButton(word: Word?) {
     confirmImageButton!!.setOnClickListener { v -> // Скрываем клавиатуру.
       val imm = activity
@@ -69,15 +64,12 @@ internal class WriteWordByValueModeFragment : BaseModeFragment() {
         InputMethodManager.HIDE_NOT_ALWAYS
       )
 
-      // Скрываем View, ненужные для показа результата.
       valueTextView!!.visibility = View.GONE
       confirmImageButton!!.visibility = View.GONE
       userVariantTextInputLayout!!.visibility = View.GONE
-      // Находим корневой layout для того, чтобы установить ему фон.
+
       val rootLayout = v.parent.parent.parent as RelativeLayout
 
-      // Высчитываем результат.
-      // В зависимости от него показываем определённый фон с иконкой.
       var result = 0
       val userVariantOfWord = userVariantTextInputEditText!!.text.toString()
         .toLowerCase().trim { it <= ' ' }
@@ -96,11 +88,6 @@ internal class WriteWordByValueModeFragment : BaseModeFragment() {
     }
   }
 
-  /**
-   * Находит View элементы в разметке.
-   *
-   * @param v корневая View.
-   */
   private fun findViews(v: View) {
     valueTextView = v.findViewById(R.id.fragment_write_word_by_value_mode___text_view___value)
     userVariantTextInputEditText =

@@ -21,11 +21,9 @@ import javax.inject.Inject
 
 internal class WriteWordByVoiceModeFragment : BaseModeFragment() {
 
-  // Синтезатор речи.
   @Inject
   lateinit var textToSpeech: TextToSpeech
 
-  // Views элементы.
   private var voiceImageButton: ImageButton? = null
   private var userVariantTextInputEditText: TextInputEditText? = null
   private var userVariantTextInputLayout: TextInputLayout? = null
@@ -38,7 +36,6 @@ internal class WriteWordByVoiceModeFragment : BaseModeFragment() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     word = WriteWordByVoiceModeFragmentArgs.fromBundle(requireArguments()).word
-    //textToSpeech = (activity?.applicationContext as App).textToSpeech
     handler = object : Handler() {
       override fun handleMessage(msg: Message) {
         super.handleMessage(msg)
@@ -71,13 +68,9 @@ internal class WriteWordByVoiceModeFragment : BaseModeFragment() {
     initConfirmImageButton(word)
   }
 
-  /**
-   * Устанавливает обработчик нажатия кнопке подтверждения.
-   *
-   * @param word слово.
-   */
+  // TODO вроде очень похожий код есть в write by value fragment
   private fun initConfirmImageButton(word: Word?) {
-    confirmMaterialButton!!.setOnClickListener { v -> // Скрываем клавиатуру.
+    confirmMaterialButton!!.setOnClickListener { v ->
       val imm = activity
         ?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
       imm.hideSoftInputFromWindow(
@@ -85,16 +78,12 @@ internal class WriteWordByVoiceModeFragment : BaseModeFragment() {
         InputMethodManager.HIDE_NOT_ALWAYS
       )
 
-      // Скрываем View, ненужные для показа результата.
       voiceImageButton!!.visibility = View.GONE
       confirmMaterialButton!!.visibility = View.GONE
       userVariantTextInputLayout!!.visibility = View.GONE
 
-      // Находим корневой layout для того, чтобы установить ему фон.
       val rootLayout = v.parent.parent.parent as RelativeLayout
 
-      // Высчитываем результат.
-      // В зависимости от него показываем определённый фон с иконкой.
       var result = 0
       val userVariantOfWord = userVariantTextInputEditText!!.text.toString()
         .toLowerCase().trim { it <= ' ' }
@@ -113,11 +102,6 @@ internal class WriteWordByVoiceModeFragment : BaseModeFragment() {
     }
   }
 
-  /**
-   * Находит View элементы в разметке.
-   *
-   * @param v корневая View.
-   */
   private fun findViews(v: View) {
     voiceImageButton = v.findViewById(R.id.fragment_write_word_by_voice_mode___image_button___voice)
     userVariantTextInputEditText =
