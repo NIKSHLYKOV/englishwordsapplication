@@ -35,25 +35,16 @@ android {
 dependencies {
     implementation project(path: ':core-db')
 
-    // DI (Dagger 2)
-    def dagger_version = "2.37"
-    implementation "com.google.dagger:dagger:$dagger_version"
-    kapt "com.google.dagger:dagger-compiler:$dagger_version"
+    implementation libraries.material
+    implementation libraries.fragment_ktx
 
-    def lifecycle_version = "2.2.0"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+    implementation libraries.lifecycle_viewmodelktx
 
-    implementation 'androidx.fragment:fragment-ktx:1.3.6'
+    // DI
+    implementation libraries.dagger
+    kapt libraries.dagger_compiler
 
     // Coroutines
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.0"
-
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'androidx.core:core-ktx:1.6.0'
-    implementation 'androidx.appcompat:appcompat:1.3.1'
-    implementation 'com.google.android.material:material:1.4.0'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    implementation libraries.coroutines_core
+    implementation libraries.coroutines_android
 }
