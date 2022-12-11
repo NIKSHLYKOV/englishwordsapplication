@@ -89,7 +89,7 @@ class SettingsFragment : PreferenceFragmentCompat(), OnSharedPreferenceChangeLis
     if (dialogFragment != null) {
       dialogFragment.setTargetFragment(this, 0)
       dialogFragment.show(
-        parentFragmentManager,
+        requireFragmentManager(),
         "PreferenceDialogFragmentCompat"
       )
     } else {

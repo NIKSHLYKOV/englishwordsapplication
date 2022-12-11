@@ -36,18 +36,9 @@ android {
 dependencies {
     implementation project(path: ':core-ui')
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'androidx.core:core-ktx:1.6.0'
-    implementation 'androidx.appcompat:appcompat:1.3.1'
-    implementation 'com.google.android.material:material:1.4.0'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
-
     implementation 'androidx.preference:preference-ktx:1.1.1'
 
     // DI (Dagger 2)
-    def dagger_version = "2.37"
-    implementation "com.google.dagger:dagger:$dagger_version"
-    kapt "com.google.dagger:dagger-compiler:$dagger_version"
+    implementation libraries.dagger
+    kapt libraries.dagger_compiler
 }
