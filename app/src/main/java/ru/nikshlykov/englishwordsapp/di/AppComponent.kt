@@ -3,7 +3,6 @@ package ru.nikshlykov.englishwordsapp.di
 import android.app.Application
 import dagger.BindsInstance
 import dagger.Component
-import dagger.android.AndroidInjectionModule
 import ru.nikshlykov.feature_groups_and_words.di.GroupsFeatureDeps
 import ru.nikshlykov.feature_modes.di.ModesFeatureDeps
 import ru.nikshlykov.feature_preferences.di.SettingsFeatureDeps
@@ -12,7 +11,7 @@ import ru.nikshlykov.feature_study.di.StudyFeatureDeps
 import javax.inject.Singleton
 
 @Component(
-  modules = [AndroidInjectionModule::class, ContextModule::class, DatabaseModule::class,
+  modules = [ContextModule::class, DatabaseModule::class,
     RouterModule::class, CoroutinesModule::class]
 )
 @Singleton

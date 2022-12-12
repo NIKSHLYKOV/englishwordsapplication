@@ -1,7 +1,9 @@
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'androidx.navigation.safeargs'
-apply plugin: 'kotlin-kapt'
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'androidx.navigation.safeargs'
+    id 'kotlin-kapt'
+}
 
 android {
     compileSdkVersion 33
@@ -45,46 +47,27 @@ dependencies {
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation libraries.kotlin_stdlib
-    implementation libraries.core_ktx
-    implementation libraries.appcompat
-    implementation libraries.constraintlayout
-    implementation libraries.material
+    // Preferences
     implementation libraries.preference
+
+    // Testing
     testImplementation libraries.junit
     androidTestImplementation libraries.test_runner
     androidTestImplementation libraries.espresso_core
-    implementation libraries.cardview
-    implementation libraries.recyclerview
 
-    // Room
-    implementation libraries.room_runtime
-    kapt libraries.room_compiler
-    implementation libraries.room_ktx
-
-    // Lifecycle
-    implementation libraries.lifecycle_extensions
-    implementation libraries.lifecycle_livedata
-    implementation libraries.lifecycle_viewmodel
-    implementation libraries.lifecycle_viewmodelktx
-
-    // Images
-    implementation libraries.glide
+    // Views
+    implementation libraries.constraintlayout
 
     // Dagger 2
     implementation libraries.dagger
     kapt libraries.dagger_compiler
-    // Dagger for Android
-    implementation libraries.dagger_android
-    implementation libraries.dagger_androidsupport
-    kapt libraries.dagger_androidprocessor
 
+    // Work
     implementation libraries.work_runtime
 
     // Navigation
     implementation libraries.navigation_fragment
     implementation libraries.navigation_ui
-
 
     // Coroutines
     implementation libraries.coroutines_core
