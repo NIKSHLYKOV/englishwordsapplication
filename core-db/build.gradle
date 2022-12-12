@@ -37,6 +37,6 @@ dependencies {
     implementation libraries.appcompat
 
     implementation libraries.room_runtime
-    annotationProcessor libraries.room_compiler
+    kapt libraries.room_compiler
     implementation libraries.room_ktx
 }
