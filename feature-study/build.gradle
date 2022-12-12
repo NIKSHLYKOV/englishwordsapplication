@@ -37,6 +37,7 @@ android {
 dependencies {
     implementation project(path: ':core-db')
     implementation project(path: ':core-ui')
+    implementation project(path: ':utils')
 
     implementation libraries.core_ktx
     implementation libraries.lifecycle_viewmodelktx

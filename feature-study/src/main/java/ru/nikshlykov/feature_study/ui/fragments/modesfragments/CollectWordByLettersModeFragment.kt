@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.gridlayout.widget.GridLayout
+import com.example.utils.getShuffleCharacters
 import ru.nikshlykov.core_ui.dpToPx
 import ru.nikshlykov.data.database.models.Word
 import ru.nikshlykov.feature_study.R
@@ -62,7 +63,7 @@ internal class CollectWordByLettersModeFragment : BaseModeFragment() {
     val wordOnEnglish = word!!.word
     val lettersCount = wordOnEnglish.length
     invisibleButtons = ArrayList(lettersCount)
-    val shuffleLetters = getShuffleCharacters(wordOnEnglish)
+    val shuffleLetters = wordOnEnglish.getShuffleCharacters()
 
     for (i in 0 until lettersCount) {
       val button = initCharButton(word, shuffleLetters[i])
@@ -133,22 +134,6 @@ internal class CollectWordByLettersModeFragment : BaseModeFragment() {
       }
     }
     return button
-  }
-
-  // TODO посмотреть, можно ли сделать более быстрый алгоритм. И, наверное, перенести код в utils.
-  private fun getShuffleCharacters(string: String): ArrayList<Char> {
-    val lettersCount = string.length
-    val letters = ArrayList<Char>(lettersCount)
-    for (i in 0 until lettersCount) {
-      letters.add(string[i])
-    }
-    val shuffleLetters = ArrayList<Char>(lettersCount)
-    while (letters.size != 0) {
-      val random = Random()
-      val removeLetterIndex = random.nextInt(letters.size)
-      shuffleLetters.add(letters.removeAt(removeLetterIndex))
-    }
-    return shuffleLetters
   }
 
   private fun findViews(v: View) {
