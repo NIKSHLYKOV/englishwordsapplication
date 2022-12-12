@@ -52,17 +52,12 @@ buildscript {
             room_ktx               : "androidx.room:room-ktx:$versions.room",
 
             // Lifecycle
-            lifecycle_extensions   : "androidx.lifecycle:lifecycle-extensions:$versions.lifecycle",
-            lifecycle_viewmodel    : "androidx.lifecycle:lifecycle-viewmodel:$versions.lifecycle",
             lifecycle_viewmodelktx : "androidx.lifecycle:lifecycle-viewmodel-ktx:$versions.lifecycle",
             lifecycle_livedata     : "androidx.lifecycle:lifecycle-livedata:$versions.lifecycle",
 
             // Dagger
             dagger                 : "com.google.dagger:dagger:$versions.dagger",
             dagger_compiler        : "com.google.dagger:dagger-compiler:$versions.dagger",
-            dagger_android         : "com.google.dagger:dagger-android:$versions.dagger",
-            dagger_androidsupport  : "com.google.dagger:dagger-android-support:$versions.dagger",
-            dagger_androidprocessor: "com.google.dagger:dagger-android-processor:$versions.dagger",
 
             // Navigation
             navigation_fragment    : "androidx.navigation:navigation-fragment:$versions.navigation",
