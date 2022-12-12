@@ -121,22 +121,6 @@ class Word : Parcelable {
     dest.writeInt(priority)
   }
 
-  // TODO это же бизнес-логика. Она разве не в отдельном классе должна быть?
-  // Повторы слова
-  fun isAvailableToRepeat(currentDate: Date): Boolean {
-    return when (learnProgress) {
-      -1 -> true
-      0 -> currentDate.time > lastRepetitionDate + 120000L
-      1 -> currentDate.time > lastRepetitionDate + 864000000L
-      2 -> currentDate.time > lastRepetitionDate + 259200000L
-      3 -> currentDate.time > lastRepetitionDate + 604800000L
-      4 -> currentDate.time > lastRepetitionDate + 1209600000L
-      5 -> currentDate.time > lastRepetitionDate + 2592000000L
-      6 -> currentDate.time > lastRepetitionDate + 4320000000L
-      else -> false
-    }
-  }
-
   companion object {
     @JvmField
     val CREATOR: Parcelable.Creator<Word?> = object : Parcelable.Creator<Word?> {

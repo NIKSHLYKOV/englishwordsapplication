@@ -249,6 +249,7 @@ examplesRecyclerView.setAdapter(examplesRecyclerViewAdapter);*/
       partOfSpeechTextView!!.visibility = View.GONE
     }
 
+    // TODO Сделать custom view для прогресса.
     val learnProgressView = View(context)
     val progressViewIndex = 0
     when (word.learnProgress) {
