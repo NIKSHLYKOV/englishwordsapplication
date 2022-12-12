@@ -47,13 +47,14 @@ dependencies {
     implementation project(path: ':core-navigation')
     implementation project(path: ':core-ui')
 
+    implementation libraries.fragment_ktx
+
+    // Views
     implementation libraries.cardview
     implementation libraries.recyclerview
 
     // Lifecycle
-    //implementation libraries.lifecycle_extensions
     implementation libraries.lifecycle_livedata
-    //implementation libraries.lifecycle_viewmodel
     implementation libraries.lifecycle_viewmodelktx
 
     // Images
@@ -62,10 +63,6 @@ dependencies {
     // Dagger 2
     implementation libraries.dagger
     kapt libraries.dagger_compiler
-    // Dagger for Android
-    implementation libraries.dagger_android
-    implementation libraries.dagger_androidsupport
-    kapt libraries.dagger_androidprocessor
 
     // Navigation
     implementation libraries.navigation_fragment
@@ -73,15 +70,4 @@ dependencies {
 
     // Coroutines
     implementation libraries.coroutines_core
-    //implementation libraries.coroutines_android
-
-    implementation 'androidx.fragment:fragment-ktx:1.3.6'
-
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'androidx.core:core-ktx:1.7.0-alpha01'
-    implementation 'androidx.appcompat:appcompat:1.3.1'
-    implementation 'com.google.android.material:material:1.4.0'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 }
