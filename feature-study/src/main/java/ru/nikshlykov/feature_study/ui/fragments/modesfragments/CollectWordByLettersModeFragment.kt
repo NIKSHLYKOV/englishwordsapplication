@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.gridlayout.widget.GridLayout
+import ru.nikshlykov.core_ui.dpToPx
 import ru.nikshlykov.data.database.models.Word
 import ru.nikshlykov.feature_study.R
 import java.util.*
@@ -160,12 +161,5 @@ internal class CollectWordByLettersModeFragment : BaseModeFragment() {
       v.findViewById(R.id.fragment_collect_word_by_letters_mode___grid_layout___letters)
     resultImageView =
       v.findViewById(R.id.fragment_collect_word_by_letters_mode___image_view___result)
-  }
-
-  // TODO тоже перенести. Наверное, в core-ui.
-  // ПОСМОТРЕТЬ, КАК МОЖНО ОТ ЭТОГО ИЗБАВИТЬСЯ
-  fun dpToPx(dp: Int): Int {
-    val density = this.resources.displayMetrics.density
-    return Math.round(dp.toFloat() * density)
   }
 }

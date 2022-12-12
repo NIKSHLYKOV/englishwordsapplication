@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import ru.nikshlykov.core_ui.dpToPx
 import ru.nikshlykov.data.database.models.Subgroup
 import ru.nikshlykov.data.database.models.Word
 import ru.nikshlykov.feature_groups_and_words.R
@@ -345,12 +346,6 @@ examplesRecyclerView.setAdapter(examplesRecyclerViewAdapter);*/
     if (message == ResetProgressDialogFragment.RESET_MESSAGE) {
       wordViewModel!!.resetProgress()
     }
-  }
-
-  // TODO ПОСМОТРЕТЬ, КАК МОЖНО ОТ ЭТОГО ИЗБАВИТЬСЯ, или переместить в core-ui
-  fun dpToPx(dp: Int): Int {
-    val density = this.resources.displayMetrics.density
-    return Math.round(dp.toFloat() * density)
   }
 
   companion object {
