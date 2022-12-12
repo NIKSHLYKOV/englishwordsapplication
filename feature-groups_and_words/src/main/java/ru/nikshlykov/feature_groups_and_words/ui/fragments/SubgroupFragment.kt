@@ -28,7 +28,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import ru.nikshlykov.data.database.models.Subgroup
 import ru.nikshlykov.feature_groups_and_words.R
-import ru.nikshlykov.feature_groups_and_words.data.SubgroupImages
+import com.example.core_network.SubgroupImages
 import ru.nikshlykov.feature_groups_and_words.di.GroupsFeatureComponentViewModel
 import ru.nikshlykov.feature_groups_and_words.ui.adapters.WordsRecyclerViewAdapter
 import ru.nikshlykov.feature_groups_and_words.ui.viewmodels.SubgroupViewModel
@@ -229,9 +229,9 @@ internal class SubgroupFragment : FlowFragmentChildFragment(),
       subgroupImageView!!.setImageDrawable(imageColor)
     } else {
       Glide.with(this)
-        .load(SubgroupImages.PATH_TO_HIGH_SUBGROUP_IMAGES + imageResourceId)
+        .load(SubgroupImages.HIGH_SUBGROUP_IMAGES_URL + imageResourceId)
         .placeholder(R.drawable.shape_load_picture)
-        .error(Glide.with(this).load(SubgroupImages.PATH_TO_SUBGROUP_IMAGES + imageResourceId))
+        .error(Glide.with(this).load(SubgroupImages.SUBGROUP_IMAGES_URL + imageResourceId))
         .into(subgroupImageView!!)
     }
   }

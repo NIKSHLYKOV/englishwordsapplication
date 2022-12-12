@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import ru.nikshlykov.data.database.models.Subgroup
 import ru.nikshlykov.feature_groups_and_words.R
-import ru.nikshlykov.feature_groups_and_words.data.SubgroupImages
+import com.example.core_network.SubgroupImages
 import java.util.*
 
 internal class SubgroupsRecyclerViewAdapter(
@@ -44,7 +44,7 @@ internal class SubgroupsRecyclerViewAdapter(
       holder.subgroupImageView.setImageDrawable(imageColor)
     } else {
       Glide.with(context)
-        .load(SubgroupImages.PATH_TO_SUBGROUP_IMAGES + currentSubgroup.imageURL)
+        .load(SubgroupImages.SUBGROUP_IMAGES_URL + currentSubgroup.imageURL)
         .placeholder(R.drawable.shape_load_picture)
         .error(R.drawable.shape_load_picture)
         .into(holder.subgroupImageView)
