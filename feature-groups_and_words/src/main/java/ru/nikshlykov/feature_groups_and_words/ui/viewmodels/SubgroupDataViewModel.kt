@@ -18,8 +18,6 @@ internal class SubgroupDataViewModel(
   private val _subgroup: MutableLiveData<Subgroup> = MutableLiveData()
   val subgroup: LiveData<Subgroup> = _subgroup
 
-  // TODO Проверить, насколько полезна эта скрытая переменная.
-  //  Ведь можно же скастить открытую в MutableLiveData.
   private val _subgroupIsInsertedOrUpdated: MutableLiveData<Boolean> = MutableLiveData()
   val subgroupIsInsertedOrUpdated: LiveData<Boolean> = _subgroupIsInsertedOrUpdated
 

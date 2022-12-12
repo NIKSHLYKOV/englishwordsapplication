@@ -62,7 +62,6 @@ class Word : Parcelable {
     }
     val comparedWord = other as Word
     // Здесь мы проверяем всё, что не может быть null
-    // TODO
     val flag =
       id == comparedWord.id && word == comparedWord.word && value == comparedWord.value && learnProgress == comparedWord.learnProgress && createdByUser == comparedWord.createdByUser && lastRepetitionDate == comparedWord.lastRepetitionDate && priority == comparedWord.priority
     if (flag) {

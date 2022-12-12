@@ -46,7 +46,7 @@ internal class InfoFragment : Fragment() {
     val v = inflater.inflate(R.layout.fragment_info, null)
     val infoText = v.findViewById<TextView>(R.id.fragment_info___text_view___info)
     var text = ""
-    // TODO вынести строки в ресурсы
+    // TODO перенести строки в ресурсы
     when (flag) {
       FLAG_MODES_ARE_NOT_CHOSEN -> {
         text =
