@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import ru.nikshlykov.core_ui.dpToPx
+import ru.nikshlykov.core_ui.views.WordLearnProgressView
 import ru.nikshlykov.data.database.models.Subgroup
 import ru.nikshlykov.data.database.models.Word
 import ru.nikshlykov.feature_groups_and_words.R
@@ -42,6 +43,7 @@ internal class WordFragment : FlowFragmentChildFragment(),
   private var ttsButton: Button? = null
   private var toolbar: Toolbar? = null
   private var progressLinearLayout: LinearLayout? = null
+  private var wordLearnProgressView: WordLearnProgressView? = null
   private var progressTextView: TextView? = null
   private var examplesTextView: TextView? = null
   private var addExampleButton: Button? = null
@@ -101,6 +103,7 @@ internal class WordFragment : FlowFragmentChildFragment(),
     toolbar = v.findViewById(R.id.fragment_word___toolbar)
     progressLinearLayout =
       v.findViewById(R.id.fragment_word___linear_layout___progress_view_background)
+    wordLearnProgressView = v.findViewById(R.id.fragment_word___word_learn_progress_view)
     examplesRecyclerView = v.findViewById(R.id.fragment_word___recycler_view___examples)
     addExampleButton = v.findViewById(R.id.fragment_word___button___add_example)
     wordTextInputLayout = v.findViewById(R.id.fragment_word___text_input_layout___word)
@@ -249,6 +252,7 @@ examplesRecyclerView.setAdapter(examplesRecyclerViewAdapter);*/
       partOfSpeechTextView!!.visibility = View.GONE
     }
 
+    wordLearnProgressView?.learnProgress = word.learnProgress
     // TODO Сделать custom view для прогресса.
     val learnProgressView = View(context)
     val progressViewIndex = 0
