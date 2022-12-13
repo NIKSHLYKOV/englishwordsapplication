@@ -5,6 +5,8 @@ import android.graphics.Canvas
 import android.util.AttributeSet
 import android.view.View
 import ru.nikshlykov.core_ui.R
+import ru.nikshlykov.core_ui.dpToPx
+import java.lang.Integer.max
 
 class WordLearnProgressView(
   context: Context,
@@ -17,6 +19,9 @@ class WordLearnProgressView(
           this(context, attrs, defStyleAttr, 0)
 
   constructor(context: Context, attrs: AttributeSet) : this(context, attrs, 0)
+
+  private val MIN_VIEW_WIDTH_IN_PX = context.dpToPx(40)
+  private val MIN_VIEW_HEIGHT_IN_PX = context.dpToPx(10)
 
   var learnProgress: Int = DEFAULT_WORD_PROGRESS
     set(progress) {
@@ -52,6 +57,28 @@ class WordLearnProgressView(
       6 -> setBackgroundResource(R.drawable.shape_progress_6)
       7, 8 -> setBackgroundResource(R.drawable.shape_progress_7)
     }
+  }
+
+  override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+    super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+    val widthMode = MeasureSpec.getMode(widthMeasureSpec)
+    val widthSize = MeasureSpec.getSize(widthMeasureSpec)
+    val heightMode = MeasureSpec.getMode(heightMeasureSpec)
+    val heightSize = MeasureSpec.getSize(heightMeasureSpec)
+
+    val width: Int = when (widthMode) {
+      MeasureSpec.EXACTLY,
+      MeasureSpec.AT_MOST -> max(MIN_VIEW_WIDTH_IN_PX, widthSize)
+      else -> MIN_VIEW_WIDTH_IN_PX
+    }
+
+    val height: Int = when (heightMode) {
+      MeasureSpec.EXACTLY,
+      MeasureSpec.AT_MOST -> max(MIN_VIEW_HEIGHT_IN_PX, heightSize)
+      else -> MIN_VIEW_HEIGHT_IN_PX
+    }
+
+    setMeasuredDimension(width, height)
   }
 
   companion object {
