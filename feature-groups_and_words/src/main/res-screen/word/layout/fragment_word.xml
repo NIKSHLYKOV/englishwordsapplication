@@ -25,7 +25,6 @@
             android:orientation="vertical">
 
             <FrameLayout
-                android:id="@+id/fragment_word___frame_layout___tts_and_progress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
@@ -48,14 +47,12 @@
                         android:text="@string/progress"
                         android:textColor="@color/colorPrimary" />
 
-                    <LinearLayout
-                        android:id="@+id/fragment_word___linear_layout___progress_view_background"
+                    <ru.nikshlykov.core_ui.views.WordLearnProgressView
+                        android:id="@+id/fragment_word___word_learn_progress_view"
                         android:layout_width="202dp"
                         android:layout_height="12dp"
                         android:layout_marginTop="2dp"
-                        android:background="@drawable/shape_background_progress"
-                        android:orientation="horizontal"
-                        android:padding="1dp" />
+                        android:padding="1dp"/>
 
                 </LinearLayout>
 
@@ -66,38 +63,6 @@
                     android:layout_gravity="center|end"
                     android:layout_marginTop="4dp"
                     android:background="@drawable/ic_play_circle_outline_dark_blue_36dp" />
-            </FrameLayout>
-
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center|start"
-                    android:gravity="center"
-                    android:orientation="horizontal">
-
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="8dp"
-                        android:text="@string/progress"
-                        android:textColor="@color/colorPrimary" />
-
-                    <ru.nikshlykov.core_ui.views.WordLearnProgressView
-                        android:id="@+id/fragment_word___word_learn_progress_view"
-                        android:layout_width="202dp"
-                        android:layout_height="12dp"
-                        android:layout_marginTop="2dp"
-                        android:padding="1dp"/>
-
-                </LinearLayout>
             </FrameLayout>
 
             <LinearLayout

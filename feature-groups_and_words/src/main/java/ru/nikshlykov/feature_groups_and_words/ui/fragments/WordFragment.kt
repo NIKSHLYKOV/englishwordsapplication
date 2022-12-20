@@ -42,7 +42,6 @@ internal class WordFragment : FlowFragmentChildFragment(),
   private var saveButton: Button? = null
   private var ttsButton: Button? = null
   private var toolbar: Toolbar? = null
-  private var progressLinearLayout: LinearLayout? = null
   private var wordLearnProgressView: WordLearnProgressView? = null
   private var progressTextView: TextView? = null
   private var examplesTextView: TextView? = null
@@ -101,8 +100,6 @@ internal class WordFragment : FlowFragmentChildFragment(),
     ttsButton = v.findViewById(R.id.fragment_word___button___tts)
     partOfSpeechTextView = v.findViewById(R.id.fragment_word___text_view___part_of_speech)
     toolbar = v.findViewById(R.id.fragment_word___toolbar)
-    progressLinearLayout =
-      v.findViewById(R.id.fragment_word___linear_layout___progress_view_background)
     wordLearnProgressView = v.findViewById(R.id.fragment_word___word_learn_progress_view)
     examplesRecyclerView = v.findViewById(R.id.fragment_word___recycler_view___examples)
     addExampleButton = v.findViewById(R.id.fragment_word___button___add_example)
@@ -253,51 +250,6 @@ examplesRecyclerView.setAdapter(examplesRecyclerViewAdapter);*/
     }
 
     wordLearnProgressView?.learnProgress = word.learnProgress
-    // TODO Сделать custom view для прогресса.
-    val learnProgressView = View(context)
-    val progressViewIndex = 0
-    when (word.learnProgress) {
-      -1 -> {
-        learnProgressView.setBackgroundResource(R.drawable.shape_progress)
-        learnProgressView.layoutParams = LinearLayout.LayoutParams(dpToPx(0), dpToPx(10))
-      }
-      0 -> {
-        learnProgressView.setBackgroundResource(R.drawable.shape_progress_0)
-        learnProgressView.layoutParams = LinearLayout.LayoutParams(dpToPx(25), dpToPx(10))
-      }
-      1 -> {
-        learnProgressView.setBackgroundResource(R.drawable.shape_progress_1)
-        learnProgressView.layoutParams = LinearLayout.LayoutParams(dpToPx(50), dpToPx(10))
-      }
-      2 -> {
-        learnProgressView.setBackgroundResource(R.drawable.shape_progress_2)
-        learnProgressView.layoutParams = LinearLayout.LayoutParams(dpToPx(75), dpToPx(10))
-      }
-      3 -> {
-        learnProgressView.setBackgroundResource(R.drawable.shape_progress_3)
-        learnProgressView.layoutParams = LinearLayout.LayoutParams(dpToPx(100), dpToPx(10))
-      }
-      4 -> {
-        learnProgressView.setBackgroundResource(R.drawable.shape_progress_4)
-        learnProgressView.layoutParams = LinearLayout.LayoutParams(dpToPx(125), dpToPx(10))
-      }
-      5 -> {
-        learnProgressView.setBackgroundResource(R.drawable.shape_progress_5)
-        learnProgressView.layoutParams = LinearLayout.LayoutParams(dpToPx(150), dpToPx(10))
-      }
-      6 -> {
-        learnProgressView.setBackgroundResource(R.drawable.shape_progress_6)
-        learnProgressView.layoutParams = LinearLayout.LayoutParams(dpToPx(175), dpToPx(10))
-      }
-      7, 8 -> {
-        learnProgressView.setBackgroundResource(R.drawable.shape_progress_7)
-        learnProgressView.layoutParams = LinearLayout.LayoutParams(dpToPx(200), dpToPx(10))
-      }
-    }
-    if (progressLinearLayout!!.getChildAt(progressViewIndex) != null) {
-      progressLinearLayout!!.removeViewAt(progressViewIndex)
-    }
-    progressLinearLayout!!.addView(learnProgressView, progressViewIndex)
   }
 
   override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
