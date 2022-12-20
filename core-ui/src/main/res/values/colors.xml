@@ -6,6 +6,7 @@
 
     <color name="light_gray">#D3D3D3</color>
 
+    <color name="progress_frame">@android:color/darker_gray</color>
     <color name="progress_7">#5BC0EB</color>
     <color name="progress_6">#ADF5FF</color>
     <color name="progress_5">#7FB069</color>
