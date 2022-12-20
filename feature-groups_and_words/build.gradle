@@ -57,6 +57,7 @@ dependencies {
     // Lifecycle
     implementation libraries.lifecycle_livedata
     implementation libraries.lifecycle_viewmodelktx
+    implementation libraries.lifecycle_runtime
 
     // Images
     implementation libraries.glide

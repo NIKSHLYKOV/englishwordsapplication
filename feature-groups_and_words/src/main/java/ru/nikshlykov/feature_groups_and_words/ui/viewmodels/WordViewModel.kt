@@ -6,6 +6,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import ru.nikshlykov.data.database.models.Subgroup
 import ru.nikshlykov.data.database.models.Word
@@ -20,40 +22,40 @@ internal class WordViewModel(
   private val resetWordProgressInteractor: ResetWordProgressInteractor,
   private val getAvailableSubgroupsInteractor: GetAvailableSubgroupsInteractor
 ) : ViewModel() {
-  val wordMutableLiveData: MutableLiveData<Word> = MutableLiveData()
+  lateinit var word: MutableStateFlow<Word>
 
   // Список подгрупп для добавления или удаления связи с ними.
   private val availableSubgroupsTo: MutableLiveData<ArrayList<Subgroup>?> = MutableLiveData()
 
   fun setWord(word: Word) {
-    wordMutableLiveData.value = word
+    this.word = MutableStateFlow(word)
   }
 
   val wordId: Long
     get() {
-      val word = wordMutableLiveData.value
+      val word = word.value
       return word?.id ?: 0L
     }
 
   fun setWordParameters(word: String?, transcription: String?, value: String?) {
-    val currentWord = wordMutableLiveData.value
+    val currentWord = this.word.value
     if (currentWord != null) {
       currentWord.word = word!!
       currentWord.value = value!!
       currentWord.transcription = transcription
-      wordMutableLiveData.value = currentWord
+      this.word.value = currentWord
     }
   }
 
   private fun loadWord(wordId: Long) {
     viewModelScope.launch {
-      wordMutableLiveData.value = getWordInteractor.getWordById(wordId)
+      word.emit(getWordInteractor.getWordById(wordId))
     }
   }
 
   fun updateWordInDB() {
     GlobalScope.launch {
-      val word = wordMutableLiveData.value
+      val word = word.value
       if (word != null) {
         updateWordInteractor.updateWord(word)
       }
@@ -62,12 +64,21 @@ internal class WordViewModel(
 
   fun resetProgress() {
     viewModelScope.launch {
-      val word = wordMutableLiveData.value
+      val word = word.value
+      // TODO Срочно убрать сброс прогресса в SQL. Иначе Flow не обдейтит значение
+      this@WordViewModel.word.emit(Word(word.word, word.transcription, word.value).apply {
+        id = word.id
+        learnProgress = -1
+        createdByUser = word.createdByUser
+        partOfSpeech = word.partOfSpeech
+        lastRepetitionDate = word.lastRepetitionDate
+        priority = word.priority
+      })
+      delay(1000)
       if (word != null) {
         val resetResult = resetWordProgressInteractor.resetWordProgress(word)
         if (resetResult == 1) {
-          // TODO сделать потом что-нибудь получше. подумать, как убрать модель слова из фрагмента.
-          wordMutableLiveData.value?.id?.let { loadWord(it) }
+          //this@WordViewModel.word.value.id.let { loadWord(it) }
         }
       }
     }
@@ -76,7 +87,7 @@ internal class WordViewModel(
   fun getAvailableSubgroupsTo(flag: Int): MutableLiveData<ArrayList<Subgroup>?> {
     if (availableSubgroupsTo.value == null) {
       Log.d(LOG_TAG, "availableSubgroupsTo value = null")
-      val word = wordMutableLiveData.value
+      val word = word.value
       if (word != null) {
         viewModelScope.launch {
           // TODO порабоать над флагом, значения должны быть в одном месте.

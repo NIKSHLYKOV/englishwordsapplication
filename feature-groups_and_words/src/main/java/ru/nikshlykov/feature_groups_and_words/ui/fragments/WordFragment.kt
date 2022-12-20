@@ -6,18 +6,21 @@ import android.speech.tts.TextToSpeech
 import android.util.Log
 import android.view.*
 import android.widget.Button
-import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
-import ru.nikshlykov.core_ui.dpToPx
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import ru.nikshlykov.core_ui.views.WordLearnProgressView
 import ru.nikshlykov.data.database.models.Subgroup
 import ru.nikshlykov.data.database.models.Word
@@ -137,21 +140,20 @@ examplesRecyclerView.setAdapter(examplesRecyclerViewAdapter);*/
            });*/
         val word = WordFragmentArgs.fromBundle(requireArguments()).word
         wordViewModel!!.setWord(word)
-        wordViewModel!!.wordMutableLiveData.observe(viewLifecycleOwner, { word ->
-          Log.d(LOG_TAG, "word onChanged()")
-          if (word != null) {
-            setWordToViews(word)
+        lifecycleScope.launch {
+          repeatOnLifecycle(Lifecycle.State.STARTED){
+            wordViewModel!!.word.collectLatest { word ->
+              setWordToViews(word)
 
-            if (word.createdByUser == 1) {
-              saveButton!!.visibility = View.VISIBLE
-              wordTextInputLayout!!.isEnabled = true
-              transcriptionTextInputLayout!!.isEnabled = true
-              valueTextInputLayout!!.isEnabled = true
+              if (word.createdByUser == 1) {
+                saveButton!!.visibility = View.VISIBLE
+                wordTextInputLayout!!.isEnabled = true
+                transcriptionTextInputLayout!!.isEnabled = true
+                valueTextInputLayout!!.isEnabled = true
+              }
             }
-
-            /*wordViewModel.getExamples(WordActivity.this);*/
           }
-        })
+        }
 
         ttsButton!!.setOnClickListener {
           textToSpeech!!.speak(

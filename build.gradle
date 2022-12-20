@@ -54,6 +54,8 @@ buildscript {
             // Lifecycle
             lifecycle_viewmodelktx : "androidx.lifecycle:lifecycle-viewmodel-ktx:$versions.lifecycle",
             lifecycle_livedata     : "androidx.lifecycle:lifecycle-livedata:$versions.lifecycle",
+            lifecycle_runtime      : "androidx.lifecycle:lifecycle-runtime-ktx:2.4.0",
+            // TODO апдейтнуть версию lifecycle
 
             // Dagger
             dagger                 : "com.google.dagger:dagger:$versions.dagger",
