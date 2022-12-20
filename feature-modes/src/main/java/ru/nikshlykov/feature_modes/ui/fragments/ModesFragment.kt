@@ -7,10 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
+import kotlinx.coroutines.launch
 import ru.nikshlykov.feature_modes.R
 import ru.nikshlykov.feature_modes.navigation.ModesRouterSource
 import ru.nikshlykov.feature_modes.ui.adapters.ModesRecyclerViewAdapter
@@ -55,7 +59,6 @@ class ModesFragment : Fragment() {
     super.onViewCreated(view, savedInstanceState)
     initRecyclerViewWithAdapter(view)
     initSaveButton(view)
-    modesViewModel!!.loadModes()
   }
 
   private fun initRecyclerViewWithAdapter(v: View) {
@@ -64,11 +67,9 @@ class ModesFragment : Fragment() {
     modesRecyclerView.layoutManager = LinearLayoutManager(requireContext())
     adapter = ModesRecyclerViewAdapter(requireContext())
     modesRecyclerView.adapter = adapter
-    modesViewModel!!.modes.observe(viewLifecycleOwner, { modes ->
-      if (modes != null) {
-        adapter!!.setModes(modes)
-      }
-    })
+    lifecycleScope.launch{
+        adapter!!.setModes(modesViewModel?.loadModes())
+    }
   }
 
   private fun initSaveButton(v: View) {
