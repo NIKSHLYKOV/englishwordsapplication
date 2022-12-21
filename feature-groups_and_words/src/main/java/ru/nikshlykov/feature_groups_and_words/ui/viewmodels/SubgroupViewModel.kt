@@ -2,14 +2,13 @@ package ru.nikshlykov.feature_groups_and_words.ui.viewmodels
 
 import android.util.Log
 import androidx.lifecycle.*
-import androidx.lifecycle.Observer
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import ru.nikshlykov.data.database.models.Subgroup
 import ru.nikshlykov.data.database.models.Word
 import ru.nikshlykov.feature_groups_and_words.domain.interactors.*
 import ru.nikshlykov.feature_groups_and_words.ui.fragments.SortWordsDialogFragment
-import java.util.*
 
 internal class SubgroupViewModel(
   private val getSubgroupInteractor: GetSubgroupInteractor,
@@ -36,7 +35,6 @@ internal class SubgroupViewModel(
   // Observer, который сетит список слов в words.
   private val observer: Observer<List<Word>> =
     Observer { words -> this@SubgroupViewModel.words.value = words }
-  private val availableSubgroupToLink: MutableLiveData<ArrayList<Subgroup>?> = MutableLiveData()
 
   fun loadSubgroupAndWords(subgroupId: Long, sortParam: Int) {
     this.subgroupId = subgroupId
@@ -125,27 +123,13 @@ internal class SubgroupViewModel(
     }
   }
 
-  fun getAvailableSubgroupsToLink(wordId: Long): MutableLiveData<ArrayList<Subgroup>?> {
-    if (availableSubgroupToLink.value == null) {
-      Log.d(LOG_TAG, "availableSubgroupsTo value = null")
-      viewModelScope.launch {
-        val availableSubgroups = ArrayList(
-          getAvailableSubgroupsInteractor.getAvailableSubgroups(
-            wordId,
-            GetAvailableSubgroupsInteractor.TO_LINK
-          )
-        )
-        availableSubgroupToLink.value = availableSubgroups
-      }
+  suspend fun getAvailableSubgroupsToLink(wordId: Long): List<Subgroup> =
+    withContext(viewModelScope.coroutineContext) {
+      getAvailableSubgroupsInteractor.getAvailableSubgroups(
+        wordId,
+        GetAvailableSubgroupsInteractor.TO_LINK
+      )
     }
-    return availableSubgroupToLink
-  }
-
-  fun clearAvailableSubgroupsToAndRemoveObserver(observer: Observer<ArrayList<Subgroup>?>) {
-    Log.d(LOG_TAG, "clearAvailableSubgroupsTo()")
-    availableSubgroupToLink.value = null
-    availableSubgroupToLink.removeObserver(observer)
-  }
 
   companion object {
     private const val LOG_TAG = "SubgroupViewModel"

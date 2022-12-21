@@ -15,24 +15,24 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavDirections
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.core_network.SubgroupImages
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.launch
 import ru.nikshlykov.data.database.models.Subgroup
 import ru.nikshlykov.feature_groups_and_words.R
-import com.example.core_network.SubgroupImages
 import ru.nikshlykov.feature_groups_and_words.di.GroupsFeatureComponentViewModel
 import ru.nikshlykov.feature_groups_and_words.ui.adapters.WordsRecyclerViewAdapter
 import ru.nikshlykov.feature_groups_and_words.ui.viewmodels.SubgroupViewModel
-import java.util.*
 import javax.inject.Inject
 
 internal class SubgroupFragment : FlowFragmentChildFragment(),
@@ -63,7 +63,6 @@ internal class SubgroupFragment : FlowFragmentChildFragment(),
   private var subgroupIsStudied = false
   private var subgroupIsCreatedByUser = false
   private var deleteFlag = false
-  private lateinit var availableSubgroupsObserver: Observer<ArrayList<Subgroup>?>
 
   private var sortParam = 0
 
@@ -218,7 +217,7 @@ internal class SubgroupFragment : FlowFragmentChildFragment(),
         deleteSubgroupDialogFragment.show(manager, DIALOG_DELETE_SUBGROUP)
         true
       }
-      else                                                   -> super.onOptionsItemSelected(item)
+      else -> super.onOptionsItemSelected(item)
     }
   }
 
@@ -345,7 +344,7 @@ internal class SubgroupFragment : FlowFragmentChildFragment(),
     return if (subgroup.isCreatedByUser) {
       MySimpleCallback(
         0, ItemTouchHelper.LEFT
-          or ItemTouchHelper.RIGHT
+                or ItemTouchHelper.RIGHT
       )
     } else {
       MySimpleCallback(0, ItemTouchHelper.RIGHT)
@@ -372,10 +371,7 @@ internal class SubgroupFragment : FlowFragmentChildFragment(),
             .show()
         }
         ItemTouchHelper.RIGHT -> {
-          setAvailableSubgroupsObserver(wordId)
-          subgroupViewModel!!.getAvailableSubgroupsToLink(wordId).observe(
-            viewLifecycleOwner, availableSubgroupsObserver
-          )
+          showDialogForLinkWord(wordId)
           adapter!!.notifyDataSetChanged()
         }
       }
@@ -437,45 +433,40 @@ internal class SubgroupFragment : FlowFragmentChildFragment(),
     }
   }
 
-  private fun setAvailableSubgroupsObserver(wordId: Long) {
-    availableSubgroupsObserver = Observer { subgroups ->
-      Log.d(LOG_TAG, "availableSubgroups onChanged()")
-      if (subgroups != null) {
-        Log.d(LOG_TAG, "availableSubgroups onChanged() value != null")
-        val linkOrDeleteWordDialogFragment = LinkOrDeleteWordDialogFragment()
-        val arguments = Bundle()
-        arguments.putLong(
-          LinkOrDeleteWordDialogFragment.EXTRA_WORD_ID,
-          wordId
-        )
-        arguments.putInt(
-          LinkOrDeleteWordDialogFragment.EXTRA_FLAG,
-          LinkOrDeleteWordDialogFragment.TO_LINK
-        )
-        val subgroupsIds = LongArray(subgroups.size)
-        val subgroupsNames = arrayOfNulls<String>(subgroups.size)
-        for (i in subgroups.indices) {
-          val subgroup = subgroups[i]
-          subgroupsNames[i] = subgroup.name
-          subgroupsIds[i] = subgroup.id
-        }
-        arguments.putStringArray(
-          LinkOrDeleteWordDialogFragment.EXTRA_AVAILABLE_SUBGROUPS_NAMES,
-          subgroupsNames
-        )
-        arguments.putLongArray(
-          LinkOrDeleteWordDialogFragment.EXTRA_AVAILABLE_SUBGROUPS_IDS,
-          subgroupsIds
-        )
-        linkOrDeleteWordDialogFragment.arguments = arguments
-        linkOrDeleteWordDialogFragment.show(
-          requireActivity().supportFragmentManager,
-          DIALOG_LINK_OR_DELETE_WORD
-        )
-        subgroupViewModel!!.clearAvailableSubgroupsToAndRemoveObserver(availableSubgroupsObserver)
-      } else {
-        Log.d(LOG_TAG, "availableSubgroups onChanged() value = null")
+  private fun showDialogForLinkWord(wordId: Long) {
+    lifecycleScope.launch {
+      val subgroups = subgroupViewModel!!.getAvailableSubgroupsToLink(wordId)
+      Log.d(LOG_TAG, "availableSubgroups onChanged() value != null")
+      val linkOrDeleteWordDialogFragment = LinkOrDeleteWordDialogFragment()
+      val arguments = Bundle()
+      arguments.putLong(
+        LinkOrDeleteWordDialogFragment.EXTRA_WORD_ID,
+        wordId
+      )
+      arguments.putInt(
+        LinkOrDeleteWordDialogFragment.EXTRA_FLAG,
+        LinkOrDeleteWordDialogFragment.TO_LINK
+      )
+      val subgroupsIds = LongArray(subgroups.size)
+      val subgroupsNames = arrayOfNulls<String>(subgroups.size)
+      for (i in subgroups.indices) {
+        val subgroup = subgroups[i]
+        subgroupsNames[i] = subgroup.name
+        subgroupsIds[i] = subgroup.id
       }
+      arguments.putStringArray(
+        LinkOrDeleteWordDialogFragment.EXTRA_AVAILABLE_SUBGROUPS_NAMES,
+        subgroupsNames
+      )
+      arguments.putLongArray(
+        LinkOrDeleteWordDialogFragment.EXTRA_AVAILABLE_SUBGROUPS_IDS,
+        subgroupsIds
+      )
+      linkOrDeleteWordDialogFragment.arguments = arguments
+      linkOrDeleteWordDialogFragment.show(
+        requireActivity().supportFragmentManager,
+        DIALOG_LINK_OR_DELETE_WORD
+      )
     }
   }
 
