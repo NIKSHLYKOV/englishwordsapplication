@@ -1,14 +1,11 @@
 package ru.nikshlykov.feature_groups_and_words.ui.viewmodels
 
-import android.util.Log
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import ru.nikshlykov.data.database.models.Subgroup
 import ru.nikshlykov.data.database.models.Word
 import ru.nikshlykov.feature_groups_and_words.domain.interactors.GetAvailableSubgroupsInteractor
@@ -23,9 +20,6 @@ internal class WordViewModel(
   private val getAvailableSubgroupsInteractor: GetAvailableSubgroupsInteractor
 ) : ViewModel() {
   lateinit var word: MutableStateFlow<Word>
-
-  // Список подгрупп для добавления или удаления связи с ними.
-  private val availableSubgroupsTo: MutableLiveData<ArrayList<Subgroup>?> = MutableLiveData()
 
   fun setWord(word: Word) {
     this.word = MutableStateFlow(word)
@@ -74,28 +68,8 @@ internal class WordViewModel(
     }
   }
 
-  fun getAvailableSubgroupsTo(flag: Int): MutableLiveData<ArrayList<Subgroup>?> {
-    if (availableSubgroupsTo.value == null) {
-      Log.d(LOG_TAG, "availableSubgroupsTo value = null")
-      val word = word.value
-      if (word != null) {
-        viewModelScope.launch {
-          // TODO порабоать над флагом, значения должны быть в одном месте.
-          availableSubgroupsTo.value =
-            ArrayList(getAvailableSubgroupsInteractor.getAvailableSubgroups(wordId, flag))
-        }
-      }
+  suspend fun getAvailableSubgroupsTo(flag: Int): List<Subgroup> =
+    withContext(viewModelScope.coroutineContext) {
+      getAvailableSubgroupsInteractor.getAvailableSubgroups(wordId, flag)
     }
-    return availableSubgroupsTo
-  }
-
-  fun clearAvailableSubgroupsToAndRemoveObserver(observer: Observer<ArrayList<Subgroup>?>) {
-    Log.d(LOG_TAG, "clearAvailableSubgroupsTo()")
-    availableSubgroupsTo.value = null
-    availableSubgroupsTo.removeObserver(observer!!)
-  }
-
-  companion object {
-    private const val LOG_TAG = "WordViewModel"
-  }
 }

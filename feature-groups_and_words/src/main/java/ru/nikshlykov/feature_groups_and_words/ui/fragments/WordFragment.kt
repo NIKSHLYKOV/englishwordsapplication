@@ -12,7 +12,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -22,12 +21,10 @@ import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import ru.nikshlykov.core_ui.views.WordLearnProgressView
-import ru.nikshlykov.data.database.models.Subgroup
 import ru.nikshlykov.data.database.models.Word
 import ru.nikshlykov.feature_groups_and_words.R
 import ru.nikshlykov.feature_groups_and_words.di.GroupsFeatureComponentViewModel
 import ru.nikshlykov.feature_groups_and_words.ui.viewmodels.WordViewModel
-import java.util.*
 import javax.inject.Inject
 
 internal class WordFragment : FlowFragmentChildFragment(),
@@ -56,11 +53,6 @@ internal class WordFragment : FlowFragmentChildFragment(),
 
   @Inject
   lateinit var viewModelFactory: ViewModelProvider.Factory
-
-  // Observer отвечающий за обработку подгруженных подгрупп для связывания или удаления.
-  lateinit var availableSubgroupsObserver: Observer<ArrayList<Subgroup>?>
-  // Флаг, который будет передаваться observer'ом в LinkOrDeleteDialogFragment.
-  private var linkOrDeleteFlag = 0
 
   @Inject
   lateinit var textToSpeech: TextToSpeech
@@ -91,7 +83,6 @@ internal class WordFragment : FlowFragmentChildFragment(),
     initToolbar()
     dataAndPrepareInterface
     initSaveButtonClick()
-    initAvailableSubgroupsObserver()
   }
 
   private fun findViews(v: View) {
@@ -141,7 +132,7 @@ examplesRecyclerView.setAdapter(examplesRecyclerViewAdapter);*/
         val word = WordFragmentArgs.fromBundle(requireArguments()).word
         wordViewModel!!.setWord(word)
         lifecycleScope.launch {
-          repeatOnLifecycle(Lifecycle.State.STARTED){
+          repeatOnLifecycle(Lifecycle.State.STARTED) {
             wordViewModel!!.word.collectLatest { word ->
               setWordToViews(word)
 
@@ -193,53 +184,6 @@ examplesRecyclerView.setAdapter(examplesRecyclerViewAdapter);*/
     }
   }
 
-
-  private fun initAvailableSubgroupsObserver() {
-    availableSubgroupsObserver = Observer { subgroups ->
-      Log.d(LOG_TAG, "availableSubgroups onChanged()")
-      if (subgroups != null) {
-        Log.d(LOG_TAG, "availableSubgroups onChanged() value != null")
-        val linkOrDeleteWordDialogFragment = LinkOrDeleteWordDialogFragment()
-        val arguments = Bundle()
-        val wordId = wordViewModel!!.wordId
-        if (wordId != 0L) {
-          arguments.putLong(
-            LinkOrDeleteWordDialogFragment.EXTRA_WORD_ID,
-            wordId
-          )
-          arguments.putInt(
-            LinkOrDeleteWordDialogFragment.EXTRA_FLAG,
-            linkOrDeleteFlag
-          )
-          val subgroupsIds = LongArray(subgroups.size)
-          val subgroupsNames = arrayOfNulls<String>(subgroups.size)
-          for (i in subgroups.indices) {
-            val subgroup = subgroups[i]
-            subgroupsNames[i] = subgroup.name
-            subgroupsIds[i] = subgroup.id
-          }
-          arguments.putStringArray(
-            LinkOrDeleteWordDialogFragment.EXTRA_AVAILABLE_SUBGROUPS_NAMES,
-            subgroupsNames
-          )
-          arguments.putLongArray(
-            LinkOrDeleteWordDialogFragment.EXTRA_AVAILABLE_SUBGROUPS_IDS,
-            subgroupsIds
-          )
-          linkOrDeleteWordDialogFragment.arguments = arguments
-          linkOrDeleteWordDialogFragment.show(
-            requireActivity().supportFragmentManager,
-            DIALOG_LINK_OR_DELETE_WORD
-          )
-          wordViewModel!!.clearAvailableSubgroupsToAndRemoveObserver(availableSubgroupsObserver)
-        }
-      } else {
-        Log.d(LOG_TAG, "availableSubgroups onChanged() value = null")
-      }
-    }
-  }
-
-
   private fun setWordToViews(word: Word) {
     wordTextInputEditText!!.setText(word.word)
     valueTextInputEditText!!.setText(word.value)
@@ -266,11 +210,7 @@ examplesRecyclerView.setAdapter(examplesRecyclerViewAdapter);*/
     return when (item.itemId) {
       R.id.fragment_word___action___link_word -> {
         Log.d(LOG_TAG, "Link word")
-        linkOrDeleteFlag = LinkOrDeleteWordDialogFragment.TO_LINK
-        wordViewModel!!.getAvailableSubgroupsTo(linkOrDeleteFlag).observe(
-          this,
-          availableSubgroupsObserver!!
-        )
+        showLinkOrDeleteWordDialogFragment(LinkOrDeleteWordDialogFragment.TO_LINK)
         true
       }
       R.id.fragment_word___action___reset_word_progress -> {
@@ -287,14 +227,49 @@ examplesRecyclerView.setAdapter(examplesRecyclerViewAdapter);*/
       }
       R.id.fragment_word___action___delete_word -> {
         Log.d(LOG_TAG, "Delete word")
-        linkOrDeleteFlag = LinkOrDeleteWordDialogFragment.TO_DELETE
-        wordViewModel!!.getAvailableSubgroupsTo(linkOrDeleteFlag).observe(
-          this,
-          availableSubgroupsObserver!!
-        )
+        showLinkOrDeleteWordDialogFragment(LinkOrDeleteWordDialogFragment.TO_DELETE)
         true
       }
-      else                                              -> super.onOptionsItemSelected(item)
+      else -> super.onOptionsItemSelected(item)
+    }
+  }
+
+  private fun showLinkOrDeleteWordDialogFragment(linkOrDeleteFlag: Int) {
+    lifecycleScope.launch {
+      val subgroups = wordViewModel!!.getAvailableSubgroupsTo(linkOrDeleteFlag)
+      val linkOrDeleteWordDialogFragment = LinkOrDeleteWordDialogFragment()
+      val arguments = Bundle()
+      val wordId = wordViewModel!!.wordId
+      if (wordId != 0L) {
+        arguments.putLong(
+          LinkOrDeleteWordDialogFragment.EXTRA_WORD_ID,
+          wordId
+        )
+        arguments.putInt(
+          LinkOrDeleteWordDialogFragment.EXTRA_FLAG,
+          linkOrDeleteFlag
+        )
+        val subgroupsIds = LongArray(subgroups.size)
+        val subgroupsNames = arrayOfNulls<String>(subgroups.size)
+        for (i in subgroups.indices) {
+          val subgroup = subgroups[i]
+          subgroupsNames[i] = subgroup.name
+          subgroupsIds[i] = subgroup.id
+        }
+        arguments.putStringArray(
+          LinkOrDeleteWordDialogFragment.EXTRA_AVAILABLE_SUBGROUPS_NAMES,
+          subgroupsNames
+        )
+        arguments.putLongArray(
+          LinkOrDeleteWordDialogFragment.EXTRA_AVAILABLE_SUBGROUPS_IDS,
+          subgroupsIds
+        )
+        linkOrDeleteWordDialogFragment.arguments = arguments
+        linkOrDeleteWordDialogFragment.show(
+          requireActivity().supportFragmentManager,
+          DIALOG_LINK_OR_DELETE_WORD
+        )
+      }
     }
   }
 
