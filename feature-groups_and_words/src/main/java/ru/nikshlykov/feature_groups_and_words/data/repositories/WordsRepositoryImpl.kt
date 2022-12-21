@@ -41,6 +41,11 @@ internal class WordsRepositoryImpl @Inject constructor(
     return wordDao.getWordsFromSubgroupByAlphabet(subgroupId)
   }
 
+  override suspend fun resetWordProgress(wordId: Long): Int =
+    withContext(externalScope.coroutineContext + dispatcher) {
+      wordDao.resetWordProgress(wordId)
+    }
+
   override suspend fun resetWordsProgressFromSubgroup(subgroupId: Long): Int =
     withContext(externalScope.coroutineContext + dispatcher) {
       wordDao.resetWordsProgressFromSubgroup(subgroupId)

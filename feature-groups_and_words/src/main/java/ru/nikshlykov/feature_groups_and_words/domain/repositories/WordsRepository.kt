@@ -16,5 +16,7 @@ internal interface WordsRepository {
 
   fun getWordsFromSubgroupByAlphabet(subgroupId: Long): LiveData<List<Word>>
 
+  suspend fun resetWordProgress(wordId: Long): Int
+
   suspend fun resetWordsProgressFromSubgroup(subgroupId: Long): Int
 }

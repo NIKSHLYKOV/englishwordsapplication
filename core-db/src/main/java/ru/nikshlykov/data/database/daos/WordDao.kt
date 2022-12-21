@@ -47,6 +47,9 @@ interface WordDao {
   )
   suspend fun getNotNewWordsFromStudiedSubgroups(): List<Word>
 
+  @Query("UPDATE Words SET LearnProgress = -1 WHERE Words._id = :wordId")
+  suspend fun resetWordProgress(wordId: Long): Int
+
   @Query("UPDATE Words SET LearnProgress = -1 WHERE Words._id in (SELECT w._id FROM Subgroups s INNER JOIN Links l on l.SubgroupId == s._id INNER JOIN Words w on l.WordId == w._id WHERE s._id == :subgroupId)")
   suspend fun resetWordsProgressFromSubgroup(subgroupId: Long): Int
 }

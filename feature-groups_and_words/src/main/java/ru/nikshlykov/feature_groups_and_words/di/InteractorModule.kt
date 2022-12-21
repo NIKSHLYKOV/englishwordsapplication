@@ -83,9 +83,9 @@ internal class InteractorModule {
   }
 
   @Provides
-  fun provideResetWordProgressInteractor(updateWordInteractor: UpdateWordInteractor)
+  fun provideResetWordProgressInteractor(wordsRepository: WordsRepository)
     : ResetWordProgressInteractor {
-    return ResetWordProgressInteractor(updateWordInteractor)
+    return ResetWordProgressInteractor(wordsRepository)
   }
 
   @Provides

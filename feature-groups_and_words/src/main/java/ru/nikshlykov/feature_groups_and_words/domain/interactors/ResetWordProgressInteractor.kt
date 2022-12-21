@@ -1,11 +1,10 @@
 package ru.nikshlykov.feature_groups_and_words.domain.interactors
 
-import ru.nikshlykov.data.database.models.Word
+import ru.nikshlykov.feature_groups_and_words.domain.repositories.WordsRepository
 
-internal class ResetWordProgressInteractor(private val updateWordInteractor: UpdateWordInteractor) {
+internal class ResetWordProgressInteractor(private val wordsRepository: WordsRepository) {
 
-  suspend fun resetWordProgress(word: Word): Int {
-    word.learnProgress = -1
-    return updateWordInteractor.updateWord(word)
+  suspend fun resetWordProgress(wordId: Long): Int {
+    return wordsRepository.resetWordProgress(wordId)
   }
 }

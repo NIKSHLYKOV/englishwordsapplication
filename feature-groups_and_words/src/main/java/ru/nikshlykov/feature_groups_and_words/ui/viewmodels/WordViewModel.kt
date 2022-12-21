@@ -65,20 +65,10 @@ internal class WordViewModel(
   fun resetProgress() {
     viewModelScope.launch {
       val word = word.value
-      // TODO Срочно убрать сброс прогресса в SQL. Иначе Flow не обдейтит значение
-      this@WordViewModel.word.emit(Word(word.word, word.transcription, word.value).apply {
-        id = word.id
-        learnProgress = -1
-        createdByUser = word.createdByUser
-        partOfSpeech = word.partOfSpeech
-        lastRepetitionDate = word.lastRepetitionDate
-        priority = word.priority
-      })
-      delay(1000)
       if (word != null) {
-        val resetResult = resetWordProgressInteractor.resetWordProgress(word)
+        val resetResult = resetWordProgressInteractor.resetWordProgress(wordId)
         if (resetResult == 1) {
-          //this@WordViewModel.word.value.id.let { loadWord(it) }
+          this@WordViewModel.word.value.id.let { loadWord(it) }
         }
       }
     }
