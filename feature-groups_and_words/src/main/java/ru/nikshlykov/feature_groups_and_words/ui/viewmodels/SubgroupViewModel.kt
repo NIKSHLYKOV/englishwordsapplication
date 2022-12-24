@@ -1,8 +1,12 @@
 package ru.nikshlykov.feature_groups_and_words.ui.viewmodels
 
 import android.util.Log
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.nikshlykov.data.database.models.Subgroup
@@ -26,15 +30,10 @@ internal class SubgroupViewModel(
   private var subgroupId: Long = 0
   private var newIsStudied = 0
 
-  // Слова, залинкованные с подгруппой
-  val words: MediatorLiveData<List<Word>> = MediatorLiveData()
+  val wordsFlow: MutableStateFlow<List<Word>> = MutableStateFlow(emptyList())
 
-  private var wordsByAlphabet: LiveData<List<Word>>? = null
-  private var wordsByProgress: LiveData<List<Word>>? = null
-
-  // Observer, который сетит список слов в words.
-  private val observer: Observer<List<Word>> =
-    Observer { words -> this@SubgroupViewModel.words.value = words }
+  private var wordsByAlphabetFlow: StateFlow<List<Word>> = MutableStateFlow(emptyList())
+  private var wordsByProgressFlow: StateFlow<List<Word>> = MutableStateFlow(emptyList())
 
   fun loadSubgroupAndWords(subgroupId: Long, sortParam: Int) {
     this.subgroupId = subgroupId
@@ -42,13 +41,27 @@ internal class SubgroupViewModel(
       _subgroup.value = getSubgroupInteractor.getSubgroupById(subgroupId)
     }
 
-    wordsByAlphabet = getWordsFromSubgroupInteractor.getWordsFromSubgroupByAlphabet(subgroupId)
-    wordsByProgress = getWordsFromSubgroupInteractor.getWordsFromSubgroupByProgress(subgroupId)
+    wordsByAlphabetFlow =
+      getWordsFromSubgroupInteractor.getWordsFromSubgroupByAlphabetFlow(subgroupId)
+        .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+    wordsByProgressFlow =
+      getWordsFromSubgroupInteractor.getWordsFromSubgroupByProgressFlow(subgroupId)
+        .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-    if (sortParam == SortWordsDialogFragment.BY_ALPHABET) {
-      words.addSource(wordsByAlphabet!!, observer)
-    } else {
-      words.addSource(wordsByProgress!!, observer)
+    // TODO подумать потом над этим кодом. Было бы классно сделать получше.
+    when (sortParam) {
+      SortWordsDialogFragment.BY_ALPHABET ->
+        viewModelScope.launch {
+          wordsByAlphabetFlow.collectLatest { words ->
+            wordsFlow.emit(words)
+          }
+        }
+      else ->
+        viewModelScope.launch {
+          wordsByProgressFlow.collectLatest { words ->
+            wordsFlow.emit(words)
+          }
+        }
     }
   }
 
@@ -91,12 +104,10 @@ internal class SubgroupViewModel(
   fun sortWords(sortParam: Int) {
     when (sortParam) {
       SortWordsDialogFragment.BY_ALPHABET -> {
-        words.removeSource(wordsByProgress!!)
-        words.addSource(wordsByAlphabet!!, observer)
+        viewModelScope.launch { wordsFlow.emit(wordsByAlphabetFlow.value) }
       }
       SortWordsDialogFragment.BY_PROGRESS -> {
-        words.removeSource(wordsByAlphabet!!)
-        words.addSource(wordsByProgress!!, observer)
+        viewModelScope.launch { wordsFlow.emit(wordsByProgressFlow.value) }
       }
     }
   }

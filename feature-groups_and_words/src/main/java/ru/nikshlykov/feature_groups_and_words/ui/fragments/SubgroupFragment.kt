@@ -15,8 +15,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavDirections
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -27,6 +29,7 @@ import com.example.core_network.SubgroupImages
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import ru.nikshlykov.data.database.models.Subgroup
 import ru.nikshlykov.feature_groups_and_words.R
@@ -88,7 +91,6 @@ internal class SubgroupFragment : FlowFragmentChildFragment(),
   ): View? {
     val v = inflater.inflate(R.layout.fragment_subgroup, container, false)
     setHasOptionsMenu(true)
-    subgroupViewModel!!.loadSubgroupAndWords(subgroupId, sortParam)
     return v
   }
 
@@ -120,21 +122,26 @@ internal class SubgroupFragment : FlowFragmentChildFragment(),
     initRecyclerViewAdapter()
     recyclerView!!.adapter = adapter
 
-    subgroupViewModel!!.words.observe(viewLifecycleOwner, { words ->
-      Log.i(LOG_TAG, "words onChanged()")
-      if (words != null) {
-        if (!deleteFlag) {
-          if (words.isEmpty()) {
-            if (!subgroupIsCreatedByUser) {
-              infoTextView!!.text = "Здесь скоро появятся слова. Пожалуйста, подождите обновления!"
+    lifecycleScope.launch {
+      repeatOnLifecycle(Lifecycle.State.STARTED) {
+        subgroupViewModel!!.wordsFlow.collectLatest { words ->
+          if (!deleteFlag) {
+            if (words.isEmpty()) {
+              if (!subgroupIsCreatedByUser) {
+                infoTextView!!.text =
+                  "Здесь скоро появятся слова. Пожалуйста, подождите обновления!"
+              } else {
+                infoTextView!!.text = "Добавьте слова в группу, чтобы видеть их здесь"
+              }
             } else {
-              infoTextView!!.text = "Добавьте слова в группу, чтобы видеть их здесь"
+              infoTextView!!.text = ""
             }
+            adapter!!.setWords(words)
           }
-          adapter!!.setWords(words)
         }
       }
-    })
+    }
+    subgroupViewModel!!.loadSubgroupAndWords(subgroupId, sortParam)
   }
 
   override fun onPause() {

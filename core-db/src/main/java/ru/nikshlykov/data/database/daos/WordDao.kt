@@ -1,7 +1,7 @@
 package ru.nikshlykov.data.database.daos
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
+import kotlinx.coroutines.flow.Flow
 import ru.nikshlykov.data.database.models.Word
 
 @Dao
@@ -18,32 +18,32 @@ interface WordDao {
 
   @Query(
     "SELECT Words.* FROM Words, Links " +
-      "WHERE Words._id = Links.WordId and Links.SubgroupId = :subgroupId " +
-      "ORDER BY Words.LearnProgress DESC, Words.word"
+            "WHERE Words._id = Links.WordId and Links.SubgroupId = :subgroupId " +
+            "ORDER BY Words.LearnProgress DESC, Words.word"
   )
-  fun getWordsFromSubgroupByProgress(subgroupId: Long): LiveData<List<Word>>
+  fun getWordsFromSubgroupByProgressFlow(subgroupId: Long): Flow<List<Word>>
 
   @Query(
     "SELECT Words.* FROM Words, Links " +
-      "WHERE Words._id = Links.WordId and Links.SubgroupId = :subgroupId " +
-      "ORDER BY Words.Word, Words.LearnProgress DESC"
+            "WHERE Words._id = Links.WordId and Links.SubgroupId = :subgroupId " +
+            "ORDER BY Words.Word, Words.LearnProgress DESC"
   )
-  fun getWordsFromSubgroupByAlphabet(subgroupId: Long): LiveData<List<Word>>
+  fun getWordsFromSubgroupByAlphabetFlow(subgroupId: Long): Flow<List<Word>>
 
   @Query("SELECT * FROM Words ORDER BY _id LIMIT 1")
   suspend fun wordWithMinId(): Word
 
   @Query(
     "SELECT DISTINCT Words.* FROM Words, Links, Subgroups " +
-      "WHERE Words._id = Links.WordId AND Subgroups._id = Links.SubgroupId " +
-      "AND Subgroups.IsStudied = 1 ORDER BY Words.LearnProgress DESC, Words.Priority"
+            "WHERE Words._id = Links.WordId AND Subgroups._id = Links.SubgroupId " +
+            "AND Subgroups.IsStudied = 1 ORDER BY Words.LearnProgress DESC, Words.Priority"
   )
   suspend fun getWordsFromStudiedSubgroups(): List<Word>
 
   @Query(
     "SELECT DISTINCT Words.* FROM Words, Links, Subgroups " +
-      "WHERE Words._id = Links.WordId AND Subgroups._id = Links.SubgroupId " +
-      "AND Subgroups.IsStudied = 1 AND Words.LearnProgress >= 0 ORDER BY Words.LearnProgress DESC, Words.Priority"
+            "WHERE Words._id = Links.WordId AND Subgroups._id = Links.SubgroupId " +
+            "AND Subgroups.IsStudied = 1 AND Words.LearnProgress >= 0 ORDER BY Words.LearnProgress DESC, Words.Priority"
   )
   suspend fun getNotNewWordsFromStudiedSubgroups(): List<Word>
 

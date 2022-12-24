@@ -1,9 +1,9 @@
 package ru.nikshlykov.feature_groups_and_words.data.repositories
 
-import androidx.lifecycle.LiveData
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import ru.nikshlykov.data.database.daos.WordDao
 import ru.nikshlykov.data.database.models.Word
@@ -33,13 +33,13 @@ internal class WordsRepositoryImpl @Inject constructor(
       wordDao.getWordById(wordId)
     }
 
-  override fun getWordsFromSubgroupByProgress(subgroupId: Long): LiveData<List<Word>> {
-    return wordDao.getWordsFromSubgroupByProgress(subgroupId)
-  }
+  override fun getWordsFromSubgroupByProgressFlow(subgroupId: Long): Flow<List<Word>> =
+    wordDao.getWordsFromSubgroupByProgressFlow(subgroupId)
 
-  override fun getWordsFromSubgroupByAlphabet(subgroupId: Long): LiveData<List<Word>> {
-    return wordDao.getWordsFromSubgroupByAlphabet(subgroupId)
-  }
+
+  override fun getWordsFromSubgroupByAlphabetFlow(subgroupId: Long): Flow<List<Word>> =
+    wordDao.getWordsFromSubgroupByAlphabetFlow(subgroupId)
+
 
   override suspend fun resetWordProgress(wordId: Long): Int =
     withContext(externalScope.coroutineContext + dispatcher) {
