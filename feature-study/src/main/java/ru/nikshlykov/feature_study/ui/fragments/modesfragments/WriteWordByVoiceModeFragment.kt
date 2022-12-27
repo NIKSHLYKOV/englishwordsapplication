@@ -21,6 +21,7 @@ import javax.inject.Inject
 
 internal class WriteWordByVoiceModeFragment : BaseModeFragment() {
 
+  // TODO Срочно разобраться с TTS. Приложение вылетает при нажатии на кнопку воспроизведения слова.
   @Inject
   lateinit var textToSpeech: TextToSpeech
 

@@ -1,9 +1,9 @@
 package ru.nikshlykov.feature_study.data.repositories
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import ru.nikshlykov.data.database.daos.ModeDao
 import ru.nikshlykov.data.database.models.Mode
@@ -19,7 +19,7 @@ internal class ModesRepositoryImpl @Inject constructor(
   override suspend fun getSelectedModes(): List<Mode> =
     withContext(dispatcher) { modeDao.getSelectedModes() }
 
-  override fun getModesAreSelected(): LiveData<Boolean> {
-    return Transformations.map(modeDao.getSelectedModesCount()) { count -> count > 0 }
+  override fun getModesAreSelected(): Flow<Boolean> = modeDao.getSelectedModesCount().map { count ->
+    count > 0
   }
 }

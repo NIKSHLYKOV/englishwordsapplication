@@ -5,7 +5,7 @@ import android.preference.PreferenceManager
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -35,9 +35,9 @@ internal class StudyViewModel(
 
   private var selectedModesIds: ArrayList<Long>? = null
 
-  fun getModesAreSelected(): LiveData<Boolean> {
-    return getModesAreSelectedInteractor.getSelectedModes()
-  }
+  fun getModesAreSelected(): LiveData<Boolean> = getModesAreSelectedInteractor.getModesAreSelected()
+    .asLiveData(viewModelScope.coroutineContext)
+
 
   fun startStudying(listener: OnAvailableToRepeatWordLoadedListener) {
     viewModelScope.launch {

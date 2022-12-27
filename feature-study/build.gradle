@@ -42,6 +42,7 @@ dependencies {
     implementation libraries.core_ktx
     implementation libraries.lifecycle_viewmodelktx
     implementation libraries.fragment_ktx
+    implementation libraries.lifecycle_livedata_ktx
 
     // DI (Dagger 2)
     implementation libraries.dagger

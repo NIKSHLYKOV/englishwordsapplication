@@ -1,11 +1,11 @@
 package ru.nikshlykov.feature_study.domain.repositories
 
-import androidx.lifecycle.LiveData
+import kotlinx.coroutines.flow.Flow
 import ru.nikshlykov.data.database.models.Mode
 
 internal interface ModesRepository {
 
   suspend fun getSelectedModes(): List<Mode>
 
-  fun getModesAreSelected(): LiveData<Boolean>
+  fun getModesAreSelected(): Flow<Boolean>
 }

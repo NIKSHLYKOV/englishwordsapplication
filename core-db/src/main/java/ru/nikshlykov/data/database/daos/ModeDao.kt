@@ -1,9 +1,9 @@
 package ru.nikshlykov.data.database.daos
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Update
+import kotlinx.coroutines.flow.Flow
 import ru.nikshlykov.data.database.models.Mode
 
 @Dao
@@ -19,5 +19,5 @@ interface ModeDao {
   suspend fun getAllModes(): List<Mode>
 
   @Query("SELECT COUNT(*) FROM Modes as m WHERE m.IsSelected == 1")
-  fun getSelectedModesCount(): LiveData<Int>
+  fun getSelectedModesCount(): Flow<Int>
 }
