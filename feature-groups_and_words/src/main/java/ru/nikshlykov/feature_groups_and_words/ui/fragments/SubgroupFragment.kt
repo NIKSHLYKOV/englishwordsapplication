@@ -101,22 +101,26 @@ internal class SubgroupFragment : FlowFragmentChildFragment(),
 
     (activity as AppCompatActivity?)!!.setSupportActionBar(toolbar)
     initCreateWordFAB()
-    subgroupViewModel!!.subgroup.observe(viewLifecycleOwner, { subgroup ->
-      if (subgroup != null) {
-        Log.i(LOG_TAG, "subgroup onChanged()")
-        val toolbarLayout: CollapsingToolbarLayout = view.findViewById(
-          R.id.fragment_subgroup___collapsing_toolbar_layout
-        )
-        toolbarLayout.title = subgroup.name
-        toolbarLayout.setCollapsedTitleTextAppearance(R.style.CollapsingToolbarCollapseTitle)
-        toolbarLayout.setExpandedTitleTextAppearance(R.style.CollapsingToolbarExpandedTitle)
-        setSubgroupImage(subgroup.isCreatedByUser, subgroup.imageURL)
 
-        initSwipeIcons()
-        ItemTouchHelper(createMySimpleCallbackBySubgroup(subgroup))
-          .attachToRecyclerView(recyclerView)
+    lifecycleScope.launch{
+      repeatOnLifecycle(Lifecycle.State.STARTED){
+        subgroupViewModel!!.subgroupFlow.collectLatest { subgroup ->
+          if (subgroup != null) {
+            val toolbarLayout: CollapsingToolbarLayout = view.findViewById(
+              R.id.fragment_subgroup___collapsing_toolbar_layout
+            )
+            toolbarLayout.title = subgroup.name
+            toolbarLayout.setCollapsedTitleTextAppearance(R.style.CollapsingToolbarCollapseTitle)
+            toolbarLayout.setExpandedTitleTextAppearance(R.style.CollapsingToolbarExpandedTitle)
+            setSubgroupImage(subgroup.isCreatedByUser, subgroup.imageURL)
+
+            initSwipeIcons()
+            ItemTouchHelper(createMySimpleCallbackBySubgroup(subgroup))
+              .attachToRecyclerView(recyclerView)
+          }
+        }
       }
-    })
+    }
 
     initRecyclerView()
     initRecyclerViewAdapter()

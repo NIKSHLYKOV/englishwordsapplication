@@ -1,8 +1,6 @@
 package ru.nikshlykov.feature_groups_and_words.ui.viewmodels
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.GlobalScope
@@ -25,8 +23,9 @@ internal class SubgroupViewModel(
   private val getAvailableSubgroupsInteractor: GetAvailableSubgroupsInteractor
 ) : ViewModel() {
 
-  private val _subgroup: MutableLiveData<Subgroup> = MutableLiveData()
-  val subgroup: LiveData<Subgroup> = _subgroup
+  private val _subgroupFlow: MutableStateFlow<Subgroup?> = MutableStateFlow(null)
+  val subgroupFlow: StateFlow<Subgroup?> = _subgroupFlow
+
   private var subgroupId: Long = 0
   private var newIsStudied = 0
 
@@ -38,7 +37,7 @@ internal class SubgroupViewModel(
   fun loadSubgroupAndWords(subgroupId: Long, sortParam: Int) {
     this.subgroupId = subgroupId
     viewModelScope.launch {
-      _subgroup.value = getSubgroupInteractor.getSubgroupById(subgroupId)
+      _subgroupFlow.emit(getSubgroupInteractor.getSubgroupById(subgroupId))
     }
 
     wordsByAlphabetFlow =
@@ -66,7 +65,7 @@ internal class SubgroupViewModel(
   }
 
   fun deleteSubgroup() {
-    val subgroup = _subgroup.value
+    val subgroup = _subgroupFlow.value
     if (subgroup != null && subgroup.isCreatedByUser) {
       GlobalScope.launch {
         deleteSubgroupInteractor.deleteSubgroup(subgroup)
@@ -80,7 +79,7 @@ internal class SubgroupViewModel(
    */
   fun updateSubgroup() {
     Log.i(LOG_TAG, "updateSubgroup()")
-    val subgroup = _subgroup.value
+    val subgroup = _subgroupFlow.value
     if (subgroup != null) {
       subgroup.studied = newIsStudied
       GlobalScope.launch {
