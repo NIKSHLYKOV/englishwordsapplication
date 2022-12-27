@@ -14,7 +14,7 @@ import com.example.utils.getShuffleCharacters
 import ru.nikshlykov.core_ui.dpToPx
 import ru.nikshlykov.data.database.models.Word
 import ru.nikshlykov.feature_study.R
-import java.util.*
+import kotlin.collections.ArrayDeque
 
 internal class CollectWordByLettersModeFragment : BaseModeFragment() {
 
@@ -28,8 +28,7 @@ internal class CollectWordByLettersModeFragment : BaseModeFragment() {
 
   private var handler: Handler? = null
 
-  // TODO заменить на структуру стека (ArrayDeque вроде)
-  private var invisibleButtons: ArrayList<View>? = null
+  private var invisibleButtons: ArrayDeque<View> = ArrayDeque()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -62,7 +61,6 @@ internal class CollectWordByLettersModeFragment : BaseModeFragment() {
 
     val wordOnEnglish = word!!.word
     val lettersCount = wordOnEnglish.length
-    invisibleButtons = ArrayList(lettersCount)
     val shuffleLetters = wordOnEnglish.getShuffleCharacters()
 
     for (i in 0 until lettersCount) {
@@ -74,12 +72,12 @@ internal class CollectWordByLettersModeFragment : BaseModeFragment() {
 
   private fun initRemoveButton() {
     removeLetterImageButton!!.setOnClickListener {
-      if (invisibleButtons!!.size != 0) {
+      if (invisibleButtons.isNotEmpty()) {
         val currentText = userVariantTextView!!.text.toString()
         val newText = currentText.substring(0, currentText.length - 1)
         userVariantTextView!!.text = newText
-        invisibleButtons!!.removeAt(invisibleButtons!!.size - 1).visibility = View.VISIBLE
-        if (invisibleButtons!!.size == 0) {
+        invisibleButtons.removeLast().visibility = View.VISIBLE
+        if (invisibleButtons.isEmpty()) {
           removeLetterImageButton!!.isEnabled = false
         }
       }
@@ -107,9 +105,9 @@ internal class CollectWordByLettersModeFragment : BaseModeFragment() {
       val currentText = userVariantTextView!!.text.toString()
       val newText = currentText + letter
       userVariantTextView!!.text = newText
-      invisibleButtons!!.add(v)
-      if (invisibleButtons!!.size == 1) removeLetterImageButton!!.isEnabled = true
-      if (invisibleButtons!!.size == lettersCount) {
+      invisibleButtons.addLast(v)
+      removeLetterImageButton!!.isEnabled = true
+      if (invisibleButtons.size == lettersCount) {
         valueTextView!!.visibility = View.GONE
         removeLetterImageButton!!.visibility = View.GONE
         userVariantTextView!!.visibility = View.GONE
