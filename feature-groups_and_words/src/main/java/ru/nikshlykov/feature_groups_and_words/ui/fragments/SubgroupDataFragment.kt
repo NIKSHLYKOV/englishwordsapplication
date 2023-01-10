@@ -1,6 +1,7 @@
 package ru.nikshlykov.feature_groups_and_words.ui.fragments
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.textfield.TextInputEditText
 import ru.nikshlykov.feature_groups_and_words.R
 import ru.nikshlykov.feature_groups_and_words.di.GroupsFeatureComponentViewModel
@@ -22,6 +24,7 @@ internal class SubgroupDataFragment : FlowFragmentChildFragment() {
 
   // TODO сделать добавление фото для подгруппы.
   private var confirmButton: MaterialButton? = null
+  private var subgroupImage: ShapeableImageView? = null
   private var subgroupNameEditText: TextInputEditText? = null
   private var subgroupId = 0L
 
@@ -60,12 +63,30 @@ internal class SubgroupDataFragment : FlowFragmentChildFragment() {
     if (subgroupId != 0L) {
       confirmButton!!.setText(R.string.to_save)
     }
+    setSubgroupImageViewClickListener()
     setConfirmButtonClickListener()
     subgroupDataViewModel!!.subgroup.observe(viewLifecycleOwner, Observer { subgroup ->
       if (subgroup != null) {
         subgroupNameEditText!!.setText(subgroup.name)
       }
     })
+  }
+
+  private fun setSubgroupImageViewClickListener() {
+    subgroupImage!!.setOnClickListener {
+      val imagePickIntent = Intent().apply {
+        action = Intent.ACTION_GET_CONTENT
+        type = "image/*"
+      }
+      startActivityForResult(imagePickIntent, REQUEST_CODE_PICK_IMAGE)
+    }
+  }
+
+  override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    if (requestCode == REQUEST_CODE_PICK_IMAGE){
+      subgroupImage?.setImageURI(data?.data)
+    }
+    super.onActivityResult(requestCode, resultCode, data)
   }
 
   private fun setConfirmButtonClickListener() {
@@ -91,8 +112,13 @@ internal class SubgroupDataFragment : FlowFragmentChildFragment() {
   }
 
   private fun findViews(view: View) {
+    subgroupImage = view.findViewById(R.id.fragment_subgroup_data___image_view___subgroup_image)
     subgroupNameEditText =
       view.findViewById(R.id.fragment_subgroup_data___text_input_edit_text___subgroup_name)
     confirmButton = view.findViewById(R.id.fragment_subgroup_data___material_button___confirm_group)
+  }
+
+  companion object {
+    private const val REQUEST_CODE_PICK_IMAGE = 2
   }
 }

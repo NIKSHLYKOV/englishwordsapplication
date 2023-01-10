@@ -7,22 +7,23 @@
     android:padding="8dp">
 
     <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/activity_add_or_edit_subgroup___image_view___subgroup_image"
+        android:id="@+id/fragment_subgroup_data___image_view___subgroup_image"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_alignBottom="@+id/activity_add_or_edit_subgroup___text_input_layout___subgroup_name"
+        android:layout_alignBottom="@+id/fragment_subgroup_data___text_input_layout___subgroup_name"
         app:srcCompat="@drawable/ic_outline_image_24"
+        android:scaleType="centerCrop"
         android:clickable="true"
         android:focusable="true"
         app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize10Percent"
         android:foreground="?attr/selectableItemBackgroundBorderless"/>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/activity_add_or_edit_subgroup___text_input_layout___subgroup_name"
+        android:id="@+id/fragment_subgroup_data___text_input_layout___subgroup_name"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@+id/activity_add_or_edit_subgroup___image_view___subgroup_image"
+        android:layout_toEndOf="@+id/fragment_subgroup_data___image_view___subgroup_image"
         android:layout_marginStart="8dp"
         android:hint="@string/subgroup_name">
 
