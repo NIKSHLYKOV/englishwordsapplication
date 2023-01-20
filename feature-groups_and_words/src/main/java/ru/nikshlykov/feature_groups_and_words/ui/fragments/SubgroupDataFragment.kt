@@ -3,16 +3,22 @@ package ru.nikshlykov.feature_groups_and_words.ui.fragments
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.textfield.TextInputEditText
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import ru.nikshlykov.feature_groups_and_words.R
 import ru.nikshlykov.feature_groups_and_words.di.GroupsFeatureComponentViewModel
 import ru.nikshlykov.feature_groups_and_words.ui.viewmodels.SubgroupDataViewModel
@@ -22,7 +28,7 @@ internal class SubgroupDataFragment : FlowFragmentChildFragment() {
 
   private val groupsFeatureComponentViewModel: GroupsFeatureComponentViewModel by viewModels()
 
-  // TODO сделать добавление фото для подгруппы.
+  // TODO сделать решить проблему с большими фото. приложение вылетает
   private var confirmButton: MaterialButton? = null
   private var subgroupImage: ShapeableImageView? = null
   private var subgroupNameEditText: TextInputEditText? = null
@@ -44,7 +50,7 @@ internal class SubgroupDataFragment : FlowFragmentChildFragment() {
     if (extras != null) {
       subgroupId = SubgroupDataFragmentArgs.fromBundle(extras).subgroupId
       if (subgroupId != 0L) {
-        subgroupDataViewModel!!.loadSubgroup(subgroupId)
+        subgroupDataViewModel!!.loadSubgroupAndPhoto(requireContext(), subgroupId)
       }
     }
   }
@@ -70,6 +76,16 @@ internal class SubgroupDataFragment : FlowFragmentChildFragment() {
         subgroupNameEditText!!.setText(subgroup.name)
       }
     })
+
+    lifecycleScope.launch {
+      repeatOnLifecycle(Lifecycle.State.RESUMED) {
+        subgroupDataViewModel!!.subgroupImage.collectLatest { image ->
+          if (image != null) {
+            subgroupImage?.setImageBitmap(image)
+          }
+        }
+      }
+    }
   }
 
   private fun setSubgroupImageViewClickListener() {
@@ -83,8 +99,11 @@ internal class SubgroupDataFragment : FlowFragmentChildFragment() {
   }
 
   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-    if (requestCode == REQUEST_CODE_PICK_IMAGE){
+    if (requestCode == REQUEST_CODE_PICK_IMAGE) {
       subgroupImage?.setImageURI(data?.data)
+      subgroupDataViewModel!!.setSubgroupNewImage(
+        MediaStore.Images.Media.getBitmap(requireActivity().getContentResolver(), data?.data)
+      )
     }
     super.onActivityResult(requestCode, resultCode, data)
   }
@@ -101,7 +120,7 @@ internal class SubgroupDataFragment : FlowFragmentChildFragment() {
               onChildFragmentInteractionListener!!.close()
             }
           })
-        subgroupDataViewModel!!.addOrUpdateSubgroup(subgroupName)
+        subgroupDataViewModel!!.addOrUpdateSubgroup(subgroupName, requireContext())
       } else {
         Toast.makeText(
           context, R.string.error_new_subgroup_empty_name,
@@ -119,6 +138,6 @@ internal class SubgroupDataFragment : FlowFragmentChildFragment() {
   }
 
   companion object {
-    private const val REQUEST_CODE_PICK_IMAGE = 2
+    private const val REQUEST_CODE_PICK_IMAGE = 1
   }
 }
