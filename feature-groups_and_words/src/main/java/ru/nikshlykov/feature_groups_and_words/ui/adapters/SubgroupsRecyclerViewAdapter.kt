@@ -12,9 +12,11 @@ import android.widget.ToggleButton
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import ru.nikshlykov.data.database.models.Subgroup
 import ru.nikshlykov.feature_groups_and_words.R
 import com.example.core_network.SubgroupImages
+import java.io.File
 import java.util.*
 
 internal class SubgroupsRecyclerViewAdapter(
@@ -40,11 +42,15 @@ internal class SubgroupsRecyclerViewAdapter(
     val currentSubgroup = subgroups!![position]
     holder.subgroupTextView.text = currentSubgroup.name
     if (currentSubgroup.isCreatedByUser) {
-      val imageColor = context.getDrawable(R.drawable.user_subgroups_default_color)
-      holder.subgroupImageView.setImageDrawable(imageColor)
+      Glide.with(context)
+        .load(File(context.filesDir, currentSubgroup.imageName))
+        .diskCacheStrategy(DiskCacheStrategy.NONE)
+        .placeholder(R.drawable.shape_load_picture)
+        .error(context.getDrawable(R.drawable.user_subgroups_default_color))
+        .into(holder.subgroupImageView)
     } else {
       Glide.with(context)
-        .load(SubgroupImages.SUBGROUP_IMAGES_URL + currentSubgroup.imageURL)
+        .load(SubgroupImages.SUBGROUP_IMAGES_URL + currentSubgroup.imageName)
         .placeholder(R.drawable.shape_load_picture)
         .error(R.drawable.shape_load_picture)
         .into(holder.subgroupImageView)

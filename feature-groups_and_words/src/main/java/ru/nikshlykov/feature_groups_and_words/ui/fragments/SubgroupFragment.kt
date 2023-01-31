@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.core_network.SubgroupImages
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -36,6 +37,7 @@ import ru.nikshlykov.feature_groups_and_words.R
 import ru.nikshlykov.feature_groups_and_words.di.GroupsFeatureComponentViewModel
 import ru.nikshlykov.feature_groups_and_words.ui.adapters.WordsRecyclerViewAdapter
 import ru.nikshlykov.feature_groups_and_words.ui.viewmodels.SubgroupViewModel
+import java.io.File
 import javax.inject.Inject
 
 internal class SubgroupFragment : FlowFragmentChildFragment(),
@@ -102,8 +104,8 @@ internal class SubgroupFragment : FlowFragmentChildFragment(),
     (activity as AppCompatActivity?)!!.setSupportActionBar(toolbar)
     initCreateWordFAB()
 
-    lifecycleScope.launch{
-      repeatOnLifecycle(Lifecycle.State.STARTED){
+    lifecycleScope.launch {
+      repeatOnLifecycle(Lifecycle.State.STARTED) {
         subgroupViewModel!!.subgroupFlow.collectLatest { subgroup ->
           if (subgroup != null) {
             val toolbarLayout: CollapsingToolbarLayout = view.findViewById(
@@ -112,7 +114,7 @@ internal class SubgroupFragment : FlowFragmentChildFragment(),
             toolbarLayout.title = subgroup.name
             toolbarLayout.setCollapsedTitleTextAppearance(R.style.CollapsingToolbarCollapseTitle)
             toolbarLayout.setExpandedTitleTextAppearance(R.style.CollapsingToolbarExpandedTitle)
-            setSubgroupImage(subgroup.isCreatedByUser, subgroup.imageURL)
+            setSubgroupImage(subgroup)
 
             initSwipeIcons()
             ItemTouchHelper(createMySimpleCallbackBySubgroup(subgroup))
@@ -146,6 +148,15 @@ internal class SubgroupFragment : FlowFragmentChildFragment(),
       }
     }
     subgroupViewModel!!.loadSubgroupAndWords(subgroupId, sortParam)
+  }
+
+  override fun onResume() {
+    super.onResume()
+    if (subgroupIsCreatedByUser) {
+      subgroupViewModel!!.subgroupFlow.value?.let {
+        setSubgroupImage(it)
+      }
+    }
   }
 
   override fun onPause() {
@@ -232,16 +243,20 @@ internal class SubgroupFragment : FlowFragmentChildFragment(),
     }
   }
 
-  private fun setSubgroupImage(subgroupIsCreatedByUser: Boolean, imageResourceId: String) {
+  private fun setSubgroupImage(subgroup: Subgroup) {
     // TODO Проверить, не будет ли лагать, если будет LiveDataSubgroup.
-    if (subgroupIsCreatedByUser) {
-      val imageColor = requireContext().getDrawable(R.drawable.user_subgroups_default_color)
-      subgroupImageView!!.setImageDrawable(imageColor)
+    if (subgroup.isCreatedByUser) {
+      Glide.with(this)
+        .load(File(requireContext().filesDir, subgroup.imageName))
+        .diskCacheStrategy(DiskCacheStrategy.NONE)
+        .placeholder(R.drawable.shape_load_picture)
+        .error(requireContext().getDrawable(R.drawable.user_subgroups_default_color))
+        .into(subgroupImageView!!)
     } else {
       Glide.with(this)
-        .load(SubgroupImages.HIGH_SUBGROUP_IMAGES_URL + imageResourceId)
+        .load(SubgroupImages.HIGH_SUBGROUP_IMAGES_URL + subgroup.imageName)
         .placeholder(R.drawable.shape_load_picture)
-        .error(Glide.with(this).load(SubgroupImages.SUBGROUP_IMAGES_URL + imageResourceId))
+        .error(Glide.with(this).load(SubgroupImages.SUBGROUP_IMAGES_URL + subgroup.imageName))
         .into(subgroupImageView!!)
     }
   }

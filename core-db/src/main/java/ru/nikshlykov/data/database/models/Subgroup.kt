@@ -23,7 +23,12 @@ class Subgroup : Parcelable {
     this.groupId = Group.GROUP_FOR_NEW_SUBGROUPS_ID
     this.studied = 0
     // TODO заменить базовый imageURL
-    this.imageURL = "subgroup_chemistry.jpg"
+    this.imageName = "subgroup_chemistry.jpg"
+  }
+
+  @Ignore
+  constructor(name: String, imageName: String = "") : this(name) {
+    this.imageName = imageName
   }
 
   @PrimaryKey
@@ -44,7 +49,7 @@ class Subgroup : Parcelable {
     : Int
 
   @ColumnInfo(name = "ImageResourceId")
-  var imageURL
+  var imageName
     : String
 
   val isCreatedByUser: Boolean
@@ -58,7 +63,7 @@ class Subgroup : Parcelable {
       return false
     }
     val comparedSubgroup = other as Subgroup
-    return id == comparedSubgroup.id && name == comparedSubgroup.name && groupId == comparedSubgroup.groupId && studied == comparedSubgroup.studied && imageURL == comparedSubgroup.imageURL
+    return id == comparedSubgroup.id && name == comparedSubgroup.name && groupId == comparedSubgroup.groupId && studied == comparedSubgroup.studied && imageName == comparedSubgroup.imageName
   }
 
   constructor(`in`: Parcel) {
@@ -66,7 +71,7 @@ class Subgroup : Parcelable {
     name = `in`.readString()!!
     groupId = `in`.readLong()
     studied = `in`.readInt()
-    imageURL = `in`.readString()!!
+    imageName = `in`.readString()!!
   }
 
   override fun describeContents(): Int {
@@ -78,7 +83,7 @@ class Subgroup : Parcelable {
     dest.writeString(name)
     dest.writeLong(groupId)
     dest.writeInt(studied)
-    dest.writeString(imageURL)
+    dest.writeString(imageName)
   }
 
   override fun hashCode(): Int {
@@ -86,7 +91,7 @@ class Subgroup : Parcelable {
     result = 31 * result + name.hashCode()
     result = 31 * result + groupId.hashCode()
     result = 31 * result + studied
-    result = 31 * result + imageURL.hashCode()
+    result = 31 * result + imageName.hashCode()
     return result
   }
 

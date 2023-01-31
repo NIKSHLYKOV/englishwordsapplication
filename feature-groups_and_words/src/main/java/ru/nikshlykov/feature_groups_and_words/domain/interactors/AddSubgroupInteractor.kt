@@ -5,7 +5,7 @@ import ru.nikshlykov.feature_groups_and_words.domain.repositories.SubgroupsRepos
 
 internal class AddSubgroupInteractor(private val subgroupsRepository: SubgroupsRepository) {
 
-  suspend fun addSubgroup(subgroupName: String): Long {
-    return subgroupsRepository.insertSubgroup(Subgroup(subgroupName))
+  suspend fun addSubgroup(subgroupName: String, subgroupImageName: String = ""): Long {
+    return subgroupsRepository.insertSubgroup(Subgroup(subgroupName, subgroupImageName))
   }
 }

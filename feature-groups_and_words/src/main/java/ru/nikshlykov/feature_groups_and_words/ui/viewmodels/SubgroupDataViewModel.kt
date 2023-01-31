@@ -38,7 +38,7 @@ internal class SubgroupDataViewModel(
 
       val files = context.filesDir.listFiles()
       val photos =
-        files?.filter { it.canRead() && it.isFile && it.name.equals("${_subgroup.value?.name}.jpg") }
+        files?.filter { it.canRead() && it.isFile && it.name.equals(_subgroup.value?.imageName) }
           ?.map {
             val bytes = it.readBytes()
             BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
@@ -56,23 +56,33 @@ internal class SubgroupDataViewModel(
     }
   }
 
+  // TODO прописать удаление старого фото при добавлении нового
   fun addOrUpdateSubgroup(subgroupName: String, context: Context) {
     val subgroupToUpdate = subgroup.value
     // TODO сделать проверку уникальности имени (иначе одно и то же фото будет для нескольких
     //  подгрупп). Да и зачем несколько подгрупп с одним именем
     viewModelScope.launch {
+      var isNewImageExists = false
+      val newImageName = subgroupName + System.currentTimeMillis() + ".jpg"
+
+      // Сохраняем фото
+      val photoSavingIsSuccessfully =
+        subgroupNewImage?.let {
+          isNewImageExists = true
+          savePhotoToInternalStorage(newImageName, it, context)
+        } ?: true
+
       // Сохраняем группу
       val subgroupSavingIsSuccessfully =
         if (subgroupToUpdate != null) {
           subgroupToUpdate.name = subgroupName
+          if (isNewImageExists){
+            subgroupToUpdate.imageName = newImageName
+          }
           updateSubgroupInteractor.updateSubgroup(subgroupToUpdate) == 1
         } else {
-          addSubgroupInteractor.addSubgroup(subgroupName) != 0L
+          addSubgroupInteractor.addSubgroup(subgroupName, newImageName) != 0L
         }
-
-      // Сохраняем фото
-      val photoSavingIsSuccessfully =
-        subgroupNewImage?.let { savePhotoToInternalStorage(subgroupName, it, context) } ?: true
 
       // TODO СРОЧНО ИСПРАВИТЬ. МОЖЕТ БЫТЬ ОШИБКА, КОГДА БД ОБНОВИТСЯ, А ФОТО - НЕТ. ИЛИ НАОБОРОТ
       if (subgroupSavingIsSuccessfully && photoSavingIsSuccessfully) {
@@ -83,7 +93,7 @@ internal class SubgroupDataViewModel(
 
   private fun savePhotoToInternalStorage(filename: String, bmp: Bitmap, context: Context): Boolean {
     return try {
-      context.openFileOutput("$filename.jpg", Context.MODE_PRIVATE).use { stream ->
+      context.openFileOutput(filename, Context.MODE_PRIVATE).use { stream ->
         if (!bmp.compress(Bitmap.CompressFormat.JPEG, 95, stream)) {
           throw IOException("Couldn't save bitmap.")
         }

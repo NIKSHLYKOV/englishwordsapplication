@@ -90,7 +90,7 @@ internal class GroupsFragment : FlowFragmentChildFragment(),
           }
         }
       })
-    groupsViewModel!!.loadGroupItems()
+
     groupItemsRecyclerView!!.layoutManager = LinearLayoutManager(
       context,
       RecyclerView.VERTICAL, false
@@ -105,6 +105,11 @@ internal class GroupsFragment : FlowFragmentChildFragment(),
       }
     })
     groupItemsRecyclerView!!.adapter = groupItemsRecyclerViewAdapter
+  }
+
+  override fun onStart() {
+    super.onStart()
+    groupsViewModel!!.loadGroupItems()
   }
 
   private fun findViews(view: View) {
