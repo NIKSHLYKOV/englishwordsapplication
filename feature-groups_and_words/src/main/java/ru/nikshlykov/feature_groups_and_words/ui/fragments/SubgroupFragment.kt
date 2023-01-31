@@ -248,7 +248,6 @@ internal class SubgroupFragment : FlowFragmentChildFragment(),
     if (subgroup.isCreatedByUser) {
       Glide.with(this)
         .load(File(requireContext().filesDir, subgroup.imageName))
-        .diskCacheStrategy(DiskCacheStrategy.NONE)
         .placeholder(R.drawable.shape_load_picture)
         .error(requireContext().getDrawable(R.drawable.user_subgroups_default_color))
         .into(subgroupImageView!!)

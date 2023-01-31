@@ -44,7 +44,6 @@ internal class SubgroupsRecyclerViewAdapter(
     if (currentSubgroup.isCreatedByUser) {
       Glide.with(context)
         .load(File(context.filesDir, currentSubgroup.imageName))
-        .diskCacheStrategy(DiskCacheStrategy.NONE)
         .placeholder(R.drawable.shape_load_picture)
         .error(context.getDrawable(R.drawable.user_subgroups_default_color))
         .into(holder.subgroupImageView)
