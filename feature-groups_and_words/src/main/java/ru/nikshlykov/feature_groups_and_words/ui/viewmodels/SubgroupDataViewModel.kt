@@ -56,7 +56,6 @@ internal class SubgroupDataViewModel(
     }
   }
 
-  // TODO прописать удаление старого фото при добавлении нового
   fun addOrUpdateSubgroup(subgroupName: String, context: Context) {
     val subgroupToUpdate = subgroup.value
     // TODO сделать проверку уникальности имени (иначе одно и то же фото будет для нескольких
@@ -72,13 +71,17 @@ internal class SubgroupDataViewModel(
           savePhotoToInternalStorage(newImageName, it, context)
         } ?: true
 
-      // Сохраняем группу
+      // Сохраняем группу и удаляем старое фото, если оно было.
       val subgroupSavingIsSuccessfully =
         if (subgroupToUpdate != null) {
-          subgroupToUpdate.name = subgroupName
-          if (isNewImageExists){
+          if (isNewImageExists) {
+            if (photoSavingIsSuccessfully) {
+              deletePhotoFromInternalStorage(subgroupToUpdate.imageName, context)
+            }
+            // Блок удаления должен быть обязательно до этой строки, иначе удалим новое фото, а не старое.
             subgroupToUpdate.imageName = newImageName
           }
+          subgroupToUpdate.name = subgroupName
           updateSubgroupInteractor.updateSubgroup(subgroupToUpdate) == 1
         } else {
           addSubgroupInteractor.addSubgroup(subgroupName, newImageName) != 0L
@@ -100,6 +103,15 @@ internal class SubgroupDataViewModel(
       }
       true
     } catch (e: IOException) {
+      e.printStackTrace()
+      false
+    }
+  }
+
+  private fun deletePhotoFromInternalStorage(filename: String, context: Context): Boolean {
+    return try {
+      context.deleteFile(filename)
+    } catch (e: Exception) {
       e.printStackTrace()
       false
     }
