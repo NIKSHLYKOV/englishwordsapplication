@@ -58,8 +58,7 @@ internal class SubgroupDataViewModel(
 
   fun addOrUpdateSubgroup(subgroupName: String, context: Context) {
     val subgroupToUpdate = subgroup.value
-    // TODO сделать проверку уникальности имени (иначе одно и то же фото будет для нескольких
-    //  подгрупп). Да и зачем несколько подгрупп с одним именем
+    // TODO сделать проверку уникальности имени, чтобы подгруппы были уникальны по имени.
     viewModelScope.launch {
       var isNewImageExists = false
       val newImageName = subgroupName + System.currentTimeMillis() + ".jpg"
@@ -94,6 +93,7 @@ internal class SubgroupDataViewModel(
     }
   }
 
+  // TODO Fix. Большие вертикальные фото почему-то переворачиваются при сохранении
   private fun savePhotoToInternalStorage(filename: String, bmp: Bitmap, context: Context): Boolean {
     return try {
       context.openFileOutput(filename, Context.MODE_PRIVATE).use { stream ->

@@ -14,6 +14,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.bumptech.glide.Glide
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.textfield.TextInputEditText
@@ -28,7 +29,6 @@ internal class SubgroupDataFragment : FlowFragmentChildFragment() {
 
   private val groupsFeatureComponentViewModel: GroupsFeatureComponentViewModel by viewModels()
 
-  // TODO сделать решить проблему с большими фото. приложение вылетает
   private var confirmButton: MaterialButton? = null
   private var subgroupImage: ShapeableImageView? = null
   private var subgroupNameEditText: TextInputEditText? = null
@@ -81,7 +81,12 @@ internal class SubgroupDataFragment : FlowFragmentChildFragment() {
       repeatOnLifecycle(Lifecycle.State.RESUMED) {
         subgroupDataViewModel!!.subgroupImage.collectLatest { image ->
           if (image != null) {
-            subgroupImage?.setImageBitmap(image)
+            // Здесь используется Glide, т.к. приложение вылетало при использовании setImageBitmap()
+            Glide.with(this@SubgroupDataFragment)
+              .load(image)
+              .placeholder(R.drawable.shape_load_picture)
+              .error(requireContext().getDrawable(R.drawable.user_subgroups_default_color))
+              .into(subgroupImage!!)
           }
         }
       }
@@ -99,10 +104,9 @@ internal class SubgroupDataFragment : FlowFragmentChildFragment() {
   }
 
   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-    if (requestCode == REQUEST_CODE_PICK_IMAGE) {
-      subgroupImage?.setImageURI(data?.data)
+    if (requestCode == REQUEST_CODE_PICK_IMAGE && data != null) {
       subgroupDataViewModel!!.setSubgroupNewImage(
-        MediaStore.Images.Media.getBitmap(requireActivity().getContentResolver(), data?.data)
+        MediaStore.Images.Media.getBitmap(requireActivity().getContentResolver(), data.data)
       )
     }
     super.onActivityResult(requestCode, resultCode, data)
