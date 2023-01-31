@@ -103,6 +103,8 @@ internal class SubgroupDataFragment : FlowFragmentChildFragment() {
     }
   }
 
+  // TODO Fix. Большие вертикальные фото почему-то переворачиваются при получении.
+  //  https://stackoverflow.com/questions/3647993/android-bitmaps-loaded-from-gallery-are-rotated-in-imageview
   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
     if (requestCode == REQUEST_CODE_PICK_IMAGE && data != null) {
       subgroupDataViewModel!!.setSubgroupNewImage(

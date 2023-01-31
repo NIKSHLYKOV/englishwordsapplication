@@ -93,11 +93,10 @@ internal class SubgroupDataViewModel(
     }
   }
 
-  // TODO Fix. Большие вертикальные фото почему-то переворачиваются при сохранении
   private fun savePhotoToInternalStorage(filename: String, bmp: Bitmap, context: Context): Boolean {
     return try {
       context.openFileOutput(filename, Context.MODE_PRIVATE).use { stream ->
-        if (!bmp.compress(Bitmap.CompressFormat.JPEG, 95, stream)) {
+        if (!bmp.compress(Bitmap.CompressFormat.JPEG, 100, stream)) {
           throw IOException("Couldn't save bitmap.")
         }
       }
