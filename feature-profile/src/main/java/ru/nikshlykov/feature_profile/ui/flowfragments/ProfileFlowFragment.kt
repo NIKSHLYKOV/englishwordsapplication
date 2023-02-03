@@ -56,6 +56,10 @@ class ProfileFlowFragment : Fragment(), BackPressedFlowFragmentListener, Profile
     navController!!.popBackStack()
   }
 
+  override fun openStatistics() {
+    profileFeatureRouter.openStatistics()
+  }
+
   override fun openModes() {
     profileFeatureRouter.openModes()
   }

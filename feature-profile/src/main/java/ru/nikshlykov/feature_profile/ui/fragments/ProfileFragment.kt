@@ -16,6 +16,7 @@ internal class ProfileFragment : Fragment() {
   // View элементы.
   private var settingsMaterialButton: MaterialButton? = null
   private var modesMaterialButton: MaterialButton? = null
+  private var statisticsMaterialButton: MaterialButton? = null
 
   private var profileFragmentNavigation: ProfileFragmentNavigation? = null
 
@@ -50,18 +51,16 @@ internal class ProfileFragment : Fragment() {
       profileFragmentNavigation!!.openSettings()
     }
 
-    val fragmentTransaction = childFragmentManager.beginTransaction()
-    val statisticsFragment = StatisticsFragment()
-    fragmentTransaction.replace(
-      R.id.fragment_profile___linear_layout___statistics,
-      statisticsFragment
-    )
-    fragmentTransaction.commit()
+    statisticsMaterialButton!!.setOnClickListener {
+      profileFragmentNavigation!!.openStatistics()
+    }
+
     return view
   }
 
   private fun findViews(view: View) {
     settingsMaterialButton = view.findViewById(R.id.fragment_profile___material_button___settings)
     modesMaterialButton = view.findViewById(R.id.fragment_profile___material_button___modes)
+    statisticsMaterialButton = view.findViewById(R.id.fragment_profile___material_button___statistics)
   }
 }

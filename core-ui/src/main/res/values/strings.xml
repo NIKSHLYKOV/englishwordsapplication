@@ -6,6 +6,10 @@
     <string name="value">Значение</string>
     <string name="translation">Перевод</string>
 
+    <string name="statistics">Статистика</string>
+
+    <string name="modes">Режимы</string>
+
     <string name="to_learn">Изучать</string>
 
     <string name="by_progress">По прогрессу</string>

@@ -83,6 +83,11 @@ class MainActivity : AppCompatActivity(), ProfileFeatureRouter, StudyFeatureRout
     }
   }
 
+  override fun openStatistics() {
+    val navDirections = ProfileFlowFragmentDirections.actionProfileFlowDestToStatisticsDest()
+    navController?.navigate(navDirections)
+  }
+
   override fun openModes() {
     val navDirections = ProfileFlowFragmentDirections.actionProfileFlowDestToModesDest()
     navController?.navigate(navDirections)

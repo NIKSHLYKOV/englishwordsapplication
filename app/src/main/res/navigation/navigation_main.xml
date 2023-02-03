@@ -21,6 +21,9 @@
         <action
             android:id="@+id/action_profile_flow_dest_to_settings_dest"
             app:destination="@id/settings_dest" />
+        <action
+            android:id="@+id/action_profile_flow_dest_to_statistics_dest"
+            app:destination="@id/statistics_dest" />
     </fragment>
     <fragment
         android:id="@+id/study_flow_dest"
@@ -41,4 +44,8 @@
         android:id="@+id/settings_dest"
         android:name="ru.nikshlykov.feature_preferences.ui.SettingsFragment"
         android:label="SettingsFragment" />
+    <fragment
+        android:id="@+id/statistics_dest"
+        android:name="ru.nikshlykov.feature_statistics.ui.fragments.StatisticsFragment"
+        android:label="StatisticsFragment" />
 </navigation>

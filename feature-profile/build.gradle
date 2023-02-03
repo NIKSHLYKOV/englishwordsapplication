@@ -35,6 +35,7 @@ android {
 
 dependencies {
     implementation project(path: ':core-navigation')
+    implementation project(path: ':core-ui')
 
     implementation libraries.fragment_ktx
 

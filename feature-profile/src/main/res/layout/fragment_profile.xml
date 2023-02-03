@@ -40,11 +40,24 @@
 
                 android:textColor="@android:color/white"
                 android:textSize="18sp" />-->
-            <FrameLayout
-                android:id="@+id/fragment_profile___linear_layout___statistics"
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/fragment_profile___material_button___statistics"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="8dp"/>
+                android:layout_height="64dp"
+                android:paddingStart="16dp"
+
+                android:paddingEnd="16dp"
+                android:text="@string/statistics"
+
+                android:textAlignment="textStart"
+                android:textAllCaps="false"
+                android:textColor="@android:color/black"
+
+                app:icon="@drawable/ic_baseline_auto_graph_24"
+                app:iconPadding="32dp"
+                app:iconTint="@android:color/black" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/fragment_profile___material_button___modes"
