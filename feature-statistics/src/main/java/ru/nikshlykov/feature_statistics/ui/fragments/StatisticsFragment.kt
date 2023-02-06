@@ -1,4 +1,4 @@
-package com.example.feature_statistics.ui.fragments
+package ru.nikshlykov.feature_statistics.ui.fragments
 
 import androidx.fragment.app.Fragment
 import ru.nikshlykov.feature_statistics.R
