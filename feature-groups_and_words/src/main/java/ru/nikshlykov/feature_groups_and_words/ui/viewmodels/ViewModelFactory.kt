@@ -21,7 +21,7 @@ internal class ViewModelFactory @Inject constructor(
   private val getAvailableSubgroupsInteractor: GetAvailableSubgroupsInteractor,
   private val addNewWordToSubgroupInteractor: AddNewWordToSubgroupInteractor
 ) : ViewModelProvider.Factory {
-  override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+  override fun <T : ViewModel> create(modelClass: Class<T>): T {
     return when (modelClass) {
       GroupsViewModel::class.java -> {
         GroupsViewModel(

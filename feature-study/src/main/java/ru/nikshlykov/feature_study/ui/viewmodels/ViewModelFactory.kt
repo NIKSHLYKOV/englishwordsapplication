@@ -14,7 +14,7 @@ internal class ViewModelFactory @Inject constructor(
   private val getAvailableToRepeatWordInteractor: GetAvailableToRepeatWordInteractor,
   private val getModesAreSelectedInteractor: GetModesAreSelectedInteractor
 ) : ViewModelProvider.Factory {
-  override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+  override fun <T : ViewModel> create(modelClass: Class<T>): T {
     return when (modelClass) {
       StudyViewModel::class.java -> {
         StudyViewModel(

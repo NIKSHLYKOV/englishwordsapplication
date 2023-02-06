@@ -35,6 +35,7 @@ android {
 
 dependencies {
     implementation libraries.appcompat
+    implementation libraries.kotlin_stdlib
 
     implementation libraries.room_runtime
     kapt libraries.room_compiler

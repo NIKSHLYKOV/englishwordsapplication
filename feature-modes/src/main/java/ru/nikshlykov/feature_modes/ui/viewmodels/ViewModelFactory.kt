@@ -10,7 +10,7 @@ internal class ViewModelFactory @Inject constructor(
   private val getAllModesInteractor: GetAllModesInteractor,
   private val updateModesInteractor: UpdateModesInteractor,
 ) : ViewModelProvider.Factory {
-  override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+  override fun <T : ViewModel> create(modelClass: Class<T>): T {
     return when (modelClass) {
       ModesViewModel::class.java -> {
         ModesViewModel(getAllModesInteractor, updateModesInteractor) as T
