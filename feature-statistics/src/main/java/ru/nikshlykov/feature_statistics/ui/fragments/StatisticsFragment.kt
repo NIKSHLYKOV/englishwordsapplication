@@ -62,11 +62,12 @@ class StatisticsFragment : Fragment() {
 
   @Composable
   fun StatisticsScreen() {
-    val statistics by statisticsViewModel.dayRepeatsStatisticsFlow.collectAsState(null)
+    val dayStatistics by statisticsViewModel.dayRepeatsStatisticsFlow.collectAsState(null)
+    val allTimeStatistics by statisticsViewModel.allTimeRepeatsStatisticsFlow.collectAsState(null)
 
     return Column {
-      DayStatisticsCard(statistics = statistics)
-      AllTimeStatisticsCard(statistics = AllTimeRepeatsStatistics(5, 10, 0, 0))
+      DayStatisticsCard(statistics = dayStatistics)
+      AllTimeStatisticsCard(statistics = allTimeStatistics)
     }
   }
 
@@ -90,11 +91,11 @@ class StatisticsFragment : Fragment() {
         Spacer(modifier = Modifier.height(8.dp))
         Row(Modifier.fillMaxWidth()) {
           Text(text = "Взятых на изучение слов", modifier = Modifier.weight(1f))
-          Text(text = "${statistics?.newWordsCount}", textAlign = TextAlign.End)
+          Text(text = "${statistics?.newWordsCount ?: ""}", textAlign = TextAlign.End)
         }
         Row(Modifier.fillMaxWidth()) {
           Text(text = "Повторов", modifier = Modifier.weight(1f))
-          Text(text = "${statistics?.repeatsCount}", textAlign = TextAlign.End)
+          Text(text = "${statistics?.repeatsCount ?: ""}", textAlign = TextAlign.End)
         }
       }
     }
@@ -120,19 +121,19 @@ class StatisticsFragment : Fragment() {
         Spacer(modifier = Modifier.height(8.dp))
         Row(Modifier.fillMaxWidth()) {
           Text(text = "Взятых на изучение слов", modifier = Modifier.weight(1f))
-          Text(text = "${statistics?.newWordsCount}", textAlign = TextAlign.End)
+          Text(text = "${statistics?.newWordsCount ?: ""}", textAlign = TextAlign.End)
         }
         Row(Modifier.fillMaxWidth()) {
           Text(text = "Повторов", modifier = Modifier.weight(1f))
-          Text(text = "${statistics?.repeatsCount}", textAlign = TextAlign.End)
+          Text(text = "${statistics?.repeatsCount ?: ""}", textAlign = TextAlign.End)
         }
         Row(Modifier.fillMaxWidth()) {
           Text(text = "Изученных с помощью приложения слов", modifier = Modifier.weight(1f))
-          Text(text = "${statistics?.alreadyLearnedByAppWordsCount}", textAlign = TextAlign.End)
+          Text(text = "${statistics?.memorizedByAppWordsCount ?: ""}", textAlign = TextAlign.End)
         }
         Row(Modifier.fillMaxWidth()) {
           Text(text = "Слов в словарном запасе", modifier = Modifier.weight(1f))
-          Text(text = "${statistics?.alreadyLearnedWordsCount}", textAlign = TextAlign.End)
+          Text(text = "${statistics?.memorizedWordsCount ?: ""}", textAlign = TextAlign.End)
         }
       }
     }

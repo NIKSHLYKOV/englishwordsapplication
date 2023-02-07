@@ -7,17 +7,14 @@ internal class GetDayStatisticsInteractor(val repeatsRepository: RepeatsReposito
 
   suspend fun getDayRepeatsCount(): Int {
     val date = Date()
-    val todayRepeats =
-      repeatsRepository.getRepeatsByTime(getStartOfDay(date), getEndOfDay(date))
-        .filter { repeat -> repeat.sequenceNumber > 0 }
-    return todayRepeats.size
+    return repeatsRepository.getRepeatsByTime(getStartOfDay(date), getEndOfDay(date))
+      .filter { repeat -> repeat.sequenceNumber > 0 }.size
   }
 
   suspend fun getDayNewWordsCount(): Int {
     val date = Date()
-    val todayRepeats = repeatsRepository.getRepeatsByTime(getStartOfDay(date), getEndOfDay(date))
-      .filter { repeat -> repeat.sequenceNumber == 0 }
-    return todayRepeats.size
+    return repeatsRepository.getRepeatsByTime(getStartOfDay(date), getEndOfDay(date))
+      .filter { repeat -> repeat.sequenceNumber == 0 }.size
   }
 
   private fun getStartOfDay(date: Date): Long {
@@ -31,7 +28,6 @@ internal class GetDayStatisticsInteractor(val repeatsRepository: RepeatsReposito
   }
 
   private fun getEndOfDay(date: Date): Long {
-    // TODO не забыть сделать не строгое начало и строгий конец в SQL запросе
     val calendar: Calendar = Calendar.getInstance()
     calendar.time = date
     val year = calendar.get(Calendar.YEAR)
