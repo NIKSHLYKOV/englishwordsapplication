@@ -1,5 +1,6 @@
 package ru.nikshlykov.feature_statistics.ui.fragments
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -21,21 +22,24 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import kotlinx.coroutines.flow.Flow
-import ru.nikshlykov.data.database.models.Repeat
-import ru.nikshlykov.feature_statistics.domain.interactors.GetDayStatisticsInteractor
-import ru.nikshlykov.feature_statistics.domain.repositories.RepeatsRepository
+import ru.nikshlykov.feature_statistics.di.StatisticsFeatureComponentViewModel
 import ru.nikshlykov.feature_statistics.ui.compose.MyTheme
 import ru.nikshlykov.feature_statistics.ui.models.DayRepeatsStatistics
 import ru.nikshlykov.feature_statistics.ui.viewmodels.StatisticsViewModel
+import javax.inject.Inject
 
 class StatisticsFragment : Fragment() {
-  private val statisticsViewModel =
-    StatisticsViewModel(GetDayStatisticsInteractor(object : RepeatsRepository {
-      override suspend fun getRepeatsByTime(from: Long, to: Long): List<Repeat> {
-        return emptyList()
-      }
-    }))
+  private val statisticsFeatureComponentViewModel: StatisticsFeatureComponentViewModel by viewModels()
+
+  @Inject
+  internal lateinit var statisticsViewModel: StatisticsViewModel
+
+  override fun onAttach(context: Context) {
+    statisticsFeatureComponentViewModel.statisticsFeatureComponent.inject(this)
+    super.onAttach(context)
+  }
 
   override fun onCreateView(
     inflater: LayoutInflater,

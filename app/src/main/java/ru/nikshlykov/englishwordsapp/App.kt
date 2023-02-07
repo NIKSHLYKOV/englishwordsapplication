@@ -26,6 +26,8 @@ import ru.nikshlykov.feature_preferences.di.SettingsFeatureDepsProvider
 import ru.nikshlykov.feature_preferences.notifications.ActivityClassProvider
 import ru.nikshlykov.feature_profile.di.ProfileFeatureDeps
 import ru.nikshlykov.feature_profile.di.ProfileFeatureDepsProvider
+import ru.nikshlykov.feature_statistics.di.StatisticsFeatureDeps
+import ru.nikshlykov.feature_statistics.di.StatisticsFeatureDepsProvider
 import ru.nikshlykov.feature_study.di.StudyFeatureDeps
 import ru.nikshlykov.feature_study.di.StudyFeatureDepsProvider
 import java.util.*
@@ -33,7 +35,7 @@ import java.util.concurrent.TimeUnit
 
 class App : Application(), Configuration.Provider, ModesFeatureDepsProvider,
   StudyFeatureDepsProvider, SettingsFeatureDepsProvider, ActivityClassProvider,
-  ProfileFeatureDepsProvider, GroupsFeatureDepsProvider {
+  ProfileFeatureDepsProvider, GroupsFeatureDepsProvider, StatisticsFeatureDepsProvider {
   var textToSpeech: TextToSpeech? = null
     private set
 
@@ -134,6 +136,9 @@ class App : Application(), Configuration.Provider, ModesFeatureDepsProvider,
     get() = appComponent!!
 
   override val groupsFeatureDeps: GroupsFeatureDeps
+    get() = appComponent!!
+
+  override val statisticsFeatureDeps: StatisticsFeatureDeps
     get() = appComponent!!
 
   override val activityClass: Class<out Activity>
