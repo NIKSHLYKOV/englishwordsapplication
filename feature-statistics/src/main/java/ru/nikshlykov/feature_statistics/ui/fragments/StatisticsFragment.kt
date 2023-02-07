@@ -23,9 +23,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import kotlinx.coroutines.flow.Flow
 import ru.nikshlykov.feature_statistics.di.StatisticsFeatureComponentViewModel
 import ru.nikshlykov.feature_statistics.ui.compose.MyTheme
+import ru.nikshlykov.feature_statistics.ui.models.AllTimeRepeatsStatistics
 import ru.nikshlykov.feature_statistics.ui.models.DayRepeatsStatistics
 import ru.nikshlykov.feature_statistics.ui.viewmodels.StatisticsViewModel
 import javax.inject.Inject
@@ -61,15 +61,17 @@ class StatisticsFragment : Fragment() {
   }
 
   @Composable
-  @Preview(showBackground = true)
   fun StatisticsScreen() {
-    return StatisticsCard(statisticsViewModel.dayRepeatsStatisticsFlow)
+    val statistics by statisticsViewModel.dayRepeatsStatisticsFlow.collectAsState(null)
+
+    return Column {
+      DayStatisticsCard(statistics = statistics)
+      AllTimeStatisticsCard(statistics = AllTimeRepeatsStatistics(5, 10, 0, 0))
+    }
   }
 
   @Composable
-  fun StatisticsCard(statisticsFlow: Flow<DayRepeatsStatistics?>) {
-    val statistics by statisticsFlow.collectAsState(null)
-
+  fun DayStatisticsCard(statistics: DayRepeatsStatistics?) {
     return Card(
       modifier = Modifier
         .fillMaxWidth()
@@ -87,14 +89,64 @@ class StatisticsFragment : Fragment() {
         Text(text = "Cтатистика за сегодня", fontSize = 18.sp, fontWeight = FontWeight.Bold)
         Spacer(modifier = Modifier.height(8.dp))
         Row(Modifier.fillMaxWidth()) {
-          Text(text = "Количество взятых на изучение слов", modifier = Modifier.weight(1f))
+          Text(text = "Взятых на изучение слов", modifier = Modifier.weight(1f))
           Text(text = "${statistics?.newWordsCount}", textAlign = TextAlign.End)
         }
         Row(Modifier.fillMaxWidth()) {
-          Text(text = "Количество повторов", modifier = Modifier.weight(1f))
+          Text(text = "Повторов", modifier = Modifier.weight(1f))
           Text(text = "${statistics?.repeatsCount}", textAlign = TextAlign.End)
         }
       }
     }
+  }
+
+  @Composable
+  fun AllTimeStatisticsCard(statistics: AllTimeRepeatsStatistics?) {
+    return Card(
+      modifier = Modifier
+        .fillMaxWidth()
+        .wrapContentHeight(Alignment.Top)
+        .padding(8.dp),
+      backgroundColor = Color(0xFFFCD366),
+      shape = RoundedCornerShape(10.dp),
+      elevation = 5.dp
+    ) {
+      Column(
+        modifier = Modifier
+          .fillMaxWidth()
+          .padding(8.dp)
+      ) {
+        Text(text = "Cтатистика за всё время", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+        Spacer(modifier = Modifier.height(8.dp))
+        Row(Modifier.fillMaxWidth()) {
+          Text(text = "Взятых на изучение слов", modifier = Modifier.weight(1f))
+          Text(text = "${statistics?.newWordsCount}", textAlign = TextAlign.End)
+        }
+        Row(Modifier.fillMaxWidth()) {
+          Text(text = "Повторов", modifier = Modifier.weight(1f))
+          Text(text = "${statistics?.repeatsCount}", textAlign = TextAlign.End)
+        }
+        Row(Modifier.fillMaxWidth()) {
+          Text(text = "Изученных с помощью приложения слов", modifier = Modifier.weight(1f))
+          Text(text = "${statistics?.alreadyLearnedByAppWordsCount}", textAlign = TextAlign.End)
+        }
+        Row(Modifier.fillMaxWidth()) {
+          Text(text = "Слов в словарном запасе", modifier = Modifier.weight(1f))
+          Text(text = "${statistics?.alreadyLearnedWordsCount}", textAlign = TextAlign.End)
+        }
+      }
+    }
+  }
+
+  @Composable
+  @Preview
+  fun DayStatisticsCardPreview() {
+    DayStatisticsCard(statistics = DayRepeatsStatistics(10, 15))
+  }
+
+  @Composable
+  @Preview
+  fun AllTimeStatisticsCardPreview() {
+    AllTimeStatisticsCard(statistics = AllTimeRepeatsStatistics(80, 500, 34, 50))
   }
 }
