@@ -9,6 +9,7 @@ internal class GetDayStatisticsInteractor(val repeatsRepository: RepeatsReposito
     val date = Date()
     val todayRepeats =
       repeatsRepository.getRepeatsByTime(getStartOfDay(date), getEndOfDay(date))
+        .filter { repeat -> repeat.sequenceNumber > 0 }
     return todayRepeats.size
   }
 

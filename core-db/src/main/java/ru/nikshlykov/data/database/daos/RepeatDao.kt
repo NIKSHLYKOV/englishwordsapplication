@@ -17,6 +17,9 @@ interface RepeatDao {
   @Query("SELECT * FROM Repeats ORDER BY _id DESC LIMIT 1")
   fun repeatWithMaxId(): Repeat?
 
+  @Query("SELECT * FROM Repeats WHERE date >= :from AND date < :to")
+  fun getRepeatsByTime(from: Long, to: Long): List<Repeat>
+
   @Query("SELECT * FROM Repeats")
   suspend fun getAllRepeats(): List<Repeat>
 }

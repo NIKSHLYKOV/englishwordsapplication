@@ -57,7 +57,7 @@ class StatisticsFragment : Fragment() {
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-    statisticsViewModel.testCalculating()
+    statisticsViewModel.calculateDayStatistics()
   }
 
   @Composable
@@ -84,7 +84,7 @@ class StatisticsFragment : Fragment() {
           .fillMaxWidth()
           .padding(8.dp)
       ) {
-        Text(text = "Cтатистика", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+        Text(text = "Cтатистика за сегодня", fontSize = 18.sp, fontWeight = FontWeight.Bold)
         Spacer(modifier = Modifier.height(8.dp))
         Row(Modifier.fillMaxWidth()) {
           Text(text = "Количество взятых на изучение слов", modifier = Modifier.weight(1f))

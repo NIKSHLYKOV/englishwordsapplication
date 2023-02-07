@@ -14,13 +14,6 @@ internal class StatisticsViewModel(val getDayStatisticsInteractor: GetDayStatist
   private val _dayRepeatsStatisticsFlow: MutableStateFlow<DayRepeatsStatistics?> = MutableStateFlow(null)
   val dayRepeatsStatisticsFlow: StateFlow<DayRepeatsStatistics?> = _dayRepeatsStatisticsFlow
 
-  fun testCalculating() {
-    viewModelScope.launch {
-      getDayStatisticsInteractor.getDayRepeatsCount()
-      _dayRepeatsStatisticsFlow.emit(DayRepeatsStatistics(10, 25))
-    }
-  }
-
   fun calculateDayStatistics() {
     viewModelScope.launch {
       val dayRepeatsStatistics = DayRepeatsStatistics(
