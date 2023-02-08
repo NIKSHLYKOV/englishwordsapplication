@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- TODO подключать эти цвета из core-ui через ссылку на цвет-->
     <color name="true_repeat_background">#C0DF85</color>
     <color name="not_true_repeat_background">#CC444B</color>
 </resources>

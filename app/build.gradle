@@ -74,6 +74,8 @@ dependencies {
     // Coroutines
     implementation libraries.coroutines_core
     implementation libraries.coroutines_android
+
+    implementation 'androidx.core:core-splashscreen:1.0.0'
 }
 repositories {
     mavenCentral()

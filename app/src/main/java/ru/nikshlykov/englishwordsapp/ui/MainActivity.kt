@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
@@ -35,8 +36,8 @@ class MainActivity : AppCompatActivity(), ProfileFeatureRouter, StudyFeatureRout
     : BottomNavigationView? = null
 
   override fun onCreate(savedInstanceState: Bundle?) {
-    setTheme(R.style.AppTheme)
     super.onCreate(savedInstanceState)
+    installSplashScreen()
     (applicationContext as App).mainActivity = this
     setContentView(R.layout.activity_main)
     findViews()
