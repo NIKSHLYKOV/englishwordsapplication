@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation_main"
-    app:startDestination="@id/on_boarding_view_pager_dest">
+    app:startDestination="@id/study_flow_dest">
     <fragment
         android:id="@+id/on_boarding_view_pager_dest"
         android:name="ru.nikshlykov.englishwordsapp.ui.fragments.OnBoardingViewPagerFragment"
@@ -52,4 +52,7 @@
         android:id="@+id/statistics_dest"
         android:name="ru.nikshlykov.feature_statistics.ui.fragments.StatisticsFragment"
         android:label="StatisticsFragment" />
+    <action
+        android:id="@+id/action_global_on_boarding_view_pager_dest"
+        app:destination="@id/on_boarding_view_pager_dest" />
 </navigation>

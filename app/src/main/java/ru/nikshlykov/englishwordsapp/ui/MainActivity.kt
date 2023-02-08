@@ -11,7 +11,9 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import ru.nikshlykov.englishwordsapp.App
+import ru.nikshlykov.englishwordsapp.NavigationMainDirections
 import ru.nikshlykov.englishwordsapp.R
+import ru.nikshlykov.englishwordsapp.ui.fragments.OnBoardingRouter
 import ru.nikshlykov.feature_groups_and_words.ui.flowfragments.GroupsAndWordsFlowFragment
 import ru.nikshlykov.feature_profile.navigation.ProfileFeatureRouter
 import ru.nikshlykov.feature_profile.ui.flowfragments.ProfileFlowFragment
@@ -20,7 +22,8 @@ import ru.nikshlykov.feature_study.navigation.StudyFeatureRouter
 import ru.nikshlykov.feature_study.ui.flowfragments.StudyFlowFragment
 import ru.nikshlykov.feature_study.ui.flowfragments.StudyFlowFragmentDirections
 
-class MainActivity : AppCompatActivity(), ProfileFeatureRouter, StudyFeatureRouter {
+class MainActivity : AppCompatActivity(), ProfileFeatureRouter, StudyFeatureRouter,
+  OnBoardingRouter {
 
   // TODO посмотреть, что вообще с flowfragments. у них можно поставить internal или нет.
 
@@ -42,11 +45,14 @@ class MainActivity : AppCompatActivity(), ProfileFeatureRouter, StudyFeatureRout
     (applicationContext as App).mainActivity = this
     setContentView(R.layout.activity_main)
     findViews()
-    bottomNavigationView?.visibility = View.GONE
     navHostFragment =
       supportFragmentManager.findFragmentById(R.id.activity_main___nav_host_fragment) as NavHostFragment
     navController = navHostFragment!!.navController
     NavigationUI.setupWithNavController(bottomNavigationView!!, navController!!)
+
+    // Открытие обучалки
+    bottomNavigationView?.visibility = View.GONE
+    navController?.navigate(NavigationMainDirections.actionGlobalOnBoardingViewPagerDest())
   }
 
   override fun onDestroy() {
@@ -104,6 +110,11 @@ class MainActivity : AppCompatActivity(), ProfileFeatureRouter, StudyFeatureRout
   override fun openModesFromStudy() {
     val navDirections = StudyFlowFragmentDirections.actionStudyFlowDestToModesDest()
     navController?.navigate(navDirections)
+  }
+
+  override fun endOfOnBoarding() {
+    navController?.popBackStack()
+    bottomNavigationView?.visibility = View.VISIBLE
   }
 
   companion object {

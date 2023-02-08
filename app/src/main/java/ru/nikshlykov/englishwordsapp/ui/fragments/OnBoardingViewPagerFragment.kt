@@ -7,9 +7,17 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import ru.nikshlykov.englishwordsapp.R
+import ru.nikshlykov.englishwordsapp.ui.MainActivity
 import ru.nikshlykov.englishwordsapp.ui.OnBoardingViewPagerAdapter
 
-class OnBoardingViewPagerFragment : Fragment() {
+class OnBoardingViewPagerFragment : Fragment(), ViewPagerNavigation {
+
+  private var viewPager: ViewPager2? = null
+
+  private var onBoardingRouter: OnBoardingRouter? = null
+    set(value) {
+      field = value
+    }
 
   override fun onCreateView(
     inflater: LayoutInflater, container: ViewGroup?,
@@ -18,10 +26,10 @@ class OnBoardingViewPagerFragment : Fragment() {
     val view = inflater.inflate(R.layout.fragment_on_boarding_view_pager, container, false)
 
     val fragmentList = arrayListOf(
-      OnBoardingFirstFragment(),
-      OnBoardingSecondFragment(),
-      OnBoardingThirdFragment(),
-      OnBoardingFourthFragment()
+      OnBoardingFirstFragment(this),
+      OnBoardingSecondFragment(this),
+      OnBoardingThirdFragment(this),
+      OnBoardingFourthFragment(this)
     )
 
     val adapter = OnBoardingViewPagerAdapter(
@@ -30,8 +38,25 @@ class OnBoardingViewPagerFragment : Fragment() {
       lifecycle
     )
 
-    view.findViewById<ViewPager2>(R.id.viewPager).adapter = adapter
+    viewPager = view.findViewById<ViewPager2>(R.id.viewPager).also {
+      it.adapter = adapter
+    }
 
     return view
+  }
+
+  override fun back() {
+    if (viewPager?.currentItem != 0) {
+      viewPager?.currentItem = viewPager?.currentItem?.minus(1) ?: 0
+    }
+  }
+
+  override fun next() {
+    if (viewPager?.currentItem != 3) {
+      viewPager?.currentItem = viewPager?.currentItem?.plus(1) ?: 0
+    } else {
+      // TODO refactor. Убрать сильную связанность.
+      (requireActivity() as MainActivity).endOfOnBoarding()
+    }
   }
 }
