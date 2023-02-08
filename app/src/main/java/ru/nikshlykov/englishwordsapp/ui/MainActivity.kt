@@ -2,6 +2,7 @@ package ru.nikshlykov.englishwordsapp.ui
 
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -41,6 +42,7 @@ class MainActivity : AppCompatActivity(), ProfileFeatureRouter, StudyFeatureRout
     (applicationContext as App).mainActivity = this
     setContentView(R.layout.activity_main)
     findViews()
+    bottomNavigationView?.visibility = View.GONE
     navHostFragment =
       supportFragmentManager.findFragmentById(R.id.activity_main___nav_host_fragment) as NavHostFragment
     navController = navHostFragment!!.navController
