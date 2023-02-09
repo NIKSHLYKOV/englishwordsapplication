@@ -1,5 +1,6 @@
 package ru.nikshlykov.englishwordsapp.ui
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -50,9 +51,10 @@ class MainActivity : AppCompatActivity(), ProfileFeatureRouter, StudyFeatureRout
     navController = navHostFragment!!.navController
     NavigationUI.setupWithNavController(bottomNavigationView!!, navController!!)
 
-    // Открытие обучалки
-    bottomNavigationView?.visibility = View.GONE
-    navController?.navigate(NavigationMainDirections.actionGlobalOnBoardingViewPagerDest())
+    if (!checkOnBoardingIsFinished()) {
+      bottomNavigationView?.visibility = View.GONE
+      navController?.navigate(NavigationMainDirections.actionGlobalOnBoardingViewPagerDest())
+    }
   }
 
   override fun onDestroy() {
@@ -112,14 +114,24 @@ class MainActivity : AppCompatActivity(), ProfileFeatureRouter, StudyFeatureRout
     navController?.navigate(navDirections)
   }
 
+  private fun checkOnBoardingIsFinished(): Boolean {
+    val sharedPref = getSharedPreferences(ON_BOARDING_PREFERENCES_NAME, Context.MODE_PRIVATE)
+    return sharedPref.getBoolean("Finished", false)
+  }
+
   override fun endOfOnBoarding() {
     navController?.popBackStack()
     bottomNavigationView?.visibility = View.VISIBLE
+    val sharedPref = getSharedPreferences(ON_BOARDING_PREFERENCES_NAME, Context.MODE_PRIVATE)
+    val editor = sharedPref.edit()
+    editor.putBoolean("Finished", true)
+    editor.apply()
   }
 
   companion object {
     private const val LOG_TAG = "MainActivity"
 
     private var lastBackPressedTime: Long = 0
+    private const val ON_BOARDING_PREFERENCES_NAME = "OnBoarding"
   }
 }
