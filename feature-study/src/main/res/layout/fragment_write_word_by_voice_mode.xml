@@ -11,9 +11,9 @@
         style="@style/Widget.AppCompat.ImageButton"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_alignParentTop="true"
+        android:layout_above="@+id/fragment_write_word_by_voice_mode___linear_layout___user_variant_with_button"
+        android:layout_marginBottom="80dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="150dp"
         android:background="@drawable/shape_oval_white"
         android:contentDescription="voice_button"
         android:src="@drawable/ic_volume_up_dark_blue_48dp" />
@@ -27,13 +27,13 @@
 
 
     <LinearLayout
-        android:id="@+id/fragment_write_word_by_value_mode___linear_layout___user_variant_with_button"
+        android:id="@+id/fragment_write_word_by_voice_mode___linear_layout___user_variant_with_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:orientation="horizontal"
         android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp">
+        android:layout_marginEnd="16dp"
+        android:orientation="horizontal">
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/fragment_write_word_by_voice_mode___text_input_layout___user_variant"

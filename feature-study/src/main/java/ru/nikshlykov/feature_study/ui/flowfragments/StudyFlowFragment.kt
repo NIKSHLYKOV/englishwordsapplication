@@ -31,9 +31,8 @@ class StudyFlowFragment : Fragment(),
 
   // TODO feature. Сделать переход кнопкой на вкладку групп.
 
-  // TODO fix. Проверить adjustResize.
-  // Сдвиг поля текста (но не кнопки голоса) происходит, если не нажималась кнопка голоса.
-  // Если она нажималась до поля ввода, то сдвига нет
+  // TODO fix. Исправить баг с сплюснутой кнопкой при resize (когда открывается клава).
+  // Возможно, поможет отслеживание из кода или использование более сложных layouts.
 
   // TODO fix. Убирать клаву при переходе на другие вкладки из обучения.
   private val studyFeatureComponentViewModel: StudyFeatureComponentViewModel by viewModels()
