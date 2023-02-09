@@ -13,8 +13,7 @@ import javax.inject.Inject
 internal class ModesRepositoryImpl @Inject constructor(
   private val modeDao: ModeDao,
   private val dispatcher: CoroutineDispatcher = Dispatchers.Default
-) :
-  ModesRepository {
+) : ModesRepository {
 
   override suspend fun getSelectedModes(): List<Mode> =
     withContext(dispatcher) { modeDao.getSelectedModes() }

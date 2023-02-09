@@ -1,7 +1,6 @@
 package ru.nikshlykov.feature_study.ui.fragments.modesfragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,8 +35,7 @@ internal class DictionaryCardsModeFragment : BaseModeFragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    Log.d("CardModeFragment", "onCreateView")
-    var view: View? = null
+    val view: View?
     when (flag) {
       FLAG_ENG_TO_RUS -> {
         view = inflater.inflate(R.layout.fragment_dictionary_cards_eng_to_rus, null)
@@ -101,8 +99,7 @@ internal class DictionaryCardsModeFragment : BaseModeFragment() {
     wordTextView!!.text = word.word
   }
 
-  // TODO разобраться с тем, что флаг сейчас не используется
-  fun setFlag(flag: Int) {
+  private fun setFlag(flag: Int) {
     if (flag == FLAG_ENG_TO_RUS || flag == FLAG_RUS_TO_ENG) this.flag = flag
   }
 

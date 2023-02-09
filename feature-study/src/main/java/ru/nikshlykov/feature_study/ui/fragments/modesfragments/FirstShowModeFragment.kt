@@ -2,7 +2,6 @@ package ru.nikshlykov.feature_study.ui.fragments.modesfragments
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +12,7 @@ import ru.nikshlykov.data.database.models.Word
 import ru.nikshlykov.feature_study.R
 
 internal class FirstShowModeFragment : Fragment() {
+  // TODO fix. Поправить кнопку пропуска.
   private var wordTextView: TextView? = null
   private var transcriptionTextView: TextView? = null
   private var valueTextView: TextView? = null
@@ -44,7 +44,6 @@ internal class FirstShowModeFragment : Fragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    Log.d(LOG_TAG, "onCreateView()")
     val view = inflater.inflate(R.layout.fragment_first_show_mode, null)
     findViews(view)
 
@@ -90,9 +89,5 @@ internal class FirstShowModeFragment : Fragment() {
     transcriptionTextView!!.text = word!!.transcription
     valueTextView!!.text = word.value
     wordTextView!!.text = word.word
-  }
-
-  companion object {
-    private const val LOG_TAG = "FirstShowModeFragment"
   }
 }

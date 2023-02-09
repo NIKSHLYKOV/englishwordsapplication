@@ -72,7 +72,7 @@ internal class WriteWordByValueModeFragment : BaseModeFragment() {
 
       var result = 0
       val userVariantOfWord = userVariantTextInputEditText!!.text.toString()
-        .toLowerCase().trim { it <= ' ' }
+        .lowercase().trim { it <= ' ' }
       if (userVariantOfWord == word!!.word) {
         result = 1
         resultImageView!!.setImageResource(R.drawable.ic_done_white_48dp)

@@ -32,6 +32,9 @@ class StudyFlowFragment : Fragment(),
   // TODO fix. Исправить баг с сплюснутой кнопкой при resize (когда открывается клава).
   // Возможно, поможет отслеживание из кода или использование более сложных layouts.
 
+  // TODO feature. Сделать режим выбора из 4 слов.
+
+  // TODO refactoring. Сделать промежуточный фрагмент, чтобы этот отвечал только за навигацию.
   private val studyFeatureComponentViewModel: StudyFeatureComponentViewModel by viewModels()
 
   @JvmField

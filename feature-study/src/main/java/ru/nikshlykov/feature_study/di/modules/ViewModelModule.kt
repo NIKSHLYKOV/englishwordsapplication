@@ -11,5 +11,5 @@ internal abstract class ViewModelModule {
 
   @Binds
   @StudyFeatureScope
-  abstract fun provideViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
+  abstract fun bindsViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 }

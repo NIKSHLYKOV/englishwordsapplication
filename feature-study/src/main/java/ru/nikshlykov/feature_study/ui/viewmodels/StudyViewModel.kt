@@ -25,12 +25,12 @@ internal class StudyViewModel(
   private val studyWordsInteractor: StudyWordsInteractor
 ) : AndroidViewModel(application) {
 
-  // TODO подумать над тем, чтобы логику работы с количеством начатых за слов день перенести
+  // TODO refactoring. подумать над тем, чтобы логику работы с количеством начатых за слов день перенести
   //  на слой interactor'ов.
   private var withNew = true
   private var newWordsCount = 0
 
-  // TODO подумать над тем, чтобы получать слова для повтора прямо из интерактора, который
+  // TODO refactoring. подумать над тем, чтобы получать слова для повтора прямо из интерактора, который
   //  будет комбинировать новые и уже начатые.
 
   private var selectedModesIds: ArrayList<Long>? = null
@@ -69,13 +69,17 @@ internal class StudyViewModel(
   private fun getNextAvailableToRepeatWord(
     listener: OnAvailableToRepeatWordLoadedListener?
   ) {
+    // TODO refactoring. Возможно Globalscope можно заменить на viewmodelscope
     GlobalScope.launch {
       val repeatsCount =
         getFirstShowRepeatsCountForTodayInteractor.getFirstShowRepeatsCountForToday()
       Log.d(LOG_TAG, "Начатых за сегодня слов: $repeatsCount")
       if (repeatsCount >= newWordsCount) {
         if (withNew) {
-          Log.d(LOG_TAG, "Достигнут предел по количеству новых слов за день")
+          Log.d(
+            LOG_TAG, "Достигнут предел по количеству новых слов за день. " +
+              "Далее будут только уже изучаемые."
+          )
         }
         withNew = false
       } else {
@@ -97,6 +101,7 @@ internal class StudyViewModel(
       getApplication<Application>().getString(R.string.preference_key___new_word_count), 5
     )
     // Вместо 5 было NewWordsCountPreference.DEFAULT_VALUE
+    // TODO refactoring. Наверное, лучше подключать модуль настроек.
     Log.i(LOG_TAG, "loadNewWordsCount(): newWordsCount = $newWordsCount")
   }
 
@@ -106,28 +111,30 @@ internal class StudyViewModel(
     result: Int,
     listener: OnAvailableToRepeatWordLoadedListener
   ) {
+    // TODO refactoring. Убрать GlobalScope.
     GlobalScope.launch {
       val processingResult = studyWordsInteractor.firstShowProcessing(wordId, result)
       if (processingResult == 1) {
         // Делаем проверку на то, что пользователь ещё находится во вкладке изучение,
         // т.к. ответ может прийти позже, чем пользователь сменит вкладку.
-        //TODO Если и тут делать проверку, то уже на navController из MainActivity. Её же можно
-        // сделать и в колбэке от уже полученного слова.
+        //TODO refactoring. Если и тут делать проверку, то уже на navController из MainActivity.
+        // Её же можно сделать и в колбэке от уже полученного слова.
         /* if (navController.findFragmentByTag(TAG_STUDY_OR_INFO_FRAGMENT) != null)*/
         getNextAvailableToRepeatWord(listener)
       } else {
-        // TODO сделать вывод сообщения об ошибке.
+        // TODO feature. сделать вывод сообщения об ошибке.
       }
     }
   }
 
   fun repeatProcessing(wordId: Long, result: Int, listener: OnAvailableToRepeatWordLoadedListener) {
+    // TODO refactoring. Убрать GlobalScope
     GlobalScope.launch {
       val processingResult = studyWordsInteractor.repeatProcessing(wordId, result)
       if (processingResult == 1) {
         getNextAvailableToRepeatWord(listener)
       } else {
-        // TODO сделать вывод сообщения об ошибке.
+        // TODO feature. сделать вывод сообщения об ошибке.
       }
     }
   }

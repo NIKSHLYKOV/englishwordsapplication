@@ -2,7 +2,6 @@ package ru.nikshlykov.feature_study.ui.fragments
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,7 +17,6 @@ internal class InfoFragment : Fragment() {
   private var studyFragmentNavigation: StudyFragmentNavigation? = null
 
   override fun onAttach(context: Context) {
-    Log.d("ProfileFragment", "onAttach()")
     super.onAttach(context)
     studyFragmentNavigation =
       if (requireParentFragment().parentFragment is StudyFragmentNavigation) {
@@ -33,7 +31,6 @@ internal class InfoFragment : Fragment() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    Log.i("InfoFragment", "onCreate")
     flag = InfoFragmentArgs.fromBundle(requireArguments()).infoFlag
   }
 
@@ -42,16 +39,13 @@ internal class InfoFragment : Fragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    Log.d("InfoFragment", "onCreateView")
     val v = inflater.inflate(R.layout.fragment_info, null)
     val infoText = v.findViewById<TextView>(R.id.fragment_info___text_view___info)
     var text = ""
-    // TODO перенести строки в ресурсы
     when (flag) {
       FLAG_MODES_ARE_NOT_CHOSEN             -> {
-        text =
-          "Для того, чтобы изучать слова, необходимо выбрать режимы изучения. " +
-            "Сделать это вы можете перейдя во вкладку \"Профиль\" в пункт \"Режимы\""
+        text = getString(R.string.message_modes_are_not_chosen)
+
         val goToModesButton: MaterialButton =
           v.findViewById(R.id.fragment_info___material_button___to_modes)
         goToModesButton.visibility = View.VISIBLE
@@ -61,8 +55,7 @@ internal class InfoFragment : Fragment() {
       }
       // TODO feature. Отдельно обрабатывать случай, когда нужно подождать слова для повтора.
       FLAG_AVAILABLE_WORDS_ARE_NOT_EXISTING -> {
-        text = "Нет доступных слов на данный момент! " +
-          "Выбери группы, если ты ещё этого не сделал"
+        text = getString(R.string.message_available_words_are_not_existing)
 
         val switchToGroupsButton: MaterialButton =
           v.findViewById(R.id.fragment_info___material_button___to_groups)
@@ -79,8 +72,6 @@ internal class InfoFragment : Fragment() {
   }
 
   companion object {
-    const val KEY_INFO_FLAG = "infoFlag"
-
     const val FLAG_MODES_ARE_NOT_CHOSEN = 1
     const val FLAG_AVAILABLE_WORDS_ARE_NOT_EXISTING = 2
   }

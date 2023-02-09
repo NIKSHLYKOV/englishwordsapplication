@@ -73,23 +73,23 @@
         android:layout_gravity="bottom"
         android:paddingStart="20dp"
         android:paddingEnd="20dp"
-        android:paddingBottom="14dp">
+        android:paddingBottom="20dp">
 
         <Button
             android:id="@+id/fragment_dictionary_cards_eng_to_rus___button___do_not_remember"
             style="@style/MaterialButtonWithoutAllCaps"
             android:layout_width="150dp"
             android:layout_height="match_parent"
-            android:layout_gravity="left"
+            android:layout_gravity="start"
             android:text="@string/do_not_remember"
-            android:textSize="12sp"/>
+            android:textSize="12sp" />
 
         <Button
             android:id="@+id/fragment_dictionary_cards_eng_to_rus___button___remember"
             style="@style/MaterialButtonWithoutAllCaps"
             android:layout_width="150dp"
             android:layout_height="match_parent"
-            android:layout_gravity="right"
+            android:layout_gravity="end"
             android:text="@string/remember"
             android:textSize="12sp"/>
 

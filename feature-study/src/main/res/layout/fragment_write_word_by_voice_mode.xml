@@ -15,7 +15,6 @@
         android:layout_marginBottom="80dp"
         android:layout_centerHorizontal="true"
         android:background="@drawable/shape_oval_white"
-        android:contentDescription="voice_button"
         android:src="@drawable/ic_volume_up_dark_blue_48dp" />
 
     <ImageView

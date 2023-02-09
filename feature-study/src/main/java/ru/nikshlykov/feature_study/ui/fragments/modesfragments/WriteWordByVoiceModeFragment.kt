@@ -67,8 +67,7 @@ internal class WriteWordByVoiceModeFragment : BaseModeFragment() {
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
     voiceImageButton!!.setOnClickListener {
-      // TODO можно поменять на ?. и сделать вывод ошибки
-      textToSpeech!!.speak(
+      textToSpeech.speak(
         word!!.word,
         TextToSpeech.QUEUE_FLUSH,
         null,
@@ -78,7 +77,7 @@ internal class WriteWordByVoiceModeFragment : BaseModeFragment() {
     initConfirmImageButton(word)
   }
 
-  // TODO вроде очень похожий код есть в write by value fragment
+  // TODO refactoring. вроде очень похожий код есть в write by value fragment
   private fun initConfirmImageButton(word: Word?) {
     confirmMaterialButton!!.setOnClickListener { v ->
       val imm = activity
@@ -97,7 +96,7 @@ internal class WriteWordByVoiceModeFragment : BaseModeFragment() {
 
       var result = 0
       val userVariantOfWord = userVariantTextInputEditText!!.text.toString()
-        .toLowerCase().trim { it <= ' ' }
+        .lowercase().trim { it <= ' ' }
       if (userVariantOfWord == word!!.word) {
         result = 1
         resultImageView!!.setImageResource(R.drawable.ic_done_white_48dp)

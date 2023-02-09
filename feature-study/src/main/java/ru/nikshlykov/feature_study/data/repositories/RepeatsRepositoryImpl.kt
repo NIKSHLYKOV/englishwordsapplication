@@ -1,6 +1,5 @@
 package ru.nikshlykov.feature_study.data.repositories
 
-
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -14,8 +13,7 @@ internal class RepeatsRepositoryImpl @Inject constructor(
   private val repeatDao: RepeatDao,
   private val externalScope: CoroutineScope,
   private val dispatcher: CoroutineDispatcher = Dispatchers.Default
-) :
-  RepeatsRepository {
+) : RepeatsRepository {
 
   override suspend fun insertRepeat(repeat: Repeat): Long =
     withContext(externalScope.coroutineContext + dispatcher) {
