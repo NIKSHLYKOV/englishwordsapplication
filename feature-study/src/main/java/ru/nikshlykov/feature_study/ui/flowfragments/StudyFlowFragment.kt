@@ -36,8 +36,6 @@ class StudyFlowFragment : Fragment(),
   // Если она нажималась до поля ввода, то сдвига нет
 
   // TODO fix. Убирать клаву при переходе на другие вкладки из обучения.
-
-  // TODO fix. Решить проблему с прилипающей кнопкой и полем для ввода у нескольких режимов.
   private val studyFeatureComponentViewModel: StudyFeatureComponentViewModel by viewModels()
 
   @JvmField

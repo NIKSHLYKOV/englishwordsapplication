@@ -68,7 +68,7 @@ internal class WriteWordByValueModeFragment : BaseModeFragment() {
       confirmImageButton!!.visibility = View.GONE
       userVariantTextInputLayout!!.visibility = View.GONE
 
-      val rootLayout = v.parent.parent.parent as RelativeLayout
+      val rootLayout = v.parent.parent as RelativeLayout
 
       var result = 0
       val userVariantOfWord = userVariantTextInputEditText!!.text.toString()

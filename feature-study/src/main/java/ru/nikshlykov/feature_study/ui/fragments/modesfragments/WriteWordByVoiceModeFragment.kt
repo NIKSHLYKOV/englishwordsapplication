@@ -92,7 +92,8 @@ internal class WriteWordByVoiceModeFragment : BaseModeFragment() {
       confirmMaterialButton!!.visibility = View.GONE
       userVariantTextInputLayout!!.visibility = View.GONE
 
-      val rootLayout = v.parent.parent.parent as RelativeLayout
+      // TODO refactor. Срочно заменить на обращение по id.
+      val rootLayout = v.parent.parent as RelativeLayout
 
       var result = 0
       val userVariantOfWord = userVariantTextInputEditText!!.text.toString()
