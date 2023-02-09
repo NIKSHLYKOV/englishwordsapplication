@@ -29,6 +29,15 @@ class StudyFlowFragment : Fragment(),
   GetAvailableToRepeatWordInteractor.OnAvailableToRepeatWordLoadedListener, RepeatResultListener,
   FirstShowModeReportListener, StudyFragmentNavigation {
 
+  // TODO feature. Сделать переход кнопкой на вкладку групп.
+
+  // TODO fix. Проверить adjustResize.
+  // Сдвиг поля текста (но не кнопки голоса) происходит, если не нажималась кнопка голоса.
+  // Если она нажималась до поля ввода, то сдвига нет
+
+  // TODO fix. Убирать клаву при переходе на другие вкладки из обучения.
+
+  // TODO fix. Решить проблему с прилипающей кнопкой и полем для ввода у нескольких режимов.
   private val studyFeatureComponentViewModel: StudyFeatureComponentViewModel by viewModels()
 
   @JvmField

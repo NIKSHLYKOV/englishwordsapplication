@@ -31,6 +31,8 @@ import ru.nikshlykov.feature_statistics.ui.viewmodels.StatisticsViewModel
 import javax.inject.Inject
 
 class StatisticsFragment : Fragment() {
+  // TODO fix. фильтровать повторы с sequencenumber = 8, чтобы они не считались как повторы
+
   // TODO fix. Удалять repeats, когда пользователь сбрасывает прогресс.
   private val statisticsFeatureComponentViewModel: StatisticsFeatureComponentViewModel by viewModels()
 

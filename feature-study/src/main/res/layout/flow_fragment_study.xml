@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/flow_fragment_study___nav_host"
-    android:name="androidx.navigation.fragment.NavHostFragment"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:defaultNavHost="false"
-    app:navGraph="@navigation/navigation_study" />
+    android:layout_margin="16dp"
+    android:elevation="24dp">
+
+    <fragment xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/flow_fragment_study___nav_host"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:defaultNavHost="false"
+        app:navGraph="@navigation/navigation_study" />
+</androidx.cardview.widget.CardView>
+
