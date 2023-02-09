@@ -36,6 +36,12 @@ class MainActivity : AppCompatActivity(), ProfileFeatureRouter, StudyFeatureRout
 
   // TODO feature. Сделать переход на начальные экраны вкладок bottomview по тапу на вкладки
   //  (изучение, группы, профиль).
+
+  // TODO fix. Проблема с BottomNavView. Если в первом flow уйти далеко, потом перейти на второй,
+  //  а потом вернуться на первый, то подсвечивается иконка второго, а не первого.
+
+  // TODO feature. Сделать удержание не только фрагментов во flow, но и позиций списков, чтобы ui
+  //  полностью оставался таким же при возвращении.
   private var navHostFragment: NavHostFragment? = null
 
   private var navController: NavController? = null
@@ -114,6 +120,11 @@ class MainActivity : AppCompatActivity(), ProfileFeatureRouter, StudyFeatureRout
 
   override fun openModesFromStudy() {
     val navDirections = StudyFlowFragmentDirections.actionStudyFlowDestToModesDest()
+    navController?.navigate(navDirections)
+  }
+
+  override fun openGroupsFromStudy() {
+    val navDirections = StudyFlowFragmentDirections.actionStudyFlowDestToGroupsAndWordsFlowDest()
     navController?.navigate(navDirections)
   }
 

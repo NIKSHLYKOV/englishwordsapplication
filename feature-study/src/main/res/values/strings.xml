@@ -5,4 +5,5 @@
     <string name="to_skip">Пропустить</string>
     <string name="know">Знаю</string>
     <string name="switch_to_modes">Перейти к режимам</string>
+    <string name="switch_to_groups">Перейти к группам</string>
 </resources>

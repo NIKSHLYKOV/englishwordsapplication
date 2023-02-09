@@ -29,12 +29,9 @@ class StudyFlowFragment : Fragment(),
   GetAvailableToRepeatWordInteractor.OnAvailableToRepeatWordLoadedListener, RepeatResultListener,
   FirstShowModeReportListener, StudyFragmentNavigation {
 
-  // TODO feature. Сделать переход кнопкой на вкладку групп.
-
   // TODO fix. Исправить баг с сплюснутой кнопкой при resize (когда открывается клава).
   // Возможно, поможет отслеживание из кода или использование более сложных layouts.
 
-  // TODO fix. Убирать клаву при переходе на другие вкладки из обучения.
   private val studyFeatureComponentViewModel: StudyFeatureComponentViewModel by viewModels()
 
   @JvmField
@@ -131,6 +128,10 @@ class StudyFlowFragment : Fragment(),
 
   override fun openModes() {
     studyFeatureRouter.openModesFromStudy()
+  }
+
+  override fun openGroups() {
+    studyFeatureRouter.openGroupsFromStudy()
   }
 
   companion object {

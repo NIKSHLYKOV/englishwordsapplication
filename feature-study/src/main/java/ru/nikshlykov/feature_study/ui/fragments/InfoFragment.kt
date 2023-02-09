@@ -48,7 +48,7 @@ internal class InfoFragment : Fragment() {
     var text = ""
     // TODO перенести строки в ресурсы
     when (flag) {
-      FLAG_MODES_ARE_NOT_CHOSEN -> {
+      FLAG_MODES_ARE_NOT_CHOSEN             -> {
         text =
           "Для того, чтобы изучать слова, необходимо выбрать режимы изучения. " +
             "Сделать это вы можете перейдя во вкладку \"Профиль\" в пункт \"Режимы\""
@@ -59,8 +59,20 @@ internal class InfoFragment : Fragment() {
           studyFragmentNavigation?.openModes()
         }
       }
-      FLAG_AVAILABLE_WORDS_ARE_NOT_EXISTING -> text = "Нет доступных слов на данный момент! " +
-        "Выбери группы, если ты ещё этого не делал или если ты выучил все слова из выбранных групп."
+      // TODO feature. Отдельно обрабатывать случай, когда нужно подождать слова для повтора.
+      FLAG_AVAILABLE_WORDS_ARE_NOT_EXISTING -> {
+        text = "Нет доступных слов на данный момент! " +
+          "Выбери группы, если ты ещё этого не сделал"
+
+        val switchToGroupsButton: MaterialButton =
+          v.findViewById(R.id.fragment_info___material_button___to_groups)
+        switchToGroupsButton.visibility = View.VISIBLE
+        switchToGroupsButton.setOnClickListener {
+          studyFragmentNavigation?.openGroups()
+        }
+        // TODO feature. Обрабатывать случай, когда все слова из выбранных групп выучены.
+        //  Можно выводить какую-нибудь плашку.
+      }
     }
     infoText.text = text
     return v

@@ -37,6 +37,9 @@
         <action
             android:id="@+id/action_study_flow_dest_to_modes_dest"
             app:destination="@id/modes_dest" />
+        <action
+            android:id="@+id/action_study_flow_dest_to_groups_and_words_flow_dest"
+            app:destination="@id/groups_and_words_flow_dest" />
     </fragment>
 
     <fragment
