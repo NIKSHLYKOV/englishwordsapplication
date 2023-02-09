@@ -12,16 +12,20 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.RelativeLayout
+import androidx.fragment.app.viewModels
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import ru.nikshlykov.data.database.models.Word
 import ru.nikshlykov.feature_study.R
+import ru.nikshlykov.feature_study.ui.viewmodels.StudyFeatureComponentViewModel
 import javax.inject.Inject
 
 internal class WriteWordByVoiceModeFragment : BaseModeFragment() {
 
-  // TODO Срочно разобраться с TTS. Приложение вылетает при нажатии на кнопку воспроизведения слова.
+  // TODO refactoring. Подумать, нормально ли так брать модель, которая для всей фичи.
+  private val studyFeatureComponentViewModel: StudyFeatureComponentViewModel by viewModels()
+
   @Inject
   lateinit var textToSpeech: TextToSpeech
 
@@ -33,6 +37,11 @@ internal class WriteWordByVoiceModeFragment : BaseModeFragment() {
 
   private var word: Word? = null
   private var handler: Handler? = null
+
+  override fun onAttach(context: Context) {
+    studyFeatureComponentViewModel.modesFeatureComponent.inject(this)
+    super.onAttach(context)
+  }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

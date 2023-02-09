@@ -31,6 +31,7 @@ import ru.nikshlykov.feature_statistics.ui.viewmodels.StatisticsViewModel
 import javax.inject.Inject
 
 class StatisticsFragment : Fragment() {
+  // TODO fix. Не работает статистика по словам, которые пользователь уже знает (не добавляется повтор).
   private val statisticsFeatureComponentViewModel: StatisticsFeatureComponentViewModel by viewModels()
 
   @Inject

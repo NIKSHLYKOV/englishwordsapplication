@@ -6,6 +6,7 @@ import ru.nikshlykov.feature_study.di.modules.InteractorModule
 import ru.nikshlykov.feature_study.di.modules.RepositoryModule
 import ru.nikshlykov.feature_study.di.modules.ViewModelModule
 import ru.nikshlykov.feature_study.ui.flowfragments.StudyFlowFragment
+import ru.nikshlykov.feature_study.ui.fragments.modesfragments.WriteWordByVoiceModeFragment
 
 @[StudyFeatureScope Component(
   dependencies = [StudyFeatureDeps::class],
@@ -23,5 +24,7 @@ internal interface StudyFeatureComponent {
   }
 
   fun inject(studyFlowFragment: StudyFlowFragment)
+
+  fun inject(fragment: WriteWordByVoiceModeFragment)
 }
 
