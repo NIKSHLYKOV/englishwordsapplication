@@ -26,7 +26,9 @@ internal class DictionaryCardsModeFragment : BaseModeFragment() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    word = DictionaryCardsModeFragmentArgs.fromBundle(requireArguments()).word
+    val fragmentArguments = requireArguments()
+    word = DictionaryCardsModeFragmentArgs.fromBundle(fragmentArguments).word
+    setFlag(DictionaryCardsModeFragmentArgs.fromBundle(fragmentArguments).flag)
   }
 
   override fun onCreateView(

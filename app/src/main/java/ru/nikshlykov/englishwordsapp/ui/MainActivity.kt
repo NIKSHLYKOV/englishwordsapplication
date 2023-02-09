@@ -33,6 +33,9 @@ class MainActivity : AppCompatActivity(), ProfileFeatureRouter, StudyFeatureRout
   // TODO сделать скрытие bottomNavigation, когда у нас не корневые фрагменты.
   //  Иначе не сохраняется тот фрагмент, на котором мы были. Конечно, лучше, чтобы
   //  сохранялся, но пока можно не реализовывать для простоты.
+
+  // TODO feature. Сделать переход на начальные экраны вкладок bottomview по тапу на вкладки
+  //  (изучение, группы, профиль).
   private var navHostFragment: NavHostFragment? = null
 
   private var navController: NavController? = null

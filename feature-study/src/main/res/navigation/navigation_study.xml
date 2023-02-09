@@ -32,6 +32,10 @@
         <argument
             android:name="word"
             app:argType="ru.nikshlykov.data.database.models.Word" />
+        <argument
+            android:name="flag"
+            app:argType="integer"
+            android:defaultValue="1" />
     </fragment>
     <fragment
         android:id="@+id/first_show_mode_dest"

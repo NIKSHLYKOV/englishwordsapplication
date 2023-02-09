@@ -70,15 +70,15 @@ class StudyFlowFragment : Fragment(),
       childFragmentManager.findFragmentById(R.id.flow_fragment_study___nav_host) as NavHostFragment?
     navController = navHostFragment!!.navController
 
-    studyViewModel!!.getModesAreSelected().observe(viewLifecycleOwner, { modesAreSelected ->
+    studyViewModel!!.getModesAreSelected().observe(viewLifecycleOwner) { modesAreSelected ->
       if (modesAreSelected) {
         studyViewModel!!.startStudying(this)
       } else {
-        val navDirections = NavigationStudyDirections.actionGlobalInfoDest()
-          .setInfoFlag(InfoFragment.FLAG_MODES_ARE_NOT_CHOSEN)
+        val navDirections =
+          NavigationStudyDirections.actionGlobalInfoDest(InfoFragment.FLAG_MODES_ARE_NOT_CHOSEN)
         navController!!.navigate(navDirections)
       }
-    })
+    }
   }
 
   /**
@@ -87,8 +87,8 @@ class StudyFlowFragment : Fragment(),
    */
   override fun onAvailableToRepeatWordLoaded(word: Word?) {
     if (word == null) {
-      val navDirections = NavigationStudyDirections.actionGlobalInfoDest()
-        .setInfoFlag(InfoFragment.FLAG_AVAILABLE_WORDS_ARE_NOT_EXISTING)
+      val navDirections =
+        NavigationStudyDirections.actionGlobalInfoDest(InfoFragment.FLAG_AVAILABLE_WORDS_ARE_NOT_EXISTING)
       navController!!.navigate(navDirections)
     } else {
       Log.i(

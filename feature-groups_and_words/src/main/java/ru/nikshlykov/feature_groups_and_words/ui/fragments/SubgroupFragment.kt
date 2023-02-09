@@ -25,7 +25,6 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.core_network.SubgroupImages
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -186,7 +185,7 @@ internal class SubgroupFragment : FlowFragmentChildFragment(),
   override fun onOptionsItemSelected(item: MenuItem): Boolean {
     val manager = requireActivity().supportFragmentManager
     return when (item.itemId) {
-      R.id.activity_subgroup___action___learn -> {
+      R.id.activity_subgroup___action___learn                -> {
         if (item.isChecked) {
           item.isChecked = false
           item.icon = requireContext().getDrawable(R.drawable.ic_brain_not_selected)
@@ -198,7 +197,7 @@ internal class SubgroupFragment : FlowFragmentChildFragment(),
         }
         true
       }
-      R.id.activity_subgroup___action___sort -> {
+      R.id.activity_subgroup___action___sort                 -> {
         Log.d(LOG_TAG, "sort words")
         val sortWordsDialogFragment = SortWordsDialogFragment()
         sortWordsDialogFragment.setSortWordsListener(this)
@@ -208,11 +207,10 @@ internal class SubgroupFragment : FlowFragmentChildFragment(),
         sortWordsDialogFragment.show(manager, DIALOG_SORT_WORDS)
         true
       }
-      R.id.activity_subgroup___action___edit_subgroup -> {
+      R.id.activity_subgroup___action___edit_subgroup        -> {
         Log.d(LOG_TAG, "edit subgroup")
         val navDirections: NavDirections =
-          SubgroupFragmentDirections.actionSubgroupDestToSubgroupDataDest()
-            .setSubgroupId(subgroupId)
+          SubgroupFragmentDirections.actionSubgroupDestToSubgroupDataDest(subgroupId)
         onChildFragmentInteractionListener!!.onChildFragmentInteraction(navDirections)
         true
       }
@@ -232,14 +230,14 @@ internal class SubgroupFragment : FlowFragmentChildFragment(),
         )
         true
       }
-      R.id.activity_subgroup___action___delete_subgroup -> {
+      R.id.activity_subgroup___action___delete_subgroup      -> {
         Log.d(LOG_TAG, "Delete subgroup")
         val deleteSubgroupDialogFragment = DeleteSubgroupDialogFragment()
         deleteSubgroupDialogFragment.setDeleteSubgroupListener(this)
         deleteSubgroupDialogFragment.show(manager, DIALOG_DELETE_SUBGROUP)
         true
       }
-      else -> super.onOptionsItemSelected(item)
+      else                                                   -> super.onOptionsItemSelected(item)
     }
   }
 
@@ -318,7 +316,7 @@ internal class SubgroupFragment : FlowFragmentChildFragment(),
     if (subgroupIsCreatedByUser) {
       createWordFAB!!.setOnClickListener {
         val navDirections: NavDirections =
-          SubgroupFragmentDirections.actionSubgroupDestToAddWordDest().setSubgroupId(subgroupId)
+          SubgroupFragmentDirections.actionSubgroupDestToAddWordDest(subgroupId)
         onChildFragmentInteractionListener!!.onChildFragmentInteraction(navDirections)
       }
     } else {
@@ -369,7 +367,7 @@ internal class SubgroupFragment : FlowFragmentChildFragment(),
     return if (subgroup.isCreatedByUser) {
       MySimpleCallback(
         0, ItemTouchHelper.LEFT
-                or ItemTouchHelper.RIGHT
+          or ItemTouchHelper.RIGHT
       )
     } else {
       MySimpleCallback(0, ItemTouchHelper.RIGHT)
@@ -389,7 +387,7 @@ internal class SubgroupFragment : FlowFragmentChildFragment(),
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
       val wordId = adapter!!.getWordAt(viewHolder.adapterPosition).id
       when (direction) {
-        ItemTouchHelper.LEFT -> {
+        ItemTouchHelper.LEFT  -> {
           subgroupViewModel!!.deleteWordFromSubgroup(wordId)
           Snackbar.make(viewHolder.itemView, R.string.word_deleted, Snackbar.LENGTH_LONG)
             .setAction(R.string.to_cancel) { subgroupViewModel!!.addWordToSubgroup(wordId) }
