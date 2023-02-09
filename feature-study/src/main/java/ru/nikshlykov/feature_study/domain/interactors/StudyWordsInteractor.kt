@@ -31,8 +31,14 @@ internal class StudyWordsInteractor(
         // Получаем слово из БД, выставляем прогресс на 8 и обновляем слово.
         // С помощью этого можно будет отличать слова, которые пользователь уже знает, от тех,
         // которые он выучил с помощью приложения (они будут иметь прогресс равный 7).
-        val word = wordsRepository.getWordById(wordId)
-        word.learnProgress = 8
+        // Также добавляем повтор, чтобы видеть статистику.
+        val currentTime = Date().time
+        val newRepeat = Repeat(wordId, 8, currentTime, 1)
+        repeatsRepository.insertRepeat(newRepeat)
+
+        val word = wordsRepository.getWordById(wordId).apply {
+          learnProgress = 8
+        }
         return wordsRepository.updateWord(word)
       }
     }
