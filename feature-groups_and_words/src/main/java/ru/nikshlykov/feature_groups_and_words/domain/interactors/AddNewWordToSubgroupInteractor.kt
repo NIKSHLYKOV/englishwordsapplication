@@ -13,7 +13,8 @@ internal class AddNewWordToSubgroupInteractor(
     value: String,
     subgroupId: Long
   ): Long {
-    val newWordId = wordsRepository.insertWord(Word(word, transcription, value))
+    val newWordId =
+      wordsRepository.insertWord(Word(word = word, transcription = transcription, value = value))
     return addWordToSubgroupInteractor.addLinkBetweenWordAndSubgroup(newWordId, subgroupId)
   }
 }

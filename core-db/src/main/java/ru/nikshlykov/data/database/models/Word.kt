@@ -5,104 +5,40 @@ import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.util.*
 
 @Entity(tableName = "Words")
-class Word : Parcelable {
+data class Word(
+  @PrimaryKey @ColumnInfo(name = "_id") var id: Long = 0,
+  @ColumnInfo(name = "Word") var word: String, // Слово на английском языке
+  @ColumnInfo(name = "Transcription") var transcription: String?,
+  @ColumnInfo(name = "Value") var value: String, // Значения слова на русском языке.
+  @ColumnInfo(
+    name = "LearnProgress",
+    defaultValue = "-1"
+  ) var learnProgress: Int = -1, // Прогресс изучения слова - количество правильных повторов, сделанных пользователем подряд.
+  @ColumnInfo(
+    name = "IsCreatedByUser",
+    defaultValue = "0"
+  ) var createdByUser: Int = 0, // 0 - создано нами. 1 - создано пользователем.
+  @ColumnInfo(name = "PartOfSpeech") var partOfSpeech: String? = null,
+  @ColumnInfo(name = "LastRepetitionDate", defaultValue = "0") var lastRepetitionDate: Long = 0,
+  @ColumnInfo(
+    name = "Priority",
+    defaultValue = "0"
+  ) var priority: Int = 0 // Приоритет слова. Если слово пропускается, то значение увеличивается.
+) : Parcelable {
 
-  constructor(word: String, transcription: String?, value: String) {
-    this.word = word
-    this.transcription = transcription
-    this.value = value
-  }
-
-  @PrimaryKey
-  @ColumnInfo(name = "_id")
-  var id
-    : Long = 0
-
-  @ColumnInfo(name = "Word")
-  var word
-    : String
-
-  @ColumnInfo(name = "Transcription")
-  var transcription
-    : String?
-
-  @ColumnInfo(name = "Value")
-  var value // Значения слова на русском языке.
-    : String
-
-  @ColumnInfo(name = "LearnProgress", defaultValue = "-1")
-  var learnProgress // Прогресс изучения слова - количество правильных повторов, сделанных пользователем подряд.
-    = -1
-
-  @ColumnInfo(name = "IsCreatedByUser", defaultValue = "0")
-  var createdByUser // 0 - создано нами. 1 - создано пользователем.
-    = 0
-
-  @ColumnInfo(name = "PartOfSpeech")
-  var partOfSpeech
-    : String? = null
-
-  @ColumnInfo(name = "LastRepetitionDate", defaultValue = "0")
-  var lastRepetitionDate
-    : Long = 0
-
-  @ColumnInfo(name = "Priority", defaultValue = "0")
-  var priority // Приоритет слова. Если слово пропускается, то значение увеличивается.
-    = 0
-
-  override fun equals(other: Any?): Boolean {
-    if (this === other) {
-      return true
-    }
-    if (other == null || javaClass != other.javaClass) {
-      return false
-    }
-    val comparedWord = other as Word
-    // Здесь мы проверяем всё, что не может быть null
-    val flag =
-      id == comparedWord.id && word == comparedWord.word && value == comparedWord.value && learnProgress == comparedWord.learnProgress && createdByUser == comparedWord.createdByUser && lastRepetitionDate == comparedWord.lastRepetitionDate && priority == comparedWord.priority
-    if (flag) {
-      // Если всё предыдущее сошлось, то уже можем проверить транскрипцию и
-      // часть речи, которые могут быть null.
-
-      if (transcription != null) {
-        if (transcription != comparedWord.transcription) {
-          return false
-        }
-      } else {
-        if (comparedWord.transcription != null) {
-          return false
-        }
-      }
-
-      return if (partOfSpeech != null) {
-        partOfSpeech == comparedWord.partOfSpeech
-      } else {
-        comparedWord.partOfSpeech == null
-      }
-    }
-    return false
-  }
-
-  override fun toString(): String {
-    return "Word(id=$id, word=$word, value=$value)"
-  }
-
-
-  constructor(`in`: Parcel) {
-    id = `in`.readLong()
-    word = `in`.readString()!!
-    transcription = `in`.readString()
-    value = `in`.readString()!!
-    learnProgress = `in`.readInt()
-    createdByUser = `in`.readInt()
-    partOfSpeech = `in`.readString()
-    lastRepetitionDate = `in`.readLong()
+  constructor(`in`: Parcel) : this(
+    id = `in`.readLong(),
+    word = `in`.readString()!!,
+    transcription = `in`.readString(),
+    value = `in`.readString()!!,
+    learnProgress = `in`.readInt(),
+    createdByUser = `in`.readInt(),
+    partOfSpeech = `in`.readString(),
+    lastRepetitionDate = `in`.readLong(),
     priority = `in`.readInt()
-  }
+  )
 
   override fun describeContents(): Int {
     return 0

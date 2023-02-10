@@ -33,7 +33,7 @@ internal class StudyWordsInteractor(
         // которые он выучил с помощью приложения (они будут иметь прогресс равный 7).
         // Также добавляем повтор, чтобы видеть статистику.
         val currentTime = Date().time
-        val newRepeat = Repeat(wordId, 8, currentTime, 1)
+        val newRepeat = Repeat(wordId = wordId, sequenceNumber = 8, date = currentTime, result = 1)
         repeatsRepository.insertRepeat(newRepeat)
 
         val word = wordsRepository.getWordById(wordId).apply {
@@ -80,7 +80,12 @@ internal class StudyWordsInteractor(
   ): Int {
     val currentTime = Date().time
 
-    val newRepeat = Repeat(wordId, newRepeatSequenceNumber, currentTime, result)
+    val newRepeat = Repeat(
+      wordId = wordId,
+      sequenceNumber = newRepeatSequenceNumber,
+      date = currentTime,
+      result = result
+    )
     repeatsRepository.insertRepeat(newRepeat)
 
 

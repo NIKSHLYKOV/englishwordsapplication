@@ -13,14 +13,10 @@ import androidx.room.*
   )],
   indices = [Index("WordId")]
 )
-class Repeat(
+data class Repeat(
+  @PrimaryKey @ColumnInfo(name = "_id") var id: Long = 0,
   @ColumnInfo(name = "WordId") val wordId: Long,
   @ColumnInfo(name = "SequenceNumber") val sequenceNumber: Int,
   @ColumnInfo(name = "Date") val date: Long,
   @ColumnInfo(name = "Result") val result: Int
-) {
-
-  @PrimaryKey
-  @ColumnInfo(name = "_id")
-  var id: Long = 0
-}
+)

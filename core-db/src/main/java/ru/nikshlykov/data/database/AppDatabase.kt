@@ -9,7 +9,7 @@ import ru.nikshlykov.data.database.models.*
 
 
 @Database(
-  entities = [Example::class, Group::class, Link::class, Mode::class, Repeat::class, Setting::class,
+  entities = [Example::class, Group::class, Link::class, Mode::class, Repeat::class,
     Subgroup::class, Word::class],
   version = 1,
   exportSchema = false

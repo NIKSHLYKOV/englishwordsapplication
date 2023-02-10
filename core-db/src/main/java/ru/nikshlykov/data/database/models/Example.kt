@@ -13,18 +13,10 @@ import androidx.room.*
   )],
   indices = [Index("WordId")]
 )
-class Example {
-
+data class Example(
   @PrimaryKey
-  @ColumnInfo(name = "_id")
-  var id: Long = 0
-
-  @ColumnInfo(name = "WordId")
-  var wordId: Long = 0
-
-  @ColumnInfo(name = "Example")
-  var text: String = ""
-
-  @ColumnInfo(name = "Translation")
-  var translation: String = ""
-}
+  @ColumnInfo(name = "_id") var id: Long = 0,
+  @ColumnInfo(name = "WordId") var wordId: Long = 0,
+  @ColumnInfo(name = "Example") var text: String = "",
+  @ColumnInfo(name = "Translation") var translation: String = ""
+)

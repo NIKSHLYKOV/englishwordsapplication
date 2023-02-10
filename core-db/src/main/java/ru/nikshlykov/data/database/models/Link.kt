@@ -23,11 +23,8 @@ import androidx.room.Index
   primaryKeys = ["SubgroupId", "WordId"],
   indices = [Index("WordId"), Index("SubgroupId")]
 )
-class Link(
+data class Link(
   @ColumnInfo(name = "SubgroupId") val subgroupId: Long,
-  @ColumnInfo(name = "WordId") val wordId: Long
-) {
-
-  @ColumnInfo(name = "LevelInParentGroup", defaultValue = "10")
-  var levelInParentGroup = 0
-}
+  @ColumnInfo(name = "WordId") val wordId: Long,
+  @ColumnInfo(name = "LevelInParentGroup") var levelInParentGroup: Int = 10
+)
