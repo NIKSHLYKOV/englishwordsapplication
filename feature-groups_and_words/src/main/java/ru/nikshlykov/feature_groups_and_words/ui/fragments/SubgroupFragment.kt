@@ -170,22 +170,22 @@ internal class SubgroupFragment : FlowFragmentChildFragment(),
   override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
     super.onCreateOptionsMenu(menu, inflater)
     Log.d(LOG_TAG, "onCreateOptionsMenu()")
-    inflater.inflate(R.menu.activity_subgroup_toolbar_menu, menu)
+    inflater.inflate(R.menu.fragment_subgroup_toolbar_menu, menu)
     if (subgroupIsStudied) {
-      menu.findItem(R.id.activity_subgroup___action___learn)
+      menu.findItem(R.id.fragment_subgroup___action___learn)
         .setChecked(true).icon = requireContext().getDrawable(R.drawable.ic_brain_selected_yellow)
     }
     // Скрываем действия, доступные только для созданных пользователем подгрупп.
     if (!subgroupIsCreatedByUser) {
-      menu.findItem(R.id.activity_subgroup___action___delete_subgroup).isVisible = false
-      menu.findItem(R.id.activity_subgroup___action___edit_subgroup).isVisible = false
+      menu.findItem(R.id.fragment_subgroup___action___delete_subgroup).isVisible = false
+      menu.findItem(R.id.fragment_subgroup___action___edit_subgroup).isVisible = false
     }
   }
 
   override fun onOptionsItemSelected(item: MenuItem): Boolean {
     val manager = requireActivity().supportFragmentManager
     return when (item.itemId) {
-      R.id.activity_subgroup___action___learn                -> {
+      R.id.fragment_subgroup___action___learn                -> {
         if (item.isChecked) {
           item.isChecked = false
           item.icon = requireContext().getDrawable(R.drawable.ic_brain_not_selected)
@@ -197,7 +197,7 @@ internal class SubgroupFragment : FlowFragmentChildFragment(),
         }
         true
       }
-      R.id.activity_subgroup___action___sort                 -> {
+      R.id.fragment_subgroup___action___sort                 -> {
         Log.d(LOG_TAG, "sort words")
         val sortWordsDialogFragment = SortWordsDialogFragment()
         sortWordsDialogFragment.setSortWordsListener(this)
@@ -207,14 +207,14 @@ internal class SubgroupFragment : FlowFragmentChildFragment(),
         sortWordsDialogFragment.show(manager, DIALOG_SORT_WORDS)
         true
       }
-      R.id.activity_subgroup___action___edit_subgroup        -> {
+      R.id.fragment_subgroup___action___edit_subgroup        -> {
         Log.d(LOG_TAG, "edit subgroup")
         val navDirections: NavDirections =
           SubgroupFragmentDirections.actionSubgroupDestToSubgroupDataDest(subgroupId)
         onChildFragmentInteractionListener!!.onChildFragmentInteraction(navDirections)
         true
       }
-      R.id.activity_subgroup___action___reset_words_progress -> {
+      R.id.fragment_subgroup___action___reset_words_progress -> {
         Log.d(LOG_TAG, "Reset words progress")
         val resetProgressDialogFragment = ResetProgressDialogFragment()
         val resetProgressDialogArguments = Bundle()
@@ -230,7 +230,7 @@ internal class SubgroupFragment : FlowFragmentChildFragment(),
         )
         true
       }
-      R.id.activity_subgroup___action___delete_subgroup      -> {
+      R.id.fragment_subgroup___action___delete_subgroup      -> {
         Log.d(LOG_TAG, "Delete subgroup")
         val deleteSubgroupDialogFragment = DeleteSubgroupDialogFragment()
         deleteSubgroupDialogFragment.setDeleteSubgroupListener(this)

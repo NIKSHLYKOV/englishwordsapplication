@@ -34,10 +34,7 @@ android {
     }
     sourceSets {
         main {
-            res.srcDirs = ['src/main/res',
-                           'src/main/res-screen/subgroup',
-                           'src/main/res-screen/groups',
-                           'src/main/res-screen/word']
+            res.srcDirs = ['src/main/res']
         }
     }
 }
