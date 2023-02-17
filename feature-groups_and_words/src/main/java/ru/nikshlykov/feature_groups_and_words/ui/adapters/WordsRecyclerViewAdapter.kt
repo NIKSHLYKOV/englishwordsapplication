@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import ru.nikshlykov.data.database.models.Word
 import ru.nikshlykov.feature_groups_and_words.R
-import java.util.*
 
 internal class WordsRecyclerViewAdapter(private val textToSpeech: TextToSpeech) :
   RecyclerView.Adapter<WordsRecyclerViewAdapter.WordsViewHolder>() {
@@ -42,10 +41,10 @@ internal class WordsRecyclerViewAdapter(private val textToSpeech: TextToSpeech) 
     override fun onClick(v: View) {
       when (v.id) {
         R.id.word_in_subgroup_item___button___voice ->
-          textToSpeech?.speak(word.text.toString(), TextToSpeech.QUEUE_FLUSH, null, "somethingID")
+          textToSpeech.speak(word.text.toString(), TextToSpeech.QUEUE_FLUSH, null, "somethingID")
         R.id.word_in_subgroup_item___layout___all_without_voice_button ->
           if (mOnEntryClickListener != null) {
-            mOnEntryClickListener!!.onEntryClick(v, layoutPosition)
+            mOnEntryClickListener?.onEntryClick(v, layoutPosition)
           }
       }
     }

@@ -24,7 +24,7 @@ internal class LinkOrDeleteWordDialogFragment : DialogFragment() {
   private var wordId: Long = 0
 
   private var availableSubgroupsNames: Array<String>? = null
-  private var availableSubgroupsIds: LongArray? = null
+  private var availableSubgroupsIds: Array<Long> = emptyArray()
 
   // Массив значений чекбоксов подгрупп.
   private lateinit var checkedSubgroups: BooleanArray
@@ -43,7 +43,7 @@ internal class LinkOrDeleteWordDialogFragment : DialogFragment() {
     super.onCreate(savedInstanceState)
     wordDialogsViewModel = viewModelFactory.create(WordDialogsViewModel::class.java)
     dialogArguments
-    wordDialogsViewModel!!.setWordId(wordId)
+    wordDialogsViewModel?.setWordId(wordId)
   }
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -51,7 +51,7 @@ internal class LinkOrDeleteWordDialogFragment : DialogFragment() {
     var availableSubgroupsCount = 0
     if (availableSubgroupsNames != null) {
       Log.d(LOG_TAG, "availableSubgroupsNames != null")
-      availableSubgroupsCount = availableSubgroupsNames!!.size
+      availableSubgroupsCount = availableSubgroupsNames?.size ?: 0
     }
     Log.d(LOG_TAG, "availableSubgroupsCount = $availableSubgroupsCount")
 
@@ -66,21 +66,13 @@ internal class LinkOrDeleteWordDialogFragment : DialogFragment() {
   private val dialogArguments: Unit
     get() {
       val arguments = arguments
-      try {
-        wordId = arguments!!.getLong(EXTRA_WORD_ID)
-        Log.d(LOG_TAG, "wordId: $wordId")
-        flag = arguments.getInt(EXTRA_FLAG)
-        Log.d(LOG_TAG, "Flag: $flag")
-        availableSubgroupsNames = arguments.getStringArray(EXTRA_AVAILABLE_SUBGROUPS_NAMES)
-        availableSubgroupsIds = arguments.getLongArray(EXTRA_AVAILABLE_SUBGROUPS_IDS)
-        for (i in availableSubgroupsNames!!.indices) {
-          Log.d(
-            LOG_TAG,
-            "Subgroup " + i + ": id=" + availableSubgroupsIds!![i] + "; name=" + availableSubgroupsNames!![i]
-          )
-        }
-      } catch (e: NullPointerException) {
-        Log.e(LOG_TAG, e.message!!)
+      wordId = arguments?.getLong(EXTRA_WORD_ID) ?: 0
+      Log.d(LOG_TAG, "wordId: $wordId")
+      flag = arguments?.getInt(EXTRA_FLAG) ?: 0
+      Log.d(LOG_TAG, "Flag: $flag")
+      availableSubgroupsNames = arguments?.getStringArray(EXTRA_AVAILABLE_SUBGROUPS_NAMES)
+      arguments?.getLongArray(EXTRA_AVAILABLE_SUBGROUPS_IDS)?.let {
+        availableSubgroupsIds = it.toTypedArray()
       }
     }
 
@@ -90,7 +82,7 @@ internal class LinkOrDeleteWordDialogFragment : DialogFragment() {
   ): AlertDialog {
     checkedSubgroups = BooleanArray(availableSubgroupsCount)
     return when (flag) {
-      TO_LINK ->
+      TO_LINK   ->
         AlertDialog.Builder(requireContext())
           .setTitle(R.string.dialog___link_word___title)
           .setMultiChoiceItems(
@@ -103,7 +95,7 @@ internal class LinkOrDeleteWordDialogFragment : DialogFragment() {
             var i = 0
             while (i < checkedSubgroups.size) {
               if (checkedSubgroups[i]) {
-                wordDialogsViewModel!!.addWordToSubgroup(availableSubgroupsIds!![i])
+                wordDialogsViewModel?.addWordToSubgroup(availableSubgroupsIds[i])
               }
               i++
             }
@@ -123,7 +115,7 @@ internal class LinkOrDeleteWordDialogFragment : DialogFragment() {
             var i = 0
             while (i < checkedSubgroups.size) {
               if (checkedSubgroups[i]) {
-                wordDialogsViewModel!!.deleteWordFromSubgroup(availableSubgroupsIds!![i])
+                wordDialogsViewModel?.deleteWordFromSubgroup(availableSubgroupsIds[i])
               }
               i++
             }
@@ -143,7 +135,7 @@ internal class LinkOrDeleteWordDialogFragment : DialogFragment() {
         .setMessage(R.string.dialog___delete_word___error_message)
         .setPositiveButton(R.string.ok, null)
         .create()
-      TO_LINK -> AlertDialog.Builder(
+      TO_LINK   -> AlertDialog.Builder(
         requireContext()
       )
         .setTitle(R.string.dialog___link_word___title)

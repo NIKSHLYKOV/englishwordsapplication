@@ -5,49 +5,27 @@ import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import android.util.Log
 import android.view.*
-import android.widget.Button
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textfield.TextInputLayout
+import by.kirich1409.viewbindingdelegate.viewBinding
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import ru.nikshlykov.core_ui.views.WordLearnProgressView
 import ru.nikshlykov.data.database.models.Word
 import ru.nikshlykov.feature_groups_and_words.R
+import ru.nikshlykov.feature_groups_and_words.databinding.FragmentWordBinding
 import ru.nikshlykov.feature_groups_and_words.di.GroupsFeatureComponentViewModel
 import ru.nikshlykov.feature_groups_and_words.ui.viewmodels.WordViewModel
 import javax.inject.Inject
 
-internal class WordFragment : FlowFragmentChildFragment(),
+internal class WordFragment : FlowFragmentChildFragment(R.layout.fragment_word),
   ResetProgressDialogFragment.ResetProgressListener {
 
   private val groupsFeatureComponentViewModel: GroupsFeatureComponentViewModel by viewModels()
-
-  private var wordTextInputLayout: TextInputLayout? = null
-  private var valueTextInputLayout: TextInputLayout? = null
-  private var transcriptionTextInputLayout: TextInputLayout? = null
-  private var wordTextInputEditText: TextInputEditText? = null
-  private var valueTextInputEditText: TextInputEditText? = null
-  private var transcriptionTextInputEditText: TextInputEditText? = null
-  private var partOfSpeechTextView: TextView? = null
-  private var saveButton: Button? = null
-  private var ttsButton: Button? = null
-  private var toolbar: Toolbar? = null
-  private var wordLearnProgressView: WordLearnProgressView? = null
-  private var progressTextView: TextView? = null
-  private var examplesTextView: TextView? = null
-  private var addExampleButton: Button? = null
-  private var examplesRecyclerView: RecyclerView? = null
-  //private val examplesRecyclerViewAdapter: ExamplesRecyclerViewAdapter? = null
 
   private var wordViewModel: WordViewModel? = null
 
@@ -57,6 +35,8 @@ internal class WordFragment : FlowFragmentChildFragment(),
   @Inject
   lateinit var textToSpeech: TextToSpeech
 
+  private val binding: FragmentWordBinding by viewBinding(FragmentWordBinding::bind)
+
   override fun onAttach(context: Context) {
     groupsFeatureComponentViewModel.modesFeatureComponent.inject(this)
     super.onAttach(context)
@@ -64,7 +44,7 @@ internal class WordFragment : FlowFragmentChildFragment(),
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    wordViewModel = viewModelFactory!!.create(WordViewModel::class.java)
+    wordViewModel = viewModelFactory.create(WordViewModel::class.java)
   }
 
   override fun onCreateView(
@@ -79,76 +59,43 @@ internal class WordFragment : FlowFragmentChildFragment(),
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-    findViews(view)
     initToolbar()
     dataAndPrepareInterface
     initSaveButtonClick()
   }
 
-  private fun findViews(v: View) {
-    wordTextInputEditText = v.findViewById(R.id.fragment_word___text_input_edit_text___word)
-    valueTextInputEditText = v.findViewById(R.id.fragment_word___text_input_edit_text___value)
-    transcriptionTextInputEditText =
-      v.findViewById(R.id.fragment_word___text_input_edit_text___transcription)
-    saveButton = v.findViewById(R.id.fragment_word___button___save_word)
-    ttsButton = v.findViewById(R.id.fragment_word___button___tts)
-    partOfSpeechTextView = v.findViewById(R.id.fragment_word___text_view___part_of_speech)
-    toolbar = v.findViewById(R.id.fragment_word___toolbar)
-    wordLearnProgressView = v.findViewById(R.id.fragment_word___word_learn_progress_view)
-    examplesRecyclerView = v.findViewById(R.id.fragment_word___recycler_view___examples)
-    addExampleButton = v.findViewById(R.id.fragment_word___button___add_example)
-    wordTextInputLayout = v.findViewById(R.id.fragment_word___text_input_layout___word)
-    transcriptionTextInputLayout =
-      v.findViewById(R.id.fragment_word___text_input_layout___transcription)
-    valueTextInputLayout = v.findViewById(R.id.fragment_word___text_input_layout___value)
-    progressTextView = v.findViewById(R.id.fragment_word___text_view___progress)
-    examplesTextView = v.findViewById(R.id.fragment_word___text_view___examples)
-  }
-
-
   private fun initToolbar() {
-    (activity as AppCompatActivity?)!!.setSupportActionBar(toolbar)
-    (activity as AppCompatActivity?)!!.supportActionBar!!.title = ""
+    (activity as AppCompatActivity?)?.setSupportActionBar(binding.toolbar)
+    (activity as AppCompatActivity?)?.supportActionBar?.title = ""
   }
-
 
   private val dataAndPrepareInterface: Unit
     get() {
       val arguments = arguments
       if (arguments != null) {
-        /*RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(
-WordActivity.this);
-examplesRecyclerView.setLayoutManager(layoutManager);
-examplesRecyclerViewAdapter = new ExamplesRecyclerViewAdapter(WordActivity.this);
-examplesRecyclerView.setAdapter(examplesRecyclerViewAdapter);*/
-        /*addExampleButton.setOnClickListener(new View.OnClickListener() {
-               @Override
-               public void onClick(View v) {
-                   examplesRecyclerViewAdapter.addExample();
-                   examplesRecyclerView.smoothScrollToPosition(examplesRecyclerViewAdapter
-                           .getItemCount() - 1);
-               }
-           });*/
         val word = WordFragmentArgs.fromBundle(requireArguments()).word
-        wordViewModel!!.setWord(word)
+        wordViewModel?.setWord(word)
         lifecycleScope.launch {
           repeatOnLifecycle(Lifecycle.State.STARTED) {
-            wordViewModel!!.word.collectLatest { word ->
+            wordViewModel?.word?.collectLatest { word ->
               setWordToViews(word)
 
               if (word.createdByUser == 1) {
-                saveButton!!.visibility = View.VISIBLE
-                wordTextInputLayout!!.isEnabled = true
-                transcriptionTextInputLayout!!.isEnabled = true
-                valueTextInputLayout!!.isEnabled = true
+                with(binding) {
+                  saveWordButton.visibility = View.VISIBLE
+                  wordInputLayout.isEnabled = true
+                  transcriptionInputLayout.isEnabled = true
+                  valueInputLayout.isEnabled = true
+                }
+
               }
             }
           }
         }
 
-        ttsButton!!.setOnClickListener {
-          textToSpeech!!.speak(
-            wordTextInputEditText!!.text.toString(),
+        binding.speakWordButton.setOnClickListener {
+          textToSpeech.speak(
+            binding.wordEditText.text.toString(),
             TextToSpeech.QUEUE_ADD, null, "1"
           )
         }
@@ -160,21 +107,21 @@ examplesRecyclerView.setAdapter(examplesRecyclerViewAdapter);*/
 
   private fun errorProcessing() {
     Log.e(LOG_TAG, "Error happened!")
-    onChildFragmentInteractionListener!!.close()
+    onChildFragmentInteractionListener?.close()
   }
 
 
   private fun initSaveButtonClick() {
-    saveButton!!.setOnClickListener {
-      val word = wordTextInputEditText!!.text.toString()
-      val value = valueTextInputEditText!!.text.toString()
-      val transcription = transcriptionTextInputEditText!!.text.toString()
+    binding.saveWordButton.setOnClickListener {
+      val word = binding.wordEditText.text.toString()
+      val value = binding.valueEditText.text.toString()
+      val transcription = binding.transcriptionEditText.text.toString()
 
       if (word.isNotEmpty() && value.isNotEmpty()) {
-        wordViewModel!!.setWordParameters(word, transcription, value)
-        wordViewModel!!.updateWordInDB()
+        wordViewModel?.setWordParameters(word, transcription, value)
+        wordViewModel?.updateWordInDB()
 
-        onChildFragmentInteractionListener!!.close()
+        onChildFragmentInteractionListener?.close()
       } else {
         Toast.makeText(
           context,
@@ -185,17 +132,19 @@ examplesRecyclerView.setAdapter(examplesRecyclerViewAdapter);*/
   }
 
   private fun setWordToViews(word: Word) {
-    wordTextInputEditText!!.setText(word.word)
-    valueTextInputEditText!!.setText(word.value)
-    transcriptionTextInputEditText!!.setText(word.transcription)
+    with(binding) {
+      wordEditText.setText(word.word)
+      valueEditText.setText(word.value)
+      transcriptionEditText.setText(word.transcription)
 
-    if (word.partOfSpeech != null) {
-      partOfSpeechTextView!!.text = word.partOfSpeech
-    } else {
-      partOfSpeechTextView!!.visibility = View.GONE
+      if (word.partOfSpeech != null) {
+        partOfSpeechText.text = word.partOfSpeech
+      } else {
+        partOfSpeechText.visibility = View.GONE
+      }
+
+      wordLearnProgressView.learnProgress = word.learnProgress
     }
-
-    wordLearnProgressView?.learnProgress = word.learnProgress
   }
 
   override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -208,7 +157,7 @@ examplesRecyclerView.setAdapter(examplesRecyclerViewAdapter);*/
 
     val arguments = Bundle()
     return when (item.itemId) {
-      R.id.fragment_word___action___link_word -> {
+      R.id.fragment_word___action___link_word           -> {
         Log.d(LOG_TAG, "Link word")
         showLinkOrDeleteWordDialogFragment(LinkOrDeleteWordDialogFragment.TO_LINK)
         true
@@ -225,25 +174,25 @@ examplesRecyclerView.setAdapter(examplesRecyclerViewAdapter);*/
         resetProgressDialogFragment.show(manager, DIALOG_RESET_WORD_PROGRESS)
         true
       }
-      R.id.fragment_word___action___delete_word -> {
+      R.id.fragment_word___action___delete_word         -> {
         Log.d(LOG_TAG, "Delete word")
         showLinkOrDeleteWordDialogFragment(LinkOrDeleteWordDialogFragment.TO_DELETE)
         true
       }
-      else -> super.onOptionsItemSelected(item)
+      else                                              -> super.onOptionsItemSelected(item)
     }
   }
 
   private fun showLinkOrDeleteWordDialogFragment(linkOrDeleteFlag: Int) {
     lifecycleScope.launch {
-      val subgroups = wordViewModel!!.getAvailableSubgroupsTo(linkOrDeleteFlag)
+      val subgroups = wordViewModel?.getAvailableSubgroupsTo(linkOrDeleteFlag) ?: emptyList()
       val linkOrDeleteWordDialogFragment = LinkOrDeleteWordDialogFragment()
       val arguments = Bundle()
-      val wordId = wordViewModel!!.wordId
+      val wordId = wordViewModel?.wordId
       if (wordId != 0L) {
         arguments.putLong(
           LinkOrDeleteWordDialogFragment.EXTRA_WORD_ID,
-          wordId
+          wordId ?: 0L
         )
         arguments.putInt(
           LinkOrDeleteWordDialogFragment.EXTRA_FLAG,
@@ -278,7 +227,7 @@ examplesRecyclerView.setAdapter(examplesRecyclerViewAdapter);*/
    */
   override fun resetMessage(message: String?) {
     if (message == ResetProgressDialogFragment.RESET_MESSAGE) {
-      wordViewModel!!.resetProgress()
+      wordViewModel?.resetProgress()
     }
   }
 

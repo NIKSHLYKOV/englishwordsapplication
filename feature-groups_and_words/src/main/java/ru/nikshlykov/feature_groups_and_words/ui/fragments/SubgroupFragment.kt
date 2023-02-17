@@ -1,5 +1,6 @@
 package ru.nikshlykov.feature_groups_and_words.ui.fragments
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
@@ -9,10 +10,7 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import android.util.Log
 import android.view.*
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -24,33 +22,27 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.bumptech.glide.Glide
 import com.example.core_network.SubgroupImages
-import com.google.android.material.appbar.CollapsingToolbarLayout
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import ru.nikshlykov.data.database.models.Subgroup
 import ru.nikshlykov.feature_groups_and_words.R
+import ru.nikshlykov.feature_groups_and_words.databinding.FragmentSubgroupBinding
 import ru.nikshlykov.feature_groups_and_words.di.GroupsFeatureComponentViewModel
 import ru.nikshlykov.feature_groups_and_words.ui.adapters.WordsRecyclerViewAdapter
 import ru.nikshlykov.feature_groups_and_words.ui.viewmodels.SubgroupViewModel
 import java.io.File
 import javax.inject.Inject
 
-internal class SubgroupFragment : FlowFragmentChildFragment(),
+internal class SubgroupFragment : FlowFragmentChildFragment(R.layout.fragment_subgroup),
   SortWordsDialogFragment.SortWordsListener,
   ResetProgressDialogFragment.ResetProgressListener,
   DeleteSubgroupDialogFragment.DeleteSubgroupListener {
 
   private val groupsFeatureComponentViewModel: GroupsFeatureComponentViewModel by viewModels()
-
-  private var createWordFAB: FloatingActionButton? = null
-  private var toolbar: Toolbar? = null
-  private var infoTextView: TextView? = null
-  private var subgroupImageView: ImageView? = null
-  private var recyclerView: RecyclerView? = null
 
   @Inject
   lateinit var adapter: WordsRecyclerViewAdapter
@@ -70,6 +62,8 @@ internal class SubgroupFragment : FlowFragmentChildFragment(),
 
   private var sortParam = 0
 
+  private val binding: FragmentSubgroupBinding by viewBinding(FragmentSubgroupBinding::bind)
+
   override fun onAttach(context: Context) {
     groupsFeatureComponentViewModel.modesFeatureComponent.inject(this)
     super.onAttach(context)
@@ -77,11 +71,11 @@ internal class SubgroupFragment : FlowFragmentChildFragment(),
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    subgroupViewModel = viewModelFactory!!.create(SubgroupViewModel::class.java)
+    subgroupViewModel = viewModelFactory.create(SubgroupViewModel::class.java)
 
     bundleArguments
 
-    subgroupViewModel!!.setNewIsStudied(subgroupIsStudied)
+    subgroupViewModel?.setNewIsStudied(subgroupIsStudied)
     sortParam = getSortParam()
   }
 
@@ -95,21 +89,17 @@ internal class SubgroupFragment : FlowFragmentChildFragment(),
     return v
   }
 
+  @SuppressLint("UnsafeRepeatOnLifecycleDetector")
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-
-    findViews(view)
-
-    (activity as AppCompatActivity?)!!.setSupportActionBar(toolbar)
+    (activity as AppCompatActivity?)?.setSupportActionBar(binding.toolbar)
     initCreateWordFAB()
 
     lifecycleScope.launch {
       repeatOnLifecycle(Lifecycle.State.STARTED) {
-        subgroupViewModel!!.subgroupFlow.collectLatest { subgroup ->
+        subgroupViewModel?.subgroupFlow?.collectLatest { subgroup ->
           if (subgroup != null) {
-            val toolbarLayout: CollapsingToolbarLayout = view.findViewById(
-              R.id.fragment_subgroup___collapsing_toolbar_layout
-            )
+            val toolbarLayout = binding.collapsingToolbar
             toolbarLayout.title = subgroup.name
             toolbarLayout.setCollapsedTitleTextAppearance(R.style.CollapsingToolbarCollapseTitle)
             toolbarLayout.setExpandedTitleTextAppearance(R.style.CollapsingToolbarExpandedTitle)
@@ -117,7 +107,7 @@ internal class SubgroupFragment : FlowFragmentChildFragment(),
 
             initSwipeIcons()
             ItemTouchHelper(createMySimpleCallbackBySubgroup(subgroup))
-              .attachToRecyclerView(recyclerView)
+              .attachToRecyclerView(binding.wordsRecyclerView)
           }
         }
       }
@@ -125,34 +115,34 @@ internal class SubgroupFragment : FlowFragmentChildFragment(),
 
     initRecyclerView()
     initRecyclerViewAdapter()
-    recyclerView!!.adapter = adapter
+    binding.wordsRecyclerView.adapter = adapter
 
     lifecycleScope.launch {
       repeatOnLifecycle(Lifecycle.State.STARTED) {
-        subgroupViewModel!!.wordsFlow.collectLatest { words ->
+        subgroupViewModel?.wordsFlow?.collectLatest { words ->
           if (!deleteFlag) {
-            if (words.isEmpty()) {
-              if (!subgroupIsCreatedByUser) {
-                infoTextView!!.text =
+            binding.infoText.text =
+              if (words.isEmpty()) {
+                if (!subgroupIsCreatedByUser) {
                   "Здесь скоро появятся слова. Пожалуйста, подождите обновления!"
+                } else {
+                  "Добавьте слова в группу, чтобы видеть их здесь"
+                }
               } else {
-                infoTextView!!.text = "Добавьте слова в группу, чтобы видеть их здесь"
+                ""
               }
-            } else {
-              infoTextView!!.text = ""
-            }
-            adapter!!.setWords(words)
+            adapter.setWords(words)
           }
         }
       }
     }
-    subgroupViewModel!!.loadSubgroupAndWords(subgroupId, sortParam)
+    subgroupViewModel?.loadSubgroupAndWords(subgroupId, sortParam)
   }
 
   override fun onResume() {
     super.onResume()
     if (subgroupIsCreatedByUser) {
-      subgroupViewModel!!.subgroupFlow.value?.let {
+      subgroupViewModel?.subgroupFlow?.value?.let {
         setSubgroupImage(it)
       }
     }
@@ -162,7 +152,7 @@ internal class SubgroupFragment : FlowFragmentChildFragment(),
     super.onPause()
     Log.i(LOG_TAG, "onPause()")
     if (!deleteFlag) {
-      subgroupViewModel!!.updateSubgroup()
+      subgroupViewModel?.updateSubgroup()
       saveSortParam(sortParam)
     }
   }
@@ -189,11 +179,11 @@ internal class SubgroupFragment : FlowFragmentChildFragment(),
         if (item.isChecked) {
           item.isChecked = false
           item.icon = requireContext().getDrawable(R.drawable.ic_brain_not_selected)
-          subgroupViewModel!!.setNewIsStudied(false)
+          subgroupViewModel?.setNewIsStudied(false)
         } else {
           item.isChecked = true
           item.icon = requireContext().getDrawable(R.drawable.ic_brain_selected_yellow)
-          subgroupViewModel!!.setNewIsStudied(true)
+          subgroupViewModel?.setNewIsStudied(true)
         }
         true
       }
@@ -211,7 +201,7 @@ internal class SubgroupFragment : FlowFragmentChildFragment(),
         Log.d(LOG_TAG, "edit subgroup")
         val navDirections: NavDirections =
           SubgroupFragmentDirections.actionSubgroupDestToSubgroupDataDest(subgroupId)
-        onChildFragmentInteractionListener!!.onChildFragmentInteraction(navDirections)
+        onChildFragmentInteractionListener?.onChildFragmentInteraction(navDirections)
         true
       }
       R.id.fragment_subgroup___action___reset_words_progress -> {
@@ -248,13 +238,13 @@ internal class SubgroupFragment : FlowFragmentChildFragment(),
         .load(File(requireContext().filesDir, subgroup.imageName))
         .placeholder(R.drawable.shape_load_picture)
         .error(requireContext().getDrawable(R.drawable.user_subgroups_default_color))
-        .into(subgroupImageView!!)
+        .into(binding.subgroupImage)
     } else {
       Glide.with(this)
         .load(SubgroupImages.HIGH_SUBGROUP_IMAGES_URL + subgroup.imageName)
         .placeholder(R.drawable.shape_load_picture)
         .error(Glide.with(this).load(SubgroupImages.SUBGROUP_IMAGES_URL + subgroup.imageName))
-        .into(subgroupImageView!!)
+        .into(binding.subgroupImage)
     }
   }
 
@@ -266,7 +256,7 @@ internal class SubgroupFragment : FlowFragmentChildFragment(),
     // Проверяем, изменился ли вообще параметр, чтобы не делать лишней работы.
     if (this.sortParam != sortParam) {
       this.sortParam = sortParam
-      subgroupViewModel!!.sortWords(sortParam)
+      subgroupViewModel?.sortWords(sortParam)
     }
   }
 
@@ -278,7 +268,7 @@ internal class SubgroupFragment : FlowFragmentChildFragment(),
     return sharedPreferences.getString(
       getString(R.string.preference_key___sort_words_in_subgroups),
       java.lang.String.valueOf(SortWordsDialogFragment.BY_ALPHABET)
-    )!!.toInt()
+    )?.toInt() ?: SortWordsDialogFragment.BY_ALPHABET
   }
 
   private fun saveSortParam(sortParam: Int) {
@@ -300,60 +290,58 @@ internal class SubgroupFragment : FlowFragmentChildFragment(),
         subgroupId = subgroup.id
         subgroupIsStudied = subgroup.studied == 1
       } else {
-        onChildFragmentInteractionListener!!.close()
+        onChildFragmentInteractionListener?.close()
       }
     }
 
-  private fun findViews(view: View) {
-    createWordFAB = view.findViewById(R.id.fragment_subgroup___floating_action_button___new_word)
-    toolbar = view.findViewById(R.id.fragment_subgroup___toolbar)
-    recyclerView = view.findViewById(R.id.fragment_subgroup___recycler_view___words)
-    infoTextView = view.findViewById(R.id.fragment_subgroup___text_view___info)
-    subgroupImageView = view.findViewById(R.id.fragment_subgroup___image_view___subgroup_image)
-  }
-
   private fun initCreateWordFAB() {
     if (subgroupIsCreatedByUser) {
-      createWordFAB!!.setOnClickListener {
+      binding.createWordButton.setOnClickListener {
         val navDirections: NavDirections =
           SubgroupFragmentDirections.actionSubgroupDestToAddWordDest(subgroupId)
-        onChildFragmentInteractionListener!!.onChildFragmentInteraction(navDirections)
+        onChildFragmentInteractionListener?.onChildFragmentInteraction(navDirections)
       }
     } else {
-      createWordFAB!!.isClickable = false
-      createWordFAB!!.visibility = View.GONE
+      binding.createWordButton.apply {
+        isClickable = false
+        visibility = View.GONE
+      }
     }
   }
 
 
   private fun initRecyclerView() {
-    recyclerView!!.layoutManager = LinearLayoutManager(context)
-    recyclerView!!.addItemDecoration(
-      DividerItemDecoration(
-        context,
-        DividerItemDecoration.VERTICAL
+    binding.wordsRecyclerView.apply {
+      layoutManager = LinearLayoutManager(context)
+
+      addItemDecoration(
+        DividerItemDecoration(
+          context,
+          DividerItemDecoration.VERTICAL
+        )
       )
-    )
-    if (subgroupIsCreatedByUser) {
-      recyclerView!!.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-          if (dy > 0) {
-            createWordFAB!!.hide()
-          } else if (dy < 0) {
-            createWordFAB!!.show()
+
+      if (subgroupIsCreatedByUser) {
+        addOnScrollListener(object : RecyclerView.OnScrollListener() {
+          override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            if (dy > 0) {
+              binding.createWordButton.hide()
+            } else if (dy < 0) {
+              binding.createWordButton.show()
+            }
           }
-        }
-      })
+        })
+      }
     }
   }
 
   private fun initRecyclerViewAdapter() {
-    adapter!!.setOnEntryClickListener(object : WordsRecyclerViewAdapter.OnEntryClickListener {
+    adapter.setOnEntryClickListener(object : WordsRecyclerViewAdapter.OnEntryClickListener {
       override fun onEntryClick(view: View?, position: Int) {
-        val currentWord = adapter!!.getWords()[position]
+        val currentWord = adapter.getWords()[position]
         val navDirections: NavDirections = SubgroupFragmentDirections
           .actionSubgroupDestToWordDest(currentWord)
-        onChildFragmentInteractionListener!!.onChildFragmentInteraction(navDirections)
+        onChildFragmentInteractionListener?.onChildFragmentInteraction(navDirections)
       }
     })
   }
@@ -385,17 +373,17 @@ internal class SubgroupFragment : FlowFragmentChildFragment(),
     }
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-      val wordId = adapter!!.getWordAt(viewHolder.adapterPosition).id
+      val wordId = adapter.getWordAt(viewHolder.adapterPosition).id
       when (direction) {
         ItemTouchHelper.LEFT  -> {
-          subgroupViewModel!!.deleteWordFromSubgroup(wordId)
+          subgroupViewModel?.deleteWordFromSubgroup(wordId)
           Snackbar.make(viewHolder.itemView, R.string.word_deleted, Snackbar.LENGTH_LONG)
-            .setAction(R.string.to_cancel) { subgroupViewModel!!.addWordToSubgroup(wordId) }
+            .setAction(R.string.to_cancel) { subgroupViewModel?.addWordToSubgroup(wordId) }
             .show()
         }
         ItemTouchHelper.RIGHT -> {
           showDialogForLinkWord(wordId)
-          adapter!!.notifyDataSetChanged()
+          adapter.notifyDataSetChanged()
         }
       }
     }
@@ -408,11 +396,11 @@ internal class SubgroupFragment : FlowFragmentChildFragment(),
     ) {
       val itemView = viewHolder.itemView
       val swipeBackground = ColorDrawable()
-      val deleteIconMargin = (itemView.height - deleteIcon!!.intrinsicHeight) / 2
-      val linkIconMargin = (itemView.height - linkIcon!!.intrinsicHeight) / 2
+      val deleteIconMargin = (itemView.height - (deleteIcon?.intrinsicHeight ?: 0)) / 2
+      val linkIconMargin = (itemView.height - (linkIcon?.intrinsicHeight ?: 0)) / 2
       if (dX > 0) {
         swipeBackground.color = ContextCompat.getColor(
-          context!!,
+          requireContext(),
           R.color.swipe_add_link_word
         )
         swipeBackground.color = Color.parseColor("#C6FF00")
@@ -424,7 +412,7 @@ internal class SubgroupFragment : FlowFragmentChildFragment(),
         )
       } else {
         swipeBackground.color = ContextCompat.getColor(
-          context!!,
+          requireContext(),
           R.color.swipe_delete_link_word
         )
         swipeBackground.setBounds(
@@ -436,21 +424,21 @@ internal class SubgroupFragment : FlowFragmentChildFragment(),
       }
       swipeBackground.draw(c)
       if (dX > 0) {
-        linkIcon!!.setBounds(
+        linkIcon?.setBounds(
           itemView.left + linkIconMargin,
           itemView.top + linkIconMargin,
-          itemView.left + linkIconMargin + linkIcon!!.intrinsicWidth,
+          itemView.left + linkIconMargin + (linkIcon?.intrinsicWidth ?: 0),
           itemView.bottom - linkIconMargin
         )
-        linkIcon!!.draw(c)
+        linkIcon?.draw(c)
       } else {
-        deleteIcon!!.setBounds(
-          itemView.right - deleteIconMargin - deleteIcon!!.intrinsicWidth,
+        deleteIcon?.setBounds(
+          itemView.right - deleteIconMargin - (deleteIcon?.intrinsicWidth ?: 0),
           itemView.top + deleteIconMargin,
           itemView.right - deleteIconMargin,
           itemView.bottom - deleteIconMargin
         )
-        deleteIcon!!.draw(c)
+        deleteIcon?.draw(c)
       }
       super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
     }
@@ -458,7 +446,7 @@ internal class SubgroupFragment : FlowFragmentChildFragment(),
 
   private fun showDialogForLinkWord(wordId: Long) {
     lifecycleScope.launch {
-      val subgroups = subgroupViewModel!!.getAvailableSubgroupsToLink(wordId)
+      val subgroups = subgroupViewModel?.getAvailableSubgroupsToLink(wordId) ?: emptyList()
       Log.d(LOG_TAG, "availableSubgroups onChanged() value != null")
       val linkOrDeleteWordDialogFragment = LinkOrDeleteWordDialogFragment()
       val arguments = Bundle()
@@ -498,7 +486,7 @@ internal class SubgroupFragment : FlowFragmentChildFragment(),
    */
   override fun resetMessage(message: String?) {
     if (message == ResetProgressDialogFragment.RESET_MESSAGE) {
-      subgroupViewModel!!.resetWordsProgress()
+      subgroupViewModel?.resetWordsProgress()
     }
   }
 
@@ -509,9 +497,9 @@ internal class SubgroupFragment : FlowFragmentChildFragment(),
    */
   override fun deleteMessage(message: String?) {
     if (message == DeleteSubgroupDialogFragment.DELETE_MESSAGE) {
-      subgroupViewModel!!.deleteSubgroup()
+      subgroupViewModel?.deleteSubgroup()
       deleteFlag = true
-      onChildFragmentInteractionListener!!.close()
+      onChildFragmentInteractionListener?.close()
     }
   }
 

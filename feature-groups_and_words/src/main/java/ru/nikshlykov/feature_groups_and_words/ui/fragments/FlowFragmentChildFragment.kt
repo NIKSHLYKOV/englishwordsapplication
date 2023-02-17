@@ -1,10 +1,12 @@
 package ru.nikshlykov.feature_groups_and_words.ui.fragments
 
 import android.content.Context
+import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import ru.nikshlykov.feature_groups_and_words.ui.flowfragments.OnChildFragmentInteractionListener
 
-internal abstract class FlowFragmentChildFragment : Fragment() {
+internal abstract class FlowFragmentChildFragment(@LayoutRes contentLayoutId: Int) :
+  Fragment(contentLayoutId) {
 
   protected var onChildFragmentInteractionListener: OnChildFragmentInteractionListener? = null
 

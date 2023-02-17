@@ -37,6 +37,9 @@ android {
             res.srcDirs = ['src/main/res']
         }
     }
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 dependencies {
@@ -69,4 +72,6 @@ dependencies {
 
     // Coroutines
     implementation libraries.coroutines_core
+
+    implementation libraries.view_binding_property_delegate
 }

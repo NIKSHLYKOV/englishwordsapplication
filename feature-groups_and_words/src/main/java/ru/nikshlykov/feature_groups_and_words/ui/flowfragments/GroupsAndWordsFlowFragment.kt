@@ -31,7 +31,7 @@ class GroupsAndWordsFlowFragment : Fragment(), OnChildFragmentInteractionListene
     super.onActivityCreated(savedInstanceState)
     navHostFragment =
       childFragmentManager.findFragmentById(R.id.flow_fragment_groups_and_words___nav_host) as NavHostFragment?
-    navController = navHostFragment!!.navController
+    navController = navHostFragment?.navController
   }
 
   override fun onChildFragmentInteraction(navDirections: NavDirections?) {
@@ -41,12 +41,12 @@ class GroupsAndWordsFlowFragment : Fragment(), OnChildFragmentInteractionListene
       R.id.action_subgroup_dest_to_subgroup_data_dest,
       R.id.action_subgroup_dest_to_word_dest,
       R.id.action_subgroup_dest_to_add_word_dest ->
-        navController!!.navigate(navDirections)
+        navController?.navigate(navDirections)
     }
   }
 
   override fun close() {
-    navController!!.popBackStack()
+    navController?.popBackStack()
   }
 
   override fun backPressedIsAvailable(): Boolean {
@@ -54,6 +54,6 @@ class GroupsAndWordsFlowFragment : Fragment(), OnChildFragmentInteractionListene
   }
 
   override fun onBackPressed() {
-    navController!!.popBackStack()
+    navController?.popBackStack()
   }
 }

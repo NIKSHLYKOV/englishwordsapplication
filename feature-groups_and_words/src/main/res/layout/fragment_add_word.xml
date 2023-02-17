@@ -21,7 +21,7 @@
             android:hint="@string/word">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/fragment_add_word___text_input_edit_text___word"
+                android:id="@+id/word_edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@drawable/word_edit_texts___text_color"
@@ -36,7 +36,7 @@
             android:hint="@string/transcription">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/fragment_add_word___text_input_edit_text___transcription"
+                android:id="@+id/transcription_edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@drawable/word_edit_texts___text_color"
@@ -51,7 +51,7 @@
             android:hint="@string/value">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/fragment_add_word___text_input_edit_text___value"
+                android:id="@+id/value_edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@drawable/word_edit_texts___text_color"
@@ -61,7 +61,7 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/fragment_add_word___button___save_word"
+        android:id="@+id/save_word_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

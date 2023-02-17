@@ -6,11 +6,11 @@
     android:orientation="vertical">
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/fragment_groups___button___new_subgroup"
+        android:id="@+id/create_subgroup_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        app:layout_anchor="@id/fragment_groups___recycler_view___groups_and_subgroups"
+        app:layout_anchor="@id/groups_recycler_view"
         app:layout_anchorGravity="bottom|center_horizontal"
 
         style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton"
@@ -18,7 +18,7 @@
         android:text="@string/create_subgroup" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/fragment_groups___recycler_view___groups_and_subgroups"
+        android:id="@+id/groups_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

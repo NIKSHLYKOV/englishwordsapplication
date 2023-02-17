@@ -2,7 +2,6 @@ package ru.nikshlykov.feature_groups_and_words.ui.fragments
 
 import android.app.Dialog
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import ru.nikshlykov.feature_groups_and_words.R
@@ -46,7 +45,7 @@ internal class ResetProgressDialogFragment : DialogFragment() {
       .setTitle(dialogTitle)
       .setMessage(dialogMessage)
       .setPositiveButton(R.string.yes) { dialog, which ->
-        resetProgressListener!!.resetMessage(RESET_MESSAGE)
+        resetProgressListener?.resetMessage(RESET_MESSAGE)
       }
       .setNegativeButton(R.string.no, null)
       .create()
@@ -59,11 +58,7 @@ internal class ResetProgressDialogFragment : DialogFragment() {
       .create()
 
   private fun getFlag() {
-    try {
-      flag = requireArguments().getInt(EXTRA_FLAG)
-    } catch (e: NullPointerException) {
-      Log.e(LOG_TAG, e.message!!)
-    }
+    flag = requireArguments().getInt(EXTRA_FLAG)
   }
 
   companion object {
