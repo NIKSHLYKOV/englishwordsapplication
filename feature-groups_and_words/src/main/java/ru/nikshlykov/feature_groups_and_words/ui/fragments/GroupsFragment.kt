@@ -48,7 +48,7 @@ internal class GroupsFragment : FlowFragmentChildFragment(),
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    groupsViewModel = viewModelFactory!!.create(GroupsViewModel::class.java)
+    groupsViewModel = viewModelFactory.create(GroupsViewModel::class.java)
     groupItemsRecyclerViewAdapter = context?.let {
       GroupItemsRecyclerViewAdapter(
         it,
@@ -66,7 +66,7 @@ internal class GroupsFragment : FlowFragmentChildFragment(),
     newSubgroupExtendedFAB!!.setOnClickListener {
       val navDirections: NavDirections =
         GroupsFragmentDirections.actionGroupsDestToSubgroupDataDest()
-      onChildFragmentInteractionListener!!.onChildFragmentInteraction(navDirections)
+      onChildFragmentInteractionListener?.onChildFragmentInteraction(navDirections)
     }
     return view
   }
@@ -74,22 +74,22 @@ internal class GroupsFragment : FlowFragmentChildFragment(),
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
     groupsViewModel!!.groupItems.observe(
-      viewLifecycleOwner,
-      { groupItems ->
-        if (groupItems != null) {
-          groupItemsRecyclerViewAdapter!!.setGroupItems(groupItems)
-        }
-        if (subgroupCreatingFlag) {
-          while (true) {
-            if (groupItemsRecyclerViewAdapter?.getGroupItemAt(0)?.group?.id == -1L
-            ) {
-              groupItemsRecyclerView!!.smoothScrollToPosition(0)
-              subgroupCreatingFlag = false
-              break
-            }
+      viewLifecycleOwner
+    ) { groupItems ->
+      if (groupItems != null) {
+        groupItemsRecyclerViewAdapter!!.setGroupItems(groupItems)
+      }
+      if (subgroupCreatingFlag) {
+        while (true) {
+          if (groupItemsRecyclerViewAdapter?.getGroupItemAt(0)?.group?.id == -1L
+          ) {
+            groupItemsRecyclerView!!.smoothScrollToPosition(0)
+            subgroupCreatingFlag = false
+            break
           }
         }
-      })
+      }
+    }
 
     groupItemsRecyclerView!!.layoutManager = LinearLayoutManager(
       context,
@@ -119,17 +119,18 @@ internal class GroupsFragment : FlowFragmentChildFragment(),
   }
 
   override fun onSubgroupClick(view: View?, subgroup: Subgroup?) {
-    val navDirections: NavDirections = GroupsFragmentDirections.actionGroupsDestToSubgroupDest(
-      subgroup!!
-    )
-    onChildFragmentInteractionListener!!.onChildFragmentInteraction(navDirections)
+    subgroup?.let {
+      val navDirections = GroupsFragmentDirections.actionGroupsDestToSubgroupDest(it)
+      onChildFragmentInteractionListener?.onChildFragmentInteraction(navDirections)
+    }
+
   }
 
   override fun onSubgroupChecked(view: View?, subgroup: Subgroup?) {
     groupsViewModel!!.updateSubgroup(subgroup)
     Log.i(
-      LOG_TAG, "Subgroup (id:" + subgroup!!.id + ") update query: new isStudied = "
-        + subgroup.studied
+      LOG_TAG, "Subgroup (id:" + subgroup?.id + ") update query: new isStudied = "
+        + subgroup?.studied
     )
   }
 }

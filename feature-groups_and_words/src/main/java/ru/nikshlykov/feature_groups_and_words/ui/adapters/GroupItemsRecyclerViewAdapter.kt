@@ -12,22 +12,22 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ru.nikshlykov.feature_groups_and_words.R
 import ru.nikshlykov.feature_groups_and_words.domain.models.GroupItem
-import java.util.*
 
 internal class GroupItemsRecyclerViewAdapter(
   private val context: Context,
   private val onSubgroupClickListener: SubgroupsRecyclerViewAdapter.OnSubgroupClickListener,
   private val onSubgroupCheckedListener: SubgroupsRecyclerViewAdapter.OnSubgroupCheckedListener
 ) : RecyclerView.Adapter<GroupItemsRecyclerViewAdapter.GroupsViewHolder>() {
-  private var groupItems: ArrayList<GroupItem>? = null
+  // TODO Knowledge. emptyList(). Какие плюсы и минусы?
+  private var groupItems: List<GroupItem> = emptyList()
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GroupsViewHolder {
     val v = LayoutInflater.from(parent.context).inflate(R.layout.group_item, parent, false)
     return GroupsViewHolder(v)
   }
 
   override fun onBindViewHolder(holder: GroupsViewHolder, position: Int) {
-    val groupName = groupItems!![position].group.name
-    val subgroups = groupItems!![position].subgroups
+    val groupName = groupItems[position].group.name
+    val subgroups = groupItems[position].subgroups
     holder.groupNameTextView.text = groupName
     val subgroupsRecyclerViewAdapter = SubgroupsRecyclerViewAdapter(
       context, subgroups, onSubgroupClickListener,
@@ -48,7 +48,7 @@ internal class GroupItemsRecyclerViewAdapter(
   }
 
   override fun getItemCount(): Int {
-    return if (null != groupItems) groupItems!!.size else 0
+    return groupItems.size
   }
 
   inner class GroupsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -60,7 +60,7 @@ internal class GroupItemsRecyclerViewAdapter(
   }
 
   fun setGroupItems(groupItems: ArrayList<GroupItem>) {
-    if (this.groupItems != null) {
+    if (groupItems.size != 0) {
       val diffUtilCallback = GroupItemDiffUtilCallback(this.groupItems, groupItems)
       val diffResult = DiffUtil.calculateDiff(diffUtilCallback)
       this.groupItems = groupItems
@@ -72,15 +72,15 @@ internal class GroupItemsRecyclerViewAdapter(
   }
 
   fun getGroupItemAt(position: Int): GroupItem {
-    return groupItems!![position]
+    return groupItems[position]
   }
 
   internal inner class GroupItemDiffUtilCallback(
-    private val oldGroupItems: ArrayList<GroupItem>?,
-    private val newGroupItems: ArrayList<GroupItem>
+    private val oldGroupItems: List<GroupItem>,
+    private val newGroupItems: List<GroupItem>
   ) : DiffUtil.Callback() {
     override fun getOldListSize(): Int {
-      return oldGroupItems!!.size
+      return oldGroupItems.size
     }
 
     override fun getNewListSize(): Int {
@@ -88,12 +88,12 @@ internal class GroupItemsRecyclerViewAdapter(
     }
 
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-      return (oldGroupItems!![oldItemPosition].group.id
+      return (oldGroupItems[oldItemPosition].group.id
         == newGroupItems[newItemPosition].group.id)
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-      return oldGroupItems!![oldItemPosition] == newGroupItems[newItemPosition]
+      return oldGroupItems[oldItemPosition] == newGroupItems[newItemPosition]
     }
   }
 }

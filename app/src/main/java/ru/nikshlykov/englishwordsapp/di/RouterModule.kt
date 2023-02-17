@@ -25,12 +25,14 @@ class RouterModule {
   @Provides
   @Singleton
   fun provideProfileFeatureRouter(application: Application): ProfileFeatureRouter {
-    return (application as App).mainActivity!!
+    return (application as App).mainActivity
   }
 
   @Provides
   @Singleton
   fun provideStudyFeatureRouter(application: Application): StudyFeatureRouter {
-    return (application as App).mainActivity!!
+    // TODO refactor. Может, в подобных случаях лучше проверять на initialized и если нет, то
+    //  передавать null?
+    return (application as App).mainActivity
   }
 }

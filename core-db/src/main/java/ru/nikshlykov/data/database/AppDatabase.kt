@@ -17,8 +17,6 @@ import ru.nikshlykov.data.database.models.*
 internal abstract class AppDatabase : RoomDatabase() {
   // TODO подумать над тем, чтобы больше писать в аннотации Query в Dao.
 
-  // TODO подумать над тем, надо ли делать из entities data классы.
-
   // TODO подумать, надо ли хранить названия столбцов в переменных (чтобы передавать не только в
   abstract fun groupDao(): GroupDao
   abstract fun linkDao(): LinkDao

@@ -23,7 +23,7 @@ internal class SortWordsDialogFragment : DialogFragment() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
-    sortParam = arguments?.getInt(EXTRA_SORT_PARAM)!!
+    sortParam = arguments?.getInt(EXTRA_SORT_PARAM) ?: BY_ALPHABET
     Log.d("SortWordsDialogFragment", "sortParam from bundle = $sortParam")
   }
 
@@ -33,7 +33,7 @@ internal class SortWordsDialogFragment : DialogFragment() {
     return AlertDialog.Builder(requireContext())
       .setTitle(R.string.dialog___sort_words___title)
       .setSingleChoiceItems(sortParams, sortParam) { dialog, which -> sortParam = which }
-      .setPositiveButton(R.string.yes) { _, _ -> sortWordsListener!!.sort(sortParam) }
+      .setPositiveButton(R.string.yes) { _, _ -> sortWordsListener?.sort(sortParam) }
       .setNegativeButton(R.string.cancel, null)
       .create()
   }

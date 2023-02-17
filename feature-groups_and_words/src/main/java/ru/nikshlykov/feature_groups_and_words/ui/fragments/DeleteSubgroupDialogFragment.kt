@@ -23,7 +23,7 @@ internal class DeleteSubgroupDialogFragment : DialogFragment() {
       .setTitle(R.string.dialog___delete_subgroup___title)
       .setMessage(R.string.dialog___delete_subgroup___message)
       .setPositiveButton(R.string.yes) { dialog, which -> // Отправляем Activity сообщение о том, что удаление подтверждено.
-        deleteSubgroupListener!!.deleteMessage(DELETE_MESSAGE)
+        deleteSubgroupListener?.deleteMessage(DELETE_MESSAGE)
       }
       .setNegativeButton(R.string.no, null)
       .create()

@@ -30,9 +30,9 @@ data class Word(
 
   constructor(`in`: Parcel) : this(
     id = `in`.readLong(),
-    word = `in`.readString()!!,
+    word = `in`.readString() ?: "",
     transcription = `in`.readString(),
-    value = `in`.readString()!!,
+    value = `in`.readString() ?: "",
     learnProgress = `in`.readInt(),
     createdByUser = `in`.readInt(),
     partOfSpeech = `in`.readString(),

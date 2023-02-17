@@ -41,7 +41,7 @@ internal class LinkOrDeleteWordDialogFragment : DialogFragment() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    wordDialogsViewModel = viewModelFactory!!.create(WordDialogsViewModel::class.java)
+    wordDialogsViewModel = viewModelFactory.create(WordDialogsViewModel::class.java)
     dialogArguments
     wordDialogsViewModel!!.setWordId(wordId)
   }

@@ -27,15 +27,14 @@ internal class WordViewModel(
 
   val wordId: Long
     get() {
-      val word = word.value
-      return word?.id ?: 0L
+      return word.value?.id ?: 0L
     }
 
-  fun setWordParameters(word: String?, transcription: String?, value: String?) {
+  fun setWordParameters(word: String, transcription: String?, value: String) {
     val currentWord = this.word.value
     if (currentWord != null) {
-      currentWord.word = word!!
-      currentWord.value = value!!
+      currentWord.word = word
+      currentWord.value = value
       currentWord.transcription = transcription
       this.word.value = currentWord
     }

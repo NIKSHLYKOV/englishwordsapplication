@@ -68,7 +68,8 @@ class MainActivity : AppCompatActivity(), ProfileFeatureRouter, StudyFeatureRout
 
   override fun onDestroy() {
     super.onDestroy()
-    (applicationContext as App).textToSpeech!!.shutdown()
+    (applicationContext as App).textToSpeech.shutdown()
+    // TODO refactor. Нужно ли занулять подобным образом dagger component?
   }
 
   private fun findViews() {

@@ -36,21 +36,21 @@ import java.util.concurrent.TimeUnit
 class App : Application(), Configuration.Provider, ModesFeatureDepsProvider,
   StudyFeatureDepsProvider, SettingsFeatureDepsProvider, ActivityClassProvider,
   ProfileFeatureDepsProvider, GroupsFeatureDepsProvider, StatisticsFeatureDepsProvider {
-  var textToSpeech: TextToSpeech? = null
+  lateinit var textToSpeech: TextToSpeech
     private set
 
-  private var appComponent: AppComponent? = null
+  private lateinit var appComponent: AppComponent
 
   // TODO убрать костыль. Возможно, надо перейти на Cicerone.
-  var mainActivity: MainActivity? = null
+  lateinit var mainActivity: MainActivity
 
   override fun onCreate() {
+    initTTS()
     appComponent = DaggerAppComponent.factory().create(this)
     super.onCreate()
 
     PreferenceManager.setDefaultValues(this, R.xml.preferences, false)
 
-    initTTS()
     createNotificationChannel()
 
     // TODO Разобраться с периодическими уведомлениями
@@ -109,9 +109,9 @@ class App : Application(), Configuration.Provider, ModesFeatureDepsProvider,
       ) * 0.1f
     textToSpeech = TextToSpeech(applicationContext) { status ->
       if (status == TextToSpeech.SUCCESS) {
-        textToSpeech!!.language = Locale.US
-        textToSpeech!!.setPitch(ttsPitch)
-        textToSpeech!!.setSpeechRate(ttsSpeechRate)
+        textToSpeech.language = Locale.US
+        textToSpeech.setPitch(ttsPitch)
+        textToSpeech.setSpeechRate(ttsSpeechRate)
       } else if (status == TextToSpeech.ERROR) {
         Toast.makeText(applicationContext, TTS_ERROR, Toast.LENGTH_LONG).show()
       }
@@ -124,23 +124,26 @@ class App : Application(), Configuration.Provider, ModesFeatureDepsProvider,
   }
 
   override val modesFeatureDeps: ModesFeatureDeps
-    get() = appComponent!!
+    get() = appComponent
 
   override val studyFeatureDeps: StudyFeatureDeps
-    get() = appComponent!!
+    get() = appComponent
 
   override val settingsFeatureDeps: SettingsFeatureDeps
-    get() = appComponent!!
+    get() = appComponent
 
   override val profileFeatureDeps: ProfileFeatureDeps
-    get() = appComponent!!
+    get() = appComponent
 
   override val groupsFeatureDeps: GroupsFeatureDeps
-    get() = appComponent!!
+    get() = appComponent
 
   override val statisticsFeatureDeps: StatisticsFeatureDeps
-    get() = appComponent!!
+    get() = appComponent
 
   override val activityClass: Class<out Activity>
     get() = MainActivity::class.java
+
+  fun isMainActivityInitialized() = this::mainActivity.isInitialized
+
 }

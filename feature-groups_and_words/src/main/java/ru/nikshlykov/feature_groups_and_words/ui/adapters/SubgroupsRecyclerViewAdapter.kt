@@ -12,15 +12,14 @@ import android.widget.ToggleButton
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.example.core_network.SubgroupImages
 import ru.nikshlykov.data.database.models.Subgroup
 import ru.nikshlykov.feature_groups_and_words.R
-import com.example.core_network.SubgroupImages
 import java.io.File
-import java.util.*
 
 internal class SubgroupsRecyclerViewAdapter(
-  private val context: Context, private val subgroups: ArrayList<Subgroup>?,
+  private val context: Context,
+  private val subgroups: List<Subgroup>,
   private val onSubgroupClickListener: OnSubgroupClickListener?,
   private val onSubgroupCheckedListener: OnSubgroupCheckedListener?
 ) : RecyclerView.Adapter<SubgroupsRecyclerViewAdapter.SubgroupViewHolder>() {
@@ -39,7 +38,7 @@ internal class SubgroupsRecyclerViewAdapter(
   }
 
   override fun onBindViewHolder(holder: SubgroupViewHolder, position: Int) {
-    val currentSubgroup = subgroups!![position]
+    val currentSubgroup = subgroups[position]
     holder.subgroupTextView.text = currentSubgroup.name
     if (currentSubgroup.isCreatedByUser) {
       Glide.with(context)
@@ -60,7 +59,7 @@ internal class SubgroupsRecyclerViewAdapter(
   }
 
   override fun getItemCount(): Int {
-    return subgroups?.size ?: 0
+    return subgroups.size
   }
 
   inner class SubgroupViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -114,6 +113,8 @@ internal class SubgroupsRecyclerViewAdapter(
   }
 
   private fun getSubgroupAt(position: Int): Subgroup? {
-    return subgroups?.get(position)
+    // TODO refactoring. Если будет пустой список, то он вернёт Nothing. Что это может породить?
+    //  Что выдаст нам конкретная реализация (типа ArrayList)?
+    return subgroups[position]
   }
 }

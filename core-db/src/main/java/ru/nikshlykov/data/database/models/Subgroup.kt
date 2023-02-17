@@ -35,10 +35,10 @@ data class Subgroup(
 
   constructor(`in`: Parcel) : this(
     id = `in`.readLong(),
-    name = `in`.readString()!!,
+    name = `in`.readString() ?: "",
     groupId = `in`.readLong(),
     studied = `in`.readInt(),
-    imageName = `in`.readString()!!
+    imageName = `in`.readString() ?: ""
   )
 
   override fun describeContents(): Int {

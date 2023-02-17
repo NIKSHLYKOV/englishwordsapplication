@@ -13,7 +13,6 @@ import ru.nikshlykov.feature_profile.navigation.ProfileFragmentNavigation
 
 internal class ProfileFragment : Fragment() {
 
-  // View элементы.
   private var settingsMaterialButton: MaterialButton? = null
   private var modesMaterialButton: MaterialButton? = null
   private var statisticsMaterialButton: MaterialButton? = null
@@ -23,15 +22,11 @@ internal class ProfileFragment : Fragment() {
   override fun onAttach(context: Context) {
     Log.d("ProfileFragment", "onAttach()")
     super.onAttach(context)
-    profileFragmentNavigation =
-      if (requireParentFragment().parentFragment is ProfileFragmentNavigation) {
-        requireParentFragment().parentFragment as ProfileFragmentNavigation?
-      } else {
-        throw RuntimeException(
-          requireParentFragment().parentFragment.toString()
-            + " must implement ProfileFragmentNavigation"
-        )
-      }
+
+    if (requireParentFragment().parentFragment is ProfileFragmentNavigation) {
+      profileFragmentNavigation =
+        requireParentFragment().parentFragment as ProfileFragmentNavigation
+    }
   }
 
   override fun onCreateView(
@@ -44,15 +39,15 @@ internal class ProfileFragment : Fragment() {
     findViews(view)
 
     modesMaterialButton!!.setOnClickListener {
-      profileFragmentNavigation!!.openModes()
+      profileFragmentNavigation?.openModes()
     }
 
     settingsMaterialButton!!.setOnClickListener {
-      profileFragmentNavigation!!.openSettings()
+      profileFragmentNavigation?.openSettings()
     }
 
     statisticsMaterialButton!!.setOnClickListener {
-      profileFragmentNavigation!!.openStatistics()
+      profileFragmentNavigation?.openStatistics()
     }
 
     return view
@@ -61,6 +56,7 @@ internal class ProfileFragment : Fragment() {
   private fun findViews(view: View) {
     settingsMaterialButton = view.findViewById(R.id.fragment_profile___material_button___settings)
     modesMaterialButton = view.findViewById(R.id.fragment_profile___material_button___modes)
-    statisticsMaterialButton = view.findViewById(R.id.fragment_profile___material_button___statistics)
+    statisticsMaterialButton =
+      view.findViewById(R.id.fragment_profile___material_button___statistics)
   }
 }

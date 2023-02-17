@@ -18,6 +18,6 @@ class ContextModule {
   @Provides
   @Singleton
   fun provideTextToSpeech(application: Application): TextToSpeech {
-    return (application as App).textToSpeech!!
+    return (application as App).textToSpeech
   }
 }
