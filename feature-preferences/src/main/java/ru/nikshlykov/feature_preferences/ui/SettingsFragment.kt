@@ -100,7 +100,7 @@ class SettingsFragment : PreferenceFragmentCompat(), OnSharedPreferenceChangeLis
   // TODO сделать реакцию на boot.
   private fun setRepeatingNotifications(minutesAfterMidnight: Int) {
     // Получаем контекст.
-    val context = context
+    val context = requireContext()
 
     // Получаем выставленное пользователем время.
     val hours = minutesAfterMidnight / 60
@@ -128,7 +128,7 @@ class SettingsFragment : PreferenceFragmentCompat(), OnSharedPreferenceChangeLis
     // Получаем manager, отменяем предыдужий pendingIntent и сетим новый.
     // Прежде всего используем setExactAndAllowIdle, т.к. он точно будет работать (даже когда
     // приложение закрыто).
-    val alarmManager = context!!.getSystemService(Activity.ALARM_SERVICE) as AlarmManager
+    val alarmManager = context.getSystemService(Activity.ALARM_SERVICE) as AlarmManager
     if (pendingIntent != null && alarmManager != null) {
       alarmManager.cancel(pendingIntent)
     }
@@ -144,13 +144,13 @@ class SettingsFragment : PreferenceFragmentCompat(), OnSharedPreferenceChangeLis
   }
 
   private fun cancelNotifications() {
-    val context = context
+    val context = requireContext()
     val intent = Intent(context, AlarmReceiver::class.java)
     val pendingIntent = PendingIntent.getBroadcast(
       context, REQUEST_CODE_REPEATING_NOTIFICATIONS,
       intent, 0
     )
-    val alarmManager = context!!.getSystemService(Activity.ALARM_SERVICE) as AlarmManager
+    val alarmManager = context.getSystemService(Activity.ALARM_SERVICE) as AlarmManager
     if (pendingIntent != null && alarmManager != null) {
       alarmManager.cancel(pendingIntent)
     }

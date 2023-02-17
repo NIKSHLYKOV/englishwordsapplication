@@ -8,15 +8,11 @@ import ru.nikshlykov.feature_preferences.R
 import ru.nikshlykov.feature_preferences.preferences.NotificationTimePreference
 
 internal class NotificationTimePreferenceDialogFragmentCompat : PreferenceDialogFragmentCompat() {
-  private var notificationTimePicker: TimePicker? = null
+  private lateinit var notificationTimePicker: TimePicker
   override fun onBindDialogView(view: View) {
     super.onBindDialogView(view)
 
     notificationTimePicker = view.findViewById(R.id.notification_time_picker_dialog___time_picker)
-    checkNotNull(notificationTimePicker) {
-      "Dialog view must contain" +
-        " a TimePicker with id 'edit'"
-    }
 
     var minutesAfterMidnight: Int? = null
     val preference = preference
@@ -28,22 +24,21 @@ internal class NotificationTimePreferenceDialogFragmentCompat : PreferenceDialog
       val hours = minutesAfterMidnight / 60
       val minutes = minutesAfterMidnight % 60
 
-      notificationTimePicker!!.setIs24HourView(true)
-      notificationTimePicker!!.currentHour = hours
-      notificationTimePicker!!.currentMinute = minutes
+      notificationTimePicker.setIs24HourView(true)
+      notificationTimePicker.currentHour = hours
+      notificationTimePicker.currentMinute = minutes
     }
   }
 
   override fun onDialogClosed(positiveResult: Boolean) {
     if (positiveResult) {
-      val hours = notificationTimePicker!!.currentHour
-      val minutes = notificationTimePicker!!.currentMinute
+      val hours = notificationTimePicker.currentHour
+      val minutes = notificationTimePicker.currentMinute
       val minutesAfterMidnight = hours * 60 + minutes
       val preference = preference
       if (preference is NotificationTimePreference) {
-        val timePreference = preference
-        if (timePreference.callChangeListener(minutesAfterMidnight)) {
-          timePreference.time = minutesAfterMidnight
+        if (preference.callChangeListener(minutesAfterMidnight)) {
+          preference.time = minutesAfterMidnight
         }
       }
     }
