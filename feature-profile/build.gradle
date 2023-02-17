@@ -31,6 +31,9 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 dependencies {
@@ -46,4 +49,6 @@ dependencies {
     // DI (Dagger 2)
     implementation libraries.dagger
     kapt libraries.dagger_compiler
+
+    implementation libraries.view_binding_property_delegate
 }

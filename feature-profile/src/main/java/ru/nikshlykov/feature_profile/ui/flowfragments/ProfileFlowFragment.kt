@@ -3,9 +3,6 @@ package ru.nikshlykov.feature_profile.ui.flowfragments
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
@@ -18,7 +15,8 @@ import ru.nikshlykov.feature_profile.ui.viewmodels.ProfileFeatureComponentViewMo
 import ru.nikshlykov.navigation.BackPressedFlowFragmentListener
 import javax.inject.Inject
 
-class ProfileFlowFragment : Fragment(), BackPressedFlowFragmentListener, ProfileFragmentNavigation {
+class ProfileFlowFragment : Fragment(R.layout.flow_fragment_profile),
+  BackPressedFlowFragmentListener, ProfileFragmentNavigation {
   private var navController: NavController? = null
   private var navHostFragment: NavHostFragment? = null
 
@@ -33,19 +31,11 @@ class ProfileFlowFragment : Fragment(), BackPressedFlowFragmentListener, Profile
     Log.d("ProfileFlowFragment", "onAttach()")
   }
 
-  override fun onCreateView(
-    inflater: LayoutInflater,
-    container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): View? {
-    return inflater.inflate(R.layout.flow_fragment_profile, container, false)
-  }
-
   override fun onActivityCreated(savedInstanceState: Bundle?) {
     super.onActivityCreated(savedInstanceState)
     navHostFragment =
       childFragmentManager.findFragmentById(R.id.flow_fragment_profile___nav_host) as NavHostFragment?
-    navController = navHostFragment!!.navController
+    navController = navHostFragment?.navController
   }
 
   override fun backPressedIsAvailable(): Boolean {
@@ -53,7 +43,7 @@ class ProfileFlowFragment : Fragment(), BackPressedFlowFragmentListener, Profile
   }
 
   override fun onBackPressed() {
-    navController!!.popBackStack()
+    navController?.popBackStack()
   }
 
   override fun openStatistics() {
