@@ -6,13 +6,13 @@
     android:fitsSystemWindows="true">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/activity_modes___RecyclerView"
+        android:id="@+id/modes_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/activity_modes___material_button___save_modes"
+        android:id="@+id/save_modes_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 

@@ -15,7 +15,7 @@ import ru.nikshlykov.feature_modes.R
 
 internal class ModesRecyclerViewAdapter(private val context: Context) :
   RecyclerView.Adapter<ModesRecyclerViewAdapter.ModeViewHolder>() {
-  private var modes: List<Mode>? = null
+  private var modes: List<Mode> = emptyList()
 
   class ModeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     val checkBox: CheckBox = itemView.findViewById(R.id.card_mode___check_box___is_selected)
@@ -24,7 +24,7 @@ internal class ModesRecyclerViewAdapter(private val context: Context) :
   }
 
   override fun getItemCount(): Int {
-    return if (modes != null) modes!!.size else 0
+    return modes.size
   }
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ModeViewHolder {
@@ -34,7 +34,7 @@ internal class ModesRecyclerViewAdapter(private val context: Context) :
   }
 
   override fun onBindViewHolder(holder: ModeViewHolder, position: Int) {
-    val currentMode = modes!![position]
+    val currentMode = modes[position]
     // Получаем id картинки из ресурсов, т.к. в базе хранится именно строка
     val imageResourceId =
       context.resources.getIdentifier(currentMode.imageResourceId, "drawable", context.packageName)
@@ -47,13 +47,13 @@ internal class ModesRecyclerViewAdapter(private val context: Context) :
     }
   }
 
-  fun setModes(modes: List<Mode>?) {
+  fun setModes(modes: List<Mode>) {
     this.modes = modes
     // TODO посмотреть, что с ним не так
     notifyDataSetChanged()
   }
 
-  fun getModes(): List<Mode>? {
+  fun getModes(): List<Mode> {
     return modes
   }
 }

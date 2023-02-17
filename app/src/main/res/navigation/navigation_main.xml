@@ -46,7 +46,7 @@
         android:id="@+id/modes_dest"
         android:name="ru.nikshlykov.feature_modes.ui.fragments.ModesFragment"
         android:label="ModesFragment"
-        tools:layout="@layout/activity_modes" />
+        tools:layout="@layout/fragment_modes" />
     <fragment
         android:id="@+id/settings_dest"
         android:name="ru.nikshlykov.feature_preferences.ui.SettingsFragment"
