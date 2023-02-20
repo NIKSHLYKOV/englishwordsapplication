@@ -44,25 +44,26 @@ class MainActivity : AppCompatActivity(), ProfileFeatureRouter, StudyFeatureRout
   //  полностью оставался таким же при возвращении.
   private var navHostFragment: NavHostFragment? = null
 
-  private var navController: NavController? = null
+  private var navController: NavController = NavController(this)
 
-  private var bottomNavigationView
-    : BottomNavigationView? = null
+  private lateinit var bottomNavigationView: BottomNavigationView
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     installSplashScreen()
     (applicationContext as App).mainActivity = this
     setContentView(R.layout.activity_main)
-    findViews()
+    bottomNavigationView = findViewById(R.id.navigation)
     navHostFragment =
       supportFragmentManager.findFragmentById(R.id.activity_main___nav_host_fragment) as NavHostFragment
-    navController = navHostFragment!!.navController
-    NavigationUI.setupWithNavController(bottomNavigationView!!, navController!!)
+    navHostFragment?.navController?.let {
+      this.navController = it
+    }
+    NavigationUI.setupWithNavController(bottomNavigationView, navController)
 
     if (!checkOnBoardingIsFinished()) {
-      bottomNavigationView?.visibility = View.GONE
-      navController?.navigate(NavigationMainDirections.actionGlobalOnBoardingViewPagerDest())
+      bottomNavigationView.visibility = View.GONE
+      navController.navigate(NavigationMainDirections.actionGlobalOnBoardingViewPagerDest())
     }
   }
 
@@ -70,10 +71,6 @@ class MainActivity : AppCompatActivity(), ProfileFeatureRouter, StudyFeatureRout
     super.onDestroy()
     (applicationContext as App).textToSpeech.shutdown()
     // TODO refactor. Нужно ли занулять подобным образом dagger component?
-  }
-
-  private fun findViews() {
-    bottomNavigationView = findViewById(R.id.navigation)
   }
 
   // Для обработки выхода из приложения.
@@ -106,27 +103,27 @@ class MainActivity : AppCompatActivity(), ProfileFeatureRouter, StudyFeatureRout
 
   override fun openStatistics() {
     val navDirections = ProfileFlowFragmentDirections.actionProfileFlowDestToStatisticsDest()
-    navController?.navigate(navDirections)
+    navController.navigate(navDirections)
   }
 
   override fun openModes() {
     val navDirections = ProfileFlowFragmentDirections.actionProfileFlowDestToModesDest()
-    navController?.navigate(navDirections)
+    navController.navigate(navDirections)
   }
 
   override fun openSettings() {
     val navDirections = ProfileFlowFragmentDirections.actionProfileFlowDestToSettingsDest()
-    navController?.navigate(navDirections)
+    navController.navigate(navDirections)
   }
 
   override fun openModesFromStudy() {
     val navDirections = StudyFlowFragmentDirections.actionStudyFlowDestToModesDest()
-    navController?.navigate(navDirections)
+    navController.navigate(navDirections)
   }
 
   override fun openGroupsFromStudy() {
     val navDirections = StudyFlowFragmentDirections.actionStudyFlowDestToGroupsAndWordsFlowDest()
-    navController?.navigate(navDirections)
+    navController.navigate(navDirections)
   }
 
   private fun checkOnBoardingIsFinished(): Boolean {
@@ -135,8 +132,8 @@ class MainActivity : AppCompatActivity(), ProfileFeatureRouter, StudyFeatureRout
   }
 
   override fun endOfOnBoarding() {
-    navController?.popBackStack()
-    bottomNavigationView?.visibility = View.VISIBLE
+    navController.popBackStack()
+    bottomNavigationView.visibility = View.VISIBLE
     val sharedPref = getSharedPreferences(ON_BOARDING_PREFERENCES_NAME, Context.MODE_PRIVATE)
     val editor = sharedPref.edit()
     editor.putBoolean("Finished", true)

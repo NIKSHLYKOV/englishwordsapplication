@@ -10,11 +10,11 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import by.kirich1409.viewbindingdelegate.viewBinding
-import com.example.utils.getShuffleCharacters
 import ru.nikshlykov.core_ui.dpToPx
 import ru.nikshlykov.data.database.models.Word
 import ru.nikshlykov.feature_study.R
 import ru.nikshlykov.feature_study.databinding.FragmentCollectWordByLettersModeBinding
+import ru.nikshlykov.utils.getShuffleCharacters
 
 internal class CollectWordByLettersModeFragment :
   BaseModeFragment(R.layout.fragment_collect_word_by_letters_mode) {
