@@ -1,9 +1,11 @@
 package ru.nikshlykov.feature_study.ui.fragments.modesfragments
 
 import android.content.Context
+import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 
-internal abstract class BaseModeFragment : Fragment() {
+internal abstract class BaseModeFragment(@LayoutRes contentLayoutId: Int) :
+  Fragment(contentLayoutId) {
   protected var repeatResultListener: RepeatResultListener? = null
 
   override fun onAttach(context: Context) {

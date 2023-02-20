@@ -10,7 +10,7 @@
         android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/fragment_collect_word_by_letters_mode___text_view___value"
+            android:id="@+id/value_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -24,7 +24,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/fragment_collect_word_by_letters_mode___image_view___result"
+            android:id="@+id/result_image"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:visibility="invisible"
@@ -34,7 +34,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/fragment_collect_word_by_letters_mode___text_view___user_variant"
+            android:id="@+id/user_variant_text"
             android:layout_width="0dp"
             android:layout_height="80dp"
             android:layout_marginTop="280dp"
@@ -42,25 +42,25 @@
             android:gravity="center"
             android:textColor="@android:color/black"
             android:textSize="30sp"
-            app:layout_constraintEnd_toStartOf="@+id/fragment_collect_word_by_letters_mode___image_button___remove_letter"
-            app:layout_constraintStart_toStartOf="@+id/fragment_mode4___scroll_view___letters_"
+            app:layout_constraintEnd_toStartOf="@+id/remove_letter_button"
+            app:layout_constraintStart_toStartOf="@+id/letters_scroll_view"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="@string/word" />
 
         <ImageButton
-            android:id="@+id/fragment_collect_word_by_letters_mode___image_button___remove_letter"
+            android:id="@+id/remove_letter_button"
             style="@style/Widget.AppCompat.ImageButton"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginEnd="2dp"
             android:background="@drawable/shape_white_color_primary_20dp"
             android:src="@drawable/ic_backspace_color_primary_24dp"
-            app:layout_constraintBottom_toBottomOf="@+id/fragment_collect_word_by_letters_mode___text_view___user_variant"
-            app:layout_constraintEnd_toEndOf="@+id/fragment_mode4___scroll_view___letters_"
-            app:layout_constraintTop_toTopOf="@+id/fragment_collect_word_by_letters_mode___text_view___user_variant" />
+            app:layout_constraintBottom_toBottomOf="@+id/user_variant_text"
+            app:layout_constraintEnd_toEndOf="@+id/letters_scroll_view"
+            app:layout_constraintTop_toTopOf="@+id/user_variant_text" />
 
         <ScrollView
-            android:id="@+id/fragment_mode4___scroll_view___letters_"
+            android:id="@+id/letters_scroll_view"
 
             android:layout_width="324dp"
             android:layout_height="wrap_content"
@@ -70,14 +70,14 @@
 
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/fragment_collect_word_by_letters_mode___text_view___user_variant">
+            app:layout_constraintTop_toBottomOf="@id/user_variant_text">
 
             <androidx.gridlayout.widget.GridLayout
-                android:id="@+id/fragment_collect_word_by_letters_mode___grid_layout___letters"
+                android:id="@+id/letters_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:columnCount="6"
-                app:rowCount="10"/>
+                app:rowCount="10" />
         </ScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </RelativeLayout>

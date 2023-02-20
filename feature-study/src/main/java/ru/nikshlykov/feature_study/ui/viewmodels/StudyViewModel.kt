@@ -49,21 +49,20 @@ internal class StudyViewModel(
           selectedModesIds.add(mode.id)
         }
 
-        setSelectedModesIds(selectedModesIds)
+        this@StudyViewModel.selectedModesIds = selectedModesIds
 
         getNextAvailableToRepeatWord(listener)
       }
     }
   }
 
-  private fun setSelectedModesIds(selectedModesIds: ArrayList<Long>?) {
-    this.selectedModesIds = selectedModesIds
-  }
-
   fun randomSelectedModeId(): Long {
     val random = Random()
-    val index = random.nextInt(selectedModesIds!!.size)
-    return selectedModesIds!![index]
+    val index = random.nextInt(selectedModesIds?.size ?: 1)
+    selectedModesIds?.let {
+      return it[index]
+    }
+    return 0L
   }
 
   private fun getNextAvailableToRepeatWord(
@@ -90,12 +89,12 @@ internal class StudyViewModel(
 
       val wordForStudying = getAvailableToRepeatWordInteractor.getAvailableToRepeatWord(withNew)
       withContext(Dispatchers.Main) {
-        listener!!.onAvailableToRepeatWordLoaded(wordForStudying)
+        listener?.onAvailableToRepeatWordLoaded(wordForStudying)
       }
     }
   }
 
-  private fun loadNewWordsCount() {
+  fun loadNewWordsCount() {
     val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplication())
     newWordsCount = sharedPreferences.getInt(
       getApplication<Application>().getString(R.string.preference_key___new_word_count), 5
@@ -141,9 +140,5 @@ internal class StudyViewModel(
 
   companion object {
     private const val LOG_TAG = "StudyViewModel"
-  }
-
-  init {
-    loadNewWordsCount()
   }
 }

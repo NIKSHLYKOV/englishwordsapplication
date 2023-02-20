@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/fragment_write_word_by_voice_mode___constraint_layout___main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
     <ImageButton
-        android:id="@+id/fragment_write_word_by_voice_mode___image_button___voice"
+        android:id="@+id/voice_button"
         style="@style/Widget.AppCompat.ImageButton"
         android:layout_width="100dp"
         android:layout_height="100dp"
@@ -18,7 +17,7 @@
         android:src="@drawable/ic_volume_up_dark_blue_48dp" />
 
     <ImageView
-        android:id="@+id/fragment_write_word_by_voice_mode___image_view___result"
+        android:id="@+id/result_image"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_centerInParent="true"
@@ -35,7 +34,7 @@
         android:orientation="horizontal">
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/fragment_write_word_by_voice_mode___text_input_layout___user_variant"
+            android:id="@+id/user_variant_input_layout"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -46,14 +45,14 @@
 
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/fragment_write_word_by_voice_mode___text_input_edit_text___user_variant"
+                android:id="@+id/user_variant_edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPersonName" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/fragment_write_word_by_voice_mode___material_button___confirm"
+            android:id="@+id/confirm_button"
             style="@style/MaterialButtonIconOnly"
             android:layout_width="56dp"
             android:layout_height="match_parent"

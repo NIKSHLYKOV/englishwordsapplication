@@ -11,7 +11,7 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/fragment_info___text_view___info"
+        android:id="@+id/info_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
@@ -22,7 +22,7 @@
         tools:text="@tools:sample/lorem/random" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/fragment_info___material_button___to_modes"
+        android:id="@+id/modes_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -31,7 +31,7 @@
         tools:visibility="visible" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/fragment_info___material_button___to_groups"
+        android:id="@+id/groups_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"

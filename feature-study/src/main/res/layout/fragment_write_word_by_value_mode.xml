@@ -7,11 +7,11 @@
     android:fitsSystemWindows="true">
 
     <TextView
-        android:id="@+id/fragment_write_word_by_value_mode___text_view___value"
+        android:id="@+id/value_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="80dp"
-        android:layout_above="@id/fragment_write_word_by_value_mode___linear_layout___user_variant_with_button"
+        android:layout_above="@id/user_variant_layout"
         android:layout_centerHorizontal="true"
 
         android:layout_marginStart="48dp"
@@ -24,7 +24,7 @@
 
 
     <ImageView
-        android:id="@+id/fragment_write_word_by_value_mode___image_view___result"
+        android:id="@+id/result_image"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_centerInParent="true"
@@ -32,7 +32,7 @@
 
 
     <LinearLayout
-        android:id="@+id/fragment_write_word_by_value_mode___linear_layout___user_variant_with_button"
+        android:id="@+id/user_variant_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
@@ -41,7 +41,7 @@
         android:layout_marginEnd="16dp">
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/fragment_write_word_by_value_mode___text_input_layout___user_variant"
+            android:id="@+id/user_variant_input_layout"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -51,14 +51,14 @@
             android:hint="@string/word">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/fragment_write_word_by_value_mode___text_input_edit_text___user_variant"
+                android:id="@+id/user_variant_edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPersonName" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/fragment_write_word_by_value_mode___button___confirm"
+            android:id="@+id/confirm_button"
             style="@style/MaterialButtonIconOnly"
             android:layout_width="56dp"
             android:layout_height="match_parent"

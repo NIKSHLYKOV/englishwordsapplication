@@ -53,7 +53,7 @@ class StudyFlowFragment : Fragment(),
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    studyViewModel = viewModelFactory!!.create(StudyViewModel::class.java)
+    studyViewModel = viewModelFactory?.create(StudyViewModel::class.java)
   }
 
   override fun onCreateView(
@@ -68,17 +68,22 @@ class StudyFlowFragment : Fragment(),
     super.onViewCreated(view, savedInstanceState)
     val navHostFragment =
       childFragmentManager.findFragmentById(R.id.flow_fragment_study___nav_host) as NavHostFragment?
-    navController = navHostFragment!!.navController
+    navController = navHostFragment?.navController
 
-    studyViewModel!!.getModesAreSelected().observe(viewLifecycleOwner) { modesAreSelected ->
+    studyViewModel?.getModesAreSelected()?.observe(viewLifecycleOwner) { modesAreSelected ->
       if (modesAreSelected) {
-        studyViewModel!!.startStudying(this)
+        studyViewModel?.startStudying(this)
       } else {
         val navDirections =
           NavigationStudyDirections.actionGlobalInfoDest(InfoFragment.FLAG_MODES_ARE_NOT_CHOSEN)
-        navController!!.navigate(navDirections)
+        navController?.navigate(navDirections)
       }
     }
+  }
+
+  override fun onStart() {
+    super.onStart()
+    studyViewModel?.loadNewWordsCount()
   }
 
   /**
@@ -89,7 +94,7 @@ class StudyFlowFragment : Fragment(),
     if (word == null) {
       val navDirections =
         NavigationStudyDirections.actionGlobalInfoDest(InfoFragment.FLAG_AVAILABLE_WORDS_ARE_NOT_EXISTING)
-      navController!!.navigate(navDirections)
+      navController?.navigate(navDirections)
     } else {
       Log.i(
         LOG_TAG, "word = " + word.word + "; learnProgress = " + word.learnProgress +
@@ -101,12 +106,13 @@ class StudyFlowFragment : Fragment(),
 
       if (word.learnProgress == -1) {
         val navDirections = NavigationStudyDirections.actionGlobalFirstShowModeDest(word)
-        navController!!.navigate(navDirections)
+        navController?.navigate(navDirections)
       } else {
-        val randomModeId = studyViewModel!!.randomSelectedModeId()
+        val randomModeId = studyViewModel?.randomSelectedModeId()
         Log.i(LOG_TAG, "randomModeId = $randomModeId")
-        val navDirections = ModesNavigation.getRandomModeNavDirections(randomModeId, word)
-        navController!!.navigate(navDirections)
+        // TODO refactoring. Убрать как-нибудь в следующей строке единицу.
+        val navDirections = ModesNavigation.getRandomModeNavDirections(randomModeId ?: 1, word)
+        navController?.navigate(navDirections)
       }
     }
   }
@@ -117,7 +123,7 @@ class StudyFlowFragment : Fragment(),
   override fun firstShowModeResult(wordId: Long, result: Int) {
     Log.i(LOG_TAG, "firstShowModeResult()")
     Log.i(LOG_TAG, "result = $result")
-    studyViewModel!!.firstShowProcessing(wordId, result, this)
+    studyViewModel?.firstShowProcessing(wordId, result, this)
   }
 
   /**
@@ -126,7 +132,7 @@ class StudyFlowFragment : Fragment(),
    * @param result результат повтора (0 - неверно, 1 - верно).
    */
   override fun repeatResult(wordId: Long, result: Int) {
-    studyViewModel!!.repeatProcessing(wordId, result, this)
+    studyViewModel?.repeatProcessing(wordId, result, this)
   }
 
   override fun openModes() {

@@ -2,23 +2,19 @@ package ru.nikshlykov.feature_study.ui.fragments.modesfragments
 
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
 import androidx.fragment.app.Fragment
+import by.kirich1409.viewbindingdelegate.viewBinding
 import ru.nikshlykov.data.database.models.Word
 import ru.nikshlykov.feature_study.R
+import ru.nikshlykov.feature_study.databinding.FragmentFirstShowModeBinding
 
-internal class FirstShowModeFragment : Fragment() {
+internal class FirstShowModeFragment : Fragment(R.layout.fragment_first_show_mode) {
   // TODO fix. Поправить кнопку пропуска.
-  private var wordTextView: TextView? = null
-  private var transcriptionTextView: TextView? = null
-  private var valueTextView: TextView? = null
-
   private var word: Word? = null
   private var firstShowModeReportListener: FirstShowModeReportListener? = null
+
+  private val binding: FragmentFirstShowModeBinding by viewBinding(FragmentFirstShowModeBinding::bind)
 
   interface FirstShowModeReportListener {
     fun firstShowModeResult(wordId: Long, result: Int)
@@ -39,55 +35,33 @@ internal class FirstShowModeFragment : Fragment() {
     word = FirstShowModeFragmentArgs.fromBundle(requireArguments()).word
   }
 
-  override fun onCreateView(
-    inflater: LayoutInflater,
-    container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): View? {
-    val view = inflater.inflate(R.layout.fragment_first_show_mode, null)
-    findViews(view)
-
-    val learnButton = view.findViewById<Button>(R.id.fragment_first_show_mode___button___learn)
-    learnButton.setOnClickListener {
-      firstShowModeReportListener!!.firstShowModeResult(
-        word!!.id,
-        1
-      )
-    }
-
-    val knowButton = view.findViewById<Button>(R.id.fragment_first_show_mode___button___know)
-    knowButton.setOnClickListener {
-      firstShowModeReportListener!!.firstShowModeResult(
-        word!!.id,
-        2
-      )
-    }
-
-    val skipButton = view.findViewById<Button>(R.id.fragment_first_show_mode___button___skip)
-    skipButton.setOnClickListener {
-      firstShowModeReportListener!!.firstShowModeResult(
-        word!!.id,
-        0
-      )
-    }
-    return view
-  }
-
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-    setWordParametersToViews(word)
-  }
+    with(binding) {
+      learnButton.setOnClickListener {
+        firstShowModeReportListener?.firstShowModeResult(
+          word?.id ?: 0L,
+          1
+        )
+      }
 
-  private fun findViews(v: View) {
-    wordTextView = v.findViewById(R.id.fragment_first_show_mode___text_view___word)
-    valueTextView = v.findViewById(R.id.fragment_first_show_mode___text_view___value)
-    transcriptionTextView =
-      v.findViewById(R.id.fragment_first_show_mode___text_view___transcription)
-  }
+      knowButton.setOnClickListener {
+        firstShowModeReportListener?.firstShowModeResult(
+          word?.id ?: 0L,
+          2
+        )
+      }
 
-  private fun setWordParametersToViews(word: Word?) {
-    transcriptionTextView!!.text = word!!.transcription
-    valueTextView!!.text = word.value
-    wordTextView!!.text = word.word
+      skipButton.setOnClickListener {
+        firstShowModeReportListener?.firstShowModeResult(
+          word?.id ?: 0L,
+          0
+        )
+      }
+
+      transcriptionText.text = word?.transcription
+      valueText.text = word?.value
+      wordText.text = word?.word
+    }
   }
 }

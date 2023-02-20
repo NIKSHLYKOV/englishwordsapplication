@@ -25,17 +25,22 @@
             app:argType="ru.nikshlykov.data.database.models.Word" />
     </fragment>
     <fragment
-        android:id="@+id/dictionary_cards_mode_dest"
-        android:name="ru.nikshlykov.feature_study.ui.fragments.modesfragments.DictionaryCardsModeFragment"
-        android:label="DictionaryCardsModeFragment"
-        tools:layout="@layout/fragment_dictionary_cards_eng_to_rus">
+        android:id="@+id/word_dictionary_card_mode_dest"
+        android:name="ru.nikshlykov.feature_study.ui.fragments.modesfragments.WordDictionaryCardModeFragment"
+        android:label="WordDictionaryCardModeFragment"
+        tools:layout="@layout/fragment_word_dictionary_card">
         <argument
             android:name="word"
             app:argType="ru.nikshlykov.data.database.models.Word" />
+    </fragment>
+    <fragment
+        android:id="@+id/value_dictionary_card_mode_dest"
+        android:name="ru.nikshlykov.feature_study.ui.fragments.modesfragments.ValueDictionaryCardModeFragment"
+        android:label="ValueDictionaryCardModeFragment"
+        tools:layout="@layout/fragment_value_dictionary_card">
         <argument
-            android:name="flag"
-            app:argType="integer"
-            android:defaultValue="1" />
+            android:name="word"
+            app:argType="ru.nikshlykov.data.database.models.Word" />
     </fragment>
     <fragment
         android:id="@+id/first_show_mode_dest"
@@ -64,10 +69,25 @@
             android:name="word"
             app:argType="ru.nikshlykov.data.database.models.Word" />
     </fragment>
-    <action android:id="@+id/action_global_info_dest" app:destination="@id/info_dest" />
-    <action android:id="@+id/action_global_collect_word_by_letters_mode_dest" app:destination="@id/collect_word_by_letters_mode_dest" />
-    <action android:id="@+id/action_global_first_show_mode_dest" app:destination="@id/first_show_mode_dest" />
-    <action android:id="@+id/action_global_dictionary_cards_mode_dest" app:destination="@id/dictionary_cards_mode_dest" />
-    <action android:id="@+id/action_global_write_word_by_voice_mode_dest" app:destination="@id/write_word_by_voice_mode_dest" />
-    <action android:id="@+id/action_global_write_word_by_value_mode_dest" app:destination="@id/write_word_by_value_mode_dest" />
+    <action
+        android:id="@+id/action_global_info_dest"
+        app:destination="@id/info_dest" />
+    <action
+        android:id="@+id/action_global_collect_word_by_letters_mode_dest"
+        app:destination="@id/collect_word_by_letters_mode_dest" />
+    <action
+        android:id="@+id/action_global_first_show_mode_dest"
+        app:destination="@id/first_show_mode_dest" />
+    <action
+        android:id="@+id/action_global_word_dictionary_card_mode_dest"
+        app:destination="@id/word_dictionary_card_mode_dest" />
+    <action
+        android:id="@+id/action_global_value_dictionary_card_mode_dest"
+        app:destination="@id/value_dictionary_card_mode_dest" />
+    <action
+        android:id="@+id/action_global_write_word_by_voice_mode_dest"
+        app:destination="@id/write_word_by_voice_mode_dest" />
+    <action
+        android:id="@+id/action_global_write_word_by_value_mode_dest"
+        app:destination="@id/write_word_by_value_mode_dest" />
 </navigation>
