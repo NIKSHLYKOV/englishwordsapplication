@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import ru.nikshlykov.englishwordsapp.R
-import ru.nikshlykov.englishwordsapp.ui.MainActivity
 import ru.nikshlykov.englishwordsapp.ui.OnBoardingViewPagerAdapter
 
 class OnBoardingViewPagerFragment : Fragment(), ViewPagerNavigation {
@@ -55,8 +54,10 @@ class OnBoardingViewPagerFragment : Fragment(), ViewPagerNavigation {
     if (viewPager?.currentItem != 3) {
       viewPager?.currentItem = viewPager?.currentItem?.plus(1) ?: 0
     } else {
-      // TODO refactor. Убрать сильную связанность.
-      (requireActivity() as MainActivity).endOfOnBoarding()
+      val activity = requireActivity()
+      if (activity is OnBoardingRouter) {
+        activity.endOfOnBoarding()
+      }
     }
   }
 }
