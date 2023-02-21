@@ -5,7 +5,6 @@ import ru.nikshlykov.feature_groups_and_words.domain.repositories.SubgroupsRepos
 
 internal class DeleteSubgroupInteractor(private val subgroupsRepository: SubgroupsRepository) {
 
-  suspend fun deleteSubgroup(subgroup: Subgroup) {
+  suspend fun deleteSubgroup(subgroup: Subgroup): Int =
     subgroupsRepository.deleteSubgroup(subgroup)
-  }
 }

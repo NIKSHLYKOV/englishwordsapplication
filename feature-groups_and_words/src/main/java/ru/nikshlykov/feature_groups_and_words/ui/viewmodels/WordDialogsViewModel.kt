@@ -1,7 +1,7 @@
 package ru.nikshlykov.feature_groups_and_words.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.GlobalScope
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import ru.nikshlykov.feature_groups_and_words.domain.interactors.AddWordToSubgroupInteractor
 import ru.nikshlykov.feature_groups_and_words.domain.interactors.DeleteWordFromSubgroupInteractor
@@ -16,14 +16,13 @@ internal class WordDialogsViewModel(
   }
 
   fun deleteWordFromSubgroup(subgroupId: Long) {
-    GlobalScope.launch {
+    viewModelScope.launch {
       deleteWordFromSubgroupInteractor.deleteLinkBetweenWordAndSubgroup(wordId, subgroupId)
     }
   }
 
   fun addWordToSubgroup(subgroupId: Long) {
-    // TODO Поменять потом GlobalScope на свой.
-    GlobalScope.launch {
+    viewModelScope.launch {
       addWordToSubgroupInteractor.addLinkBetweenWordAndSubgroup(wordId, subgroupId)
     }
   }

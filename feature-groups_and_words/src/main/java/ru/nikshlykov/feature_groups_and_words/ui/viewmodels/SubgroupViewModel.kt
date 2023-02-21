@@ -3,7 +3,6 @@ package ru.nikshlykov.feature_groups_and_words.ui.viewmodels
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -55,7 +54,7 @@ internal class SubgroupViewModel(
             wordsFlow.emit(words)
           }
         }
-      else ->
+      else                                ->
         viewModelScope.launch {
           wordsByProgressFlow.collectLatest { words ->
             wordsFlow.emit(words)
@@ -64,14 +63,15 @@ internal class SubgroupViewModel(
     }
   }
 
-  fun deleteSubgroup() {
-    val subgroup = _subgroupFlow.value
-    if (subgroup != null && subgroup.isCreatedByUser) {
-      GlobalScope.launch {
-        deleteSubgroupInteractor.deleteSubgroup(subgroup)
+  suspend fun deleteSubgroup(): Boolean =
+    withContext(viewModelScope.coroutineContext) {
+      val subgroup = _subgroupFlow.value
+      if (subgroup != null && subgroup.isCreatedByUser) {
+        deleteSubgroupInteractor.deleteSubgroup(subgroup) == 1
+      } else {
+        false
       }
     }
-  }
 
   /**
    * Обновляет поле подгруппы в БД.
@@ -82,11 +82,10 @@ internal class SubgroupViewModel(
     val subgroup = _subgroupFlow.value
     if (subgroup != null) {
       subgroup.studied = newIsStudied
-      GlobalScope.launch {
+      viewModelScope.launch {
         updateSubgroupInteractor.updateSubgroup(subgroup)
       }
-      // TODO заменить на корутину (заменил, но оставил пока global scope).
-      //  Подумать, когда обновлять в БД.
+      // TODO Подумать, когда обновлять в БД.
       //  Каждый раз при нажатии или при выходе. Надо ли тогда делать свой скоуп?
       //  Или можно каждый раз обновлять, но при этому группу запрашивать только один раз.
     }

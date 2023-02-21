@@ -2,7 +2,6 @@ package ru.nikshlykov.feature_groups_and_words.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -46,12 +45,9 @@ internal class WordViewModel(
     }
   }
 
-  fun updateWordInDB() {
-    GlobalScope.launch {
-      val word = word.value
-      if (word != null) {
-        updateWordInteractor.updateWord(word)
-      }
+  suspend fun updateWordInDB(): Boolean {
+    return withContext(viewModelScope.coroutineContext) {
+      updateWordInteractor.updateWord(word.value) == 1
     }
   }
 

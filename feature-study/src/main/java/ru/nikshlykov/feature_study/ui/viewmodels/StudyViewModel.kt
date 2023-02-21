@@ -8,7 +8,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.nikshlykov.feature_study.R
@@ -68,8 +67,7 @@ internal class StudyViewModel(
   private fun getNextAvailableToRepeatWord(
     listener: OnAvailableToRepeatWordLoadedListener?
   ) {
-    // TODO refactoring. Возможно Globalscope можно заменить на viewmodelscope
-    GlobalScope.launch {
+    viewModelScope.launch {
       val repeatsCount =
         getFirstShowRepeatsCountForTodayInteractor.getFirstShowRepeatsCountForToday()
       Log.d(LOG_TAG, "Начатых за сегодня слов: $repeatsCount")
@@ -110,8 +108,7 @@ internal class StudyViewModel(
     result: Int,
     listener: OnAvailableToRepeatWordLoadedListener
   ) {
-    // TODO refactoring. Убрать GlobalScope.
-    GlobalScope.launch {
+    viewModelScope.launch {
       val processingResult = studyWordsInteractor.firstShowProcessing(wordId, result)
       if (processingResult == 1) {
         // Делаем проверку на то, что пользователь ещё находится во вкладке изучение,
@@ -127,8 +124,7 @@ internal class StudyViewModel(
   }
 
   fun repeatProcessing(wordId: Long, result: Int, listener: OnAvailableToRepeatWordLoadedListener) {
-    // TODO refactoring. Убрать GlobalScope
-    GlobalScope.launch {
+    viewModelScope.launch {
       val processingResult = studyWordsInteractor.repeatProcessing(wordId, result)
       if (processingResult == 1) {
         getNextAvailableToRepeatWord(listener)

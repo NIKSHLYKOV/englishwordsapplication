@@ -119,9 +119,11 @@ internal class WordFragment : FlowFragmentChildFragment(R.layout.fragment_word),
 
       if (word.isNotEmpty() && value.isNotEmpty()) {
         wordViewModel?.setWordParameters(word, transcription, value)
-        wordViewModel?.updateWordInDB()
-
-        onChildFragmentInteractionListener?.close()
+        lifecycleScope.launch {
+          if (wordViewModel?.updateWordInDB() != false) {
+            onChildFragmentInteractionListener?.close()
+          }
+        }
       } else {
         Toast.makeText(
           context,

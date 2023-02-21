@@ -497,9 +497,12 @@ internal class SubgroupFragment : FlowFragmentChildFragment(R.layout.fragment_su
    */
   override fun deleteMessage(message: String?) {
     if (message == DeleteSubgroupDialogFragment.DELETE_MESSAGE) {
-      subgroupViewModel?.deleteSubgroup()
       deleteFlag = true
-      onChildFragmentInteractionListener?.close()
+      lifecycleScope.launch {
+        if (subgroupViewModel?.deleteSubgroup() != false) {
+          onChildFragmentInteractionListener?.close()
+        }
+      }
     }
   }
 
