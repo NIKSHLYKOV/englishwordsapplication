@@ -7,7 +7,6 @@ import android.os.Message
 import android.speech.tts.TextToSpeech
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.RelativeLayout
 import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
 import ru.nikshlykov.data.database.models.Word
@@ -70,9 +69,6 @@ internal class WriteWordByVoiceModeFragment :
         voiceButton.visibility = View.GONE
         confirmButton.visibility = View.GONE
         userVariantInputLayout.visibility = View.GONE
-
-        // TODO refactor. Срочно заменить на обращение по id.
-        val rootLayout = v.parent.parent as RelativeLayout
 
         var result = 0
         val userVariantOfWord = userVariantEditText.text.toString()

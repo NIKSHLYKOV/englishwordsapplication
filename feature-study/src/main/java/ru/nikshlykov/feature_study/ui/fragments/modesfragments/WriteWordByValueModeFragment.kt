@@ -6,7 +6,6 @@ import android.os.Handler
 import android.os.Message
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.RelativeLayout
 import by.kirich1409.viewbindingdelegate.viewBinding
 import ru.nikshlykov.data.database.models.Word
 import ru.nikshlykov.feature_study.R
@@ -49,8 +48,6 @@ internal class WriteWordByValueModeFragment :
         valueText.visibility = View.GONE
         confirmButton.visibility = View.GONE
         userVariantInputLayout.visibility = View.GONE
-
-        val rootLayout = v.parent.parent as RelativeLayout
 
         var result = 0
         val userVariantOfWord = userVariantEditText.text.toString()
