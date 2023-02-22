@@ -5,6 +5,8 @@ import java.util.*
 
 internal class GetAllTimeStatisticsInteractor(val repeatsRepository: RepeatsRepository) {
 
+  // TODO refactoring. Мне не нравится, что мы каждый раз вызываем один и тот же метод репозитория
+
   suspend fun getRepeatsCount(): Int = repeatsRepository.getRepeatsByTime(0, Date().time)
     .filter { repeat -> repeat.sequenceNumber > 0 }.size
 

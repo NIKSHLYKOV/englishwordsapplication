@@ -8,7 +8,6 @@ import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import by.kirich1409.viewbindingdelegate.viewBinding
 import ru.nikshlykov.core_ui.dpToPx
 import ru.nikshlykov.data.database.models.Word
@@ -101,18 +100,16 @@ internal class CollectWordByLettersModeFragment :
           removeLetterButton.visibility = View.GONE
           userVariantText.visibility = View.GONE
           lettersLayout.visibility = View.GONE
-          val mainLayout = v.getParent().parent
-            .parent as ConstraintLayout
 
           var result = 0
           val userVariantOfWord = userVariantText.text.toString()
           if (userVariantOfWord == word.word) {
             result = 1
             resultImage.setImageResource(R.drawable.ic_done_white_48dp)
-            mainLayout.setBackgroundResource(R.color.true_repeat_background)
+            rootLayout.setBackgroundResource(R.color.true_repeat_background)
           } else {
             resultImage.setImageResource(R.drawable.ic_clear_white_48dp)
-            mainLayout.setBackgroundResource(R.color.not_true_repeat_background)
+            rootLayout.setBackgroundResource(R.color.not_true_repeat_background)
           }
           resultImage.visibility = View.VISIBLE
 

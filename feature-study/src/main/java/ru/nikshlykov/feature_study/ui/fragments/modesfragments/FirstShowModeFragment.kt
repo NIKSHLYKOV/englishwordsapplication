@@ -21,6 +21,7 @@ internal class FirstShowModeFragment : Fragment(R.layout.fragment_first_show_mod
   }
 
   override fun onAttach(context: Context) {
+    // TODO refactoring. Подумать, как можно улучшить подобное нахождение.
     super.onAttach(context)
     val parentFlowFragment = requireParentFragment().parentFragment
     firstShowModeReportListener = if (parentFlowFragment is FirstShowModeReportListener) {

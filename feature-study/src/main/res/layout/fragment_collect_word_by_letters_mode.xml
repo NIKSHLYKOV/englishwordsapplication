@@ -1,83 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/value_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginEnd="8dp"
+        android:textColor="@android:color/black"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@string/value" />
 
-        <TextView
-            android:id="@+id/value_text"
-            android:layout_width="wrap_content"
+    <ImageView
+        android:id="@+id/result_image"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/user_variant_text"
+        android:layout_width="0dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="280dp"
+        android:layout_marginEnd="8dp"
+        android:gravity="center"
+        android:textColor="@android:color/black"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toStartOf="@+id/remove_letter_button"
+        app:layout_constraintStart_toStartOf="@+id/letters_scroll_view"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@string/word" />
+
+    <ImageButton
+        android:id="@+id/remove_letter_button"
+        style="@style/Widget.AppCompat.ImageButton"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="2dp"
+        android:background="@drawable/shape_white_color_primary_20dp"
+        android:src="@drawable/ic_backspace_color_primary_24dp"
+        app:layout_constraintBottom_toBottomOf="@+id/user_variant_text"
+        app:layout_constraintEnd_toEndOf="@+id/letters_scroll_view"
+        app:layout_constraintTop_toTopOf="@+id/user_variant_text" />
+
+    <ScrollView
+        android:id="@+id/letters_scroll_view"
+
+        android:layout_width="324dp"
+        android:layout_height="wrap_content"
+
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="8dp"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/user_variant_text">
+
+        <androidx.gridlayout.widget.GridLayout
+            android:id="@+id/letters_layout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="100dp"
-            android:layout_marginEnd="8dp"
-            tools:text="@string/value"
-            android:textColor="@android:color/black"
-            android:textSize="30sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
-            android:id="@+id/result_image"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/user_variant_text"
-            android:layout_width="0dp"
-            android:layout_height="80dp"
-            android:layout_marginTop="280dp"
-            android:layout_marginEnd="8dp"
-            android:gravity="center"
-            android:textColor="@android:color/black"
-            android:textSize="30sp"
-            app:layout_constraintEnd_toStartOf="@+id/remove_letter_button"
-            app:layout_constraintStart_toStartOf="@+id/letters_scroll_view"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="@string/word" />
-
-        <ImageButton
-            android:id="@+id/remove_letter_button"
-            style="@style/Widget.AppCompat.ImageButton"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginEnd="2dp"
-            android:background="@drawable/shape_white_color_primary_20dp"
-            android:src="@drawable/ic_backspace_color_primary_24dp"
-            app:layout_constraintBottom_toBottomOf="@+id/user_variant_text"
-            app:layout_constraintEnd_toEndOf="@+id/letters_scroll_view"
-            app:layout_constraintTop_toTopOf="@+id/user_variant_text" />
-
-        <ScrollView
-            android:id="@+id/letters_scroll_view"
-
-            android:layout_width="324dp"
-            android:layout_height="wrap_content"
-
-            android:layout_marginTop="50dp"
-            android:layout_marginBottom="8dp"
-
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/user_variant_text">
-
-            <androidx.gridlayout.widget.GridLayout
-                android:id="@+id/letters_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:columnCount="6"
-                app:rowCount="10" />
-        </ScrollView>
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</RelativeLayout>
+            app:columnCount="6"
+            app:rowCount="10" />
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>
