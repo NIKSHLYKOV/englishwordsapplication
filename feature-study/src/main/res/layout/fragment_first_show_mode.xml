@@ -5,79 +5,79 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+    <TextView
+        android:id="@+id/word_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="150dp"
+        android:layout_centerHorizontal="true"
+        android:text="@string/word"
+        android:textColor="@android:color/black"
+        android:textSize="30sp" />
 
-        <TextView
-            android:id="@+id/word_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="150dp"
-            android:gravity="center"
-            android:text="@string/word"
-            android:textColor="@android:color/black"
-            android:textSize="30sp" />
+    <TextView
+        android:id="@+id/transcription_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/word_text"
+        android:text="@string/transcription"
+        android:textSize="24sp" />
 
-        <TextView
-            android:id="@+id/transcription_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:text="@string/transcription"
-            android:textSize="24sp" />
-
-        <TextView
-            android:id="@+id/value_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="20dp"
-            android:gravity="center"
-            android:text="@string/value"
-            android:textColor="@android:color/black"
-            android:textSize="30sp" />
-
-    </LinearLayout>
+    <TextView
+        android:id="@+id/value_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:layout_below="@id/transcription_text"
+        android:text="@string/value"
+        android:textColor="@android:color/black"
+        android:textSize="30sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:paddingBottom="10dp">
+        android:padding="10dp">
 
         <Button
             android:id="@+id/know_button"
             style="@style/MaterialButtonWithoutAllCaps"
+            android:textColor="@android:color/black"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
+            android:padding="8dp"
             android:layout_weight="1"
             android:text="@string/know"
-            android:textSize="12sp"/>
-
-        <Button
-            android:id="@+id/learn_button"
-            style="@style/MaterialButtonWithoutAllCaps"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:layout_weight="1"
-            android:text="@string/to_learn"
-            android:textSize="12sp"/>
+            android:textSize="12sp" />
 
         <Button
             android:id="@+id/skip_button"
             style="@style/MaterialButtonWithoutAllCaps"
+            android:backgroundTint="@android:color/darker_gray"
+            android:textColor="@android:color/black"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
+            android:padding="8dp"
             android:layout_weight="1"
             android:text="@string/to_skip"
-            android:textSize="12sp"/>
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/learn_button"
+            style="@style/MaterialButtonWithoutAllCaps"
+            android:backgroundTint="@color/colorAccent"
+            android:textColor="@android:color/black"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:padding="8dp"
+            android:layout_weight="1"
+            android:text="@string/to_learn"
+            android:textSize="12sp" />
 
     </LinearLayout>
 

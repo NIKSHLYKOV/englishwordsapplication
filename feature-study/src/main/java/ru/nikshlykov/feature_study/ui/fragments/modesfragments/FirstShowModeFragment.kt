@@ -10,7 +10,7 @@ import ru.nikshlykov.feature_study.R
 import ru.nikshlykov.feature_study.databinding.FragmentFirstShowModeBinding
 
 internal class FirstShowModeFragment : Fragment(R.layout.fragment_first_show_mode) {
-  // TODO fix. Поправить кнопку пропуска.
+
   private var word: Word? = null
   private var firstShowModeReportListener: FirstShowModeReportListener? = null
 
