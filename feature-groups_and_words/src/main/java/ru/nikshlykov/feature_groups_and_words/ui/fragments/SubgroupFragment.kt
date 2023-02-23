@@ -165,7 +165,6 @@ internal class SubgroupFragment : FlowFragmentChildFragment(R.layout.fragment_su
       menu.findItem(R.id.fragment_subgroup___action___learn)
         .setChecked(true).icon = requireContext().getDrawable(R.drawable.ic_brain_selected_yellow)
     }
-    // Скрываем действия, доступные только для созданных пользователем подгрупп.
     if (!subgroupIsCreatedByUser) {
       menu.findItem(R.id.fragment_subgroup___action___delete_subgroup).isVisible = false
       menu.findItem(R.id.fragment_subgroup___action___edit_subgroup).isVisible = false
@@ -248,12 +247,8 @@ internal class SubgroupFragment : FlowFragmentChildFragment(R.layout.fragment_su
     }
   }
 
-  /**
-   * Обрабатывает результат работы SortWordsDialogFragment.
-   */
   override fun sort(sortParam: Int) {
     Log.i(LOG_TAG, "sortParam from SortWordsDialogFragment = $sortParam")
-    // Проверяем, изменился ли вообще параметр, чтобы не делать лишней работы.
     if (this.sortParam != sortParam) {
       this.sortParam = sortParam
       subgroupViewModel?.sortWords(sortParam)
@@ -481,22 +476,14 @@ internal class SubgroupFragment : FlowFragmentChildFragment(R.layout.fragment_su
     }
   }
 
-  /**
-   * Обрабатывает работу ResetWordProgressDialogFragment.
-   */
   override fun resetMessage(message: String?) {
     if (message == ResetProgressDialogFragment.RESET_MESSAGE) {
       subgroupViewModel?.resetWordsProgress()
     }
   }
 
-  /**
-   * Обрабатывает работу DeleteSubgroupDialogFragment.
-   *
-   * @param message удалять подгруппу или нет.
-   */
   override fun deleteMessage(message: String?) {
-    if (message == DeleteSubgroupDialogFragment.DELETE_MESSAGE) {
+    if (message == DeleteSubgroupDialogFragment.DELETION_CONFIRMED_MESSAGE) {
       deleteFlag = true
       lifecycleScope.launch {
         if (subgroupViewModel?.deleteSubgroup() != false) {

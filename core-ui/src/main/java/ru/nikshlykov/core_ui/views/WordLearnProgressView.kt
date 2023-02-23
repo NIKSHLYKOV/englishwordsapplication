@@ -53,7 +53,7 @@ class WordLearnProgressView(
   }
 
   override fun onDraw(canvas: Canvas?) {
-    // Используется FILL, т.к. STROKE как-то криво рисует пискели
+    // Используется FILL, т.к. STROKE как-то криво рисует пискели.
     paint.style = Paint.Style.FILL
     paint.color = ContextCompat.getColor(context, R.color.progress_frame)
     paint.strokeWidth = context.dpToPx(1).toFloat()

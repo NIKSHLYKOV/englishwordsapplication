@@ -39,6 +39,7 @@ internal class SortWordsDialogFragment : DialogFragment() {
   }
 
   companion object {
+    // TODO refactoring. Подобные места можно поменять на enum.
     // Возможные значения параметра сортировки.
     const val BY_ALPHABET = 0
     const val BY_PROGRESS = 1

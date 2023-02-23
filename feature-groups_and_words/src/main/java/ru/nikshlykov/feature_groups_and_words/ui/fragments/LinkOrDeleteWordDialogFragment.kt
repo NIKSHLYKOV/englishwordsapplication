@@ -17,7 +17,7 @@ internal class LinkOrDeleteWordDialogFragment : DialogFragment() {
 
   private val groupsFeatureComponentViewModel: GroupsFeatureComponentViewModel by viewModels()
 
-  // Флаг, который отвечает за подбираемые подгруппы.
+  // Отвечает за подбираемые подгруппы (для удаления или для добавления).
   private var flag = 0
 
   // id слова, для которого вызывается диалог.
@@ -26,8 +26,7 @@ internal class LinkOrDeleteWordDialogFragment : DialogFragment() {
   private var availableSubgroupsNames: Array<String>? = null
   private var availableSubgroupsIds: Array<Long> = emptyArray()
 
-  // Массив значений чекбоксов подгрупп.
-  private lateinit var checkedSubgroups: BooleanArray
+  private lateinit var checkedValuesOfSubgroups: BooleanArray
 
   private var wordDialogsViewModel: WordDialogsViewModel? = null
 
@@ -47,7 +46,6 @@ internal class LinkOrDeleteWordDialogFragment : DialogFragment() {
   }
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-    // Получаем названия доступных подгрупп.
     var availableSubgroupsCount = 0
     if (availableSubgroupsNames != null) {
       Log.d(LOG_TAG, "availableSubgroupsNames != null")
@@ -55,7 +53,6 @@ internal class LinkOrDeleteWordDialogFragment : DialogFragment() {
     }
     Log.d(LOG_TAG, "availableSubgroupsCount = $availableSubgroupsCount")
 
-    // Выводим dialog в зависимости от того, есть доступные подгруппы или их нет.
     return if (availableSubgroupsCount != 0) {
       getAvailableSubgroupsExistDialog(availableSubgroupsCount, availableSubgroupsNames)
     } else {
@@ -80,7 +77,7 @@ internal class LinkOrDeleteWordDialogFragment : DialogFragment() {
     availableSubgroupsCount: Int,
     availableSubgroupsNames: Array<String>?
   ): AlertDialog {
-    checkedSubgroups = BooleanArray(availableSubgroupsCount)
+    checkedValuesOfSubgroups = BooleanArray(availableSubgroupsCount)
     return when (flag) {
       TO_LINK   ->
         AlertDialog.Builder(requireContext())
@@ -89,12 +86,12 @@ internal class LinkOrDeleteWordDialogFragment : DialogFragment() {
             availableSubgroupsNames,
             null
           ) { _, which, isChecked ->
-            checkedSubgroups[which] = isChecked
+            checkedValuesOfSubgroups[which] = isChecked
           }
           .setPositiveButton(R.string.dialog___link_word___positive_button) { _, _ ->
             var i = 0
-            while (i < checkedSubgroups.size) {
-              if (checkedSubgroups[i]) {
+            while (i < checkedValuesOfSubgroups.size) {
+              if (checkedValuesOfSubgroups[i]) {
                 wordDialogsViewModel?.addWordToSubgroup(availableSubgroupsIds[i])
               }
               i++
@@ -109,12 +106,12 @@ internal class LinkOrDeleteWordDialogFragment : DialogFragment() {
             availableSubgroupsNames,
             null
           ) { _, which, isChecked ->
-            checkedSubgroups[which] = isChecked
+            checkedValuesOfSubgroups[which] = isChecked
           }
           .setPositiveButton(R.string.dialog___delete_word___positive_button) { _, _ ->
             var i = 0
-            while (i < checkedSubgroups.size) {
-              if (checkedSubgroups[i]) {
+            while (i < checkedValuesOfSubgroups.size) {
+              if (checkedValuesOfSubgroups[i]) {
                 wordDialogsViewModel?.deleteWordFromSubgroup(availableSubgroupsIds[i])
               }
               i++

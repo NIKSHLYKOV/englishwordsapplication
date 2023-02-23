@@ -19,7 +19,7 @@ data class Subgroup(
   @PrimaryKey @ColumnInfo(name = "_id") var id: Long,
   @ColumnInfo(name = "SubgroupName") var name: String,
   @ColumnInfo(name = "groupId") var groupId: Long,
-  @ColumnInfo(name = "IsStudied") var studied: Int, // Флаг изучения слов данной подгруппа (1 - изучается; 0 - не изучается).
+  @ColumnInfo(name = "IsStudied") var studied: Int, // 1 - изучается; 0 - не изучается.
   @ColumnInfo(name = "ImageResourceId") var imageName: String
 ) : Parcelable {
 

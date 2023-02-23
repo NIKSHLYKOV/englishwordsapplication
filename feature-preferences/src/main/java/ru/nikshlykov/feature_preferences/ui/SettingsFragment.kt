@@ -55,12 +55,12 @@ class SettingsFragment : PreferenceFragmentCompat(), OnSharedPreferenceChangeLis
     Log.i("Settings", "onSharedPreferenceChanged")
     if (sharedPreferences != null && key != null) {
       if (key == getString(R.string.preference_key___tts_pitch)) {
-        // параметр тембра из настроек (там он может быть от 5 до 25).
+        // В настройках параметр тембра может быть от 5 до 25.
         val pitch = sharedPreferences.getInt(key, 10)
         textToSpeech.setPitch(pitch * 0.1f)
         textToSpeech.speak("An example of pitch.", TextToSpeech.QUEUE_FLUSH, null, "1")
       } else if (key == getString(R.string.preference_key___tts_speech_rate)) {
-        // параметр скорости из настроек (там он может быть от 1 до 25).
+        // В настройках параметр скорости может быть от 1 до 25.
         val speechRate = sharedPreferences.getInt(key, 10)
         textToSpeech.setSpeechRate(speechRate * 0.1f)
         textToSpeech.speak("An example of speech rate.", TextToSpeech.QUEUE_FLUSH, null, "1")
@@ -99,39 +99,34 @@ class SettingsFragment : PreferenceFragmentCompat(), OnSharedPreferenceChangeLis
 
   // TODO сделать реакцию на boot.
   private fun setRepeatingNotifications(minutesAfterMidnight: Int) {
-    // Получаем контекст.
     val context = requireContext()
 
-    // Получаем выставленное пользователем время.
     val hours = minutesAfterMidnight / 60
     val minutes = minutesAfterMidnight % 60
     val userTime = Calendar.getInstance()
     userTime[Calendar.HOUR_OF_DAY] = hours
     userTime[Calendar.MINUTE] = minutes
-    // Получаем текущее время.
+
     val now = Calendar.getInstance()
 
-    // Вычисляем время, когда необходимое для первоначальной тревоги.
+    // Вычисляем время, необходимое для первоначальной тревоги.
     if (now.after(userTime)) {
       userTime.add(Calendar.DATE, 1)
     }
 
     // Делаем PendingIntent.
-    // Возможно, будет необходимо сделать другой флаг, чтобы не было Update,
-    // если пользователь хочет сделать несколько уведомлений в день.
     val intent = Intent(context, AlarmReceiver::class.java)
     val pendingIntent = PendingIntent.getBroadcast(
       context, REQUEST_CODE_REPEATING_NOTIFICATIONS,
       intent, 0
     )
 
-    // Получаем manager, отменяем предыдужий pendingIntent и сетим новый.
-    // Прежде всего используем setExactAndAllowIdle, т.к. он точно будет работать (даже когда
-    // приложение закрыто).
     val alarmManager = context.getSystemService(Activity.ALARM_SERVICE) as AlarmManager
     if (pendingIntent != null && alarmManager != null) {
       alarmManager.cancel(pendingIntent)
     }
+    // Используем setExactAndAllowIdle, т.к. он точно будет работать (даже когда
+    // приложение закрыто).
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
       alarmManager.setExactAndAllowWhileIdle(
         AlarmManager.RTC_WAKEUP,

@@ -36,6 +36,7 @@ import java.util.concurrent.TimeUnit
 class App : Application(), Configuration.Provider, ModesFeatureDepsProvider,
   StudyFeatureDepsProvider, SettingsFeatureDepsProvider, ActivityClassProvider,
   ProfileFeatureDepsProvider, GroupsFeatureDepsProvider, StatisticsFeatureDepsProvider {
+  // TODO Проверить все EditText на лишние пробелы.
   lateinit var textToSpeech: TextToSpeech
     private set
 
@@ -94,7 +95,7 @@ class App : Application(), Configuration.Provider, ModesFeatureDepsProvider,
     }
   }
 
-
+  // TextToSpeech.
   private fun initTTS() {
     val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
     val ttsPitch = sharedPreferences
@@ -119,7 +120,6 @@ class App : Application(), Configuration.Provider, ModesFeatureDepsProvider,
   }
 
   companion object {
-    // TODO Проверить все EditText на лишние пробелы.
     private const val TTS_ERROR = "Ошибка синтезирования речи!"
   }
 
@@ -143,7 +143,4 @@ class App : Application(), Configuration.Provider, ModesFeatureDepsProvider,
 
   override val activityClass: Class<out Activity>
     get() = MainActivity::class.java
-
-  fun isMainActivityInitialized() = this::mainActivity.isInitialized
-
 }

@@ -224,9 +224,6 @@ internal class WordFragment : FlowFragmentChildFragment(R.layout.fragment_word),
     }
   }
 
-  /**
-   * Обработка работы ResetWordProgressDialogFragment на сброс прогресса слова.
-   */
   override fun resetMessage(message: String?) {
     if (message == ResetProgressDialogFragment.RESET_MESSAGE) {
       wordViewModel?.resetProgress()

@@ -63,7 +63,7 @@ class ModesFragment : Fragment(R.layout.fragment_modes) {
   }
 
   private fun initSaveButton() {
-    binding.saveModesButton.setOnClickListener { // Получаем режимы из адаптера.
+    binding.saveModesButton.setOnClickListener {
       val modes = adapter?.getModes()
 
       // TODO refactoring. Понять, в каком порядке всё это вызывается.

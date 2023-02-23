@@ -113,7 +113,7 @@ internal class CollectWordByLettersModeFragment :
           }
           resultImage.visibility = View.VISIBLE
 
-          // Закидываем handler'у отложенное сообщение, чтобы фон и значок немного повисели.
+          // Delay, чтобы фон и знак немного повисели на экране.
           handler?.sendEmptyMessageDelayed(result, 1000)
         }
       }

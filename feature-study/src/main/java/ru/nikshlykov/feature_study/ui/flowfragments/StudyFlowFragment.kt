@@ -86,10 +86,6 @@ class StudyFlowFragment : Fragment(),
     studyViewModel?.loadNewWordsCount()
   }
 
-  /**
-   * Показывает пришедшее для повтора слово либо в режиме первого просмотра,
-   * либо в выбранном пользователем режиме.
-   */
   override fun onAvailableToRepeatWordLoaded(word: Word?) {
     if (word == null) {
       val navDirections =
@@ -118,7 +114,7 @@ class StudyFlowFragment : Fragment(),
   }
 
   /**
-   * @param result результат (0 - пропусить, 1 - изучать, 2 - знаю).
+   * @param result (0 - пропусить, 1 - изучать, 2 - знаю).
    */
   override fun firstShowModeResult(wordId: Long, result: Int) {
     Log.i(LOG_TAG, "firstShowModeResult()")

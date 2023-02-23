@@ -73,11 +73,8 @@ internal class SubgroupViewModel(
       }
     }
 
-  /**
-   * Обновляет поле подгруппы в БД.
-   * Обновление необходимо только для параметра изучения (studied).
-   */
   fun updateSubgroup() {
+    // Обновление подгруппы необходимо только для параметра изучения (studied).
     Log.i(LOG_TAG, "updateSubgroup()")
     val subgroup = _subgroupFlow.value
     if (subgroup != null) {

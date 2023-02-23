@@ -70,7 +70,8 @@ internal class SubgroupsRecyclerViewAdapter(
     private val learnSubgroupToggleButton: ToggleButton =
       itemView.findViewById(R.id.subgroup_item___toggle_button___to_learn)
 
-    // флаг, который нужен, чтобы каждый раз не обновлять БД при выставлении isChecked в кнопке изучения.
+    // Флаг, который нужен, чтобы не обновлять БД при выставлении isChecked в кнопке изучения
+    // в первый момент получения данных.
     // TODO так решалась проблема с тем, что мы не успевали, видимо, обновить из SubgroupViewModel.
     //  Поэтому флаг оставался прежним (обновление предыдущего значения тут проходило быстрее)
     private var subgroupStudiedByAdapter = false

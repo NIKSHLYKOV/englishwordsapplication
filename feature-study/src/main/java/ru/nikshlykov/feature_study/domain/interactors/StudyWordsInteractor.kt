@@ -52,7 +52,7 @@ internal class StudyWordsInteractor(
    */
   suspend fun repeatProcessing(wordId: Long, result: Int): Int {
     var newRepeatSequenceNumber = 0
-    // Он должен обязательно быть, т.к. этот метод для повторов без первого показа.
+    // Он должен обязательно быть, т.к. этот метод только для повторов (без учёта первого показа).
     val lastRepeat = repeatsRepository.getLastRepeatByWord(wordId)
     if (lastRepeat.result == 1) {
       newRepeatSequenceNumber = lastRepeat.sequenceNumber + 1
@@ -68,7 +68,7 @@ internal class StudyWordsInteractor(
   }
 
   /**
-   * Добавляет повтор слова (при первом показе тоже) и обновляет прогресс слова.
+   * Добавляет повтор слова и обновляет прогресс слова.
    *
    * @param result результат повтора (0 - неверно, 1 - верно/изучать).
    * @param newRepeatSequenceNumber порядковый номер нового повтора (0 при начале изучения слова).

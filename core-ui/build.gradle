@@ -33,8 +33,7 @@ android {
 }
 
 dependencies {
-    // Для переопределения стиля для настроек
-    implementation libraries.preference
+    implementation libraries.preference // Для переопределения стиля настроек.
 
     implementation libraries.material
 }

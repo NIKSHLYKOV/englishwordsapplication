@@ -83,7 +83,7 @@ internal class WriteWordByVoiceModeFragment :
         }
         resultImage.visibility = View.VISIBLE
 
-        // Отправляем handler'у отложенное сообщение, чтобы фон сначала повисел.
+        // Delay, чтобы фон и знак немного повисели на экране.
         handler?.sendEmptyMessageDelayed(result, 1000)
       }
     }

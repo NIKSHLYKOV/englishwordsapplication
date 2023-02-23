@@ -22,15 +22,14 @@ internal class DeleteSubgroupDialogFragment : DialogFragment() {
     return AlertDialog.Builder(requireActivity())
       .setTitle(R.string.dialog___delete_subgroup___title)
       .setMessage(R.string.dialog___delete_subgroup___message)
-      .setPositiveButton(R.string.yes) { dialog, which -> // Отправляем Activity сообщение о том, что удаление подтверждено.
-        deleteSubgroupListener?.deleteMessage(DELETE_MESSAGE)
+      .setPositiveButton(R.string.yes) { dialog, which ->
+        deleteSubgroupListener?.deleteMessage(DELETION_CONFIRMED_MESSAGE)
       }
       .setNegativeButton(R.string.no, null)
       .create()
   }
 
   companion object {
-    // Сообщение о том, что удаление подтверждено.
-    const val DELETE_MESSAGE = "Delete"
+    const val DELETION_CONFIRMED_MESSAGE = "Delete"
   }
 }

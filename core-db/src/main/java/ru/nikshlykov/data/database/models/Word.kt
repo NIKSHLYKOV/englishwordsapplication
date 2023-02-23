@@ -9,9 +9,9 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "Words")
 data class Word(
   @PrimaryKey @ColumnInfo(name = "_id") var id: Long = 0,
-  @ColumnInfo(name = "Word") var word: String, // Слово на английском языке
+  @ColumnInfo(name = "Word") var word: String,
   @ColumnInfo(name = "Transcription") var transcription: String?,
-  @ColumnInfo(name = "Value") var value: String, // Значения слова на русском языке.
+  @ColumnInfo(name = "Value") var value: String, // Перевод слова.
   @ColumnInfo(
     name = "LearnProgress",
     defaultValue = "-1"

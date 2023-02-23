@@ -97,7 +97,6 @@ internal class StudyViewModel(
     newWordsCount = sharedPreferences.getInt(
       getApplication<Application>().getString(R.string.preference_key___new_word_count), 5
     )
-    // Вместо 5 было NewWordsCountPreference.DEFAULT_VALUE
     // TODO refactoring. Наверное, лучше подключать модуль настроек.
     Log.i(LOG_TAG, "loadNewWordsCount(): newWordsCount = $newWordsCount")
   }
@@ -115,7 +114,7 @@ internal class StudyViewModel(
         // т.к. ответ может прийти позже, чем пользователь сменит вкладку.
         //TODO refactoring. Если и тут делать проверку, то уже на navController из MainActivity.
         // Её же можно сделать и в колбэке от уже полученного слова.
-        /* if (navController.findFragmentByTag(TAG_STUDY_OR_INFO_FRAGMENT) != null)*/
+        // if (navController.findFragmentByTag(TAG_STUDY_OR_INFO_FRAGMENT) != null)
         getNextAvailableToRepeatWord(listener)
       } else {
         // TODO feature. сделать вывод сообщения об ошибке.

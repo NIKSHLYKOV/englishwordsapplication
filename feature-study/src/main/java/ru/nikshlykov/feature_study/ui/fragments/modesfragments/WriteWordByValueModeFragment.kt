@@ -37,7 +37,9 @@ internal class WriteWordByValueModeFragment :
     super.onViewCreated(view, savedInstanceState)
     with(binding) {
       valueText.text = word?.value
-      confirmButton.setOnClickListener { v -> // Скрываем клавиатуру.
+      confirmButton.setOnClickListener { v ->
+        // Скрываем клавиатуру.
+        // TODO refactoring. Сделать extension для подобных штук.
         val imm = activity
           ?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(
@@ -62,7 +64,7 @@ internal class WriteWordByValueModeFragment :
         }
         resultImage.visibility = View.VISIBLE
 
-        // Отправляем handler'у отложенное сообщение, чтобы фон сначала повисел.
+        // Delay, чтобы фон и знак немного повисели на экране.
         handler?.sendEmptyMessageDelayed(result, 1000)
       }
     }
