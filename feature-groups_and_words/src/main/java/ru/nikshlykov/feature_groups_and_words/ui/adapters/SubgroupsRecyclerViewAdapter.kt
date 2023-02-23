@@ -12,7 +12,7 @@ import android.widget.ToggleButton
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.core_network.SubgroupImages
+import ru.nikshlykov.core_network.SubgroupImages
 import ru.nikshlykov.data.database.models.Subgroup
 import ru.nikshlykov.feature_groups_and_words.R
 import java.io.File

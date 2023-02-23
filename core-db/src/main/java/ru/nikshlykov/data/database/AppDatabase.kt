@@ -16,8 +16,6 @@ import ru.nikshlykov.data.database.models.*
 )
 internal abstract class AppDatabase : RoomDatabase() {
   // TODO подумать над тем, чтобы больше писать в аннотации Query в Dao.
-
-  // TODO подумать, надо ли хранить названия столбцов в переменных (чтобы передавать не только в
   abstract fun groupDao(): GroupDao
   abstract fun linkDao(): LinkDao
   abstract fun modeDao(): ModeDao
@@ -30,7 +28,6 @@ internal abstract class AppDatabase : RoomDatabase() {
     const val DATABASE_DIR = "words.db"
   }
 }
-
 
 class DaoProvider(context: Context) {
   private val appDatabase: AppDatabase =

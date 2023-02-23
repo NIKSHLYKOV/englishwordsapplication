@@ -24,10 +24,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.bumptech.glide.Glide
-import com.example.core_network.SubgroupImages
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import ru.nikshlykov.core_network.SubgroupImages
 import ru.nikshlykov.data.database.models.Subgroup
 import ru.nikshlykov.feature_groups_and_words.R
 import ru.nikshlykov.feature_groups_and_words.databinding.FragmentSubgroupBinding

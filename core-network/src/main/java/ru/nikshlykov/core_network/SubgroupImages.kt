@@ -1,4 +1,4 @@
-package com.example.core_network
+package ru.nikshlykov.core_network
 
 object SubgroupImages {
 
