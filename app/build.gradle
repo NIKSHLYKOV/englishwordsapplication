@@ -20,6 +20,7 @@ dependencies {
     implementation project(path: ":feature-profile")
     implementation project(path: ":feature-groups_and_words")
     implementation project(path: ':feature-statistics')
+    implementation project(path: ':feature-word')
     
     implementation project(path: ':core-db')
     implementation project(path: ':core-navigation')

@@ -1,0 +1,10 @@
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+}
+
+apply from: '../android.gradle'
+
+dependencies {
+    implementation project(path: ':core-ui')
+}
