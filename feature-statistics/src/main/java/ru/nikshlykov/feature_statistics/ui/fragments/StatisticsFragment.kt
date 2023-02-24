@@ -143,6 +143,15 @@ class StatisticsFragment : Fragment() {
   }
 
   @Composable
+  @Preview(showBackground = true)
+  fun StatisticsScreenPreview() {
+    return Column {
+      DayStatisticsCardPreview()
+      AllTimeStatisticsCardPreview()
+    }
+  }
+
+  @Composable
   @Preview
   fun DayStatisticsCardPreview() {
     DayStatisticsCard(statistics = DayRepeatsStatistics(10, 15))

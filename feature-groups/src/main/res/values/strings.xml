@@ -1,0 +1,35 @@
+<resources>
+    <!-- Группы -->
+    <string name="subgroup_name">Название группы</string>
+    <!-- Методы работы с группой -->
+    <string name="create_subgroup">Создать группу</string>
+    <!-- Сообщения о группе -->
+    <string name="error_subgroup_is_empty">"На данный момент ваша группа пуста! Добавьте в неё слова из других групп или создайте свои."</string>
+    <string name="error_new_subgroup_empty_name">Необходимо указать название создаваемой группы!</string>
+
+    <!-- Слова -->
+    <!-- Методы работы со словом -->
+    <string name="create_new_word">Создать новое слово</string>
+    <!-- Сообщения о словах -->
+    <string name="word_deleted">Слово удалено</string>
+
+    <!-- Меню -->
+    <string name="action___sort_words___title">Отсортировать слова</string>
+    <string name="action___edit_subgroup___title">Редактировать группу</string>
+    <string name="action___delete_subgroup___title">Удалить группу</string>
+
+    <!-- Переменные диалогов - заголовки, сообщения, кнопки -->
+    <string name="dialog___sort_words___title">Сортировать слова</string>
+
+    <string name="dialog___reset_words_progress___title">Сбросить прогресс</string>
+    <string name="dialog___reset_words_progress___message">Вы действительно хотите сбросить прогресс по всем словам в группе?</string>
+
+    <string name="dialog___delete_subgroup___title">Удаление группы</string>
+    <string name="dialog___delete_subgroup___message">Вы действительно хотите удалить текущую группу?</string>
+
+    <!-- Общие выражения -->
+    <string name="to_cancel">Отменить</string>
+    <string name="to_add">Добавить</string>
+    <string name="to_save">Сохранить</string>
+    <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </string>
+</resources>

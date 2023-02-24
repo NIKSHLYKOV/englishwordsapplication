@@ -18,7 +18,7 @@ dependencies {
     implementation project(path: ":feature-study")
     implementation project(path: ":feature-preferences")
     implementation project(path: ":feature-profile")
-    implementation project(path: ":feature-groups_and_words")
+    implementation project(path: ':feature-groups')
     implementation project(path: ':feature-statistics')
     implementation project(path: ':feature-word')
     
@@ -55,6 +55,9 @@ dependencies {
     implementation libraries.coroutines_android
 
     implementation 'androidx.core:core-splashscreen:1.0.0'
+
+    debugImplementation 'androidx.compose.ui:ui-tooling'
+    // Чтобы просматривать preview для statistics
 }
 repositories {
     mavenCentral()

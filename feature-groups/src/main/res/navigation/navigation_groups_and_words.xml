@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_groups_and_words"
+    app:startDestination="@id/groups_dest">
+
+    <fragment
+        android:id="@+id/groups_dest"
+        android:name="ru.nikshlykov.feature_groups_and_words.ui.fragments.GroupsFragment"
+        android:label="GroupsFragment"
+        tools:layout="@layout/fragment_groups">
+        <action
+            android:id="@+id/action_groups_dest_to_subgroup_dest"
+            app:destination="@id/subgroup_dest" />
+        <action
+            android:id="@+id/action_groups_dest_to_subgroup_data_dest"
+            app:destination="@id/subgroup_data_dest" />
+    </fragment>
+    <fragment
+        android:id="@+id/subgroup_data_dest"
+        android:name="ru.nikshlykov.feature_groups_and_words.ui.fragments.SubgroupDataFragment"
+        android:label="SubgroupDataFragment"
+        tools:layout="@layout/fragment_subgroup_data">
+        <argument
+            android:name="subgroupId"
+            android:defaultValue="0L"
+            app:argType="long" />
+    </fragment>
+    <fragment
+        android:id="@+id/subgroup_dest"
+        android:name="ru.nikshlykov.feature_groups_and_words.ui.fragments.SubgroupFragment"
+        android:label="SubgroupFragment"
+        tools:layout="@layout/fragment_subgroup">
+        <argument
+            android:name="subgroup"
+            app:argType="ru.nikshlykov.data.database.models.Subgroup" />
+        <action
+            android:id="@+id/action_subgroup_dest_to_add_word_dest"
+            app:destination="@id/add_word_dest" />
+        <action
+            android:id="@+id/action_subgroup_dest_to_subgroup_data_dest"
+            app:destination="@id/subgroup_data_dest" />
+    </fragment>
+    <fragment
+        android:id="@+id/add_word_dest"
+        android:name="ru.nikshlykov.feature_groups_and_words.ui.fragments.AddWordFragment"
+        android:label="AddWordFragment"
+        tools:layout="@layout/fragment_add_word">
+        <argument
+            android:name="subgroupId"
+            android:defaultValue="0L"
+            app:argType="long" />
+    </fragment>
+</navigation>

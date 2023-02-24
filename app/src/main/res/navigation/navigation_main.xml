@@ -54,8 +54,17 @@
     <fragment
         android:id="@+id/statistics_dest"
         android:name="ru.nikshlykov.feature_statistics.ui.fragments.StatisticsFragment"
-        android:label="StatisticsFragment" />
+        android:label="StatisticsFragment"
+        tools:layout="@layout/fragment_statistics_preview" />
+    <fragment
+        android:id="@+id/word_dest"
+        android:name="ru.nikshlykov.feature_word.presentation.fragments.WordFragment"
+        android:label="WordFragment"
+        tools:layout="@layout/fragment_word" />
     <action
         android:id="@+id/action_global_on_boarding_view_pager_dest"
         app:destination="@id/on_boarding_view_pager_dest" />
+    <action
+        android:id="@+id/action_global_word_dest"
+        app:destination="@id/word_dest" />
 </navigation>

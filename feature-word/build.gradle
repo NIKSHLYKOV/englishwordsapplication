@@ -1,10 +1,34 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
 }
 
 apply from: '../android.gradle'
 
+android {
+    buildFeatures {
+        viewBinding true
+    }
+}
+
 dependencies {
     implementation project(path: ':core-ui')
+    implementation project(path: ':core-db')
+
+    implementation libraries.appcompat // Для Toolbar прежде всего.
+    implementation libraries.material
+
+    implementation libraries.fragment_ktx // Для by viewModels.
+
+    implementation libraries.lifecycle_runtime
+
+    // Dagger 2
+    implementation libraries.dagger
+    kapt libraries.dagger_compiler
+
+    // Coroutines
+    implementation libraries.coroutines_core
+
+    implementation libraries.view_binding_property_delegate
 }

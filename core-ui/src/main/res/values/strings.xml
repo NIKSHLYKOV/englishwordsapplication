@@ -1,19 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="word">Слово</string>
     <string name="transcription">Транскрипция</string>
     <string name="value">Значение</string>
     <string name="translation">Перевод</string>
 
-    <string name="statistics">Статистика</string>
+    <string name="save_word">Сохранить слово</string>
+    <string name="error_word_saving">Необходимо указать слово и его значение!</string>
 
+    <string name="dialog___link_word___title">Связывание слова</string>
+    <string name="dialog___link_word___error_message">Вы можете связывать слова только со своими подгруппами (созданными вами)!На данный момент группы, доступные для связывания с данным словом отсутствуют!</string>
+    <string name="dialog___link_word___positive_button">Связать</string>
+
+    <string name="statistics">Статистика</string>
     <string name="modes">Режимы</string>
 
     <string name="to_learn">Изучать</string>
 
     <string name="by_progress">По прогрессу</string>
     <string name="by_alphabet">По алфавиту</string>
+
+    <!-- Общие выражения -->
+    <string name="cancel">Отмена</string>
+    <string name="no">Нет</string>
+    <string name="yes">Да</string>
+    <string name="ok">ОК</string>
+    <string name="sorry_error_happened">Извините, произошла ошибка!</string>
 
     <string name="preference_key___sort_words_in_subgroups">PreferenceKeySortWordsInSubgroups</string>
     <string name="preference_key___new_word_count">PreferenceKeyNewWordsCount</string>

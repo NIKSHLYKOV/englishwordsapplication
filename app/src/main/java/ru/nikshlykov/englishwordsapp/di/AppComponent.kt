@@ -9,6 +9,7 @@ import ru.nikshlykov.feature_preferences.di.SettingsFeatureDeps
 import ru.nikshlykov.feature_profile.di.ProfileFeatureDeps
 import ru.nikshlykov.feature_statistics.di.StatisticsFeatureDeps
 import ru.nikshlykov.feature_study.di.StudyFeatureDeps
+import ru.nikshlykov.feature_word.di.WordFeatureDeps
 import javax.inject.Singleton
 
 @Component(
@@ -17,7 +18,7 @@ import javax.inject.Singleton
 )
 @Singleton
 interface AppComponent : ModesFeatureDeps, StudyFeatureDeps, SettingsFeatureDeps,
-  ProfileFeatureDeps, GroupsFeatureDeps, StatisticsFeatureDeps {
+  ProfileFeatureDeps, GroupsFeatureDeps, StatisticsFeatureDeps, WordFeatureDeps {
   @Component.Factory
   interface Factory {
     fun create(@BindsInstance application: Application): AppComponent

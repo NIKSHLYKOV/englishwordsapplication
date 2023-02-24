@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="progress">Прогресс</string>
+    <string name="part_of_speech">Часть речи</string>
+
+    <!-- Меню -->
+    <string name="action___delete_word___title">Удалить слово</string>
+    <string name="action___link_word___title">Связать слово</string>
+    <string name="action___reset_progress___title">Сбросить прогресс</string>
+
+    <string name="dialog___reset_word_progress___title">Сбросить прогресс</string>
+    <string name="dialog___reset_word_progress___message">Вы действительно хотите сбросить прогресс?</string>
+
+    <string name="dialog___delete_word___title">Удаление слова</string>
+    <string name="dialog___delete_word___error_message">Вы можете удалять слова только из своих групп (созданными вами)! На данный момент группы, связанные с данным словом отсутствуют!</string>
+    <string name="dialog___delete_word___positive_button">Удалить</string>
+</resources>

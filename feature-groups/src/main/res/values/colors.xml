@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="yellow">#FCD366</color>
+
+    <color name="swipe_add_link_word">#C6FF00</color>
+    <color name="swipe_delete_link_word">#FF3D00</color>
+</resources>

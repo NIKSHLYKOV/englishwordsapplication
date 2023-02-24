@@ -6,15 +6,18 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import ru.nikshlykov.data.database.models.Word
 import ru.nikshlykov.englishwordsapp.App
 import ru.nikshlykov.englishwordsapp.NavigationMainDirections
 import ru.nikshlykov.englishwordsapp.R
 import ru.nikshlykov.englishwordsapp.ui.fragments.OnBoardingRouter
+import ru.nikshlykov.feature_groups_and_words.di.GroupsFeatureRouter
 import ru.nikshlykov.feature_groups_and_words.ui.flowfragments.GroupsAndWordsFlowFragment
 import ru.nikshlykov.feature_profile.navigation.ProfileFeatureRouter
 import ru.nikshlykov.feature_profile.ui.flowfragments.ProfileFlowFragment
@@ -22,9 +25,15 @@ import ru.nikshlykov.feature_profile.ui.flowfragments.ProfileFlowFragmentDirecti
 import ru.nikshlykov.feature_study.navigation.StudyFeatureRouter
 import ru.nikshlykov.feature_study.ui.flowfragments.StudyFlowFragment
 import ru.nikshlykov.feature_study.ui.flowfragments.StudyFlowFragmentDirections
+import ru.nikshlykov.feature_word.navigation.WordFeatureRouter
+import ru.nikshlykov.feature_word.presentation.fragments.WordFragment
 
-class MainActivity : AppCompatActivity(), ProfileFeatureRouter, StudyFeatureRouter,
-  OnBoardingRouter {
+class MainActivity : AppCompatActivity(),
+  ProfileFeatureRouter,
+  StudyFeatureRouter,
+  OnBoardingRouter,
+  GroupsFeatureRouter,
+  WordFeatureRouter {
 
   // TODO посмотреть, что вообще с flowfragments. у них можно поставить internal или нет.
 
@@ -138,6 +147,15 @@ class MainActivity : AppCompatActivity(), ProfileFeatureRouter, StudyFeatureRout
     val editor = sharedPref.edit()
     editor.putBoolean("Finished", true)
     editor.apply()
+  }
+
+  override fun openWord(word: Word) {
+    val arguments = bundleOf(WordFragment.EXTRA_WORD_KEY to word)
+    navController.navigate(R.id.action_global_word_dest, arguments)
+  }
+
+  override fun closeWordFeature() {
+    navController.popBackStack()
   }
 
   companion object {

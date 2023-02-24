@@ -4,9 +4,11 @@ import android.app.Application
 import dagger.Module
 import dagger.Provides
 import ru.nikshlykov.englishwordsapp.App
+import ru.nikshlykov.feature_groups_and_words.di.GroupsFeatureRouter
 import ru.nikshlykov.feature_modes.navigation.ModesRouterSource
 import ru.nikshlykov.feature_profile.navigation.ProfileFeatureRouter
 import ru.nikshlykov.feature_study.navigation.StudyFeatureRouter
+import ru.nikshlykov.feature_word.navigation.WordFeatureRouter
 import javax.inject.Singleton
 
 @Module
@@ -35,4 +37,14 @@ class RouterModule {
     //  передавать null?
     return (application as App).mainActivity
   }
+
+  @Provides
+  @Singleton
+  fun provideGroupsFeatureRouter(application: Application): GroupsFeatureRouter =
+    (application as App).mainActivity
+
+  @Provides
+  @Singleton
+  fun provideWordFeatureRouter(application: Application): WordFeatureRouter =
+    (application as App).mainActivity
 }

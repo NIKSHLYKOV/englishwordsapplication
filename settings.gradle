@@ -1,5 +1,5 @@
 include ':core-ui'
-include ':feature-groups_and_words'
+include ':feature-groups'
 include ':core-navigation'
 include ':feature-profile'
 include ':feature-preferences'

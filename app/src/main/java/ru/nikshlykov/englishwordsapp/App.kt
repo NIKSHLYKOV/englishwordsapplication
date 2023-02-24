@@ -30,17 +30,21 @@ import ru.nikshlykov.feature_statistics.di.StatisticsFeatureDeps
 import ru.nikshlykov.feature_statistics.di.StatisticsFeatureDepsProvider
 import ru.nikshlykov.feature_study.di.StudyFeatureDeps
 import ru.nikshlykov.feature_study.di.StudyFeatureDepsProvider
+import ru.nikshlykov.feature_word.di.WordFeatureDeps
+import ru.nikshlykov.feature_word.di.WordFeatureDepsProvider
 import java.util.*
 import java.util.concurrent.TimeUnit
 
 class App : Application(), Configuration.Provider, ModesFeatureDepsProvider,
   StudyFeatureDepsProvider, SettingsFeatureDepsProvider, ActivityClassProvider,
-  ProfileFeatureDepsProvider, GroupsFeatureDepsProvider, StatisticsFeatureDepsProvider {
+  ProfileFeatureDepsProvider, GroupsFeatureDepsProvider, StatisticsFeatureDepsProvider,
+  WordFeatureDepsProvider {
+  // TODO feature. Сделать поиск по слову.
   // TODO Проверить все EditText на лишние пробелы.
   lateinit var textToSpeech: TextToSpeech
     private set
 
-  private lateinit var appComponent: AppComponent
+  lateinit var appComponent: AppComponent
 
   // TODO убрать костыль. Возможно, надо перейти на Cicerone.
   lateinit var mainActivity: MainActivity
@@ -139,6 +143,9 @@ class App : Application(), Configuration.Provider, ModesFeatureDepsProvider,
     get() = appComponent
 
   override val statisticsFeatureDeps: StatisticsFeatureDeps
+    get() = appComponent
+
+  override val wordFeatureDeps: WordFeatureDeps
     get() = appComponent
 
   override val activityClass: Class<out Activity>
