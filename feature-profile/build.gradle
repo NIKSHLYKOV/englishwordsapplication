@@ -1,7 +1,7 @@
 plugins {
     id 'com.android.library'
     id 'kotlin-android'
-    id 'kotlin-kapt'
+    id 'com.google.devtools.ksp'
 }
 
 apply from: '../android.gradle'
@@ -26,7 +26,7 @@ dependencies {
 
     // DI (Dagger 2)
     implementation libraries.dagger
-    kapt libraries.dagger_compiler
+    ksp libraries.dagger_compiler
 
     implementation libraries.view_binding_property_delegate
 }

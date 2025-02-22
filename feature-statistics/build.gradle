@@ -1,7 +1,7 @@
 plugins {
     id 'com.android.library'
     id 'kotlin-android'
-    id 'kotlin-kapt'
+    id 'com.google.devtools.ksp'
 }
 
 apply from: '../android.gradle'
@@ -41,5 +41,5 @@ dependencies {
     implementation libraries.fragment_ktx
 
     implementation libraries.dagger
-    kapt libraries.dagger_compiler
+    ksp libraries.dagger_compiler
 }

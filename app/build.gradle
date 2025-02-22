@@ -2,7 +2,7 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'androidx.navigation.safeargs'
-    id 'kotlin-kapt'
+    id 'com.google.devtools.ksp'
 }
 
 apply from: '../android.gradle'
@@ -43,7 +43,7 @@ dependencies {
 
     // Dagger 2
     implementation libraries.dagger
-    kapt libraries.dagger_compiler
+    ksp libraries.dagger_compiler
 
     // Work
     implementation libraries.work_runtime
