@@ -7,12 +7,12 @@ import ru.nikshlykov.feature_study.di.StudyFeatureComponent
 import ru.nikshlykov.feature_study.di.studyFeatureDepsProvider
 
 internal class StudyFeatureComponentViewModel(application: Application) :
-  AndroidViewModel(application) {
+    AndroidViewModel(application) {
 
-  internal val modesFeatureComponent: StudyFeatureComponent by lazy {
-    DaggerStudyFeatureComponent
-      .builder()
-      .deps(application.studyFeatureDepsProvider.studyFeatureDeps)
-      .build()
-  }
+    internal val modesFeatureComponent: StudyFeatureComponent by lazy {
+        DaggerStudyFeatureComponent
+            .builder()
+            .deps(application.studyFeatureDepsProvider.studyFeatureDeps)
+            .build()
+    }
 }

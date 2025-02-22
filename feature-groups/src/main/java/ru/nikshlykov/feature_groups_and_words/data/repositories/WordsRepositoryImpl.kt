@@ -11,28 +11,28 @@ import ru.nikshlykov.feature_groups_and_words.domain.repositories.WordsRepositor
 import javax.inject.Inject
 
 internal class WordsRepositoryImpl @Inject constructor(
-  private val wordDao: WordDao,
-  private val externalScope: CoroutineScope,
-  private val dispatcher: CoroutineDispatcher = Dispatchers.Default
+    private val wordDao: WordDao,
+    private val externalScope: CoroutineScope,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.Default
 ) : WordsRepository {
 
-  override suspend fun insertWord(word: Word): Long =
-    withContext(externalScope.coroutineContext + dispatcher) {
-      word.id = wordDao.wordWithMinId().id - 1
-      word.createdByUser = 1
-      wordDao.insert(word)
-    }
+    override suspend fun insertWord(word: Word): Long =
+        withContext(externalScope.coroutineContext + dispatcher) {
+            word.id = wordDao.wordWithMinId().id - 1
+            word.createdByUser = 1
+            wordDao.insert(word)
+        }
 
-  override fun getWordsFromSubgroupByProgressFlow(subgroupId: Long): Flow<List<Word>> =
-    wordDao.getWordsFromSubgroupByProgressFlow(subgroupId)
-
-
-  override fun getWordsFromSubgroupByAlphabetFlow(subgroupId: Long): Flow<List<Word>> =
-    wordDao.getWordsFromSubgroupByAlphabetFlow(subgroupId)
+    override fun getWordsFromSubgroupByProgressFlow(subgroupId: Long): Flow<List<Word>> =
+        wordDao.getWordsFromSubgroupByProgressFlow(subgroupId)
 
 
-  override suspend fun resetWordsProgressFromSubgroup(subgroupId: Long): Int =
-    withContext(externalScope.coroutineContext + dispatcher) {
-      wordDao.resetWordsProgressFromSubgroup(subgroupId)
-    }
+    override fun getWordsFromSubgroupByAlphabetFlow(subgroupId: Long): Flow<List<Word>> =
+        wordDao.getWordsFromSubgroupByAlphabetFlow(subgroupId)
+
+
+    override suspend fun resetWordsProgressFromSubgroup(subgroupId: Long): Int =
+        withContext(externalScope.coroutineContext + dispatcher) {
+            wordDao.resetWordsProgressFromSubgroup(subgroupId)
+        }
 }

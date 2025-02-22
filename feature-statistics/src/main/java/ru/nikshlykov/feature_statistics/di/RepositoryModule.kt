@@ -8,7 +8,7 @@ import ru.nikshlykov.feature_statistics.domain.repositories.RepeatsRepository
 @Module
 internal abstract class RepositoryModule {
 
-  @Binds
-  @StatisticsFeatureScope
-  abstract fun bindsRepeatsRepository(repeatsRepositoryImpl: RepeatsRepositoryImpl): RepeatsRepository
+    @Binds
+    @StatisticsFeatureScope
+    abstract fun bindsRepeatsRepository(repeatsRepositoryImpl: RepeatsRepositoryImpl): RepeatsRepository
 }

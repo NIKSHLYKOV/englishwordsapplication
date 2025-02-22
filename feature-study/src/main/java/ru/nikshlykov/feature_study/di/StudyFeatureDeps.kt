@@ -10,17 +10,17 @@ import ru.nikshlykov.feature_study.navigation.StudyFeatureRouter
 
 interface StudyFeatureDeps {
 
-  val application: Application
+    val application: Application
 
-  val studyFeatureRouter: StudyFeatureRouter
+    val studyFeatureRouter: StudyFeatureRouter
 
-  val textToSpeech: TextToSpeech
+    val textToSpeech: TextToSpeech
 
-  val modeDao: ModeDao
+    val modeDao: ModeDao
 
-  val wordDao: WordDao
+    val wordDao: WordDao
 
-  val repeatDao: RepeatDao
+    val repeatDao: RepeatDao
 
-  val applicationScope: CoroutineScope
+    val applicationScope: CoroutineScope
 }

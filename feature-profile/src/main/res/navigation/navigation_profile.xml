@@ -9,5 +9,5 @@
         android:id="@+id/profile_dest"
         android:name="ru.nikshlykov.feature_profile.ui.fragments.ProfileFragment"
         android:label="ProfileFragment"
-        tools:layout="@layout/fragment_profile"/>
+        tools:layout="@layout/fragment_profile" />
 </navigation>

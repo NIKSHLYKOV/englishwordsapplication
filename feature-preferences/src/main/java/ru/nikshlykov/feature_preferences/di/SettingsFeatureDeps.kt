@@ -4,5 +4,5 @@ import android.speech.tts.TextToSpeech
 
 interface SettingsFeatureDeps {
 
-  val textToSpeech: TextToSpeech
+    val textToSpeech: TextToSpeech
 }

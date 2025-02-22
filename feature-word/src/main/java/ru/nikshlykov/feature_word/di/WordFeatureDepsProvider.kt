@@ -5,12 +5,12 @@ import android.content.Context
 
 interface WordFeatureDepsProvider {
 
-  val wordFeatureDeps: WordFeatureDeps
+    val wordFeatureDeps: WordFeatureDeps
 }
 
 val Context.wordFeatureDepsProvider: WordFeatureDepsProvider
-  get() = when (this) {
-    is WordFeatureDepsProvider -> this
-    is Application             -> error("Application must implement WordFeatureDepsProvider")
-    else                       -> applicationContext.wordFeatureDepsProvider
-  }
+    get() = when (this) {
+        is WordFeatureDepsProvider -> this
+        is Application -> error("Application must implement WordFeatureDepsProvider")
+        else -> applicationContext.wordFeatureDepsProvider
+    }

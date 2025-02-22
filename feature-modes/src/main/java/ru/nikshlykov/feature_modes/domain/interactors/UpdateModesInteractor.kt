@@ -5,7 +5,7 @@ import ru.nikshlykov.feature_modes.domain.repositories.ModesRepository
 
 internal class UpdateModesInteractor(private val modesRepository: ModesRepository) {
 
-  suspend fun updateModes(modes: List<Mode>): Int {
-    return modesRepository.updateModes(modes)
-  }
+    suspend fun updateModes(modes: List<Mode>): Int {
+        return modesRepository.updateModes(modes)
+    }
 }

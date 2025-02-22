@@ -5,7 +5,7 @@ import ru.nikshlykov.feature_groups_and_words.domain.repositories.LinksRepositor
 
 internal class DeleteWordFromSubgroupInteractor(private val linksRepository: LinksRepository) {
 
-  suspend fun deleteLinkBetweenWordAndSubgroup(wordId: Long, subgroupId: Long): Int {
-    return linksRepository.deleteLink(Link(subgroupId, wordId))
-  }
+    suspend fun deleteLinkBetweenWordAndSubgroup(wordId: Long, subgroupId: Long): Int {
+        return linksRepository.deleteLink(Link(subgroupId, wordId))
+    }
 }

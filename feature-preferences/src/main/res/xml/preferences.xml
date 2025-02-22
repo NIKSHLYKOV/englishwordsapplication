@@ -24,14 +24,14 @@
             android:summary="Позволяет ограничить затрачиваемое на изучение слов время, чтобы не потратить все силы сразу."
             android:defaultValue="5"
             style="@style/AppPreference.DialogPreference"
-            app:icon="@drawable/ic_brain_not_selected"/>
+            app:icon="@drawable/ic_brain_not_selected" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="Уведомления">
         <SwitchPreference
             android:key="@string/preference_key___use_notifications"
             android:title="Присылать уведомления"
-            android:defaultValue="false"/>
+            android:defaultValue="false" />
         <ru.nikshlykov.feature_preferences.preferences.NotificationTimePreference
             android:dependency="@string/preference_key___use_notifications"
             android:key="@string/preference_key___notification_time"
@@ -48,13 +48,13 @@
             android:title="Тембр голоса"
             app:min="5"
             android:max="25"
-            android:defaultValue="10"/>
+            android:defaultValue="10" />
         <SeekBarPreference
             android:key="@string/preference_key___tts_speech_rate"
             android:title="Скорость голоса"
             app:min="1"
             android:defaultValue="10"
-            android:max="25"/>
+            android:max="25" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="Интерфейс">
@@ -63,7 +63,7 @@
             android:title="Сортировка слов в группах"
             android:defaultValue="0"
             android:entries="@array/preference_entries___sort_words_in_subgroup"
-            android:entryValues="@array/preference_entry_values___sort_words_in_subgroup"/>
+            android:entryValues="@array/preference_entry_values___sort_words_in_subgroup" />
 
     </PreferenceCategory>
 </PreferenceScreen>

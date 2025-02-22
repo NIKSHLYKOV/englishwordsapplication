@@ -32,122 +32,126 @@ import ru.nikshlykov.feature_study.di.StudyFeatureDeps
 import ru.nikshlykov.feature_study.di.StudyFeatureDepsProvider
 import ru.nikshlykov.feature_word.di.WordFeatureDeps
 import ru.nikshlykov.feature_word.di.WordFeatureDepsProvider
-import java.util.*
+import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 class App : Application(), Configuration.Provider, ModesFeatureDepsProvider,
-  StudyFeatureDepsProvider, SettingsFeatureDepsProvider, ActivityClassProvider,
-  ProfileFeatureDepsProvider, GroupsFeatureDepsProvider, StatisticsFeatureDepsProvider,
-  WordFeatureDepsProvider {
-  // TODO feature. Сделать поиск по слову.
-  // TODO Проверить все EditText на лишние пробелы.
-  lateinit var textToSpeech: TextToSpeech
-    private set
+    StudyFeatureDepsProvider, SettingsFeatureDepsProvider, ActivityClassProvider,
+    ProfileFeatureDepsProvider, GroupsFeatureDepsProvider, StatisticsFeatureDepsProvider,
+    WordFeatureDepsProvider {
+    // TODO feature. Сделать поиск по слову.
+    // TODO Проверить все EditText на лишние пробелы.
+    lateinit var textToSpeech: TextToSpeech
+        private set
 
-  lateinit var appComponent: AppComponent
+    lateinit var appComponent: AppComponent
 
-  // TODO убрать костыль. Возможно, надо перейти на Cicerone.
-  lateinit var mainActivity: MainActivity
+    // TODO убрать костыль. Возможно, надо перейти на Cicerone.
+    lateinit var mainActivity: MainActivity
 
-  override fun onCreate() {
-    initTTS()
-    appComponent = DaggerAppComponent.factory().create(this)
-    super.onCreate()
+    override fun onCreate() {
+        initTTS()
+        appComponent = DaggerAppComponent.factory().create(this)
+        super.onCreate()
 
-    PreferenceManager.setDefaultValues(this, ru.nikshlykov.feature_preferences.R.xml.preferences, false)
+        PreferenceManager.setDefaultValues(
+            this,
+            ru.nikshlykov.feature_preferences.R.xml.preferences,
+            false
+        )
 
-    createNotificationChannel()
+        createNotificationChannel()
 
-    // TODO Разобраться с периодическими уведомлениями
-    //setNotificationPeriodicWorker(10);
-  }
-
-  // Уведомления.
-  override fun getWorkManagerConfiguration(): Configuration {
-    return Configuration.Builder()
-      .setMinimumLoggingLevel(Log.INFO)
-      .build()
-  }
-
-  fun setNotificationPeriodicWorker(delay: Long) {
-    val notificationWorkRequest = PeriodicWorkRequest.Builder(
-      NotificationWorker::class.java, 1, TimeUnit.DAYS
-    )
-      .setInitialDelay(delay, TimeUnit.SECONDS)
-      .addTag("NotificationWork")
-      .build()
-    WorkManager.getInstance(applicationContext).enqueueUniquePeriodicWork(
-      "NotificationWork1", ExistingPeriodicWorkPolicy.REPLACE, notificationWorkRequest
-    )
-  }
-
-  private fun createNotificationChannel() {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-      val id =
-        getString(ru.nikshlykov.feature_preferences.R.string.notification_channel___remember_to_study___id)
-      val name: CharSequence =
-        getString(ru.nikshlykov.feature_preferences.R.string.notification_channel___remember_to_study___name)
-      val description =
-        getString(ru.nikshlykov.feature_preferences.R.string.notification_channel___remember_to_study___description)
-      val importance = NotificationManager.IMPORTANCE_DEFAULT
-      val channel = NotificationChannel(id, name, importance)
-      channel.description = description
-      val notificationManager = getSystemService(
-        NotificationManager::class.java
-      )
-      notificationManager?.createNotificationChannel(channel)
+        // TODO Разобраться с периодическими уведомлениями
+        //setNotificationPeriodicWorker(10);
     }
-  }
 
-  // TextToSpeech.
-  private fun initTTS() {
-    val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-    val ttsPitch = sharedPreferences
-      .getInt(
-        getString(ru.nikshlykov.feature_preferences.R.string.preference_key___tts_pitch),
-        10
-      ) * 0.1f
-    val ttsSpeechRate = sharedPreferences
-      .getInt(
-        getString(ru.nikshlykov.feature_preferences.R.string.preference_key___tts_speech_rate),
-        10
-      ) * 0.1f
-    textToSpeech = TextToSpeech(applicationContext) { status ->
-      if (status == TextToSpeech.SUCCESS) {
-        textToSpeech.language = Locale.US
-        textToSpeech.setPitch(ttsPitch)
-        textToSpeech.setSpeechRate(ttsSpeechRate)
-      } else if (status == TextToSpeech.ERROR) {
-        Toast.makeText(applicationContext, TTS_ERROR, Toast.LENGTH_LONG).show()
-      }
+    // Уведомления.
+    override fun getWorkManagerConfiguration(): Configuration {
+        return Configuration.Builder()
+            .setMinimumLoggingLevel(Log.INFO)
+            .build()
     }
-  }
 
-  companion object {
-    private const val TTS_ERROR = "Ошибка синтезирования речи!"
-  }
+    fun setNotificationPeriodicWorker(delay: Long) {
+        val notificationWorkRequest = PeriodicWorkRequest.Builder(
+            NotificationWorker::class.java, 1, TimeUnit.DAYS
+        )
+            .setInitialDelay(delay, TimeUnit.SECONDS)
+            .addTag("NotificationWork")
+            .build()
+        WorkManager.getInstance(applicationContext).enqueueUniquePeriodicWork(
+            "NotificationWork1", ExistingPeriodicWorkPolicy.REPLACE, notificationWorkRequest
+        )
+    }
 
-  override val modesFeatureDeps: ModesFeatureDeps
-    get() = appComponent
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val id =
+                getString(ru.nikshlykov.feature_preferences.R.string.notification_channel___remember_to_study___id)
+            val name: CharSequence =
+                getString(ru.nikshlykov.feature_preferences.R.string.notification_channel___remember_to_study___name)
+            val description =
+                getString(ru.nikshlykov.feature_preferences.R.string.notification_channel___remember_to_study___description)
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel(id, name, importance)
+            channel.description = description
+            val notificationManager = getSystemService(
+                NotificationManager::class.java
+            )
+            notificationManager?.createNotificationChannel(channel)
+        }
+    }
 
-  override val studyFeatureDeps: StudyFeatureDeps
-    get() = appComponent
+    // TextToSpeech.
+    private fun initTTS() {
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val ttsPitch = sharedPreferences
+            .getInt(
+                getString(ru.nikshlykov.feature_preferences.R.string.preference_key___tts_pitch),
+                10
+            ) * 0.1f
+        val ttsSpeechRate = sharedPreferences
+            .getInt(
+                getString(ru.nikshlykov.feature_preferences.R.string.preference_key___tts_speech_rate),
+                10
+            ) * 0.1f
+        textToSpeech = TextToSpeech(applicationContext) { status ->
+            if (status == TextToSpeech.SUCCESS) {
+                textToSpeech.language = Locale.US
+                textToSpeech.setPitch(ttsPitch)
+                textToSpeech.setSpeechRate(ttsSpeechRate)
+            } else if (status == TextToSpeech.ERROR) {
+                Toast.makeText(applicationContext, TTS_ERROR, Toast.LENGTH_LONG).show()
+            }
+        }
+    }
 
-  override val settingsFeatureDeps: SettingsFeatureDeps
-    get() = appComponent
+    companion object {
+        private const val TTS_ERROR = "Ошибка синтезирования речи!"
+    }
 
-  override val profileFeatureDeps: ProfileFeatureDeps
-    get() = appComponent
+    override val modesFeatureDeps: ModesFeatureDeps
+        get() = appComponent
 
-  override val groupsFeatureDeps: GroupsFeatureDeps
-    get() = appComponent
+    override val studyFeatureDeps: StudyFeatureDeps
+        get() = appComponent
 
-  override val statisticsFeatureDeps: StatisticsFeatureDeps
-    get() = appComponent
+    override val settingsFeatureDeps: SettingsFeatureDeps
+        get() = appComponent
 
-  override val wordFeatureDeps: WordFeatureDeps
-    get() = appComponent
+    override val profileFeatureDeps: ProfileFeatureDeps
+        get() = appComponent
 
-  override val activityClass: Class<out Activity>
-    get() = MainActivity::class.java
+    override val groupsFeatureDeps: GroupsFeatureDeps
+        get() = appComponent
+
+    override val statisticsFeatureDeps: StatisticsFeatureDeps
+        get() = appComponent
+
+    override val wordFeatureDeps: WordFeatureDeps
+        get() = appComponent
+
+    override val activityClass: Class<out Activity>
+        get() = MainActivity::class.java
 }

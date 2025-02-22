@@ -4,12 +4,12 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 
 internal class SettingsFeatureComponentViewModel(application: Application) :
-  AndroidViewModel(application) {
+    AndroidViewModel(application) {
 
-  internal val modesFeatureComponent: SettingsFeatureComponent by lazy {
-    DaggerSettingsFeatureComponent
-      .builder()
-      .deps(application.settingsFeatureDepsProvider.settingsFeatureDeps)
-      .build()
-  }
+    internal val modesFeatureComponent: SettingsFeatureComponent by lazy {
+        DaggerSettingsFeatureComponent
+            .builder()
+            .deps(application.settingsFeatureDepsProvider.settingsFeatureDeps)
+            .build()
+    }
 }

@@ -20,58 +20,58 @@ import javax.inject.Inject
 
 class ModesFragment : Fragment(R.layout.fragment_modes) {
 
-  private val modesFeatureComponentViewModel: ModesFeatureComponentViewModel by viewModels()
+    private val modesFeatureComponentViewModel: ModesFeatureComponentViewModel by viewModels()
 
-  private var modesViewModel: ModesViewModel? = null
+    private var modesViewModel: ModesViewModel? = null
 
-  @Inject
-  lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
-  private var adapter: ModesRecyclerViewAdapter? = null
+    private var adapter: ModesRecyclerViewAdapter? = null
 
-  @Inject
-  lateinit var modesRouterSource: ModesRouterSource
+    @Inject
+    lateinit var modesRouterSource: ModesRouterSource
 
-  private val binding: FragmentModesBinding by viewBinding(FragmentModesBinding::bind)
+    private val binding: FragmentModesBinding by viewBinding(FragmentModesBinding::bind)
 
-  override fun onAttach(context: Context) {
-    modesFeatureComponentViewModel.modesFeatureComponent.inject(this)
-    super.onAttach(context)
-  }
-
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    modesViewModel = viewModelFactory.create(ModesViewModel::class.java)
-  }
-
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-    super.onViewCreated(view, savedInstanceState)
-    initRecyclerViewWithAdapter()
-    initSaveButton()
-  }
-
-  private fun initRecyclerViewWithAdapter() {
-    val modesRecyclerView = binding.modesRecyclerView
-    modesRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-    adapter = ModesRecyclerViewAdapter(requireContext())
-    modesRecyclerView.adapter = adapter
-    lifecycleScope.launch {
-      modesViewModel?.loadModes()?.let { modes ->
-        adapter?.setModes(modes)
-      }
+    override fun onAttach(context: Context) {
+        modesFeatureComponentViewModel.modesFeatureComponent.inject(this)
+        super.onAttach(context)
     }
-  }
 
-  private fun initSaveButton() {
-    binding.saveModesButton.setOnClickListener {
-      val modes = adapter?.getModes()
-
-      // TODO refactoring. Понять, в каком порядке всё это вызывается.
-      modes?.let { modesViewModel?.updateModes(modes) }
-
-      /*// TODO решить, что делать с Router'ом. Оставлять или нет?
-      modesRouterSource.close()*/
-      requireActivity().onBackPressed()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        modesViewModel = viewModelFactory.create(ModesViewModel::class.java)
     }
-  }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initRecyclerViewWithAdapter()
+        initSaveButton()
+    }
+
+    private fun initRecyclerViewWithAdapter() {
+        val modesRecyclerView = binding.modesRecyclerView
+        modesRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        adapter = ModesRecyclerViewAdapter(requireContext())
+        modesRecyclerView.adapter = adapter
+        lifecycleScope.launch {
+            modesViewModel?.loadModes()?.let { modes ->
+                adapter?.setModes(modes)
+            }
+        }
+    }
+
+    private fun initSaveButton() {
+        binding.saveModesButton.setOnClickListener {
+            val modes = adapter?.getModes()
+
+            // TODO refactoring. Понять, в каком порядке всё это вызывается.
+            modes?.let { modesViewModel?.updateModes(modes) }
+
+            /*// TODO решить, что делать с Router'ом. Оставлять или нет?
+            modesRouterSource.close()*/
+            requireActivity().onBackPressed()
+        }
+    }
 }

@@ -11,35 +11,35 @@ import ru.nikshlykov.feature_statistics.ui.models.AllTimeRepeatsStatistics
 import ru.nikshlykov.feature_statistics.ui.models.DayRepeatsStatistics
 
 internal class StatisticsViewModel(
-  val getDayStatisticsInteractor: GetDayStatisticsInteractor,
-  val getAllTimeStatisticsInteractor: GetAllTimeStatisticsInteractor
+    val getDayStatisticsInteractor: GetDayStatisticsInteractor,
+    val getAllTimeStatisticsInteractor: GetAllTimeStatisticsInteractor
 ) :
-  ViewModel() {
+    ViewModel() {
 
-  private val _dayRepeatsStatisticsFlow: MutableStateFlow<DayRepeatsStatistics?> =
-    MutableStateFlow(null)
-  val dayRepeatsStatisticsFlow: StateFlow<DayRepeatsStatistics?> = _dayRepeatsStatisticsFlow
+    private val _dayRepeatsStatisticsFlow: MutableStateFlow<DayRepeatsStatistics?> =
+        MutableStateFlow(null)
+    val dayRepeatsStatisticsFlow: StateFlow<DayRepeatsStatistics?> = _dayRepeatsStatisticsFlow
 
-  private val _allTimeRepeatsStatisticsFlow: MutableStateFlow<AllTimeRepeatsStatistics?> =
-    MutableStateFlow(null)
-  val allTimeRepeatsStatisticsFlow: StateFlow<AllTimeRepeatsStatistics?> =
-    _allTimeRepeatsStatisticsFlow
+    private val _allTimeRepeatsStatisticsFlow: MutableStateFlow<AllTimeRepeatsStatistics?> =
+        MutableStateFlow(null)
+    val allTimeRepeatsStatisticsFlow: StateFlow<AllTimeRepeatsStatistics?> =
+        _allTimeRepeatsStatisticsFlow
 
-  fun calculateDayStatistics() {
-    viewModelScope.launch {
-      val dayRepeatsStatistics = DayRepeatsStatistics(
-        newWordsCount = getDayStatisticsInteractor.getDayNewWordsCount(),
-        repeatsCount = getDayStatisticsInteractor.getDayRepeatsCount()
-      )
-      _dayRepeatsStatisticsFlow.emit(dayRepeatsStatistics)
+    fun calculateDayStatistics() {
+        viewModelScope.launch {
+            val dayRepeatsStatistics = DayRepeatsStatistics(
+                newWordsCount = getDayStatisticsInteractor.getDayNewWordsCount(),
+                repeatsCount = getDayStatisticsInteractor.getDayRepeatsCount()
+            )
+            _dayRepeatsStatisticsFlow.emit(dayRepeatsStatistics)
 
-      val allTimeRepeatsStatistics = AllTimeRepeatsStatistics(
-        newWordsCount = getAllTimeStatisticsInteractor.getNewWordsCount(),
-        repeatsCount = getAllTimeStatisticsInteractor.getRepeatsCount(),
-        memorizedByAppWordsCount = getAllTimeStatisticsInteractor.getMemorizedByAppWordsCount(),
-        memorizedWordsCount = getAllTimeStatisticsInteractor.getMemorizedWordsCount()
-      )
-      _allTimeRepeatsStatisticsFlow.emit(allTimeRepeatsStatistics)
+            val allTimeRepeatsStatistics = AllTimeRepeatsStatistics(
+                newWordsCount = getAllTimeStatisticsInteractor.getNewWordsCount(),
+                repeatsCount = getAllTimeStatisticsInteractor.getRepeatsCount(),
+                memorizedByAppWordsCount = getAllTimeStatisticsInteractor.getMemorizedByAppWordsCount(),
+                memorizedWordsCount = getAllTimeStatisticsInteractor.getMemorizedWordsCount()
+            )
+            _allTimeRepeatsStatisticsFlow.emit(allTimeRepeatsStatistics)
+        }
     }
-  }
 }

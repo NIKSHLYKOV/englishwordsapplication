@@ -4,5 +4,5 @@ import ru.nikshlykov.data.database.models.Group
 
 internal interface GroupsRepository {
 
-  suspend fun getAllGroups(): List<Group>
+    suspend fun getAllGroups(): List<Group>
 }

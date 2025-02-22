@@ -5,7 +5,7 @@ import ru.nikshlykov.feature_groups_and_words.domain.repositories.SubgroupsRepos
 
 internal class UpdateSubgroupInteractor(private val subgroupsRepository: SubgroupsRepository) {
 
-  suspend fun updateSubgroup(subgroup: Subgroup): Int {
-    return subgroupsRepository.updateSubgroup(subgroup)
-  }
+    suspend fun updateSubgroup(subgroup: Subgroup): Int {
+        return subgroupsRepository.updateSubgroup(subgroup)
+    }
 }

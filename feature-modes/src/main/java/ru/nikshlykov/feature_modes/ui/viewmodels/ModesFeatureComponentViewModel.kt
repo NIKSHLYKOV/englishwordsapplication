@@ -6,12 +6,13 @@ import ru.nikshlykov.feature_modes.di.DaggerModesFeatureComponent
 import ru.nikshlykov.feature_modes.di.ModesFeatureComponent
 import ru.nikshlykov.feature_modes.di.modesFeatureDepsProvider
 
-internal class ModesFeatureComponentViewModel(application: Application) : AndroidViewModel(application) {
+internal class ModesFeatureComponentViewModel(application: Application) :
+    AndroidViewModel(application) {
 
-  internal val modesFeatureComponent: ModesFeatureComponent by lazy {
-    DaggerModesFeatureComponent
-      .builder()
-      .deps(application.modesFeatureDepsProvider.modesFeatureDeps)
-      .build()
-  }
+    internal val modesFeatureComponent: ModesFeatureComponent by lazy {
+        DaggerModesFeatureComponent
+            .builder()
+            .deps(application.modesFeatureDepsProvider.modesFeatureDeps)
+            .build()
+    }
 }

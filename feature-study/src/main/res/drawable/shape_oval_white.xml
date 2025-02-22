@@ -3,10 +3,10 @@
     android:color="@color/colorPrimary">
     <item>
         <shape android:shape="oval">
-            <solid
-                android:color="@android:color/white"/>
-            <stroke android:width="2dp"
-                android:color="@color/colorPrimary"/>
+            <solid android:color="@android:color/white" />
+            <stroke
+                android:width="2dp"
+                android:color="@color/colorPrimary" />
         </shape>
     </item>
 </ripple>

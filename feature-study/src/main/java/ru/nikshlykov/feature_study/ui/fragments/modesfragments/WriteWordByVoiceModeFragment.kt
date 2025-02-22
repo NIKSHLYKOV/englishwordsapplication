@@ -16,78 +16,78 @@ import ru.nikshlykov.feature_study.ui.viewmodels.StudyFeatureComponentViewModel
 import javax.inject.Inject
 
 internal class WriteWordByVoiceModeFragment :
-  BaseModeFragment(R.layout.fragment_write_word_by_voice_mode) {
+    BaseModeFragment(R.layout.fragment_write_word_by_voice_mode) {
 
-  // TODO refactoring. Подумать, нормально ли так брать модель, которая для всей фичи.
-  private val studyFeatureComponentViewModel: StudyFeatureComponentViewModel by viewModels()
+    // TODO refactoring. Подумать, нормально ли так брать модель, которая для всей фичи.
+    private val studyFeatureComponentViewModel: StudyFeatureComponentViewModel by viewModels()
 
-  @Inject
-  lateinit var textToSpeech: TextToSpeech
+    @Inject
+    lateinit var textToSpeech: TextToSpeech
 
-  private var word: Word? = null
-  private var handler: Handler? = null
+    private var word: Word? = null
+    private var handler: Handler? = null
 
-  private val binding: FragmentWriteWordByVoiceModeBinding by viewBinding(
-    FragmentWriteWordByVoiceModeBinding::bind
-  )
+    private val binding: FragmentWriteWordByVoiceModeBinding by viewBinding(
+        FragmentWriteWordByVoiceModeBinding::bind
+    )
 
-  override fun onAttach(context: Context) {
-    studyFeatureComponentViewModel.modesFeatureComponent.inject(this)
-    super.onAttach(context)
-  }
-
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    word = WriteWordByVoiceModeFragmentArgs.fromBundle(requireArguments()).word
-    handler = object : Handler() {
-      override fun handleMessage(msg: Message) {
-        super.handleMessage(msg)
-        repeatResultListener?.repeatResult(word?.id ?: 0L, msg.what)
-      }
+    override fun onAttach(context: Context) {
+        studyFeatureComponentViewModel.modesFeatureComponent.inject(this)
+        super.onAttach(context)
     }
-  }
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-    super.onViewCreated(view, savedInstanceState)
-    with(binding) {
-      voiceButton.setOnClickListener {
-        textToSpeech.speak(
-          word?.word,
-          TextToSpeech.QUEUE_FLUSH,
-          null,
-          "Id"
-        )
-      }
-      confirmButton.setOnClickListener { v ->
-        val imm = activity
-          ?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(
-          v.windowToken,
-          InputMethodManager.HIDE_NOT_ALWAYS
-        )
-
-        voiceButton.visibility = View.GONE
-        confirmButton.visibility = View.GONE
-        userVariantInputLayout.visibility = View.GONE
-
-        var result = 0
-        val userVariantOfWord = userVariantEditText.text.toString()
-          .lowercase().trim { it <= ' ' }
-        if (userVariantOfWord == word?.word) {
-          result = 1
-          resultImage.setImageResource(R.drawable.ic_done_white_48dp)
-          rootLayout.setBackgroundResource(R.color.true_repeat_background)
-        } else {
-          resultImage.setImageResource(R.drawable.ic_clear_white_48dp)
-          rootLayout.setBackgroundResource(R.color.not_true_repeat_background)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        word = WriteWordByVoiceModeFragmentArgs.fromBundle(requireArguments()).word
+        handler = object : Handler() {
+            override fun handleMessage(msg: Message) {
+                super.handleMessage(msg)
+                repeatResultListener?.repeatResult(word?.id ?: 0L, msg.what)
+            }
         }
-        resultImage.visibility = View.VISIBLE
-
-        // Delay, чтобы фон и знак немного повисели на экране.
-        handler?.sendEmptyMessageDelayed(result, 1000)
-      }
     }
-  }
 
-  // TODO refactoring. вроде очень похожий код есть в write by value fragment
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        with(binding) {
+            voiceButton.setOnClickListener {
+                textToSpeech.speak(
+                    word?.word,
+                    TextToSpeech.QUEUE_FLUSH,
+                    null,
+                    "Id"
+                )
+            }
+            confirmButton.setOnClickListener { v ->
+                val imm = activity
+                    ?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(
+                    v.windowToken,
+                    InputMethodManager.HIDE_NOT_ALWAYS
+                )
+
+                voiceButton.visibility = View.GONE
+                confirmButton.visibility = View.GONE
+                userVariantInputLayout.visibility = View.GONE
+
+                var result = 0
+                val userVariantOfWord = userVariantEditText.text.toString()
+                    .lowercase().trim { it <= ' ' }
+                if (userVariantOfWord == word?.word) {
+                    result = 1
+                    resultImage.setImageResource(R.drawable.ic_done_white_48dp)
+                    rootLayout.setBackgroundResource(R.color.true_repeat_background)
+                } else {
+                    resultImage.setImageResource(R.drawable.ic_clear_white_48dp)
+                    rootLayout.setBackgroundResource(R.color.not_true_repeat_background)
+                }
+                resultImage.visibility = View.VISIBLE
+
+                // Delay, чтобы фон и знак немного повисели на экране.
+                handler?.sendEmptyMessageDelayed(result, 1000)
+            }
+        }
+    }
+
+    // TODO refactoring. вроде очень похожий код есть в write by value fragment
 }

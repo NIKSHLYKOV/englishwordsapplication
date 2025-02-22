@@ -5,12 +5,12 @@ import android.content.Context
 
 interface StatisticsFeatureDepsProvider {
 
-  val statisticsFeatureDeps: StatisticsFeatureDeps
+    val statisticsFeatureDeps: StatisticsFeatureDeps
 }
 
 val Context.statisticsFeatureDepsProvider: StatisticsFeatureDepsProvider
-  get() = when (this) {
-    is StatisticsFeatureDepsProvider -> this
-    is Application                   -> error("Application must implement StatisticsFeatureDepsProvider")
-    else                             -> applicationContext.statisticsFeatureDepsProvider
-  }
+    get() = when (this) {
+        is StatisticsFeatureDepsProvider -> this
+        is Application -> error("Application must implement StatisticsFeatureDepsProvider")
+        else -> applicationContext.statisticsFeatureDepsProvider
+    }

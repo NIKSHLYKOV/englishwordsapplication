@@ -5,7 +5,7 @@ import ru.nikshlykov.feature_word.domain.repositories.WordsRepository
 
 internal class GetWordInteractor(private val wordsRepository: WordsRepository) {
 
-  suspend fun getWordById(id: Long): Word {
-    return wordsRepository.getWordById(id)
-  }
+    suspend fun getWordById(id: Long): Word {
+        return wordsRepository.getWordById(id)
+    }
 }

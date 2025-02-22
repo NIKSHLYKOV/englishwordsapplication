@@ -5,7 +5,7 @@ import ru.nikshlykov.feature_study.domain.repositories.ModesRepository
 
 internal class GetSelectedModesInteractor(private val modesRepository: ModesRepository) {
 
-  suspend fun getSelectedModes(): List<Mode> {
-    return modesRepository.getSelectedModes()
-  }
+    suspend fun getSelectedModes(): List<Mode> {
+        return modesRepository.getSelectedModes()
+    }
 }

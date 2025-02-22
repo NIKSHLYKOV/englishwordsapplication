@@ -9,17 +9,17 @@ import ru.nikshlykov.data.database.daos.WordDao
 
 interface GroupsFeatureDeps {
 
-  val groupDao: GroupDao
+    val groupDao: GroupDao
 
-  val linkDao: LinkDao
+    val linkDao: LinkDao
 
-  val subgroupDao: SubgroupDao
+    val subgroupDao: SubgroupDao
 
-  val wordDao: WordDao
+    val wordDao: WordDao
 
-  val textToSpeech: TextToSpeech
+    val textToSpeech: TextToSpeech
 
-  val applicationScope: CoroutineScope
+    val applicationScope: CoroutineScope
 
-  val groupsFeatureRouter: GroupsFeatureRouter
+    val groupsFeatureRouter: GroupsFeatureRouter
 }

@@ -91,7 +91,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="end"
             android:text="@string/remember"
-            android:textSize="12sp"/>
+            android:textSize="12sp" />
 
     </FrameLayout>
 

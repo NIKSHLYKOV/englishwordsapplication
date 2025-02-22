@@ -9,13 +9,13 @@ import ru.nikshlykov.feature_statistics.domain.repositories.RepeatsRepository
 @Module
 internal class InteractorModule {
 
-  @Provides
-  @StatisticsFeatureScope
-  fun provideGetDayStatisticsInteractor(repeatsRepository: RepeatsRepository) =
-    GetDayStatisticsInteractor(repeatsRepository)
+    @Provides
+    @StatisticsFeatureScope
+    fun provideGetDayStatisticsInteractor(repeatsRepository: RepeatsRepository) =
+        GetDayStatisticsInteractor(repeatsRepository)
 
-  @Provides
-  @StatisticsFeatureScope
-  fun provideAllTimeStatisticsInteractor(repeatsRepository: RepeatsRepository) =
-    GetAllTimeStatisticsInteractor(repeatsRepository)
+    @Provides
+    @StatisticsFeatureScope
+    fun provideAllTimeStatisticsInteractor(repeatsRepository: RepeatsRepository) =
+        GetAllTimeStatisticsInteractor(repeatsRepository)
 }

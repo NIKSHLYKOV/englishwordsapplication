@@ -9,12 +9,12 @@ import ru.nikshlykov.feature_statistics.domain.repositories.RepeatsRepository
 import javax.inject.Inject
 
 internal class RepeatsRepositoryImpl @Inject constructor(
-  val repeatDao: RepeatDao,
-  val dispatcher: CoroutineDispatcher = Dispatchers.Default
+    val repeatDao: RepeatDao,
+    val dispatcher: CoroutineDispatcher = Dispatchers.Default
 ) :
-  RepeatsRepository {
-  override suspend fun getRepeatsByTime(from: Long, to: Long): List<Repeat> =
-    withContext(dispatcher) {
-      repeatDao.getRepeatsByTime(from, to)
-    }
+    RepeatsRepository {
+    override suspend fun getRepeatsByTime(from: Long, to: Long): List<Repeat> =
+        withContext(dispatcher) {
+            repeatDao.getRepeatsByTime(from, to)
+        }
 }

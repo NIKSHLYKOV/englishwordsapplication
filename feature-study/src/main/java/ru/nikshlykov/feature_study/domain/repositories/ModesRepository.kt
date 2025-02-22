@@ -5,7 +5,7 @@ import ru.nikshlykov.data.database.models.Mode
 
 internal interface ModesRepository {
 
-  suspend fun getSelectedModes(): List<Mode>
+    suspend fun getSelectedModes(): List<Mode>
 
-  fun getModesAreSelected(): Flow<Boolean>
+    fun getModesAreSelected(): Flow<Boolean>
 }

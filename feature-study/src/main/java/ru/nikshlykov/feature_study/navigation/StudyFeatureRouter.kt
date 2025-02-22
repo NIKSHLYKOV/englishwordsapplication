@@ -2,7 +2,7 @@ package ru.nikshlykov.feature_study.navigation
 
 interface StudyFeatureRouter {
 
-  fun openModesFromStudy()
+    fun openModesFromStudy()
 
-  fun openGroupsFromStudy()
+    fun openGroupsFromStudy()
 }

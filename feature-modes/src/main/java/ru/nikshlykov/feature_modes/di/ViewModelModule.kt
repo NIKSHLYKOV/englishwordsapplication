@@ -7,7 +7,7 @@ import ru.nikshlykov.feature_modes.ui.viewmodels.ViewModelFactory
 
 @Module
 internal abstract class ViewModelModule {
-  @Binds
-  @ModesFeatureScope
-  abstract fun provideViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
+    @Binds
+    @ModesFeatureScope
+    abstract fun provideViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 }

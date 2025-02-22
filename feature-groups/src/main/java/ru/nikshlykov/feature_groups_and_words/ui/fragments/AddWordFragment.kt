@@ -16,52 +16,52 @@ import ru.nikshlykov.core_ui.R as CoreUiR
 
 internal class AddWordFragment : FlowFragmentChildFragment(R.layout.fragment_add_word) {
 
-  private val groupsFeatureComponentViewModel: GroupsFeatureComponentViewModel by viewModels()
+    private val groupsFeatureComponentViewModel: GroupsFeatureComponentViewModel by viewModels()
 
-  private var addWordViewModel: AddWordViewModel? = null
+    private var addWordViewModel: AddWordViewModel? = null
 
-  private val viewBinding: FragmentAddWordBinding by viewBinding(FragmentAddWordBinding::bind)
+    private val viewBinding: FragmentAddWordBinding by viewBinding(FragmentAddWordBinding::bind)
 
-  @Inject
-  lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
-  override fun onAttach(context: Context) {
-    groupsFeatureComponentViewModel.modesFeatureComponent.inject(this)
-    super.onAttach(context)
-  }
-
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    addWordViewModel = viewModelFactory.create(AddWordViewModel::class.java)
-    val subgroupId = AddWordFragmentArgs.fromBundle(requireArguments()).subgroupId
-    addWordViewModel?.subgroupId = subgroupId
-  }
-
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-    super.onViewCreated(view, savedInstanceState)
-    addWordViewModel?.wordAdded?.observe(viewLifecycleOwner) { wordAdded ->
-      if (wordAdded) {
-        onChildFragmentInteractionListener?.close()
-      }
+    override fun onAttach(context: Context) {
+        groupsFeatureComponentViewModel.modesFeatureComponent.inject(this)
+        super.onAttach(context)
     }
-    initSaveButtonClick()
-  }
 
-  private fun initSaveButtonClick() {
-    viewBinding.saveWordButton.setOnClickListener {
-
-      val word = viewBinding.wordEditText.text.toString()
-      val value = viewBinding.valueEditText.text.toString()
-      val transcription = viewBinding.transcriptionEditText.text.toString()
-
-      if (word.isNotEmpty() && value.isNotEmpty()) {
-        addWordViewModel?.addWord(word, transcription, value)
-      } else {
-        Toast.makeText(
-          context,
-          CoreUiR.string.error_word_saving, Toast.LENGTH_LONG
-        ).show()
-      }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        addWordViewModel = viewModelFactory.create(AddWordViewModel::class.java)
+        val subgroupId = AddWordFragmentArgs.fromBundle(requireArguments()).subgroupId
+        addWordViewModel?.subgroupId = subgroupId
     }
-  }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        addWordViewModel?.wordAdded?.observe(viewLifecycleOwner) { wordAdded ->
+            if (wordAdded) {
+                onChildFragmentInteractionListener?.close()
+            }
+        }
+        initSaveButtonClick()
+    }
+
+    private fun initSaveButtonClick() {
+        viewBinding.saveWordButton.setOnClickListener {
+
+            val word = viewBinding.wordEditText.text.toString()
+            val value = viewBinding.valueEditText.text.toString()
+            val transcription = viewBinding.transcriptionEditText.text.toString()
+
+            if (word.isNotEmpty() && value.isNotEmpty()) {
+                addWordViewModel?.addWord(word, transcription, value)
+            } else {
+                Toast.makeText(
+                    context,
+                    CoreUiR.string.error_word_saving, Toast.LENGTH_LONG
+                ).show()
+            }
+        }
+    }
 }

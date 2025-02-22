@@ -11,53 +11,53 @@ import ru.nikshlykov.englishwordsapp.ui.OnBoardingViewPagerAdapter
 
 class OnBoardingViewPagerFragment : Fragment(), ViewPagerNavigation {
 
-  private var viewPager: ViewPager2? = null
+    private var viewPager: ViewPager2? = null
 
-  private var onBoardingRouter: OnBoardingRouter? = null
-    set(value) {
-      field = value
+    private var onBoardingRouter: OnBoardingRouter? = null
+        set(value) {
+            field = value
+        }
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val view = inflater.inflate(R.layout.fragment_on_boarding_view_pager, container, false)
+
+        val fragmentList = arrayListOf(
+            OnBoardingFirstFragment(this),
+            OnBoardingSecondFragment(this),
+            OnBoardingThirdFragment(this),
+            OnBoardingFourthFragment(this)
+        )
+
+        val adapter = OnBoardingViewPagerAdapter(
+            fragmentList,
+            requireActivity().supportFragmentManager,
+            lifecycle
+        )
+
+        viewPager = view.findViewById<ViewPager2>(R.id.viewPager).also {
+            it.adapter = adapter
+        }
+
+        return view
     }
 
-  override fun onCreateView(
-    inflater: LayoutInflater, container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): View? {
-    val view = inflater.inflate(R.layout.fragment_on_boarding_view_pager, container, false)
-
-    val fragmentList = arrayListOf(
-      OnBoardingFirstFragment(this),
-      OnBoardingSecondFragment(this),
-      OnBoardingThirdFragment(this),
-      OnBoardingFourthFragment(this)
-    )
-
-    val adapter = OnBoardingViewPagerAdapter(
-      fragmentList,
-      requireActivity().supportFragmentManager,
-      lifecycle
-    )
-
-    viewPager = view.findViewById<ViewPager2>(R.id.viewPager).also {
-      it.adapter = adapter
+    override fun back() {
+        if (viewPager?.currentItem != 0) {
+            viewPager?.currentItem = viewPager?.currentItem?.minus(1) ?: 0
+        }
     }
 
-    return view
-  }
-
-  override fun back() {
-    if (viewPager?.currentItem != 0) {
-      viewPager?.currentItem = viewPager?.currentItem?.minus(1) ?: 0
+    override fun next() {
+        if (viewPager?.currentItem != 3) {
+            viewPager?.currentItem = viewPager?.currentItem?.plus(1) ?: 0
+        } else {
+            val activity = requireActivity()
+            if (activity is OnBoardingRouter) {
+                activity.endOfOnBoarding()
+            }
+        }
     }
-  }
-
-  override fun next() {
-    if (viewPager?.currentItem != 3) {
-      viewPager?.currentItem = viewPager?.currentItem?.plus(1) ?: 0
-    } else {
-      val activity = requireActivity()
-      if (activity is OnBoardingRouter) {
-        activity.endOfOnBoarding()
-      }
-    }
-  }
 }

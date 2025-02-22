@@ -5,7 +5,7 @@ import ru.nikshlykov.feature_groups_and_words.domain.repositories.GroupsReposito
 
 internal class GetGroupsInteractor(private val groupsRepository: GroupsRepository) {
 
-  suspend fun getAllGroups(): List<Group> {
-    return groupsRepository.getAllGroups()
-  }
+    suspend fun getAllGroups(): List<Group> {
+        return groupsRepository.getAllGroups()
+    }
 }

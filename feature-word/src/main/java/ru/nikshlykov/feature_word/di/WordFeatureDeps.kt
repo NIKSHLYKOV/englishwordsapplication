@@ -9,15 +9,15 @@ import ru.nikshlykov.feature_word.navigation.WordFeatureRouter
 
 interface WordFeatureDeps {
 
-  val linkDao: LinkDao
+    val linkDao: LinkDao
 
-  val subgroupDao: SubgroupDao
+    val subgroupDao: SubgroupDao
 
-  val wordDao: WordDao
+    val wordDao: WordDao
 
-  val textToSpeech: TextToSpeech
+    val textToSpeech: TextToSpeech
 
-  val applicationScope: CoroutineScope
+    val applicationScope: CoroutineScope
 
-  val wordFeatureRouter: WordFeatureRouter
+    val wordFeatureRouter: WordFeatureRouter
 }

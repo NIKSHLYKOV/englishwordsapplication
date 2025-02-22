@@ -8,9 +8,9 @@ import ru.nikshlykov.feature_groups_and_words.ui.adapters.WordsRecyclerViewAdapt
 @Module
 internal class AdapterModule {
 
-  @Provides
-  @GroupsFeatureScope
-  fun provideWordsRecyclerViewAdapter(textToSpeech: TextToSpeech): WordsRecyclerViewAdapter{
-    return WordsRecyclerViewAdapter(textToSpeech)
-  }
+    @Provides
+    @GroupsFeatureScope
+    fun provideWordsRecyclerViewAdapter(textToSpeech: TextToSpeech): WordsRecyclerViewAdapter {
+        return WordsRecyclerViewAdapter(textToSpeech)
+    }
 }

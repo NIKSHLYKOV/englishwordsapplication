@@ -16,7 +16,7 @@
         android:clickable="true"
         android:focusable="true"
         app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize10Percent"
-        android:foreground="?attr/selectableItemBackgroundBorderless"/>
+        android:foreground="?attr/selectableItemBackgroundBorderless" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/fragment_subgroup_data___text_input_layout___subgroup_name"

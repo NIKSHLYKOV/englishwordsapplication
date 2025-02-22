@@ -13,14 +13,14 @@ import ru.nikshlykov.feature_word.di.WordFeatureDeps
 import javax.inject.Singleton
 
 @Component(
-  modules = [ContextModule::class, DatabaseModule::class,
-    RouterModule::class, CoroutinesModule::class]
+    modules = [ContextModule::class, DatabaseModule::class,
+        RouterModule::class, CoroutinesModule::class]
 )
 @Singleton
 interface AppComponent : ModesFeatureDeps, StudyFeatureDeps, SettingsFeatureDeps,
-  ProfileFeatureDeps, GroupsFeatureDeps, StatisticsFeatureDeps, WordFeatureDeps {
-  @Component.Factory
-  interface Factory {
-    fun create(@BindsInstance application: Application): AppComponent
-  }
+    ProfileFeatureDeps, GroupsFeatureDeps, StatisticsFeatureDeps, WordFeatureDeps {
+    @Component.Factory
+    interface Factory {
+        fun create(@BindsInstance application: Application): AppComponent
+    }
 }

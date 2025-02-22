@@ -78,7 +78,7 @@
             android:layout_alignParentStart="true"
             android:layout_marginStart="20dp"
             android:text="@string/do_not_remember"
-            android:textSize="12sp"/>
+            android:textSize="12sp" />
 
         <Button
             android:id="@+id/remember_button"
@@ -88,7 +88,7 @@
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="20dp"
             android:text="@string/remember"
-            android:textSize="12sp"/>
+            android:textSize="12sp" />
 
     </RelativeLayout>
 

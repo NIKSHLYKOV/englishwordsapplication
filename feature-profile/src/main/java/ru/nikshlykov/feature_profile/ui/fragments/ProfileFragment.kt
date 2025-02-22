@@ -12,34 +12,34 @@ import ru.nikshlykov.feature_profile.navigation.ProfileFragmentNavigation
 
 internal class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
-  private var profileFragmentNavigation: ProfileFragmentNavigation? = null
+    private var profileFragmentNavigation: ProfileFragmentNavigation? = null
 
-  private val binding: FragmentProfileBinding by viewBinding(FragmentProfileBinding::bind)
+    private val binding: FragmentProfileBinding by viewBinding(FragmentProfileBinding::bind)
 
-  override fun onAttach(context: Context) {
-    Log.d("ProfileFragment", "onAttach()")
-    super.onAttach(context)
+    override fun onAttach(context: Context) {
+        Log.d("ProfileFragment", "onAttach()")
+        super.onAttach(context)
 
-    if (requireParentFragment().parentFragment is ProfileFragmentNavigation) {
-      profileFragmentNavigation =
-        requireParentFragment().parentFragment as ProfileFragmentNavigation
+        if (requireParentFragment().parentFragment is ProfileFragmentNavigation) {
+            profileFragmentNavigation =
+                requireParentFragment().parentFragment as ProfileFragmentNavigation
+        }
     }
-  }
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-    super.onViewCreated(view, savedInstanceState)
-    with(binding) {
-      modesButton.setOnClickListener {
-        profileFragmentNavigation?.openModes()
-      }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        with(binding) {
+            modesButton.setOnClickListener {
+                profileFragmentNavigation?.openModes()
+            }
 
-      settingsButton.setOnClickListener {
-        profileFragmentNavigation?.openSettings()
-      }
+            settingsButton.setOnClickListener {
+                profileFragmentNavigation?.openSettings()
+            }
 
-      statisticsButton.setOnClickListener {
-        profileFragmentNavigation?.openStatistics()
-      }
+            statisticsButton.setOnClickListener {
+                profileFragmentNavigation?.openStatistics()
+            }
+        }
     }
-  }
 }

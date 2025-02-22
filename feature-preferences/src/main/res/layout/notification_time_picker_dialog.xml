@@ -8,6 +8,6 @@
         android:id="@+id/notification_time_picker_dialog___time_picker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center" />
 
 </LinearLayout>

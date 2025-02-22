@@ -16,108 +16,108 @@ import ru.nikshlykov.feature_study.databinding.FragmentCollectWordByLettersModeB
 import ru.nikshlykov.utils.getShuffleCharacters
 
 internal class CollectWordByLettersModeFragment :
-  BaseModeFragment(R.layout.fragment_collect_word_by_letters_mode) {
+    BaseModeFragment(R.layout.fragment_collect_word_by_letters_mode) {
 
-  private var word: Word? = null
+    private var word: Word? = null
 
-  private var handler: Handler? = null
+    private var handler: Handler? = null
 
-  private var invisibleButtons: ArrayDeque<View> = ArrayDeque()
+    private var invisibleButtons: ArrayDeque<View> = ArrayDeque()
 
-  private val binding: FragmentCollectWordByLettersModeBinding by viewBinding(
-    FragmentCollectWordByLettersModeBinding::bind
-  )
+    private val binding: FragmentCollectWordByLettersModeBinding by viewBinding(
+        FragmentCollectWordByLettersModeBinding::bind
+    )
 
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
-    word = CollectWordByLettersModeFragmentArgs.fromBundle(requireArguments()).word
+        word = CollectWordByLettersModeFragmentArgs.fromBundle(requireArguments()).word
 
-    handler = object : Handler() {
-      override fun handleMessage(msg: Message) {
-        super.handleMessage(msg)
-        repeatResultListener?.repeatResult(word?.id ?: 0L, msg.what)
-      }
+        handler = object : Handler() {
+            override fun handleMessage(msg: Message) {
+                super.handleMessage(msg)
+                repeatResultListener?.repeatResult(word?.id ?: 0L, msg.what)
+            }
+        }
     }
-  }
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-    super.onViewCreated(view, savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-    with(binding) {
-      removeLetterButton.isEnabled = false
-      removeLetterButton.setOnClickListener {
-        if (invisibleButtons.isNotEmpty()) {
-          val currentText = userVariantText.text.toString()
-          val newText = currentText.substring(0, currentText.length - 1)
-          userVariantText.text = newText
-          invisibleButtons.removeLast().visibility = View.VISIBLE
-          if (invisibleButtons.isEmpty()) {
+        with(binding) {
             removeLetterButton.isEnabled = false
-          }
+            removeLetterButton.setOnClickListener {
+                if (invisibleButtons.isNotEmpty()) {
+                    val currentText = userVariantText.text.toString()
+                    val newText = currentText.substring(0, currentText.length - 1)
+                    userVariantText.text = newText
+                    invisibleButtons.removeLast().visibility = View.VISIBLE
+                    if (invisibleButtons.isEmpty()) {
+                        removeLetterButton.isEnabled = false
+                    }
+                }
+            }
+
+            valueText.text = word?.value
+
+            val wordOnEnglish = word?.word
+            val lettersCount = wordOnEnglish?.length ?: 0
+            val shuffleLetters = wordOnEnglish?.getShuffleCharacters() ?: emptyList()
+
+            for (i in 0 until lettersCount) {
+                val button = initCharButton(word, shuffleLetters[i])
+                lettersLayout.addView(button)
+            }
         }
-      }
-
-      valueText.text = word?.value
-
-      val wordOnEnglish = word?.word
-      val lettersCount = wordOnEnglish?.length ?: 0
-      val shuffleLetters = wordOnEnglish?.getShuffleCharacters() ?: emptyList()
-
-      for (i in 0 until lettersCount) {
-        val button = initCharButton(word, shuffleLetters[i])
-        lettersLayout.addView(button)
-      }
     }
-  }
 
-  private fun initCharButton(word: Word?, letter: Char): Button {
-    with(binding) {
-      val lettersCount = word?.word?.length
-      val button = Button(
-        ContextThemeWrapper(
-          context,
-          R.style.BorderlessButton
-        ), null, 0
-      )
-      button.setBackgroundResource(R.drawable.shape_white_color_primary_15dp)
-      val layoutParams = LinearLayout.LayoutParams(
-        dpToPx(50), dpToPx(50)
-      )
-      layoutParams.setMargins(dpToPx(2), dpToPx(2), dpToPx(2), dpToPx(2))
-      button.layoutParams = layoutParams
-      button.text = letter.toString()
-      button.setOnClickListener { v ->
-        v.visibility = View.INVISIBLE
-        val letter = (v as TextView).text.toString()
-        val currentText = userVariantText.text.toString()
-        val newText = currentText + letter
-        userVariantText.text = newText
-        invisibleButtons.addLast(v)
-        removeLetterButton.isEnabled = true
-        if (invisibleButtons.size == lettersCount) {
-          valueText.visibility = View.GONE
-          removeLetterButton.visibility = View.GONE
-          userVariantText.visibility = View.GONE
-          lettersLayout.visibility = View.GONE
+    private fun initCharButton(word: Word?, letter: Char): Button {
+        with(binding) {
+            val lettersCount = word?.word?.length
+            val button = Button(
+                ContextThemeWrapper(
+                    context,
+                    R.style.BorderlessButton
+                ), null, 0
+            )
+            button.setBackgroundResource(R.drawable.shape_white_color_primary_15dp)
+            val layoutParams = LinearLayout.LayoutParams(
+                dpToPx(50), dpToPx(50)
+            )
+            layoutParams.setMargins(dpToPx(2), dpToPx(2), dpToPx(2), dpToPx(2))
+            button.layoutParams = layoutParams
+            button.text = letter.toString()
+            button.setOnClickListener { v ->
+                v.visibility = View.INVISIBLE
+                val letter = (v as TextView).text.toString()
+                val currentText = userVariantText.text.toString()
+                val newText = currentText + letter
+                userVariantText.text = newText
+                invisibleButtons.addLast(v)
+                removeLetterButton.isEnabled = true
+                if (invisibleButtons.size == lettersCount) {
+                    valueText.visibility = View.GONE
+                    removeLetterButton.visibility = View.GONE
+                    userVariantText.visibility = View.GONE
+                    lettersLayout.visibility = View.GONE
 
-          var result = 0
-          val userVariantOfWord = userVariantText.text.toString()
-          if (userVariantOfWord == word.word) {
-            result = 1
-            resultImage.setImageResource(R.drawable.ic_done_white_48dp)
-            rootLayout.setBackgroundResource(R.color.true_repeat_background)
-          } else {
-            resultImage.setImageResource(R.drawable.ic_clear_white_48dp)
-            rootLayout.setBackgroundResource(R.color.not_true_repeat_background)
-          }
-          resultImage.visibility = View.VISIBLE
+                    var result = 0
+                    val userVariantOfWord = userVariantText.text.toString()
+                    if (userVariantOfWord == word.word) {
+                        result = 1
+                        resultImage.setImageResource(R.drawable.ic_done_white_48dp)
+                        rootLayout.setBackgroundResource(R.color.true_repeat_background)
+                    } else {
+                        resultImage.setImageResource(R.drawable.ic_clear_white_48dp)
+                        rootLayout.setBackgroundResource(R.color.not_true_repeat_background)
+                    }
+                    resultImage.visibility = View.VISIBLE
 
-          // Delay, чтобы фон и знак немного повисели на экране.
-          handler?.sendEmptyMessageDelayed(result, 1000)
+                    // Delay, чтобы фон и знак немного повисели на экране.
+                    handler?.sendEmptyMessageDelayed(result, 1000)
+                }
+            }
+            return button
         }
-      }
-      return button
     }
-  }
 }

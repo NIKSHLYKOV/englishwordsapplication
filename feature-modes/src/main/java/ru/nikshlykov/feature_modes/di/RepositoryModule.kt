@@ -11,12 +11,12 @@ import ru.nikshlykov.feature_modes.domain.repositories.ModesRepository
 @Module
 internal class RepositoryModule {
 
-  @Provides
-  @ModesFeatureScope
-  fun provideModesRepository(
-    modeDao: ModeDao,
-    applicationScope: CoroutineScope,
-    dispatcher: CoroutineDispatcher
-  ): ModesRepository =
-    ModesRepositoryImpl(modeDao, applicationScope, dispatcher)
+    @Provides
+    @ModesFeatureScope
+    fun provideModesRepository(
+        modeDao: ModeDao,
+        applicationScope: CoroutineScope,
+        dispatcher: CoroutineDispatcher
+    ): ModesRepository =
+        ModesRepositoryImpl(modeDao, applicationScope, dispatcher)
 }

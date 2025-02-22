@@ -9,10 +9,10 @@ import ru.nikshlykov.feature_statistics.ui.viewmodels.StatisticsViewModel
 @Module
 internal class ViewModelModule {
 
-  @Provides
-  @StatisticsFeatureScope
-  fun provideStatisticsViewModel(
-    getDayStatisticsInteractor: GetDayStatisticsInteractor,
-    getAllTimeStatisticsInteractor: GetAllTimeStatisticsInteractor
-  ) = StatisticsViewModel(getDayStatisticsInteractor, getAllTimeStatisticsInteractor)
+    @Provides
+    @StatisticsFeatureScope
+    fun provideStatisticsViewModel(
+        getDayStatisticsInteractor: GetDayStatisticsInteractor,
+        getAllTimeStatisticsInteractor: GetAllTimeStatisticsInteractor
+    ) = StatisticsViewModel(getDayStatisticsInteractor, getAllTimeStatisticsInteractor)
 }

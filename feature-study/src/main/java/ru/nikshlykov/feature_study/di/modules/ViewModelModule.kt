@@ -9,7 +9,7 @@ import ru.nikshlykov.feature_study.ui.viewmodels.ViewModelFactory
 @Module
 internal abstract class ViewModelModule {
 
-  @Binds
-  @StudyFeatureScope
-  abstract fun bindsViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
+    @Binds
+    @StudyFeatureScope
+    abstract fun bindsViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 }

@@ -23,7 +23,7 @@
             tools:text="Название группы"
             android:textSize="18sp"
             android:textColor="@android:color/black"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/group_item___button___more"
@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:text="ещё"
-            android:visibility="invisible"/>
+            android:visibility="invisible" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -40,6 +40,6 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:scrollbars="none"
-        android:layout_marginTop="8dp"/>
+        android:layout_marginTop="8dp" />
 
 </LinearLayout>

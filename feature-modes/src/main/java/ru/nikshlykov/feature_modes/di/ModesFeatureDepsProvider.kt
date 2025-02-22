@@ -5,12 +5,12 @@ import android.content.Context
 
 interface ModesFeatureDepsProvider {
 
-  val modesFeatureDeps: ModesFeatureDeps
+    val modesFeatureDeps: ModesFeatureDeps
 }
 
 val Context.modesFeatureDepsProvider: ModesFeatureDepsProvider
-  get() = when (this) {
-    is ModesFeatureDepsProvider -> this
-    is Application -> error("Application must implement ModesFeatureDepsProvider")
-    else                        -> applicationContext.modesFeatureDepsProvider
-  }
+    get() = when (this) {
+        is ModesFeatureDepsProvider -> this
+        is Application -> error("Application must implement ModesFeatureDepsProvider")
+        else -> applicationContext.modesFeatureDepsProvider
+    }

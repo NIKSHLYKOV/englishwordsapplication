@@ -26,121 +26,122 @@ import ru.nikshlykov.feature_study.utils.ModesNavigation
 import javax.inject.Inject
 
 class StudyFlowFragment : Fragment(),
-  GetAvailableToRepeatWordInteractor.OnAvailableToRepeatWordLoadedListener, RepeatResultListener,
-  FirstShowModeReportListener, StudyFragmentNavigation {
+    GetAvailableToRepeatWordInteractor.OnAvailableToRepeatWordLoadedListener, RepeatResultListener,
+    FirstShowModeReportListener, StudyFragmentNavigation {
 
-  // TODO fix. Исправить баг с сплюснутой кнопкой при resize (когда открывается клава).
-  // Возможно, поможет отслеживание из кода или использование более сложных layouts.
+    // TODO fix. Исправить баг с сплюснутой кнопкой при resize (когда открывается клава).
+    // Возможно, поможет отслеживание из кода или использование более сложных layouts.
 
-  // TODO feature. Сделать режим выбора из 4 слов.
+    // TODO feature. Сделать режим выбора из 4 слов.
 
-  // TODO refactoring. Сделать промежуточный фрагмент, чтобы этот отвечал только за навигацию.
-  private val studyFeatureComponentViewModel: StudyFeatureComponentViewModel by viewModels()
+    // TODO refactoring. Сделать промежуточный фрагмент, чтобы этот отвечал только за навигацию.
+    private val studyFeatureComponentViewModel: StudyFeatureComponentViewModel by viewModels()
 
-  @JvmField
-  @Inject
-  var viewModelFactory: ViewModelProvider.Factory? = null
-  private var studyViewModel: StudyViewModel? = null
-  private var navController: NavController? = null
+    @JvmField
+    @Inject
+    var viewModelFactory: ViewModelProvider.Factory? = null
+    private var studyViewModel: StudyViewModel? = null
+    private var navController: NavController? = null
 
-  @Inject
-  lateinit var studyFeatureRouter: StudyFeatureRouter
+    @Inject
+    lateinit var studyFeatureRouter: StudyFeatureRouter
 
-  override fun onAttach(context: Context) {
-    studyFeatureComponentViewModel.modesFeatureComponent.inject(this)
-    super.onAttach(context)
-  }
-
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    studyViewModel = viewModelFactory?.create(StudyViewModel::class.java)
-  }
-
-  override fun onCreateView(
-    inflater: LayoutInflater,
-    container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): View? {
-    return inflater.inflate(R.layout.flow_fragment_study, container, false)
-  }
-
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-    super.onViewCreated(view, savedInstanceState)
-    val navHostFragment =
-      childFragmentManager.findFragmentById(R.id.flow_fragment_study___nav_host) as NavHostFragment?
-    navController = navHostFragment?.navController
-
-    studyViewModel?.getModesAreSelected()?.observe(viewLifecycleOwner) { modesAreSelected ->
-      if (modesAreSelected) {
-        studyViewModel?.startStudying(this)
-      } else {
-        val navDirections =
-          NavigationStudyDirections.actionGlobalInfoDest(InfoFragment.FLAG_MODES_ARE_NOT_CHOSEN)
-        navController?.navigate(navDirections)
-      }
+    override fun onAttach(context: Context) {
+        studyFeatureComponentViewModel.modesFeatureComponent.inject(this)
+        super.onAttach(context)
     }
-  }
 
-  override fun onStart() {
-    super.onStart()
-    studyViewModel?.loadNewWordsCount()
-  }
-
-  override fun onAvailableToRepeatWordLoaded(word: Word?) {
-    if (word == null) {
-      val navDirections =
-        NavigationStudyDirections.actionGlobalInfoDest(InfoFragment.FLAG_AVAILABLE_WORDS_ARE_NOT_EXISTING)
-      navController?.navigate(navDirections)
-    } else {
-      Log.i(
-        LOG_TAG, "word = " + word.word + "; learnProgress = " + word.learnProgress +
-                "; lastRepetitionDate = " + word.lastRepetitionDate
-      )
-
-      val arguments = Bundle()
-      arguments.putParcelable(EXTRA_WORD_OBJECT, word)
-
-      if (word.learnProgress == -1) {
-        val navDirections = NavigationStudyDirections.actionGlobalFirstShowModeDest(word)
-        navController?.navigate(navDirections)
-      } else {
-        val randomModeId = studyViewModel?.randomSelectedModeId()
-        Log.i(LOG_TAG, "randomModeId = $randomModeId")
-        // TODO refactoring. Убрать как-нибудь в следующей строке единицу.
-        val navDirections = ModesNavigation.getRandomModeNavDirections(randomModeId ?: 1, word)
-        navController?.navigate(navDirections)
-      }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        studyViewModel = viewModelFactory?.create(StudyViewModel::class.java)
     }
-  }
 
-  /**
-   * @param result (0 - пропусить, 1 - изучать, 2 - знаю).
-   */
-  override fun firstShowModeResult(wordId: Long, result: Int) {
-    Log.i(LOG_TAG, "firstShowModeResult()")
-    Log.i(LOG_TAG, "result = $result")
-    studyViewModel?.firstShowProcessing(wordId, result, this)
-  }
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.flow_fragment_study, container, false)
+    }
 
-  /**
-   * Обрабытывает результаты повторов (кроме первого показа).
-   *
-   * @param result результат повтора (0 - неверно, 1 - верно).
-   */
-  override fun repeatResult(wordId: Long, result: Int) {
-    studyViewModel?.repeatProcessing(wordId, result, this)
-  }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val navHostFragment =
+            childFragmentManager.findFragmentById(R.id.flow_fragment_study___nav_host) as NavHostFragment?
+        navController = navHostFragment?.navController
 
-  override fun openModes() {
-    studyFeatureRouter.openModesFromStudy()
-  }
+        studyViewModel?.getModesAreSelected()?.observe(viewLifecycleOwner) { modesAreSelected ->
+            if (modesAreSelected) {
+                studyViewModel?.startStudying(this)
+            } else {
+                val navDirections =
+                    NavigationStudyDirections.actionGlobalInfoDest(InfoFragment.FLAG_MODES_ARE_NOT_CHOSEN)
+                navController?.navigate(navDirections)
+            }
+        }
+    }
 
-  override fun openGroups() {
-    studyFeatureRouter.openGroupsFromStudy()
-  }
+    override fun onStart() {
+        super.onStart()
+        studyViewModel?.loadNewWordsCount()
+    }
 
-  companion object {
-    private val LOG_TAG = StudyFlowFragment::class.java.canonicalName
-    const val EXTRA_WORD_OBJECT = "WordObject"
-  }
+    override fun onAvailableToRepeatWordLoaded(word: Word?) {
+        if (word == null) {
+            val navDirections =
+                NavigationStudyDirections.actionGlobalInfoDest(InfoFragment.FLAG_AVAILABLE_WORDS_ARE_NOT_EXISTING)
+            navController?.navigate(navDirections)
+        } else {
+            Log.i(
+                LOG_TAG, "word = " + word.word + "; learnProgress = " + word.learnProgress +
+                    "; lastRepetitionDate = " + word.lastRepetitionDate
+            )
+
+            val arguments = Bundle()
+            arguments.putParcelable(EXTRA_WORD_OBJECT, word)
+
+            if (word.learnProgress == -1) {
+                val navDirections = NavigationStudyDirections.actionGlobalFirstShowModeDest(word)
+                navController?.navigate(navDirections)
+            } else {
+                val randomModeId = studyViewModel?.randomSelectedModeId()
+                Log.i(LOG_TAG, "randomModeId = $randomModeId")
+                // TODO refactoring. Убрать как-нибудь в следующей строке единицу.
+                val navDirections =
+                    ModesNavigation.getRandomModeNavDirections(randomModeId ?: 1, word)
+                navController?.navigate(navDirections)
+            }
+        }
+    }
+
+    /**
+     * @param result (0 - пропусить, 1 - изучать, 2 - знаю).
+     */
+    override fun firstShowModeResult(wordId: Long, result: Int) {
+        Log.i(LOG_TAG, "firstShowModeResult()")
+        Log.i(LOG_TAG, "result = $result")
+        studyViewModel?.firstShowProcessing(wordId, result, this)
+    }
+
+    /**
+     * Обрабытывает результаты повторов (кроме первого показа).
+     *
+     * @param result результат повтора (0 - неверно, 1 - верно).
+     */
+    override fun repeatResult(wordId: Long, result: Int) {
+        studyViewModel?.repeatProcessing(wordId, result, this)
+    }
+
+    override fun openModes() {
+        studyFeatureRouter.openModesFromStudy()
+    }
+
+    override fun openGroups() {
+        studyFeatureRouter.openGroupsFromStudy()
+    }
+
+    companion object {
+        private val LOG_TAG = StudyFlowFragment::class.java.canonicalName
+        const val EXTRA_WORD_OBJECT = "WordObject"
+    }
 }

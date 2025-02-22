@@ -10,14 +10,14 @@ import javax.inject.Singleton
 
 @Module
 class ContextModule {
-  @Provides
-  fun provideContext(application: Application): Context {
-    return application
-  }
+    @Provides
+    fun provideContext(application: Application): Context {
+        return application
+    }
 
-  @Provides
-  @Singleton
-  fun provideTextToSpeech(application: Application): TextToSpeech {
-    return (application as App).textToSpeech
-  }
+    @Provides
+    @Singleton
+    fun provideTextToSpeech(application: Application): TextToSpeech {
+        return (application as App).textToSpeech
+    }
 }

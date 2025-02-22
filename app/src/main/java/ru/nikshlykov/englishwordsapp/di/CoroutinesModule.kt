@@ -9,8 +9,8 @@ import javax.inject.Singleton
 
 @Module
 class CoroutinesModule {
-  @Provides
-  @Singleton
-  fun provideApplicationScope(): CoroutineScope =
-    CoroutineScope(Dispatchers.Default + CoroutineName("Application Scope"))
+    @Provides
+    @Singleton
+    fun provideApplicationScope(): CoroutineScope =
+        CoroutineScope(Dispatchers.Default + CoroutineName("Application Scope"))
 }

@@ -7,16 +7,16 @@ import androidx.compose.ui.graphics.Color
 
 @Composable
 internal fun MyTheme(content: @Composable () -> Unit) {
-  MaterialTheme(
-    colors = Colors,
-    typography = MaterialTheme.typography,
-    shapes = MaterialTheme.shapes,
-    content = content
-  )
+    MaterialTheme(
+        colors = Colors,
+        typography = MaterialTheme.typography,
+        shapes = MaterialTheme.shapes,
+        content = content
+    )
 }
 
 internal val Colors = lightColors(
-  primary = Color(0xFF2D9AF3),
-  primaryVariant = Color(0xFF227AD2),
-  secondary = Color(0xFFFCD366)
+    primary = Color(0xFF2D9AF3),
+    primaryVariant = Color(0xFF227AD2),
+    secondary = Color(0xFFFCD366)
 )

@@ -5,7 +5,7 @@ import ru.nikshlykov.feature_groups_and_words.domain.repositories.SubgroupsRepos
 
 internal class GetSubgroupInteractor(private val subgroupsRepository: SubgroupsRepository) {
 
-  suspend fun getSubgroupById(subgroupId: Long): Subgroup {
-    return subgroupsRepository.getSubgroupById(subgroupId)
-  }
+    suspend fun getSubgroupById(subgroupId: Long): Subgroup {
+        return subgroupsRepository.getSubgroupById(subgroupId)
+    }
 }

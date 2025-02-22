@@ -4,7 +4,7 @@ import ru.nikshlykov.feature_groups_and_words.domain.repositories.WordsRepositor
 
 internal class ResetWordsProgressFromSubgroupInteractor(private val wordsRepository: WordsRepository) {
 
-  suspend fun resetWordsProgressFromSubgroup(subgroupId: Long): Int {
-    return wordsRepository.resetWordsProgressFromSubgroup(subgroupId)
-  }
+    suspend fun resetWordsProgressFromSubgroup(subgroupId: Long): Int {
+        return wordsRepository.resetWordsProgressFromSubgroup(subgroupId)
+    }
 }

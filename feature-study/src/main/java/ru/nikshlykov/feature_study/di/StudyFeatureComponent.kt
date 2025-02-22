@@ -9,22 +9,22 @@ import ru.nikshlykov.feature_study.ui.flowfragments.StudyFlowFragment
 import ru.nikshlykov.feature_study.ui.fragments.modesfragments.WriteWordByVoiceModeFragment
 
 @[StudyFeatureScope Component(
-  dependencies = [StudyFeatureDeps::class],
-  modules = [ViewModelModule::class, RepositoryModule::class, InteractorModule::class,
-    DispatchersModule::class]
+    dependencies = [StudyFeatureDeps::class],
+    modules = [ViewModelModule::class, RepositoryModule::class, InteractorModule::class,
+        DispatchersModule::class]
 )]
 internal interface StudyFeatureComponent {
 
-  @Component.Builder
-  interface Builder {
+    @Component.Builder
+    interface Builder {
 
-    fun deps(studyFeatureDeps: StudyFeatureDeps): Builder
+        fun deps(studyFeatureDeps: StudyFeatureDeps): Builder
 
-    fun build(): StudyFeatureComponent
-  }
+        fun build(): StudyFeatureComponent
+    }
 
-  fun inject(studyFlowFragment: StudyFlowFragment)
+    fun inject(studyFlowFragment: StudyFlowFragment)
 
-  fun inject(fragment: WriteWordByVoiceModeFragment)
+    fun inject(fragment: WriteWordByVoiceModeFragment)
 }
 

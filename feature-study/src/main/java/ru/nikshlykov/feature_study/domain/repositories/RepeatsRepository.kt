@@ -4,9 +4,9 @@ import ru.nikshlykov.data.database.models.Repeat
 
 internal interface RepeatsRepository {
 
-  suspend fun insertRepeat(repeat: Repeat): Long
+    suspend fun insertRepeat(repeat: Repeat): Long
 
-  suspend fun getLastRepeatByWord(wordId: Long): Repeat
+    suspend fun getLastRepeatByWord(wordId: Long): Repeat
 
-  suspend fun getAllRepeats(): List<Repeat>
+    suspend fun getAllRepeats(): List<Repeat>
 }

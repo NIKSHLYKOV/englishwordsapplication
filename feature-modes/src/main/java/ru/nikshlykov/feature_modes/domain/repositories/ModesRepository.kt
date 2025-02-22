@@ -4,7 +4,7 @@ import ru.nikshlykov.data.database.models.Mode
 
 internal interface ModesRepository {
 
-  suspend fun updateModes(modes: List<Mode>): Int
+    suspend fun updateModes(modes: List<Mode>): Int
 
-  suspend fun getAllModes(): List<Mode>
+    suspend fun getAllModes(): List<Mode>
 }

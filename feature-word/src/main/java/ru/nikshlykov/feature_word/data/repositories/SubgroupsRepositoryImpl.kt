@@ -9,17 +9,17 @@ import ru.nikshlykov.feature_word.domain.repositories.SubgroupsRepository
 import javax.inject.Inject
 
 internal class SubgroupsRepositoryImpl @Inject constructor(
-  private val subgroupDao: SubgroupDao,
-  private val dispatcher: CoroutineDispatcher = Dispatchers.Default
+    private val subgroupDao: SubgroupDao,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.Default
 ) : SubgroupsRepository {
 
-  override suspend fun getSubgroupById(id: Long): Subgroup =
-    withContext(dispatcher) {
-      subgroupDao.getSubgroupById(id)
-    }
+    override suspend fun getSubgroupById(id: Long): Subgroup =
+        withContext(dispatcher) {
+            subgroupDao.getSubgroupById(id)
+        }
 
-  override suspend fun getSubgroupsCreatedByUser(): List<Subgroup> =
-    withContext(dispatcher) {
-      subgroupDao.getCreatedByUserSubgroups()
-    }
+    override suspend fun getSubgroupsCreatedByUser(): List<Subgroup> =
+        withContext(dispatcher) {
+            subgroupDao.getCreatedByUserSubgroups()
+        }
 }

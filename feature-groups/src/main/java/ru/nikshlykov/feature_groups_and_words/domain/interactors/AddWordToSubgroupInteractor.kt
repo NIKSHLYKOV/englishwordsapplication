@@ -5,7 +5,7 @@ import ru.nikshlykov.feature_groups_and_words.domain.repositories.LinksRepositor
 
 internal class AddWordToSubgroupInteractor(private val linksRepository: LinksRepository) {
 
-  suspend fun addLinkBetweenWordAndSubgroup(wordId: Long, subgroupId: Long): Long {
-    return linksRepository.insertLink(Link(subgroupId, wordId))
-  }
+    suspend fun addLinkBetweenWordAndSubgroup(wordId: Long, subgroupId: Long): Long {
+        return linksRepository.insertLink(Link(subgroupId, wordId))
+    }
 }

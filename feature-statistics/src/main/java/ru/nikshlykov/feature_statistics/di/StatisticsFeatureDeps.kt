@@ -4,5 +4,5 @@ import ru.nikshlykov.data.database.daos.RepeatDao
 
 interface StatisticsFeatureDeps {
 
-  val repeatDao: RepeatDao
+    val repeatDao: RepeatDao
 }

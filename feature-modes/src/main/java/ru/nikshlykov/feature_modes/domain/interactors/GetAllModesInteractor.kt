@@ -5,7 +5,7 @@ import ru.nikshlykov.feature_modes.domain.repositories.ModesRepository
 
 internal class GetAllModesInteractor(private val modesRepository: ModesRepository) {
 
-  suspend fun getAllModes(): List<Mode> {
-    return modesRepository.getAllModes()
-  }
+    suspend fun getAllModes(): List<Mode> {
+        return modesRepository.getAllModes()
+    }
 }

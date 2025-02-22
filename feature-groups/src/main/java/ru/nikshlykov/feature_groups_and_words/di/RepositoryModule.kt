@@ -20,36 +20,36 @@ import ru.nikshlykov.feature_groups_and_words.domain.repositories.WordsRepositor
 @Module
 internal class RepositoryModule {
 
-  @Provides
-  @GroupsFeatureScope
-  fun provideSubgroupsRepository(
-    subgroupDao: SubgroupDao,
-    applicationScope: CoroutineScope,
-    dispatcher: CoroutineDispatcher
-  ): SubgroupsRepository = SubgroupsRepositoryImpl(subgroupDao, applicationScope, dispatcher)
+    @Provides
+    @GroupsFeatureScope
+    fun provideSubgroupsRepository(
+        subgroupDao: SubgroupDao,
+        applicationScope: CoroutineScope,
+        dispatcher: CoroutineDispatcher
+    ): SubgroupsRepository = SubgroupsRepositoryImpl(subgroupDao, applicationScope, dispatcher)
 
-  @Provides
-  @GroupsFeatureScope
-  fun provideGroupsRepository(
-    groupDao: GroupDao,
-    dispatcher: CoroutineDispatcher
-  ): GroupsRepository = GroupsRepositoryImpl(groupDao, dispatcher)
+    @Provides
+    @GroupsFeatureScope
+    fun provideGroupsRepository(
+        groupDao: GroupDao,
+        dispatcher: CoroutineDispatcher
+    ): GroupsRepository = GroupsRepositoryImpl(groupDao, dispatcher)
 
-  @Provides
-  @GroupsFeatureScope
-  fun provideLinksRepository(
-    linkDao: LinkDao,
-    applicationScope: CoroutineScope,
-    dispatcher: CoroutineDispatcher
-  ): LinksRepository =
-    LinksRepositoryImpl(linkDao, applicationScope, dispatcher)
+    @Provides
+    @GroupsFeatureScope
+    fun provideLinksRepository(
+        linkDao: LinkDao,
+        applicationScope: CoroutineScope,
+        dispatcher: CoroutineDispatcher
+    ): LinksRepository =
+        LinksRepositoryImpl(linkDao, applicationScope, dispatcher)
 
-  @Provides
-  @GroupsFeatureScope
-  fun provideWordsRepository(
-    wordDao: WordDao,
-    applicationScope: CoroutineScope,
-    dispatcher: CoroutineDispatcher
-  ): WordsRepository =
-    WordsRepositoryImpl(wordDao, applicationScope, dispatcher)
+    @Provides
+    @GroupsFeatureScope
+    fun provideWordsRepository(
+        wordDao: WordDao,
+        applicationScope: CoroutineScope,
+        dispatcher: CoroutineDispatcher
+    ): WordsRepository =
+        WordsRepositoryImpl(wordDao, applicationScope, dispatcher)
 }

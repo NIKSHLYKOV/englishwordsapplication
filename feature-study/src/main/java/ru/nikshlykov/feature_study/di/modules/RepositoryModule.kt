@@ -18,25 +18,25 @@ import ru.nikshlykov.feature_study.domain.repositories.WordsRepository
 @Module
 internal class RepositoryModule {
 
-  @Provides
-  @StudyFeatureScope
-  fun provideWordsRepository(
-    wordDao: WordDao,
-    applicationScope: CoroutineScope,
-    dispatcher: CoroutineDispatcher
-  ): WordsRepository =
-    WordsRepositoryImpl(wordDao, applicationScope, dispatcher)
+    @Provides
+    @StudyFeatureScope
+    fun provideWordsRepository(
+        wordDao: WordDao,
+        applicationScope: CoroutineScope,
+        dispatcher: CoroutineDispatcher
+    ): WordsRepository =
+        WordsRepositoryImpl(wordDao, applicationScope, dispatcher)
 
-  @Provides
-  @StudyFeatureScope
-  fun provideRepeatsRepository(
-    repeatDao: RepeatDao,
-    applicationScope: CoroutineScope,
-    dispatcher: CoroutineDispatcher
-  ): RepeatsRepository = RepeatsRepositoryImpl(repeatDao, applicationScope, dispatcher)
+    @Provides
+    @StudyFeatureScope
+    fun provideRepeatsRepository(
+        repeatDao: RepeatDao,
+        applicationScope: CoroutineScope,
+        dispatcher: CoroutineDispatcher
+    ): RepeatsRepository = RepeatsRepositoryImpl(repeatDao, applicationScope, dispatcher)
 
-  @Provides
-  @StudyFeatureScope
-  fun provideModesRepository(modeDao: ModeDao, dispatcher: CoroutineDispatcher): ModesRepository =
-    ModesRepositoryImpl(modeDao, dispatcher)
+    @Provides
+    @StudyFeatureScope
+    fun provideModesRepository(modeDao: ModeDao, dispatcher: CoroutineDispatcher): ModesRepository =
+        ModesRepositoryImpl(modeDao, dispatcher)
 }

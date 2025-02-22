@@ -10,18 +10,18 @@ import ru.nikshlykov.feature_modes.domain.repositories.ModesRepository
 import javax.inject.Inject
 
 internal class ModesRepositoryImpl @Inject constructor(
-  private val modeDao: ModeDao,
-  private val externalScope: CoroutineScope,
-  private val dispatcher: CoroutineDispatcher = Dispatchers.Default
+    private val modeDao: ModeDao,
+    private val externalScope: CoroutineScope,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.Default
 ) : ModesRepository {
 
-  override suspend fun updateModes(modes: List<Mode>): Int =
-    withContext(externalScope.coroutineContext + dispatcher) {
-      modeDao.update(modes)
-    }
+    override suspend fun updateModes(modes: List<Mode>): Int =
+        withContext(externalScope.coroutineContext + dispatcher) {
+            modeDao.update(modes)
+        }
 
-  override suspend fun getAllModes(): List<Mode> =
-    withContext(dispatcher) {
-      modeDao.getAllModes()
-    }
+    override suspend fun getAllModes(): List<Mode> =
+        withContext(dispatcher) {
+            modeDao.getAllModes()
+        }
 }

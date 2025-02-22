@@ -6,11 +6,11 @@ import ru.nikshlykov.feature_groups_and_words.domain.repositories.WordsRepositor
 
 internal class GetWordsFromSubgroupInteractor(private val wordsRepository: WordsRepository) {
 
-  fun getWordsFromSubgroupByAlphabetFlow(subgroupId: Long): Flow<List<Word>> {
-    return wordsRepository.getWordsFromSubgroupByAlphabetFlow(subgroupId)
-  }
+    fun getWordsFromSubgroupByAlphabetFlow(subgroupId: Long): Flow<List<Word>> {
+        return wordsRepository.getWordsFromSubgroupByAlphabetFlow(subgroupId)
+    }
 
-  fun getWordsFromSubgroupByProgressFlow(subgroupId: Long): Flow<List<Word>> {
-    return wordsRepository.getWordsFromSubgroupByProgressFlow(subgroupId)
-  }
+    fun getWordsFromSubgroupByProgressFlow(subgroupId: Long): Flow<List<Word>> {
+        return wordsRepository.getWordsFromSubgroupByProgressFlow(subgroupId)
+    }
 }

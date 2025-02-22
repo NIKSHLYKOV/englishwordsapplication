@@ -2,9 +2,9 @@ package ru.nikshlykov.feature_profile.navigation
 
 interface ProfileFeatureRouter {
 
-  fun openStatistics()
+    fun openStatistics()
 
-  fun openModes()
+    fun openModes()
 
-  fun openSettings()
+    fun openSettings()
 }

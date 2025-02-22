@@ -1,7 +1,7 @@
 package ru.nikshlykov.englishwordsapp.ui.fragments
 
 interface ViewPagerNavigation {
-  fun back()
+    fun back()
 
-  fun next()
+    fun next()
 }

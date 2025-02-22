@@ -7,6 +7,6 @@ import ru.nikshlykov.data.database.models.Group
 @Dao
 interface GroupDao {
 
-  @Query("SELECT * FROM Groups")
-  suspend fun getAllGroups(): List<Group>
+    @Query("SELECT * FROM Groups")
+    suspend fun getAllGroups(): List<Group>
 }

@@ -11,14 +11,15 @@ import ru.nikshlykov.feature_study.domain.repositories.ModesRepository
 import javax.inject.Inject
 
 internal class ModesRepositoryImpl @Inject constructor(
-  private val modeDao: ModeDao,
-  private val dispatcher: CoroutineDispatcher = Dispatchers.Default
+    private val modeDao: ModeDao,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.Default
 ) : ModesRepository {
 
-  override suspend fun getSelectedModes(): List<Mode> =
-    withContext(dispatcher) { modeDao.getSelectedModes() }
+    override suspend fun getSelectedModes(): List<Mode> =
+        withContext(dispatcher) { modeDao.getSelectedModes() }
 
-  override fun getModesAreSelected(): Flow<Boolean> = modeDao.getSelectedModesCount().map { count ->
-    count > 0
-  }
+    override fun getModesAreSelected(): Flow<Boolean> =
+        modeDao.getSelectedModesCount().map { count ->
+            count > 0
+        }
 }

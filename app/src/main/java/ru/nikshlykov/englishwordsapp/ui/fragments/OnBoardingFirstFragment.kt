@@ -7,12 +7,12 @@ import com.google.android.material.button.MaterialButton
 import ru.nikshlykov.englishwordsapp.R
 
 class OnBoardingFirstFragment(private val viewPagerNavigation: ViewPagerNavigation) :
-  Fragment(R.layout.fragment_on_boarding_first) {
+    Fragment(R.layout.fragment_on_boarding_first) {
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-    super.onViewCreated(view, savedInstanceState)
-    view.findViewById<MaterialButton>(R.id.next).setOnClickListener {
-      viewPagerNavigation.next()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        view.findViewById<MaterialButton>(R.id.next).setOnClickListener {
+            viewPagerNavigation.next()
+        }
     }
-  }
 }

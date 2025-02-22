@@ -4,12 +4,12 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 
 internal class GroupsFeatureComponentViewModel(application: Application) :
-  AndroidViewModel(application) {
+    AndroidViewModel(application) {
 
-  val modesFeatureComponent: GroupsFeatureComponent by lazy {
-    DaggerGroupsFeatureComponent
-      .builder()
-      .deps(application.groupsFeatureDepsProvider.groupsFeatureDeps)
-      .build()
-  }
+    val modesFeatureComponent: GroupsFeatureComponent by lazy {
+        DaggerGroupsFeatureComponent
+            .builder()
+            .deps(application.groupsFeatureDepsProvider.groupsFeatureDeps)
+            .build()
+    }
 }

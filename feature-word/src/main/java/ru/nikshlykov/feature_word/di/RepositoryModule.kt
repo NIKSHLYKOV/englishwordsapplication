@@ -17,25 +17,25 @@ import ru.nikshlykov.feature_word.domain.repositories.WordsRepository
 @Module
 internal class RepositoryModule {
 
-  @Provides
-  fun provideSubgroupsRepository(
-    subgroupDao: SubgroupDao,
-    dispatcher: CoroutineDispatcher
-  ): SubgroupsRepository = SubgroupsRepositoryImpl(subgroupDao, dispatcher)
+    @Provides
+    fun provideSubgroupsRepository(
+        subgroupDao: SubgroupDao,
+        dispatcher: CoroutineDispatcher
+    ): SubgroupsRepository = SubgroupsRepositoryImpl(subgroupDao, dispatcher)
 
-  @Provides
-  fun provideLinksRepository(
-    linkDao: LinkDao,
-    applicationScope: CoroutineScope,
-    dispatcher: CoroutineDispatcher
-  ): LinksRepository =
-    LinksRepositoryImpl(linkDao, applicationScope, dispatcher)
+    @Provides
+    fun provideLinksRepository(
+        linkDao: LinkDao,
+        applicationScope: CoroutineScope,
+        dispatcher: CoroutineDispatcher
+    ): LinksRepository =
+        LinksRepositoryImpl(linkDao, applicationScope, dispatcher)
 
-  @Provides
-  fun provideWordsRepository(
-    wordDao: WordDao,
-    applicationScope: CoroutineScope,
-    dispatcher: CoroutineDispatcher
-  ): WordsRepository =
-    WordsRepositoryImpl(wordDao, applicationScope, dispatcher)
+    @Provides
+    fun provideWordsRepository(
+        wordDao: WordDao,
+        applicationScope: CoroutineScope,
+        dispatcher: CoroutineDispatcher
+    ): WordsRepository =
+        WordsRepositoryImpl(wordDao, applicationScope, dispatcher)
 }

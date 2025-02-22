@@ -6,14 +6,14 @@ import ru.nikshlykov.feature_profile.ui.flowfragments.ProfileFlowFragment
 @Component(dependencies = [ProfileFeatureDeps::class])
 internal interface ProfileFeatureComponent {
 
-  @Component.Builder
-  interface Builder {
+    @Component.Builder
+    interface Builder {
 
-    fun deps(profileFeatureDeps: ProfileFeatureDeps): Builder
+        fun deps(profileFeatureDeps: ProfileFeatureDeps): Builder
 
-    fun build(): ProfileFeatureComponent
-  }
+        fun build(): ProfileFeatureComponent
+    }
 
-  fun inject(profileFlowFragment: ProfileFlowFragment)
+    fun inject(profileFlowFragment: ProfileFlowFragment)
 }
 

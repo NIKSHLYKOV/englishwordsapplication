@@ -6,9 +6,9 @@ import ru.nikshlykov.feature_modes.navigation.ModesRouterSource
 
 interface ModesFeatureDeps {
 
-  val modesRouterSource: ModesRouterSource
+    val modesRouterSource: ModesRouterSource
 
-  val modeDao: ModeDao
+    val modeDao: ModeDao
 
-  val applicationScope: CoroutineScope
+    val applicationScope: CoroutineScope
 }

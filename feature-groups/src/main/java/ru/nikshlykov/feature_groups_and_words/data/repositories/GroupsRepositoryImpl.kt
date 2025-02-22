@@ -9,10 +9,10 @@ import ru.nikshlykov.feature_groups_and_words.domain.repositories.GroupsReposito
 import javax.inject.Inject
 
 internal class GroupsRepositoryImpl @Inject constructor(
-  private val groupDao: GroupDao,
-  private val dispatcher: CoroutineDispatcher = Dispatchers.Default
+    private val groupDao: GroupDao,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.Default
 ) : GroupsRepository {
 
-  override suspend fun getAllGroups(): List<Group> =
-    withContext(dispatcher) { groupDao.getAllGroups() }
+    override suspend fun getAllGroups(): List<Group> =
+        withContext(dispatcher) { groupDao.getAllGroups() }
 }

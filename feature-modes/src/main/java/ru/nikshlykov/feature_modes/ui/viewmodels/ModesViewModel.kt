@@ -9,18 +9,18 @@ import ru.nikshlykov.feature_modes.domain.interactors.GetAllModesInteractor
 import ru.nikshlykov.feature_modes.domain.interactors.UpdateModesInteractor
 
 internal class ModesViewModel(
-  private val getAllModesInteractor: GetAllModesInteractor,
-  private val updateModesInteractor: UpdateModesInteractor
+    private val getAllModesInteractor: GetAllModesInteractor,
+    private val updateModesInteractor: UpdateModesInteractor
 ) :
-  ViewModel() {
+    ViewModel() {
 
-  suspend fun loadModes(): List<Mode> = withContext(viewModelScope.coroutineContext) {
-    getAllModesInteractor.getAllModes()
-  }
-
-  fun updateModes(modes: List<Mode>) {
-    viewModelScope.launch {
-      updateModesInteractor.updateModes(modes)
+    suspend fun loadModes(): List<Mode> = withContext(viewModelScope.coroutineContext) {
+        getAllModesInteractor.getAllModes()
     }
-  }
+
+    fun updateModes(modes: List<Mode>) {
+        viewModelScope.launch {
+            updateModesInteractor.updateModes(modes)
+        }
+    }
 }

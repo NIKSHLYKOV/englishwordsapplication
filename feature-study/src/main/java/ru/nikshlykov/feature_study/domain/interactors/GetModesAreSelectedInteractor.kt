@@ -5,5 +5,5 @@ import ru.nikshlykov.feature_study.domain.repositories.ModesRepository
 
 internal class GetModesAreSelectedInteractor(private val modesRepository: ModesRepository) {
 
-  fun getModesAreSelected(): Flow<Boolean> = modesRepository.getModesAreSelected()
+    fun getModesAreSelected(): Flow<Boolean> = modesRepository.getModesAreSelected()
 }

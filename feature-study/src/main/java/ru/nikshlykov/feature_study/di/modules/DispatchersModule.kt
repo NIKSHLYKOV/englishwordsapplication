@@ -8,7 +8,7 @@ import ru.nikshlykov.feature_study.di.StudyFeatureScope
 @Module
 internal class DispatchersModule {
 
-  @Provides
-  @StudyFeatureScope
-  fun provideIODispatcher() = Dispatchers.IO
+    @Provides
+    @StudyFeatureScope
+    fun provideIODispatcher() = Dispatchers.IO
 }

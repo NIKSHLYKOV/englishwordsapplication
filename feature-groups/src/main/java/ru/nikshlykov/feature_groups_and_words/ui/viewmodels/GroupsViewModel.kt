@@ -11,26 +11,26 @@ import ru.nikshlykov.feature_groups_and_words.domain.interactors.UpdateSubgroupI
 import ru.nikshlykov.feature_groups_and_words.domain.models.GroupItem
 
 internal class GroupsViewModel(
-  private val getGroupsWithSubgroupsInteractor: GetGroupsWithSubgroupsInteractor,
-  private val updateSubgroupInteractor: UpdateSubgroupInteractor
+    private val getGroupsWithSubgroupsInteractor: GetGroupsWithSubgroupsInteractor,
+    private val updateSubgroupInteractor: UpdateSubgroupInteractor
 ) : ViewModel() {
 
-  private val _groupItems: MutableLiveData<ArrayList<GroupItem>?> = MutableLiveData()
-  val groupItems: LiveData<ArrayList<GroupItem>?> = _groupItems
+    private val _groupItems: MutableLiveData<ArrayList<GroupItem>?> = MutableLiveData()
+    val groupItems: LiveData<ArrayList<GroupItem>?> = _groupItems
 
-  fun updateSubgroup(subgroup: Subgroup?) {
-    viewModelScope.launch {
-      // TODO убрать потом проверку на null
-      if (subgroup != null) {
-        updateSubgroupInteractor.updateSubgroup(subgroup)
-      }
+    fun updateSubgroup(subgroup: Subgroup?) {
+        viewModelScope.launch {
+            // TODO убрать потом проверку на null
+            if (subgroup != null) {
+                updateSubgroupInteractor.updateSubgroup(subgroup)
+            }
+        }
     }
-  }
 
-  fun loadGroupItems() {
-    viewModelScope.launch {
-      _groupItems.value =
-        getGroupsWithSubgroupsInteractor.getAllGroupsWithSubgroups()
+    fun loadGroupItems() {
+        viewModelScope.launch {
+            _groupItems.value =
+                getGroupsWithSubgroupsInteractor.getAllGroupsWithSubgroups()
+        }
     }
-  }
 }

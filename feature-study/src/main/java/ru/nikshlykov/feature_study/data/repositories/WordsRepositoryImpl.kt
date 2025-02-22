@@ -10,28 +10,28 @@ import ru.nikshlykov.feature_study.domain.repositories.WordsRepository
 import javax.inject.Inject
 
 internal class WordsRepositoryImpl @Inject constructor(
-  private val wordDao: WordDao,
-  private val externalScope: CoroutineScope,
-  private val dispatcher: CoroutineDispatcher = Dispatchers.Default
+    private val wordDao: WordDao,
+    private val externalScope: CoroutineScope,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.Default
 ) : WordsRepository {
 
-  override suspend fun updateWord(word: Word): Int =
-    withContext(externalScope.coroutineContext + dispatcher) {
-      wordDao.update(word)
-    }
+    override suspend fun updateWord(word: Word): Int =
+        withContext(externalScope.coroutineContext + dispatcher) {
+            wordDao.update(word)
+        }
 
-  override suspend fun getWordById(wordId: Long): Word =
-    withContext(dispatcher) {
-      wordDao.getWordById(wordId)
-    }
+    override suspend fun getWordById(wordId: Long): Word =
+        withContext(dispatcher) {
+            wordDao.getWordById(wordId)
+        }
 
-  override suspend fun getWordsFromStudiedSubgroups(): List<Word> =
-    withContext(dispatcher) {
-      wordDao.getWordsFromStudiedSubgroups()
-    }
+    override suspend fun getWordsFromStudiedSubgroups(): List<Word> =
+        withContext(dispatcher) {
+            wordDao.getWordsFromStudiedSubgroups()
+        }
 
-  override suspend fun getNotNewWordsFromStudiedSubgroups(): List<Word> =
-    withContext(dispatcher) {
-      wordDao.getNotNewWordsFromStudiedSubgroups()
-    }
+    override suspend fun getNotNewWordsFromStudiedSubgroups(): List<Word> =
+        withContext(dispatcher) {
+            wordDao.getNotNewWordsFromStudiedSubgroups()
+        }
 }

@@ -7,6 +7,6 @@ import ru.nikshlykov.feature_word.presentation.viewmodels.ViewModelFactory
 
 @Module
 internal abstract class ViewModelModule {
-  @Binds
-  abstract fun bindsViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
+    @Binds
+    abstract fun bindsViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 }
