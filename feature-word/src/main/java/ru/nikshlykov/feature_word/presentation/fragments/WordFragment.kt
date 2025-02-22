@@ -23,6 +23,7 @@ import ru.nikshlykov.feature_word.di.WordFeatureComponentViewModel
 import ru.nikshlykov.feature_word.navigation.WordFeatureRouter
 import ru.nikshlykov.feature_word.presentation.viewmodels.WordViewModel
 import javax.inject.Inject
+import ru.nikshlykov.core_ui.R as CoreUiR
 
 class WordFragment : Fragment(R.layout.fragment_word),
   ResetProgressDialogFragment.ResetProgressListener {
@@ -131,7 +132,7 @@ class WordFragment : Fragment(R.layout.fragment_word),
       } else {
         Toast.makeText(
           context,
-          R.string.error_word_saving, Toast.LENGTH_LONG
+          CoreUiR.string.error_word_saving, Toast.LENGTH_LONG
         ).show()
       }
     }

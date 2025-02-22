@@ -54,7 +54,7 @@ class App : Application(), Configuration.Provider, ModesFeatureDepsProvider,
     appComponent = DaggerAppComponent.factory().create(this)
     super.onCreate()
 
-    PreferenceManager.setDefaultValues(this, R.xml.preferences, false)
+    PreferenceManager.setDefaultValues(this, ru.nikshlykov.feature_preferences.R.xml.preferences, false)
 
     createNotificationChannel()
 

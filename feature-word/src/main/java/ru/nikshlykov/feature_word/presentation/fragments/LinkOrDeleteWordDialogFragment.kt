@@ -12,6 +12,7 @@ import ru.nikshlykov.feature_word.R
 import ru.nikshlykov.feature_word.di.WordFeatureComponentViewModel
 import ru.nikshlykov.feature_word.presentation.viewmodels.WordDialogsViewModel
 import javax.inject.Inject
+import ru.nikshlykov.core_ui.R as CoreUiR
 
 internal class LinkOrDeleteWordDialogFragment : DialogFragment() {
 
@@ -81,14 +82,14 @@ internal class LinkOrDeleteWordDialogFragment : DialogFragment() {
     return when (flag) {
       TO_LINK   ->
         AlertDialog.Builder(requireContext())
-          .setTitle(R.string.dialog___link_word___title)
+          .setTitle(CoreUiR.string.dialog___link_word___title)
           .setMultiChoiceItems(
             availableSubgroupsNames,
             null
           ) { _, which, isChecked ->
             checkedValuesOfSubgroups[which] = isChecked
           }
-          .setPositiveButton(R.string.dialog___link_word___positive_button) { _, _ ->
+          .setPositiveButton(CoreUiR.string.dialog___link_word___positive_button) { _, _ ->
             var i = 0
             while (i < checkedValuesOfSubgroups.size) {
               if (checkedValuesOfSubgroups[i]) {
@@ -97,7 +98,7 @@ internal class LinkOrDeleteWordDialogFragment : DialogFragment() {
               i++
             }
           }
-          .setNegativeButton(R.string.cancel, null)
+          .setNegativeButton(CoreUiR.string.cancel, null)
           .create()
       TO_DELETE ->
         AlertDialog.Builder(requireContext())
@@ -117,7 +118,7 @@ internal class LinkOrDeleteWordDialogFragment : DialogFragment() {
               i++
             }
           }
-          .setNegativeButton(R.string.cancel, null)
+          .setNegativeButton(CoreUiR.string.cancel, null)
           .create()
       else      -> errorDialog
     }
@@ -130,21 +131,20 @@ internal class LinkOrDeleteWordDialogFragment : DialogFragment() {
       )
         .setTitle(R.string.dialog___delete_word___title)
         .setMessage(R.string.dialog___delete_word___error_message)
-        .setPositiveButton(R.string.ok, null)
+        .setPositiveButton(CoreUiR.string.ok, null)
         .create()
       TO_LINK   -> AlertDialog.Builder(
         requireContext()
       )
-        .setTitle(R.string.dialog___link_word___title)
-        .setMessage(R.string.dialog___link_word___error_message)
-        .setPositiveButton(R.string.ok, null)
+        .setMessage(CoreUiR.string.dialog___link_word___error_message)
+        .setPositiveButton(CoreUiR.string.ok, null)
         .create()
       else      -> errorDialog
     }
   private val errorDialog: AlertDialog
     get() = AlertDialog.Builder(requireContext())
-      .setTitle(R.string.sorry_error_happened)
-      .setPositiveButton(R.string.ok, null)
+      .setTitle(CoreUiR.string.sorry_error_happened)
+      .setPositiveButton(CoreUiR.string.ok, null)
       .create()
 
   companion object {

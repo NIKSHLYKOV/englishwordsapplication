@@ -14,6 +14,7 @@ import ru.nikshlykov.feature_study.R
 import ru.nikshlykov.feature_study.domain.interactors.*
 import ru.nikshlykov.feature_study.domain.interactors.GetAvailableToRepeatWordInteractor.OnAvailableToRepeatWordLoadedListener
 import java.util.*
+import ru.nikshlykov.core_ui.R as CoreUiR
 
 internal class StudyViewModel(
   application: Application,
@@ -95,7 +96,7 @@ internal class StudyViewModel(
   fun loadNewWordsCount() {
     val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplication())
     newWordsCount = sharedPreferences.getInt(
-      getApplication<Application>().getString(R.string.preference_key___new_word_count), 5
+      getApplication<Application>().getString(CoreUiR.string.preference_key___new_word_count), 5
     )
     // TODO refactoring. Наверное, лучше подключать модуль настроек.
     Log.i(LOG_TAG, "loadNewWordsCount(): newWordsCount = $newWordsCount")

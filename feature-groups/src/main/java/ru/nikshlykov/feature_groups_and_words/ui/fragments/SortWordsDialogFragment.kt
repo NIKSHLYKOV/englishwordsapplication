@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import ru.nikshlykov.feature_groups_and_words.R
+import ru.nikshlykov.core_ui.R as CoreUiR
 
 internal class SortWordsDialogFragment : DialogFragment() {
   private var sortParam = 0
@@ -33,8 +34,8 @@ internal class SortWordsDialogFragment : DialogFragment() {
     return AlertDialog.Builder(requireContext())
       .setTitle(R.string.dialog___sort_words___title)
       .setSingleChoiceItems(sortParams, sortParam) { dialog, which -> sortParam = which }
-      .setPositiveButton(R.string.yes) { _, _ -> sortWordsListener?.sort(sortParam) }
-      .setNegativeButton(R.string.cancel, null)
+      .setPositiveButton(CoreUiR.string.yes) { _, _ -> sortWordsListener?.sort(sortParam) }
+      .setNegativeButton(CoreUiR.string.cancel, null)
       .create()
   }
 

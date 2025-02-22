@@ -37,6 +37,7 @@ import ru.nikshlykov.feature_groups_and_words.ui.adapters.WordsRecyclerViewAdapt
 import ru.nikshlykov.feature_groups_and_words.ui.viewmodels.SubgroupViewModel
 import java.io.File
 import javax.inject.Inject
+import ru.nikshlykov.core_ui.R as CoreUiR
 
 internal class SubgroupFragment : FlowFragmentChildFragment(R.layout.fragment_subgroup),
   SortWordsDialogFragment.SortWordsListener,
@@ -187,7 +188,7 @@ internal class SubgroupFragment : FlowFragmentChildFragment(R.layout.fragment_su
       R.id.fragment_subgroup___action___learn                -> {
         if (item.isChecked) {
           item.isChecked = false
-          item.icon = requireContext().getDrawable(R.drawable.ic_brain_not_selected)
+          item.icon = requireContext().getDrawable(CoreUiR.drawable.ic_brain_not_selected)
           subgroupViewModel?.setNewIsStudied(false)
         } else {
           item.isChecked = true
@@ -265,7 +266,7 @@ internal class SubgroupFragment : FlowFragmentChildFragment(R.layout.fragment_su
       context
     )
     return sharedPreferences.getString(
-      getString(R.string.preference_key___sort_words_in_subgroups),
+      getString(CoreUiR.string.preference_key___sort_words_in_subgroups),
       java.lang.String.valueOf(SortWordsDialogFragment.BY_ALPHABET)
     )?.toInt() ?: SortWordsDialogFragment.BY_ALPHABET
   }
@@ -273,7 +274,7 @@ internal class SubgroupFragment : FlowFragmentChildFragment(R.layout.fragment_su
   private fun saveSortParam(sortParam: Int) {
     val editor = PreferenceManager.getDefaultSharedPreferences(context).edit()
     editor.putString(
-      getString(R.string.preference_key___sort_words_in_subgroups),
+      getString(CoreUiR.string.preference_key___sort_words_in_subgroups),
       sortParam.toString()
     )
     editor.apply()
@@ -344,8 +345,8 @@ internal class SubgroupFragment : FlowFragmentChildFragment(R.layout.fragment_su
   }
 
   private fun initSwipeIcons() {
-    linkIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_link_white_24dp)
-    deleteIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_delete_white_24dp)
+    linkIcon = ContextCompat.getDrawable(requireContext(), CoreUiR.drawable.ic_link_white_24dp)
+    deleteIcon = ContextCompat.getDrawable(requireContext(), CoreUiR.drawable.ic_delete_white_24dp)
   }
 
   private fun createMySimpleCallbackBySubgroup(subgroup: Subgroup): MySimpleCallback {

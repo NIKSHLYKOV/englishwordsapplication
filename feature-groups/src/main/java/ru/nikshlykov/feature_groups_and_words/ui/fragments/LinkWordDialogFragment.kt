@@ -12,6 +12,7 @@ import ru.nikshlykov.feature_groups_and_words.R
 import ru.nikshlykov.feature_groups_and_words.di.GroupsFeatureComponentViewModel
 import ru.nikshlykov.feature_groups_and_words.ui.viewmodels.WordDialogsViewModel
 import javax.inject.Inject
+import ru.nikshlykov.core_ui.R as CoreUiR
 
 internal class LinkWordDialogFragment : DialogFragment() {
   // TODO refactoring. Убрать весь код, связанный с удалением слова.
@@ -75,14 +76,14 @@ internal class LinkWordDialogFragment : DialogFragment() {
   ): AlertDialog {
     checkedValuesOfSubgroups = BooleanArray(availableSubgroupsCount)
     return AlertDialog.Builder(requireContext())
-      .setTitle(R.string.dialog___link_word___title)
+      .setTitle(CoreUiR.string.dialog___link_word___title)
       .setMultiChoiceItems(
         availableSubgroupsNames,
         null
       ) { _, which, isChecked ->
         checkedValuesOfSubgroups[which] = isChecked
       }
-      .setPositiveButton(R.string.dialog___link_word___positive_button) { _, _ ->
+      .setPositiveButton(CoreUiR.string.dialog___link_word___positive_button) { _, _ ->
         var i = 0
         while (i < checkedValuesOfSubgroups.size) {
           if (checkedValuesOfSubgroups[i]) {
@@ -91,7 +92,7 @@ internal class LinkWordDialogFragment : DialogFragment() {
           i++
         }
       }
-      .setNegativeButton(R.string.cancel, null)
+      .setNegativeButton(CoreUiR.string.cancel, null)
       .create()
   }
 
@@ -99,9 +100,9 @@ internal class LinkWordDialogFragment : DialogFragment() {
     get() = AlertDialog.Builder(
       requireContext()
     )
-      .setTitle(R.string.dialog___link_word___title)
-      .setMessage(R.string.dialog___link_word___error_message)
-      .setPositiveButton(R.string.ok, null)
+      .setTitle(CoreUiR.string.dialog___link_word___title)
+      .setMessage(CoreUiR.string.dialog___link_word___error_message)
+      .setPositiveButton(CoreUiR.string.ok, null)
       .create()
 
   companion object {

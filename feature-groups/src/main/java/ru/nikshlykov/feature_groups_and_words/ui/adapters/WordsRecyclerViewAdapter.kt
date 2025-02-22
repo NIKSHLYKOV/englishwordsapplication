@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import ru.nikshlykov.data.database.models.Word
 import ru.nikshlykov.feature_groups_and_words.R
+import ru.nikshlykov.core_ui.R as CoreUiR
 
 internal class WordsRecyclerViewAdapter(private val textToSpeech: TextToSpeech) :
   RecyclerView.Adapter<WordsRecyclerViewAdapter.WordsViewHolder>() {
@@ -71,15 +72,15 @@ internal class WordsRecyclerViewAdapter(private val textToSpeech: TextToSpeech) 
     holder.transcription.text = currentWord.transcription
     holder.value.text = currentWord.value
     when (currentWord.learnProgress) {
-      -1 -> holder.progress.setBackgroundResource(R.drawable.shape_progress)
-      0 -> holder.progress.setBackgroundResource(R.drawable.shape_progress_0)
-      1 -> holder.progress.setBackgroundResource(R.drawable.shape_progress_1)
-      2 -> holder.progress.setBackgroundResource(R.drawable.shape_progress_2)
-      3 -> holder.progress.setBackgroundResource(R.drawable.shape_progress_3)
-      4 -> holder.progress.setBackgroundResource(R.drawable.shape_progress_4)
-      5 -> holder.progress.setBackgroundResource(R.drawable.shape_progress_5)
-      6 -> holder.progress.setBackgroundResource(R.drawable.shape_progress_6)
-      7, 8 -> holder.progress.setBackgroundResource(R.drawable.shape_progress_7)
+      -1 -> holder.progress.setBackgroundResource(CoreUiR.drawable.shape_progress)
+      0 -> holder.progress.setBackgroundResource(CoreUiR.drawable.shape_progress_0)
+      1 -> holder.progress.setBackgroundResource(CoreUiR.drawable.shape_progress_1)
+      2 -> holder.progress.setBackgroundResource(CoreUiR.drawable.shape_progress_2)
+      3 -> holder.progress.setBackgroundResource(CoreUiR.drawable.shape_progress_3)
+      4 -> holder.progress.setBackgroundResource(CoreUiR.drawable.shape_progress_4)
+      5 -> holder.progress.setBackgroundResource(CoreUiR.drawable.shape_progress_5)
+      6 -> holder.progress.setBackgroundResource(CoreUiR.drawable.shape_progress_6)
+      7, 8 -> holder.progress.setBackgroundResource(CoreUiR.drawable.shape_progress_7)
     }
   }
 

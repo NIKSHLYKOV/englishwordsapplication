@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import ru.nikshlykov.feature_groups_and_words.R
+import ru.nikshlykov.core_ui.R as CoreUiR
 
 internal class DeleteSubgroupDialogFragment : DialogFragment() {
 
@@ -22,10 +23,10 @@ internal class DeleteSubgroupDialogFragment : DialogFragment() {
     return AlertDialog.Builder(requireActivity())
       .setTitle(R.string.dialog___delete_subgroup___title)
       .setMessage(R.string.dialog___delete_subgroup___message)
-      .setPositiveButton(R.string.yes) { dialog, which ->
+      .setPositiveButton(CoreUiR.string.yes) { dialog, which ->
         deleteSubgroupListener?.deleteMessage(DELETION_CONFIRMED_MESSAGE)
       }
-      .setNegativeButton(R.string.no, null)
+      .setNegativeButton(CoreUiR.string.no, null)
       .create()
   }
 

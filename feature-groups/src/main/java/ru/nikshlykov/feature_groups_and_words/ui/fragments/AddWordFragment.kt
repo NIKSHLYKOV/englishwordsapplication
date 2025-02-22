@@ -12,6 +12,7 @@ import ru.nikshlykov.feature_groups_and_words.databinding.FragmentAddWordBinding
 import ru.nikshlykov.feature_groups_and_words.di.GroupsFeatureComponentViewModel
 import ru.nikshlykov.feature_groups_and_words.ui.viewmodels.AddWordViewModel
 import javax.inject.Inject
+import ru.nikshlykov.core_ui.R as CoreUiR
 
 internal class AddWordFragment : FlowFragmentChildFragment(R.layout.fragment_add_word) {
 
@@ -58,7 +59,7 @@ internal class AddWordFragment : FlowFragmentChildFragment(R.layout.fragment_add
       } else {
         Toast.makeText(
           context,
-          R.string.error_word_saving, Toast.LENGTH_LONG
+          CoreUiR.string.error_word_saving, Toast.LENGTH_LONG
         ).show()
       }
     }
