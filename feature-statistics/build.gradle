@@ -9,12 +9,11 @@ apply from: '../android.gradle'
 android {
     namespace "ru.nikshlykov.feature_statistics"
 
-    // For Compose
     buildFeatures {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.0"
+        kotlinCompilerExtensionVersion = versions.compose_compiler
     }
 }
 
@@ -29,12 +28,11 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
-    def composeBom = platform('androidx.compose:compose-bom:2022.12.00')
-    implementation composeBom
-    androidTestImplementation composeBom
-    implementation 'androidx.compose.material:material'
-    implementation 'androidx.compose.ui:ui-tooling-preview'
-    debugImplementation 'androidx.compose.ui:ui-tooling'
+    implementation libraries.compose_ui
+    implementation libraries.compose_foundation
+    implementation libraries.compose_material
+    implementation libraries.compose_ui_tooling_preview
+    debugImplementation libraries.compose_ui_tooling
 
     implementation libraries.lifecycle_viewmodelktx
 
