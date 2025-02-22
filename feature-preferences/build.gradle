@@ -6,6 +6,10 @@ plugins {
 
 apply from: '../android.gradle'
 
+android {
+    namespace "ru.nikshlykov.feature_preferences"
+}
+
 dependencies {
     implementation project(path: ':core-ui')
 

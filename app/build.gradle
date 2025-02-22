@@ -8,6 +8,8 @@ plugins {
 apply from: '../android.gradle'
 
 android {
+    namespace "ru.nikshlykov.englishwordsapp"
+
     defaultConfig {
         applicationId "ru.nikshlykov.englishwordsapp"
     }

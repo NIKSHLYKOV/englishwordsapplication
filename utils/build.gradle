@@ -3,4 +3,8 @@ plugins {
     id 'org.jetbrains.kotlin.android'
 }
 
+android {
+    namespace "ru.nikshlykov.utils"
+}
+
 apply from: '../android.gradle'

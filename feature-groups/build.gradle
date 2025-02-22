@@ -8,6 +8,8 @@ plugins {
 apply from: '../android.gradle'
 
 android {
+    namespace "ru.nikshlykov.feature_groups_and_words"
+
     buildFeatures {
         viewBinding true
     }

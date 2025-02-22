@@ -5,6 +5,10 @@ plugins {
 
 apply from: '../android.gradle'
 
+android {
+    namespace "ru.nikshlykov.core_ui"
+}
+
 dependencies {
     implementation libraries.preference // Для переопределения стиля настроек.
 

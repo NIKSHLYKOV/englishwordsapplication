@@ -7,6 +7,8 @@ plugins {
 apply from: '../android.gradle'
 
 android {
+    namespace "ru.nikshlykov.feature_modes"
+
     buildFeatures {
         viewBinding = true
     }

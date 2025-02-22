@@ -4,3 +4,7 @@ plugins {
 }
 
 apply from: '../android.gradle'
+
+android {
+    namespace "ru.nikshlykov.core_network"
+}
